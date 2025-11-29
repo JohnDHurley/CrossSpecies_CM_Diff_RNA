@@ -127,12 +127,11 @@ dim(RNA_fc)
 ```{r - Boxplot_and_histograms_unfiltered}
 #####Unfiltered####
 RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
-print(
-  hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
-     xlab =expression("Log"[2]*" counts-per-million"), col =4 )
-)
-print(
-  boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample (unfiltered)",xaxt = "n", xlab= ""))
+print(hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =4 ))
+
+boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample
+          (unfiltered)", xaxt = "n", xlab= "")
 axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
@@ -174,12 +173,10 @@ row_means <- rowMeans(RNA_log2cpm)
 Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
 Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
 
-print(
-  hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
+hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
      xlab =expression("Log"[2]*" counts-per-million"), col =5 )
-)
-print(
-  boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= ""))
+
+boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
 axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
@@ -199,15 +196,6 @@ pca_RMG0_meta$species <- species
 pca_RMG0_meta$timepoint <- timepoint
 pca_RMG0_meta$timepoint <- factor(pca_RMG0_meta$timepoint, levels = time_order)
 dim(T_Filt_RMG0_RNA_log2cpm)
-
-#PC1 vs PC2
-ggplot(pca_RMG0_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "PCA of log2CPM RNA-Seq Data (RowMean>0)",
-       x = paste0("PC1 (", round(summary(pca_RMG0)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(pca_RMG0)$importance[2, 2] * 100, 1), "%)"))
 
 ######Cor_HeatMap####
 cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "pearson")
@@ -238,7 +226,18 @@ ann_colors <- list(
 )
 rownames(metadata) <- metadata$sample_cor
 ```
-
+```{r PCA_RNA-Seq_RowMeans_Filtering,fig.height=4,fig.width=9}
+#PC1 vs PC2
+print(
+  ggplot(pca_RMG0_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
+  theme_minimal() +
+  labs(title = "PCA of log2CPM RNA-Seq Data (RowMean>0)",
+       x = paste0("PC1 (", round(summary(pca_RMG0)$importance[2, 1] * 100, 1), "%)"),
+       y = paste0("PC2 (", round(summary(pca_RMG0)$importance[2, 2] * 100, 1), "%)"))
+)
+```
 
 ```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering,fig.height=10,fig.width=10}
 print(

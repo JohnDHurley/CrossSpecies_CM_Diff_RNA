@@ -187,7 +187,7 @@ axis(1,
 
 
 ```{r PCA_RNA-Seq_RowMeans_Filtering,fig.height=4,fig.width=9}
-######PCA####
+#####PCA####
 T_Filt_RMG0_RNA_log2cpm <- t(Filt_RMG0_RNA_log2cpm)
 pca_RMG0 <- prcomp(T_Filt_RMG0_RNA_log2cpm,scale=TRUE,center=TRUE)
 pca_RMG0_meta <- as.data.frame(pca_RMG0$x)
@@ -226,7 +226,7 @@ ann_colors <- list(
 )
 rownames(metadata) <- metadata$sample_cor
 ```
-```{r PCA_RNA-Seq_RowMeans_Filtering,fig.height=4,fig.width=9}
+```{r Graphing_PCA_RNA-Seq_RowMeans_Filtering,fig.height=4,fig.width=9}
 #PC1 vs PC2
 print(
   ggplot(pca_RMG0_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
@@ -239,7 +239,7 @@ print(
 )
 ```
 
-```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering,fig.height=10,fig.width=10}
+```{r Graphing_Correlation_HeatMap_RNA-Seq_RowMeans_Filtering,fig.height=10,fig.width=10}
 print(
   pheatmap(cor_Filt_RMG0_RNA_log2cpm,
          fontsize_row = 5,
@@ -306,7 +306,7 @@ rownames(metadata) <- metadata$sample_cor_NoD4
 ```
 
 
-```{r PCA_RNA-Seq_RowMeans_Filtering_NoDay4,fig.height=4,fig.width=9}
+```{r Graphing_PCA_RNA-Seq_RowMeans_Filtering_NoDay4,fig.height=4,fig.width=9}
 print(
   ggplot(pca_NoD4_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
   geom_point(size = 3, alpha = 0.8) +
@@ -319,7 +319,7 @@ print(
 
 ```
 
-```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering_noDay4,fig.height=10,fig.width=10}
+```{r Graphing_Correlation_HeatMap_RNA-Seq_RowMeans_Filtering_noDay4,fig.height=10,fig.width=10}
 print(
   pheatmap(cor_Filt_RMG0_RNA_log2cpm_NoD4,
          fontsize_row = 5,

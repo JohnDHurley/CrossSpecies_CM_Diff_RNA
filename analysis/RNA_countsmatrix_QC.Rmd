@@ -303,8 +303,8 @@ ggplot(pca_NoD4_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species))
   geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
   theme_minimal() +
   labs(title ="       PCA of log2CPM \n(RowMeans>0-NoDay4)",
-       x = paste0("PC1 (", round(summary(pca_ASHG)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(pca_ASHG)$importance[2, 2] * 100, 1), "%)"))
+       x = paste0("PC1 (", round(summary(pca_NoD4)$importance[2, 1] * 100, 1), "%)"),
+       y = paste0("PC2 (", round(summary(pca_NoD4)$importance[2, 2] * 100, 1), "%)"))
 
 ```
 

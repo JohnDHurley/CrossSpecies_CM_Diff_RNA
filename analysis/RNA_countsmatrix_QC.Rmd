@@ -127,9 +127,12 @@ dim(RNA_fc)
 ```{r - Boxplot_and_histograms_unfiltered}
 #####Unfiltered####
 RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
-hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
+print(
+  hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
      xlab =expression("Log"[2]*" counts-per-million"), col =4 )
-boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample (unfiltered)",xaxt = "n", xlab= "")
+)
+print(
+  boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample (unfiltered)",xaxt = "n", xlab= ""))
 axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
@@ -153,13 +156,15 @@ dim(T_RNA_log2cpm)
 
 
 ```{r PCA_RNA-Seq_Unfiltered,fig.height=4,fig.width=9}
-ggplot(pca_raw_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
+print(
+  ggplot(pca_raw_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
   geom_point(size = 3, alpha = 0.8) +
   geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
   theme_minimal() +
   labs(title = "PCA of log2CPM RNA-Seq Data Unfiltered",
        x = paste0("PC1 (", round(summary(pca_raw)$importance[2, 1] * 100, 1), "%)"),
        y = paste0("PC2 (", round(summary(pca_raw)$importance[2, 2] * 100, 1), "%)"))
+)
 
 ```
 
@@ -169,14 +174,18 @@ row_means <- rowMeans(RNA_log2cpm)
 Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
 Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
 
-hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
+print(
+  hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
      xlab =expression("Log"[2]*" counts-per-million"), col =5 )
-boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
+)
+print(
+  boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= ""))
 axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.3)        # shrink label size
+
 ```
 
 
@@ -232,7 +241,8 @@ rownames(metadata) <- metadata$sample_cor
 
 
 ```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering,fig.height=10,fig.width=10}
-pheatmap(cor_Filt_RMG0_RNA_log2cpm,
+print(
+  pheatmap(cor_Filt_RMG0_RNA_log2cpm,
          fontsize_row = 5,
          fontsize_col = 5,
          annotation_col = metadata[, c("species_cor", "timepoint_cor")],
@@ -240,7 +250,7 @@ pheatmap(cor_Filt_RMG0_RNA_log2cpm,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
          main = "Sample-Sample Correlation \n(Pearson-log2CPM-RowMeans>0)")
-
+)
 ```
 
 ```{r RNA-Seq_NoDay4}
@@ -298,18 +308,21 @@ rownames(metadata) <- metadata$sample_cor_NoD4
 
 
 ```{r PCA_RNA-Seq_RowMeans_Filtering_NoDay4,fig.height=4,fig.width=9}
-ggplot(pca_NoD4_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
+print(
+  ggplot(pca_NoD4_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
   geom_point(size = 3, alpha = 0.8) +
   geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
   theme_minimal() +
   labs(title ="       PCA of log2CPM \n(RowMeans>0-NoDay4)",
        x = paste0("PC1 (", round(summary(pca_NoD4)$importance[2, 1] * 100, 1), "%)"),
        y = paste0("PC2 (", round(summary(pca_NoD4)$importance[2, 2] * 100, 1), "%)"))
+)
 
 ```
 
 ```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering_noDay4,fig.height=10,fig.width=10}
-pheatmap(cor_Filt_RMG0_RNA_log2cpm_NoD4,
+print(
+  pheatmap(cor_Filt_RMG0_RNA_log2cpm_NoD4,
          fontsize_row = 5,
          fontsize_col = 5,
          annotation_col = metadata[, c("species_cor_NoD4", "timepoint_cor_NoD4")],
@@ -317,5 +330,5 @@ pheatmap(cor_Filt_RMG0_RNA_log2cpm_NoD4,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
          main = "Sample-Sample Correlation (Pearson) \n (log2CPM-RowMeans>0-NoDay4)")
-
+)
 ```

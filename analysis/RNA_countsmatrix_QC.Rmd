@@ -239,7 +239,7 @@ pheatmap(cor_Filt_RMG0_RNA_log2cpm,
          annotation_colors = ann_colors,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation (Pearson-log2CPM-RowMeans>0)")
+         main = "Sample-Sample Correlation \n(Pearson-log2CPM-RowMeans>0)")
 
 ```
 
@@ -266,6 +266,34 @@ pca_NoD4_meta$timepoint <- time_NoD4
 time_NoD4_level <- as.factor(c("D0","D2","D5","D15","D30"))
 pca_NoD4_meta$timepoint <- factor(pca_NoD4_meta$timepoint, levels = time_NoD4_level)
 dim(T_Filt_RMG0_RNA_log2cpm_NoD4)
+
+######Cor_HeatMap####
+cor_Filt_RMG0_RNA_log2cpm_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = "pearson")
+time <- factor(timepoint,levels = c("D0","D2","D5","D15","D30","D0R","D2R","D5R","D30R"))
+metadata <- data.frame(
+  sample_cor_NoD4 = colnames(Filt_RMG0_RNA_log2cpm_NoD4),
+  species_cor_NoD4 = species_NoD4,
+  timepoint_cor_NoD4 = time_NoD4
+)
+ann_colors_NoD4 <- list(
+  timepoint_cor_NoD4 = c(
+    "D0" = "#883268",   # Purple
+    "D2" = "#3E7274",  # blue
+    "D5" = "#94C47D",  # Green
+    "D15" = "#C03830",  # red
+    "D30" = "#830C05",  # dark red
+    "D0R" = "#883268",  # pink
+    "D2R" = "#3E7274",  # teal
+    "D5R" = "#94C47D",  # bright green
+    "D30R" = "#830C05"  # bright red
+  ),
+  species_cor_NoD4 = c(
+    "H" = "#171717",  # black
+    "C" = "#17171717",   # light grey
+    "HR" = "#171717B0"#Dark Grey
+  )
+)
+rownames(metadata) <- metadata$sample_cor_NoD4
 ```
 
 
@@ -274,116 +302,20 @@ ggplot(pca_NoD4_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species))
   geom_point(size = 3, alpha = 0.8) +
   geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
   theme_minimal() +
-  labs(title = "PCA of log2CPM (No Day 4) (rowmeans >0)",
+  labs(title ="       PCA of log2CPM \n(RowMeans>0-NoDay4)",
        x = paste0("PC1 (", round(summary(pca_ASHG)$importance[2, 1] * 100, 1), "%)"),
        y = paste0("PC2 (", round(summary(pca_ASHG)$importance[2, 2] * 100, 1), "%)"))
 
-
 ```
 
-
-```{r CorMotif_toiPSC_RNA-Seq_RowMeans_Filtering_NoDay4_NoRep}
-###### CorMotif Setup (Pooled by Species + Timepoint) ######
-
-
-#### Step 1: Prepare Data Set
-###Remove specific replicates
-samples_to_remove_CorM_NoD4_NoRep <- c("H20682R_D0", "H20682R_D2", "H20682_D5", "H20682R_D30",
-              "H28126_D4",
-              "H17_D4",
-              "H78_D4",
-              "H20682_D4",
-              "H22422_D4",
-              "H21792_D4",
-              "H24280_D4",
-              "C3649_D4",
-              "C4955_D4",
-              "C3651_D4",
-              "C40210_D4",
-              "C8861_D4",
-              "C40280_D4",
-              "C3647_D4")
-Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc[, !(colnames(Filt_RMG0_RNA_fc) %in% samples_to_remove_CorM_NoD4_NoRep)]
-dge_NoD4_NoRep <- DGEList(counts=Filt_RMG0_RNA_fc_NoD4_NoRep)
-dge_NoD4_NoRep <- calcNormFactors(dge_NoD4_NoRep,method = "TMM")
-log2cpm_NoD4_NoRep <- cpm(dge,log = TRUE, prior.count=1)
-
-# Set up Variables
-groupid <- c(rep(1:5,7),rep(6:10,7))
-compid_Cond1 <- c(rep(1,4),rep(6,4))
-compid_Cond2 <- c(2,3,4,5,7,8,9,10)
-compid <- cbind(compid_Cond1,compid_Cond2)
-
-#Model Fitting
-set.seed(234)
-motif.fitted<-cormotiffit(log2cpm_NoD4_NoRep,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
-#motif.fitted$bic
-plotMotif(motif.fitted)
-head(motif.fitted$bestmotif$p.post)
-dif.pattern.RNA<-(motif.fitted$bestmotif$p.post>0.5)
-head(dif.pattern.RNA)
-tail(dif.pattern.RNA)
-topgenelist<-generank(motif.fitted$bestmotif$p.post)
-motif_assignments <- apply(motif.fitted$bestmotif$p.post, 1, which.max)
-table(motif_assignments)
-
-#Model Fitting
-#set.seed(91011)
-#motif.fitted<-cormotiffit(log2cpm,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
-#motif.fitted$bic
-#plotIC(motif.fitted)
-#plotMotif(motif.fitted)
-#head(motif.fitted$bestmotif$p.post)
-#dif.pattern.RNA<-(motif.fitted$bestmotif$p.post>0.5)
-#head(dif.pattern.RNA)
-#tail(dif.pattern.RNA)
-#topgenelist<-generank(motif.fitted$bestmotif$p.post)
-#motif_assignments <- apply(motif.fitted$bestmotif$p.post, 1, which.max)
-#table(motif_assignments)
+```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering_noDay4,fig.height=10,fig.width=10}
+pheatmap(cor_Filt_RMG0_RNA_log2cpm_NoD4,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = metadata[, c("species_cor_NoD4", "timepoint_cor_NoD4")],
+         annotation_colors = ann_colors_NoD4,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Pearson) \n (log2CPM-RowMeans>0-NoDay4)")
 
 ```
-```{r PCA RNA-Seq RowMeans Filtering ASHG Subset,fig.height=5,fig.width=9}
-
-plotMotif(motif.fitted)
-
-```
-
-```{r Manuel Plotting}
-library(ggplot2)
-library(tidyr)
-library(dplyr)
-
-# Extract motif matrix
-motif_matrix <- as.matrix(motif.fitted$bestmotif$motif.q)
-
-# Label rows and columns
-rownames(motif_matrix) <- paste0("Motif_", seq_len(nrow(motif_matrix)))
-colnames(motif_matrix) <- paste0("C", compid[,1], "_vs_C", compid[,2])
-
-# Convert to tidy format
-motif_df <- as.data.frame(motif_matrix) %>%
-  mutate(Motif = rownames(.)) %>%
-  pivot_longer(-Motif, names_to = "Comparison", values_to = "Probability")
-
-# Reorder motifs 1–11
-motif_df$Motif <- factor(motif_df$Motif, levels = paste0("Motif_", 1:10))
-
-# Plot
-ggplot(motif_df, aes(x = Comparison, y = Motif, fill = Probability)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient(low = "white", high = "black") +
-  labs(
-    title = "CorMotif Motif Activity Across Comparisons \n  (no day4) (no replicates) (RowMeans<0)",
-    x = "Comparison (Condition 1 vs Condition 2)",
-    y = "Motif (1–10)",
-    fill = "Posterior Probability"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid = element_blank()
-  )
-
-
-```
-

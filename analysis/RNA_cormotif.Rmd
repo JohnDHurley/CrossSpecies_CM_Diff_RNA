@@ -185,7 +185,7 @@ compid <- cbind(compid_Cond1,compid_Cond2)
 
 #Model Fitting
 set.seed(234)
-#motif.fitted<-cormotiffit(log2cpm_NoD4_NoRep,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
+motif.fitted<-cormotiffit(log2cpm_NoD4_NoRep,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
 #motif.fitted$bic
 head(motif.fitted$bestmotif$p.post)
 dif.pattern.RNA<-(motif.fitted$bestmotif$p.post>0.5)

@@ -1,8 +1,17 @@
 ---
-title: "QC_Checks"
+title: "RNA_CorM.Rmd"
 output: html_document
 date: "2025-11-29"
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
 ```{r package_loading}
 library("edgeR")
 library("ggplot2")
@@ -15,7 +24,11 @@ library("org.Hs.eg.db")
 library("AnnotationDbi")
 library("pheatmap")
 library("Cormotif")
+library("tidyr")
+
+
 ```
+
 
 ```{r RNA_counts_table}
 chimp_RNA_pantro5_fc <- read.delim("~/diff_timeline_tes/RNA/featurecounts/c_samples_counts.txt", comment.char="#",row.names=1)
@@ -124,128 +137,8 @@ col_names<- c("H28126_D0",
 colnames(RNA_fc)<-col_names
 dim(RNA_fc)
 ```
-```{r - Boxplot_and_histograms_unfiltered}
-#####Unfiltered####
-RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
-hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
-     xlab =expression("Log"[2]*" counts-per-million"), col =4 )
-boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample (unfiltered)",xaxt = "n", xlab= "")
-axis(1,
-     at = 1:length(col_names),  # positions (one per sample)
-     labels = col_names,        # your labels vector
-     las = 2,               # rotate text vertically (like srt=90)
-     cex.axis = 0.3)        # shrink label size
 
-
-timepoint <- c(rep(c("D0","D2","D4","D5","D15","D30"),7),"D0R","D2R","D5R","D30R", rep(c("D0","D2","D4","D5","D15","D30"),7))
-time_order <- c("D0", "D2", "D4", "D5", "D15", "D30")
-species <- c(rep("H",42),rep("HR",4),rep("C",42))
-
-T_RNA_log2cpm <- t(RNA_log2cpm)
-pca_raw <- prcomp(T_RNA_log2cpm,scale=TRUE,center=TRUE)
-pca_raw_meta <- as.data.frame(pca_raw$x)
-pca_raw_meta$sample <- rownames(pca_raw_meta)
-pca_raw_meta$species <- species
-pca_raw_meta$timepoint <- timepoint
-pca_raw_meta$timepoint <- factor(pca_raw_meta$timepoint, levels = time_order)
-dim(T_RNA_log2cpm)
-```
-
-
-```{r PCA_RNA-Seq_Unfiltered,fig.height=4,fig.width=9}
-ggplot(pca_raw_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "PCA of log2CPM RNA-Seq Data Unfiltered",
-       x = paste0("PC1 (", round(summary(pca_raw)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(pca_raw)$importance[2, 2] * 100, 1), "%)"))
-
-```
-
-```{r RNA-Seq_Filtering_based_on_RowMeans}
-#####RowMu>0####
-row_means <- rowMeans(RNA_log2cpm)
-Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
-Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
-
-hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
-     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
-boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
-axis(1,
-     at = 1:length(col_names),  # positions (one per sample)
-     labels = col_names,        # your labels vector
-     las = 2,               # rotate text vertically (like srt=90)
-     cex.axis = 0.3)        # shrink label size
-```
-
-
-```{r PCA_RNA-Seq_RowMeans_Filtering,fig.height=4,fig.width=9}
-######PCA####
-T_Filt_RMG0_RNA_log2cpm <- t(Filt_RMG0_RNA_log2cpm)
-pca_RMG0 <- prcomp(T_Filt_RMG0_RNA_log2cpm,scale=TRUE,center=TRUE)
-pca_RMG0_meta <- as.data.frame(pca_RMG0$x)
-pca_RMG0_meta$sample <- rownames(pca_RMG0_meta)
-pca_RMG0_meta$species <- species
-pca_RMG0_meta$timepoint <- timepoint
-pca_RMG0_meta$timepoint <- factor(pca_RMG0_meta$timepoint, levels = time_order)
-dim(T_Filt_RMG0_RNA_log2cpm)
-
-#PC1 vs PC2
-ggplot(pca_RMG0_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "PCA of log2CPM RNA-Seq Data (RowMean>0)",
-       x = paste0("PC1 (", round(summary(pca_RMG0)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(pca_RMG0)$importance[2, 2] * 100, 1), "%)"))
-
-######Cor_HeatMap####
-cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "pearson")
-time <- factor(timepoint,levels = c("D0","D2","D4","D5","D15","D30","D0R","D2R","D5R","D30R"))
-metadata <- data.frame(
-  sample_cor = colnames(Filt_RMG0_RNA_log2cpm),
-  species_cor = species,
-  timepoint_cor = timepoint
-)
-ann_colors <- list(
-  timepoint_cor = c(
-    "D0" = "#883268",   # Purple
-    "D2" = "#3E7274",  # blue
-    "D4" = "#5AAA464D",  # light green
-    "D5" = "#94C47D",  # Green
-    "D15" = "#C03830",  # red
-    "D30" = "#830C05",  # dark red
-    "D0R" = "#883268",  # pink
-    "D2R" = "#3E7274",  # teal
-    "D5R" = "#94C47D",  # bright green
-    "D30R" = "#830C05"  # bright red
-  ),
-  species_cor = c(
-    "H" = "#171717",  # black
-    "C" = "#17171717",   # light grey
-    "HR" = "#171717B0"#Dark Grey
-  )
-)
-rownames(metadata) <- metadata$sample_cor
-```
-
-
-```{r Correlation_HeatMap_RNA-Seq_RowMeans_Filtering,fig.height=10,fig.width=10}
-pheatmap(cor_Filt_RMG0_RNA_log2cpm,
-         fontsize_row = 5,
-         fontsize_col = 5,
-         annotation_col = metadata[, c("species_cor", "timepoint_cor")],
-         annotation_colors = ann_colors,
-         clustering_distance_rows = "correlation",
-         clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation (Pearson-log2CPM-RowMeans>0)")
-
-```
-
-```{r RNA-Seq_NoDay4}
-
-####Subset####
+````{r RNA-Seq_Filtering_NoD4_RowMeans>0}
 time_NoD4 <- c(rep(c("D0","D2","D5","D15","D30"),7),"D0","D2","D5","D30",rep(c("D0","D2","D5","D15","D30"),7))
 species_NoD4 <- c(rep("H",35),rep("HR",4),rep("C",35))
 keep_timepoints_NoD4 <- time %in% c("D0", "D2", "D5", "D15","D30","D0R","D2R","D5R","D30R")
@@ -256,33 +149,9 @@ row_means_NoD4 <- rowMeans(RNA_log2cpm_NoD4)
 Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_NoD4[row_means_NoD4 >0,]
 dim(Filt_RMG0_RNA_fc_NoD4)
 Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
+````
 
-T_Filt_RMG0_RNA_log2cpm_NoD4 <- t(Filt_RMG0_RNA_log2cpm_NoD4)
-pca_NoD4 <- prcomp(T_Filt_RMG0_RNA_log2cpm_NoD4,scale=TRUE,center=TRUE)
-pca_NoD4_meta <- as.data.frame(pca_NoD4$x)
-pca_NoD4_meta$sample <- rownames(pca_NoD4_meta)
-pca_NoD4_meta$species <- species_NoD4
-pca_NoD4_meta$timepoint <- time_NoD4
-time_NoD4_level <- as.factor(c("D0","D2","D5","D15","D30"))
-pca_NoD4_meta$timepoint <- factor(pca_NoD4_meta$timepoint, levels = time_NoD4_level)
-dim(T_Filt_RMG0_RNA_log2cpm_NoD4)
-```
-
-
-```{r PCA_RNA-Seq_RowMeans_Filtering_NoDay4,fig.height=4,fig.width=9}
-ggplot(pca_NoD4_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = sample), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "PCA of log2CPM (No Day 4) (rowmeans >0)",
-       x = paste0("PC1 (", round(summary(pca_ASHG)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(pca_ASHG)$importance[2, 2] * 100, 1), "%)"))
-
-
-```
-
-
-```{r CorMotif_toiPSC_RNA-Seq_RowMeans_Filtering_NoDay4_NoRep}
+````{r RNA-Seq_CorMotif_SetUp}
 ###### CorMotif Setup (Pooled by Species + Timepoint) ######
 
 
@@ -303,7 +172,7 @@ samples_to_remove_CorM_NoD4_NoRep <- c("H20682R_D0", "H20682R_D2", "H20682_D5", 
               "C8861_D4",
               "C40280_D4",
               "C3647_D4")
-Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc[, !(colnames(Filt_RMG0_RNA_fc) %in% samples_to_remove_CorM_NoD4_NoRep)]
+Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4[, !(colnames(Filt_RMG0_RNA_fc_NoD4) %in% samples_to_remove_CorM_NoD4_NoRep)]
 dge_NoD4_NoRep <- DGEList(counts=Filt_RMG0_RNA_fc_NoD4_NoRep)
 dge_NoD4_NoRep <- calcNormFactors(dge_NoD4_NoRep,method = "TMM")
 log2cpm_NoD4_NoRep <- cpm(dge,log = TRUE, prior.count=1)
@@ -318,7 +187,6 @@ compid <- cbind(compid_Cond1,compid_Cond2)
 set.seed(234)
 motif.fitted<-cormotiffit(log2cpm_NoD4_NoRep,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
 #motif.fitted$bic
-plotMotif(motif.fitted)
 head(motif.fitted$bestmotif$p.post)
 dif.pattern.RNA<-(motif.fitted$bestmotif$p.post>0.5)
 head(dif.pattern.RNA)
@@ -326,22 +194,7 @@ tail(dif.pattern.RNA)
 topgenelist<-generank(motif.fitted$bestmotif$p.post)
 motif_assignments <- apply(motif.fitted$bestmotif$p.post, 1, which.max)
 table(motif_assignments)
-
-#Model Fitting
-#set.seed(91011)
-#motif.fitted<-cormotiffit(log2cpm,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
-#motif.fitted$bic
-#plotIC(motif.fitted)
-#plotMotif(motif.fitted)
-#head(motif.fitted$bestmotif$p.post)
-#dif.pattern.RNA<-(motif.fitted$bestmotif$p.post>0.5)
-#head(dif.pattern.RNA)
-#tail(dif.pattern.RNA)
-#topgenelist<-generank(motif.fitted$bestmotif$p.post)
-#motif_assignments <- apply(motif.fitted$bestmotif$p.post, 1, which.max)
-#table(motif_assignments)
-
-```
+````
 ```{r PCA RNA-Seq RowMeans Filtering ASHG Subset,fig.height=5,fig.width=9}
 
 plotMotif(motif.fitted)
@@ -349,9 +202,6 @@ plotMotif(motif.fitted)
 ```
 
 ```{r Manuel Plotting}
-library(ggplot2)
-library(tidyr)
-library(dplyr)
 
 # Extract motif matrix
 motif_matrix <- as.matrix(motif.fitted$bestmotif$motif.q)
@@ -386,4 +236,3 @@ ggplot(motif_df, aes(x = Comparison, y = Motif, fill = Probability)) +
 
 
 ```
-

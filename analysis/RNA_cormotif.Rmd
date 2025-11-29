@@ -141,7 +141,7 @@ dim(RNA_fc)
 ````{r RNA-Seq_Filtering_NoD4_RowMeans>0}
 time_NoD4 <- c(rep(c("D0","D2","D5","D15","D30"),7),"D0","D2","D5","D30",rep(c("D0","D2","D5","D15","D30"),7))
 species_NoD4 <- c(rep("H",35),rep("HR",4),rep("C",35))
-keep_timepoints_NoD4 <- time %in% c("D0", "D2", "D5", "D15","D30","D0R","D2R","D5R","D30R")
+keep_timepoints_NoD4 <- time_NoD4 %in% c("D0", "D2", "D5", "D15","D30","D0R","D2R","D5R","D30R")
 
 RNA_fc_NoD4 <- RNA_fc[,keep_timepoints_NoD4]
 RNA_log2cpm_NoD4 <- cpm(RNA_fc_NoD4,log=TRUE)
@@ -175,7 +175,7 @@ samples_to_remove_CorM_NoD4_NoRep <- c("H20682R_D0", "H20682R_D2", "H20682_D5", 
 Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4[, !(colnames(Filt_RMG0_RNA_fc_NoD4) %in% samples_to_remove_CorM_NoD4_NoRep)]
 dge_NoD4_NoRep <- DGEList(counts=Filt_RMG0_RNA_fc_NoD4_NoRep)
 dge_NoD4_NoRep <- calcNormFactors(dge_NoD4_NoRep,method = "TMM")
-log2cpm_NoD4_NoRep <- cpm(dge,log = TRUE, prior.count=1)
+log2cpm_NoD4_NoRep <- cpm(dge_NoD4_NoRep,log = TRUE, prior.count=1)
 
 # Set up Variables
 groupid <- c(rep(1:5,7),rep(6:10,7))
@@ -185,7 +185,7 @@ compid <- cbind(compid_Cond1,compid_Cond2)
 
 #Model Fitting
 set.seed(234)
-motif.fitted<-cormotiffit(log2cpm_NoD4_NoRep,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
+#motif.fitted<-cormotiffit(log2cpm_NoD4_NoRep,groupid,compid,K=(10),max.iter=2000,BIC=TRUE)
 #motif.fitted$bic
 head(motif.fitted$bestmotif$p.post)
 dif.pattern.RNA<-(motif.fitted$bestmotif$p.post>0.5)

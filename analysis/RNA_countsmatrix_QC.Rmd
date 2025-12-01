@@ -147,7 +147,11 @@ geom_jitter(aes(fill = Species),
   )
 ```
 
+<<<<<<< HEAD
 ```{r Plotting_Boxplot_rawcounts_byspecies,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Boxplot_rawcounts_byspecies fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Species, y = Total.Reads/2, fill = Species)) +
@@ -169,7 +173,11 @@ ggplot(RNA_flagstat, aes(x = Species, y = Total.Reads/2, fill = Species)) +
   )
 
 ```
+<<<<<<< HEAD
 ```{r Plotting_Boxplot_rawcounts_bytimepoint,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Boxplot_rawcounts_bytimepoint fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Total.Reads/2, fill = Species)) +
@@ -191,7 +199,11 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Total.Reads/2, fill = Species)) +
   )
 
 ```
+<<<<<<< HEAD
 ```{r Plotting_Boxplot_rawcounts_bycellline,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Boxplot_rawcounts_bycellline fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Cell.Line, y = Total.Reads/2, fill = Cell.Line)) +
@@ -245,7 +257,11 @@ geom_jitter(aes(fill = Species),
     x = ""
   )
 ```
+<<<<<<< HEAD
 ```{r Plotting_Boxplot_Duplication_byspecies,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Boxplot_Duplication_byspecies fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Species, y = Duplication..*100, fill = Species)) +
@@ -268,7 +284,11 @@ ggplot(RNA_flagstat, aes(x = Species, y = Duplication..*100, fill = Species)) +
   )
 
 ```
+<<<<<<< HEAD
 ```{r Plotting_Boxplot_Duplication_bytimepoint,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Boxplot_Duplication_bytimepoint fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication..*100, fill = Species)) +
@@ -304,7 +324,11 @@ ggplot(RNA_flagstat, aes(x = row_names, y = X..Mapped)) +
   )
 ```
 
+<<<<<<< HEAD
 ```{r Plotting_Boxplot_Mapping_bytimepoint,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Boxplot_Mapping_bytimepoint fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = X..Mapped, fill = Species)) +
@@ -340,7 +364,11 @@ ggplot(RNA_flagstat, aes(x = row_names, y = Properly.Paired.Mapped)) +
     y = "Percent Properly Paired"
   )
 ```
+<<<<<<< HEAD
 ```{r Plotting_Barplot_ProperPairing_bytimepoint,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Barplot_ProperPairing_bytimepoint fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly.Paired.Mapped, fill = Species)) +
@@ -363,7 +391,11 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly.Paired.Mapped, fill = Speci
   )
 
 ```
+<<<<<<< HEAD
 ```{r Plotting_Barplot_FinalCount_bytimepoint,fig.height=8,fig.width=12}
+=======
+```{r Plotting_Barplot_FinalCount_bytimepoint fig.height=8,fig.width=12}
+>>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Read.Pairs, fill = Species)) +

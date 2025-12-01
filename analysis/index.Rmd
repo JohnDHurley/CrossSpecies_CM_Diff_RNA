@@ -10,7 +10,7 @@ editor_options:
 
 Welcome to my research website.
 
-<https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_countsmatrix_QC.html>
+[Countamatrix and QC](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_countsmatrix_QC.html)
 
-<https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_cormotif.html>
+[CorMotif](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_cormotif.html)
 

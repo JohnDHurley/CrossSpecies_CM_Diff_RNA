@@ -114,7 +114,7 @@ rownames(RNA_flagstat)<-row_names
 ```
 
 
-```{r Plotting_Bargraph,fig.height=8,fig.width=14}
+```{r Plotting_Bargraph_rawcounts,fig.height=8,fig.width=14}
 ggplot(RNA_flagstat, aes(x = row_names, y = Total.Reads/2)) +
   geom_col() +
   geom_hline(yintercept = 10000000, linetype="dotted",color="red",size=1) +
@@ -126,7 +126,7 @@ ggplot(RNA_flagstat, aes(x = row_names, y = Total.Reads/2)) +
     y = "Total Read Pairs"
   )
 ```
-```{r Plotting_Bargraph,fig.height=5,fig.width=5}
+```{r Plotting_boxplot_rawcounts,fig.height=5,fig.width=5}
 ggplot(RNA_flagstat, aes(x="All",y = Total.Reads/2)) +
   geom_boxplot(fill = "lightblue") +
 geom_jitter(aes(fill = Species),
@@ -147,7 +147,7 @@ geom_jitter(aes(fill = Species),
   )
 ```
 
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_rawcounts_byspecies fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Species, y = Total.Reads/2, fill = Species)) +
@@ -169,7 +169,7 @@ ggplot(RNA_flagstat, aes(x = Species, y = Total.Reads/2, fill = Species)) +
   )
 
 ```
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_rawcounts_bytimepoint fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Total.Reads/2, fill = Species)) +
@@ -191,7 +191,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Total.Reads/2, fill = Species)) +
   )
 
 ```
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_rawcounts_bycellline fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Cell.Line, y = Total.Reads/2, fill = Cell.Line)) +
@@ -213,7 +213,7 @@ ggplot(RNA_flagstat, aes(x = Cell.Line, y = Total.Reads/2, fill = Cell.Line)) +
   )
 
 ```
-```{r Plotting_Bargraph,fig.height=8,fig.width=14}
+```{r Plotting_Barplot_Duplication,fig.height=8,fig.width=14}
 ggplot(RNA_flagstat, aes(x = row_names, y = Duplication..*100))+
   geom_col() +
   ylim(0,100)
@@ -225,7 +225,7 @@ ggplot(RNA_flagstat, aes(x = row_names, y = Duplication..*100))+
     y = "Total Read Pairs"
   )
 ```
-```{r Plotting_Bargraph,fig.height=5,fig.width=5}
+```{r Plotting_Boxplot_Duplication,fig.height=5,fig.width=5}
 ggplot(RNA_flagstat, aes(x="All",y = Duplication..*100)) +
   geom_boxplot(fill = "lightblue") +
 geom_jitter(aes(fill = Species),
@@ -245,7 +245,7 @@ geom_jitter(aes(fill = Species),
     x = ""
   )
 ```
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_Duplication_byspecies fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Species, y = Duplication..*100, fill = Species)) +
@@ -268,7 +268,7 @@ ggplot(RNA_flagstat, aes(x = Species, y = Duplication..*100, fill = Species)) +
   )
 
 ```
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_Duplication_bytimepoint fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication..*100, fill = Species)) +
@@ -292,7 +292,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication..*100, fill = Species)) 
 
 ```
 
-```{r Plotting_Bargraph,fig.height=8,fig.width=14}
+```{r Plotting_Barplot_Mapping,fig.height=8,fig.width=14}
 ggplot(RNA_flagstat, aes(x = row_names, y = X..Mapped)) +
   geom_col() +
   theme_bw() +
@@ -304,7 +304,7 @@ ggplot(RNA_flagstat, aes(x = row_names, y = X..Mapped)) +
   )
 ```
 
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_Mapping_bytimepoint fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = X..Mapped, fill = Species)) +
@@ -328,7 +328,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = X..Mapped, fill = Species)) +
 
 ```
 
-```{r Plotting_Bargraph,fig.height=8,fig.width=14}
+```{r Plotting_Barplot_ProperPairing,fig.height=8,fig.width=14}
 ggplot(RNA_flagstat, aes(x = row_names, y = Properly.Paired.Mapped)) +
   geom_col() +
   theme_bw() +
@@ -340,7 +340,7 @@ ggplot(RNA_flagstat, aes(x = row_names, y = Properly.Paired.Mapped)) +
     y = "Percent Properly Paired"
   )
 ```
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Barplot_ProperPairing_bytimepoint fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly.Paired.Mapped, fill = Species)) +
@@ -363,7 +363,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly.Paired.Mapped, fill = Speci
   )
 
 ```
-```{r Subsetting data by species fig.height=8,fig.width=12}
+```{r Plotting_Barplot_FinalCount_bytimepoint fig.height=8,fig.width=12}
 library(ggplot2)
 
 ggplot(RNA_flagstat, aes(x = Timepoint, y = Read.Pairs, fill = Species)) +

@@ -19,103 +19,14 @@ library("Cormotif")
 ```{r RNA-Seq_MultiQC_Metris}
 RNA_flagstat <- read.delim("~/diff_timeline_tes/RNA/RNA_flagstat.txt", row.names=1)
 #Rename column Names to More Useful Info
-row_names<- c("H28126_D0",
-              "H28126_D2",
-              "H28126_D4",
-              "H28126_D5",
-              "H28126_D15",
-              "H28126_D30",
-              "H17_D0",
-              "H17_D2",
-              "H17_D4",
-              "H17_D5",
-              "H17_D15",
-              "H17_D30",
-              "H78_D0",
-              "H78_D2",
-              "H78_D4",
-              "H78_D5",
-              "H78_D15",
-              "H78_D30",
-              "H20682_D0",
-              "H20682_D2",
-              "H20682_D4",
-              "H20682_D5",
-              "H20682_D15",
-              "H20682_D30",
-              "H22422_D0",
-              "H22422_D2",
-              "H22422_D4",
-              "H22422_D5",
-              "H22422_D15",
-              "H22422_D30",
-              "H21792_D0",
-              "H21792_D2",
-              "H21792_D4",
-              "H21792_D5",
-              "H21792_D15",
-              "H21792_D30",
-              "H24280_D0",
-              "H24280_D2",
-              "H24280_D4",
-              "H24280_D5",
-              "H24280_D15",
-              "H24280_D30",
-              "H20682R_D0",
-              "H20682R_D2",
-              "H20682R_D5",
-              "H20682R_D30",
-              "C3649_D0",
-              "C3649_D2",
-              "C3649_D4",
-              "C3649_D5",
-              "C3649_D15",
-              "C3649_D30",
-              "C4955_D0",
-              "C4955_D2",
-              "C4955_D4",
-              "C4955_D5",
-              "C4955_D15",
-              "C4955_D30",
-              "C3651_D0",
-              "C3651_D2",
-              "C3651_D4",
-              "C3651_D5",
-              "C3651_D15",
-              "C3651_D30",
-              "C40210_D0",
-              "C40210_D2",
-              "C40210_D4",
-              "C40210_D5",
-              "C40210_D15",
-              "C40210_D30",
-              "C8861_D0",
-              "C8861_D2",
-              "C8861_D4",
-              "C8861_D5",
-              "C8861_D15",
-              "C8861_D30",
-              "C40280_D0",
-              "C40280_D2",
-              "C40280_D4",
-              "C40280_D5",
-              "C40280_D15",
-              "C40280_D30",
-              "C3647_D0",
-              "C3647_D2",
-              "C3647_D4",
-              "C3647_D5",
-              "C3647_D15",
-              "C3647_D30"
-)
-rownames(RNA_flagstat)<-row_names
 
+RNA_flagstat$Timepoint <- factor(RNA_flagstat$Timepoint, levels=c("Day0","Day2","Day4","Day5","Day15","Day"))
 
 ```
 
 
 ```{r Plotting_Bargraph_rawcounts,fig.height=8,fig.width=14}
-ggplot(RNA_flagstat, aes(x = row_names, y = Total.Reads/2)) +
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Total_Reads/2)) +
   geom_col() +
   geom_hline(yintercept = 10000000, linetype="dotted",color="red",size=1) +
   theme_bw() +
@@ -127,7 +38,7 @@ ggplot(RNA_flagstat, aes(x = row_names, y = Total.Reads/2)) +
   )
 ```
 ```{r Plotting_boxplot_rawcounts,fig.height=5,fig.width=5}
-ggplot(RNA_flagstat, aes(x="All",y = Total.Reads/2)) +
+ggplot(RNA_flagstat, aes(x="All",y = Total_Reads/2)) +
   geom_boxplot(fill = "lightblue") +
 geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -147,14 +58,9 @@ geom_jitter(aes(fill = Species),
   )
 ```
 
-<<<<<<< HEAD
-```{r Plotting_Boxplot_rawcounts_byspecies,fig.height=8,fig.width=12}
-=======
 ```{r Plotting_Boxplot_rawcounts_byspecies fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Species, y = Total.Reads/2, fill = Species)) +
+ggplot(RNA_flagstat, aes(x = Species, y = Total_Reads/2, fill = Species)) +
   geom_boxplot() +
   geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -173,14 +79,12 @@ ggplot(RNA_flagstat, aes(x = Species, y = Total.Reads/2, fill = Species)) +
   )
 
 ```
-<<<<<<< HEAD
-```{r Plotting_Boxplot_rawcounts_bytimepoint,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Boxplot_rawcounts_bytimepoint fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Timepoint, y = Total.Reads/2, fill = Species)) +
+```{r Plotting_Boxplot_rawcounts_bytimepoint fig.height=8,fig.width=12}
+
+Timepoint_Order <- c("Day0","Day2","Day4","Day15","Day30")
+
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Total_Reads/2, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -199,16 +103,12 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Total.Reads/2, fill = Species)) +
   )
 
 ```
-<<<<<<< HEAD
-```{r Plotting_Boxplot_rawcounts_bycellline,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Boxplot_rawcounts_bycellline fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Cell.Line, y = Total.Reads/2, fill = Cell.Line)) +
+```{r Plotting_Boxplot_rawcounts_bycellline,fig.height=8,fig.width=12}
+
+ggplot(RNA_flagstat, aes(x = CellLine, y = Total_Reads/2, fill = CellLine)) +
   geom_boxplot() +
- geom_jitter(aes(fill = Cell.Line),
+ geom_jitter(aes(fill = CellLine),
               position = position_jitterdodge(jitter.width = 0.2,
                                               dodge.width = 0.8),
               size = 3,
@@ -226,19 +126,22 @@ ggplot(RNA_flagstat, aes(x = Cell.Line, y = Total.Reads/2, fill = Cell.Line)) +
 
 ```
 ```{r Plotting_Barplot_Duplication,fig.height=8,fig.width=14}
-ggplot(RNA_flagstat, aes(x = row_names, y = Duplication..*100))+
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Duplication_Percent*100)) +
   geom_col() +
-  ylim(0,100)
+  ylim(0,100) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4, size = 9)) +
   labs(
-    title = "Total Read Pairs",
+    title = "Duplication Percentage",
     x = "Sample",
-    y = "Total Read Pairs"
+    y = "Duplication Percent"
   )
+
+  
 ```
-```{r Plotting_Boxplot_Duplication,fig.height=5,fig.width=5}
-ggplot(RNA_flagstat, aes(x="All",y = Duplication..*100)) +
+
+```{r Plotting_Boxplot_Duplication,fig.height=5,fig.width=3}
+ggplot(RNA_flagstat, aes(x="All",y = Duplication_Percent*100)) +
   geom_boxplot(fill = "lightblue") +
 geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -249,22 +152,19 @@ geom_jitter(aes(fill = Species),
               colour = "black",
               stroke = 0.7
   ) +
-  scale_y_continuous(limits = c(0, 100))
+  scale_y_continuous(limits = c(0, 100)) +
   theme_bw() +
   labs(
-    title = "Duplication Across All Samples",
+    title = "Duplication Across 
+       All Samples",
     y = "Percent Duplicaiton",
     x = ""
   )
 ```
-<<<<<<< HEAD
-```{r Plotting_Boxplot_Duplication_byspecies,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Boxplot_Duplication_byspecies fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Species, y = Duplication..*100, fill = Species)) +
+```{r Plotting_Boxplot_Duplication_byspecies,fig.height=8,fig.width=4}
+
+ggplot(RNA_flagstat, aes(x = Species, y = Duplication_Percent*100, fill = Species)) +
   geom_boxplot() +
   geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -275,23 +175,20 @@ ggplot(RNA_flagstat, aes(x = Species, y = Duplication..*100, fill = Species)) +
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-  scale_y_continuous(limits = c(0, 100))
+  scale_y_continuous(limits = c(0, 100)) +
   theme_bw() +
   labs(
-    title = "Total Read Pairs by Species (H vs C)",
+    title = "         Duplication Levels
+        by Species (H vs C)",
     x = "Species",
-    y = "Total Read Pairs"
+    y = "Duplication Percent"
   )
 
 ```
-<<<<<<< HEAD
-```{r Plotting_Boxplot_Duplication_bytimepoint,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Boxplot_Duplication_bytimepoint fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication..*100, fill = Species)) +
+```{r Plotting_Boxplot_Duplication_bytimepoint,fig.height=4,fig.width=6}
+
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication_Percent*100, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -302,7 +199,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication..*100, fill = Species)) 
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-   scale_y_continuous(limits = c(0, 100))+
+   scale_y_continuous(limits = c(0, 100) )+
   theme_bw() +
   labs(
     title = "Duplication by Species (H vs C)",
@@ -312,8 +209,8 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication..*100, fill = Species)) 
 
 ```
 
-```{r Plotting_Barplot_Mapping,fig.height=8,fig.width=14}
-ggplot(RNA_flagstat, aes(x = row_names, y = X..Mapped)) +
+```{r Plotting_Barplot_Mapping,fig.height=5,fig.width=10}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Mapped_Percent)) +
   geom_col() +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
@@ -324,14 +221,10 @@ ggplot(RNA_flagstat, aes(x = row_names, y = X..Mapped)) +
   )
 ```
 
-<<<<<<< HEAD
-```{r Plotting_Boxplot_Mapping_bytimepoint,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Boxplot_Mapping_bytimepoint fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Timepoint, y = X..Mapped, fill = Species)) +
+```{r Plotting_Boxplot_Mapping_bytimepoint,fig.height=4,fig.width=6}
+
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Mapped_Percent, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -342,7 +235,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = X..Mapped, fill = Species)) +
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-   scale_y_continuous(limits = c(0, 100))+
+   scale_y_continuous(limits = c(0, 100)) +
   theme_bw() +
   labs(
     title = "Mapping by Species (H vs C)",
@@ -352,11 +245,11 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = X..Mapped, fill = Species)) +
 
 ```
 
-```{r Plotting_Barplot_ProperPairing,fig.height=8,fig.width=14}
-ggplot(RNA_flagstat, aes(x = row_names, y = Properly.Paired.Mapped)) +
+```{r Plotting_Barplot_ProperPairing,fig.height=5,fig.width=10}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Properly_Paired_Percent)) +
   geom_col() +
   theme_bw() +
-  scale_y_continuous(limits = c(0, 100))+
+  scale_y_continuous(limits = c(0, 100)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
   labs(
     title = "Proper Pairing of Mapped of Reads",
@@ -364,14 +257,9 @@ ggplot(RNA_flagstat, aes(x = row_names, y = Properly.Paired.Mapped)) +
     y = "Percent Properly Paired"
   )
 ```
-<<<<<<< HEAD
-```{r Plotting_Barplot_ProperPairing_bytimepoint,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Barplot_ProperPairing_bytimepoint fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly.Paired.Mapped, fill = Species)) +
+```{r Plotting_Boxplot_ProperPairing_bytimepoint,fig.height=4,fig.width=6}
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly_Paired_Percent, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -382,23 +270,21 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly.Paired.Mapped, fill = Speci
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-   scale_y_continuous(limits = c(0, 100))+
+   scale_y_continuous(limits = c(0, 100)) +
   theme_bw() +
   labs(
-    title = "Properly Pairing Mapped Reads",
+    title = "Properly Paired by Species (H vs C)",
     x = "Timepoint",
     y = "Percent Properly Paired"
   )
 
-```
-<<<<<<< HEAD
-```{r Plotting_Barplot_FinalCount_bytimepoint,fig.height=8,fig.width=12}
-=======
-```{r Plotting_Barplot_FinalCount_bytimepoint fig.height=8,fig.width=12}
->>>>>>> da5ca35b22febe8b1241973bb9aec1a57eda53dc
-library(ggplot2)
 
-ggplot(RNA_flagstat, aes(x = Timepoint, y = Read.Pairs, fill = Species)) +
+```
+
+```{r Plotting_Barplot_FinalCount_bytimepoint,fig.height=4,fig.width=6}
+
+
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Final_Read_Pairs, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,

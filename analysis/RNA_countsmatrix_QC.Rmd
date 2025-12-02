@@ -58,7 +58,7 @@ geom_jitter(aes(fill = Species),
   )
 ```
 
-```{r Plotting_Boxplot_rawcounts_byspecies fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_rawcounts_byspecies,fig.height=8,fig.width=12}
 
 ggplot(RNA_flagstat, aes(x = Species, y = Total_Reads/2, fill = Species)) +
   geom_boxplot() +
@@ -80,7 +80,7 @@ ggplot(RNA_flagstat, aes(x = Species, y = Total_Reads/2, fill = Species)) +
 
 ```
 
-```{r Plotting_Boxplot_rawcounts_bytimepoint fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_rawcounts_bytimepoint,fig.height=8,fig.width=12}
 
 Timepoint_Order <- c("Day0","Day2","Day4","Day15","Day30")
 

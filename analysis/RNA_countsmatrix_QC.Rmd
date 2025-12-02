@@ -49,7 +49,7 @@ geom_jitter(aes(fill = Species),
               colour = "black",
               stroke = 0.7
   ) +
-  scale_y_continuous(limits = c(0, 30000000))
+  scale_y_continuous(limits = c(0, 30000000)) +
   theme_bw() +
   labs(
     title = "Total Read Pairs Across All Samples",

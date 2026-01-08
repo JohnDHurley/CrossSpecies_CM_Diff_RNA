@@ -246,21 +246,21 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Mapped_Percent, fill = Species)) +
 
 ```
 
-```{r Plotting_Barplot_ProperPairing,fig.height=5,fig.width=10}
-ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Properly_Paired_Percent)) +
+```{r Plotting_Barplot_Mapped,fig.height=5,fig.width=10}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Mapped_Reads/2)) +
   geom_col() +
+  geom_hline(yintercept = 20000000, linetype="dotted",color="red",size=1) +
   theme_bw() +
-  scale_y_continuous(limits = c(0, 100)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
   labs(
-    title = "Proper Pairing of Mapped of Reads",
+    title = "Mapped Read Pairs",
     x = "Sample",
-    y = "Percent Properly Paired"
+    y = "Mapped Read Pairs"
   )
 ```
 
-```{r Plotting_Boxplot_ProperPairing_bytimepoint,fig.height=4,fig.width=6}
-ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly_Paired_Percent, fill = Species)) +
+```{r Plotting_Boxplot_MappedReads_bytimepoint,fig.height=4,fig.width=6}
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Mapped_Reads/2, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -271,21 +271,21 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly_Paired_Percent, fill = Spec
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-   scale_y_continuous(limits = c(0, 100)) +
+   scale_y_continuous(limits = c(0, 45000000)) +
   theme_bw() +
   labs(
-    title = "Properly Paired by Species (H vs C)",
+    title = "Mapped Read Pairs by Species (H vs C)",
     x = "Timepoint",
-    y = "Percent Properly Paired"
+    y = "Mapped Read Pairs"
   )
 
 
 ```
 
-```{r Plotting_Barplot_FinalCount_bytimepoint,fig.height=4,fig.width=6}
+```{r Plotting_Barplot_ProperlyPaired_bytimepoint,fig.height=4,fig.width=6}
 
 
-ggplot(RNA_flagstat, aes(x = Timepoint, y = Final_Read_Pairs, fill = Species)) +
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly_Paried/2, fill = Species)) +
   geom_boxplot() +
  geom_jitter(aes(fill = Species),
               position = position_jitterdodge(jitter.width = 0.2,
@@ -296,12 +296,12 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Final_Read_Pairs, fill = Species)) +
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-   scale_y_continuous(limits = c(0, 50000000))+
+   scale_y_continuous(limits = c(0, 45000000))+
   theme_bw() +
   labs(
-    title = "Final Number of Read Pairs",
+    title = "Properly Paried Read Paires",
     x = "Timepoint",
-    y = "Count of Read Pairs"
+    y = "Properly Paired Read Pairs"
   )
 
 ```

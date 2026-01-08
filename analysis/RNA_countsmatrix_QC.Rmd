@@ -246,7 +246,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Mapped_Percent, fill = Species)) +
 
 ```
 
-```{r Plotting_Barplot_Mapped,fig.height=5,fig.width=10}
+```{r Plotting_Barplot_MappedReads,fig.height=5,fig.width=10}
 ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Mapped_Reads/2)) +
   geom_col() +
   geom_hline(yintercept = 20000000, linetype="dotted",color="red",size=1) +

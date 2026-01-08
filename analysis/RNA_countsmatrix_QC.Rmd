@@ -17,10 +17,10 @@ library("Cormotif")
 ```
 
 ```{r RNA-Seq_MultiQC_Metris}
-RNA_flagstat <- read.delim("~/diff_timeline_tes/RNA/RNA_flagstat.txt", row.names=1)
+RNA_flagstat <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/alignment/RNA_flagstat.txt", row.names=1)
 #Rename column Names to More Useful Info
 
-RNA_flagstat$Timepoint <- factor(RNA_flagstat$Timepoint, levels=c("Day0","Day2","Day4","Day5","Day15","Day"))
+RNA_flagstat$Timepoint <- factor(RNA_flagstat$Timepoint, levels=c("Day0","Day2","Day4","Day5","Day15","Day30"))
 
 ```
 
@@ -28,7 +28,7 @@ RNA_flagstat$Timepoint <- factor(RNA_flagstat$Timepoint, levels=c("Day0","Day2",
 ```{r Plotting_Bargraph_rawcounts,fig.height=8,fig.width=14}
 ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Total_Reads/2)) +
   geom_col() +
-  geom_hline(yintercept = 10000000, linetype="dotted",color="red",size=1) +
+  geom_hline(yintercept = 20000000, linetype="dotted",color="red",size=1) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
   labs(
@@ -49,7 +49,7 @@ geom_jitter(aes(fill = Species),
               colour = "black",
               stroke = 0.7
   ) +
-  scale_y_continuous(limits = c(0, 30000000)) +
+  scale_y_continuous(limits = c(0, 50000000)) +
   theme_bw() +
   labs(
     title = "Total Read Pairs Across All Samples",
@@ -80,7 +80,7 @@ ggplot(RNA_flagstat, aes(x = Species, y = Total_Reads/2, fill = Species)) +
 
 ```
 
-```{r Plotting_Boxplot_rawcounts_bytimepoint,fig.height=8,fig.width=12}
+```{r Plotting_Boxplot_rawcounts_bytimepoint,fig.height=4,fig.width=6}
 
 Timepoint_Order <- c("Day0","Day2","Day4","Day15","Day30")
 
@@ -95,6 +95,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Total_Reads/2, fill = Species)) +
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
+     scale_y_continuous(limits = c(0, 30000000))+
   theme_bw() +
   labs(
     title = "Total Read Pairs by Species (H vs C)",
@@ -295,7 +296,7 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Final_Read_Pairs, fill = Species)) +
               colour = "black",  # border/outline
               stroke = 0.7       # outline thickness
   ) +
-   scale_y_continuous(limits = c(0, 30000000))+
+   scale_y_continuous(limits = c(0, 50000000))+
   theme_bw() +
   labs(
     title = "Final Number of Read Pairs",
@@ -306,8 +307,8 @@ ggplot(RNA_flagstat, aes(x = Timepoint, y = Final_Read_Pairs, fill = Species)) +
 ```
 
 ```{r RNA_counts_table}
-chimp_RNA_pantro5_fc <- read.delim("~/diff_timeline_tes/RNA/featurecounts/c_samples_counts.txt", comment.char="#",row.names=1)
-human_RNA_hg38_fc <- read.delim("~/diff_timeline_tes/RNA/featurecounts/h_sample_counts.txt", comment.char="#",row.names=1)
+chimp_RNA_pantro5_fc <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/c_samples_counts.txt", comment.char="#",row.names=1)
+human_RNA_hg38_fc <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/h_samples_counts.txt", comment.char="#",row.names=1)
 human_df <- human_RNA_hg38_fc %>%
   tibble::rownames_to_column("gene")
 chimp_df <- chimp_RNA_pantro5_fc %>%

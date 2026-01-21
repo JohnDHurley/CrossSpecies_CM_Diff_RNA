@@ -1,0 +1,450 @@
+---
+title: "QC_Checks"
+output: html_document
+date: "2025-11-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Setting Up Enviroment
+
+```{r Setting_Up_Enviroment}
+
+####Library Loading####
+library("edgeR")
+library("ggplot2")
+library("tibble")
+library("dplyr")
+library("ggrepel")
+library("readr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("pheatmap")
+library("Cormotif")
+library("readxl")
+
+
+# ####Loadind R Objects####
+# RNA_flagstat <- readRDS("data/QC/MultiQC_RNASeq_stats.RDS")
+# RNA_Metadata <- readRDS("data/QC/RNA_Metadata.RDS")
+# Mapped_FragLength <- readRDS("data/QC/Mapped_FragLength.RDS")
+# Mapped_FragLength <- readRDS("data/QC/Mapped_FragLength.RDS")
+```
+
+
+```{r RNASeq_MultiQC_Data}
+RNA_flagstat <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/alignment/RNA_flagstat.txt", row.names=1)
+RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
+
+#Rename column Names to More Useful Info
+
+RNA_flagstat$Timepoint <- factor(RNA_flagstat$Timepoint, levels=c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+View(RNA_flagstat)
+#saveRDS(RNA_flagstat,"data/QC/MultiQC_RNASeq_stats.RDS")
+$saveRDS(RNA_Metadata, "data/QC/RNA_Metadata.RDS")
+
+```
+
+```{r RNASeq_MultiQC_Bar_PEReads,fig.height=8,fig.width=14}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Total_Reads)) +
+  geom_col() +
+geom_hline(
+    aes(yintercept = 44000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
+  labs(
+    title = "                                                                            RNA-Seq Unfiltered Paired End Reads",
+    x = "Sample",
+    y = "Total Paired End Reads (R1+R2)"
+  )
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_All,fig.height=5,fig.width=5}
+ggplot(RNA_flagstat, aes(x="All",y = Total_Reads)) +
+  geom_boxplot(fill = "lightblue") +
+geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.6),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,
+              colour = "black",
+              stroke = 0.7
+  ) +
+  geom_hline(
+    aes(yintercept = 44000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  scale_y_continuous(limits = c(0, 100000000)) +
+  theme_bw() +
+  labs(
+    title = "     RNA-Seq Unfiltered
+      Paired End Reads",
+    y = "Total Paired End Reads (R1+R2)",
+    x = ""
+  )
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_BySp,fig.height=8,fig.width=12}
+ggplot(RNA_flagstat, aes(x = Species, y = Total_Reads, fill = Species)) +
+  geom_boxplot() +
+  geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+  geom_hline(
+    aes(yintercept = 44000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  theme_bw() +
+  labs(
+    title = "                                       RNA-Seq Unfiltered Paired End Reads by Species (H vs C)",
+    x = "Species",
+    y = "Total Paired End Reads (R1+R2)"
+  )
+
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_ByTP,fig.height=4,fig.width=6}
+Timepoint_Order <- c("Day0","Day2","Day4","Day15","Day30")
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Total_Reads, fill = Species)) +
+  geom_boxplot() +
+  geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+  geom_hline(
+    aes(yintercept = 44000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  scale_y_continuous(limits = c(0, 100000000)) +
+  theme_bw() +
+  labs(
+    title = "RNA-Seq Unfiltered Paired End Reads 
+                   by Time Point",
+    x = "Time Point",
+    y = "Total Paired End Reads (R1+R2)"
+  )
+
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_ByInd,fig.height=8,fig.width=12}
+ggplot(RNA_flagstat, aes(x = Individual, y = Total_Reads, fill = Individual)) +
+  geom_boxplot() +
+ geom_jitter(aes(fill = Individual),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+    geom_hline(
+    aes(yintercept = 44000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  scale_y_continuous(limits = c(0, 100000000)) +
+  theme_bw() +
+  labs(
+    title = "                                             RNA-Seq Unfiltered Paired End Reads by Individual",
+    x = "Individual",
+    y = "Total Paired End Reads (R1+R2)"
+  )
+
+```
+
+```{r RNASeq_MultiQC_Bar_PEReads_Dup_All,fig.height=8,fig.width=14}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Duplication_Percent*100)) +
+  geom_col() +
+  ylim(0,100) +
+  theme_bw() +
+  
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4, size = 9)) +
+  labs(
+    title = "                                                                                                           RNA-Seq Duplication
+                                                                                                   Unfiltered Paired End Reads",
+    x = "Sample",
+    y = "Duplication (%)"
+  )
+
+  
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_Dup_All,fig.height=5,fig.width=4}
+ggplot(RNA_flagstat, aes(x="All",y = Duplication_Percent*100)) +
+  geom_boxplot(fill = "lightblue") +
+geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.6),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,
+              colour = "black",
+              stroke = 0.7
+  ) +
+  scale_y_continuous(limits = c(0, 100)) +
+  theme_bw() +
+  labs(
+    title = 
+      "        RNA-Seq Duplication 
+  Unfiltered Paired End Reads",
+    y = "Duplicaiton (%)",
+    x = ""
+  )
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_Dup_BySp,fig.height=8,fig.width=4}
+ggplot(RNA_flagstat, aes(x = Species, y = Duplication_Percent*100, fill = Species)) +
+  geom_boxplot() +
+  geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+  scale_y_continuous(limits = c(0, 100)) +
+  theme_bw() +
+  labs(
+    title = 
+      "        RNA-Seq Duplication 
+  Unfiltered Paired End Reads
+                by Species",
+    x = "Species",
+    y = "Duplication (%)"
+  )
+
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_Dup_ByTP,fig.height=4,fig.width=6}
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Duplication_Percent*100, fill = Species)) +
+  geom_boxplot() +
+ geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+   scale_y_continuous(limits = c(0, 100) )+
+  theme_bw() +
+  labs(
+    title = 
+      "                            RNA-Seq Duplication 
+           Unfiltered Paired End Reads by Time Point",
+    y = "Duplication (%)",
+    x = "Time Point"
+  )
+
+```
+
+```{r RNASeq_MultiQC_Bar_PEReads_MapPer_All,fig.height=5,fig.width=10}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Mapped_Percent)) +
+  geom_col() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
+  labs(
+    title = "                                                        RNA-Seq Percent Mapping of Paired End Reads",
+    x = "Sample",
+    y = "Percent (%)"
+  )
+```
+
+```{r RNASeq_MultiQC_Box_PEReads_MapPer_ByTP,fig.height=4,fig.width=6}
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Mapped_Percent, fill = Species)) +
+  geom_boxplot() +
+ geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+   scale_y_continuous(limits = c(0, 100)) +
+  theme_bw() +
+  labs(
+    title = "      RNA-Seq Percent Mapping of Paired End Reads 
+                               by Time Point",
+    x = "Time Point",
+    y = "Percent Mapping"
+  )
+
+```
+
+```{r RNASeq_MultiQC_Bar_MapPEReads_All,fig.height=5,fig.width=12}
+ggplot(RNA_flagstat, aes(x = row.names(RNA_flagstat), y = Mapped_Reads)) +
+  geom_col() +
+  geom_hline(
+    aes(yintercept = 40000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.4,size=9)) +
+  labs(
+    title = "                                                        RNA-Seq Mapped Paired End Reads",
+    x = "Sample",
+    y = "Paired End Reads (R1 +/- R2)"
+  )
+```
+
+```{r RNASeq_MultiQC_Box_MapPEReads_ByTP,fig.height=4,fig.width=6}
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Mapped_Reads, fill = Species)) +
+  geom_boxplot() +
+  geom_jitter(
+    aes(fill = Species),
+    position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.8),
+    size = 3,
+    alpha = 0.9,
+    shape = 21,
+    colour = "black",
+    stroke = 0.7
+  ) +
+  geom_hline(
+    aes(yintercept = 40000000, linetype = "~20M Usable Fragments"),
+    color = "red",
+    linewidth = 1
+  ) +
+  scale_linetype_manual(
+    name = NULL,
+    values = c("~20M Usable Fragments" = "dotted")
+  ) +
+  scale_y_continuous(limits = c(0, 90000000)) +
+  theme_bw() +
+  labs(
+    title = "RNA-Seq Mapped Paired End Reads 
+                  by Time Point",
+    x = "Time Point",
+    y = "Paired End Reads (R1 +/- R2)"
+  )
+
+
+
+```
+
+```{r  RNASeq_MultiQC_Box_PropPairs_ByTP,fig.height=4,fig.width=6}
+ggplot(RNA_flagstat, aes(x = Timepoint, y = Properly_Paried/2, fill = Species)) +
+  geom_boxplot() +
+ geom_jitter(aes(fill = Species),
+              position = position_jitterdodge(jitter.width = 0.2,
+                                              dodge.width = 0.8),
+              size = 3,
+              alpha = 0.9,
+              shape = 21,        # filled circle with border
+              colour = "black",  # border/outline
+              stroke = 0.7       # outline thickness
+  ) +
+   scale_y_continuous(limits = c(0, 45000000))+
+  theme_bw() +
+  labs(
+    title = "             RNA-Seq Properly Paired Fragments",
+    x = "Time Point",
+    y = "Fragments"
+  )
+
+```
+
+```{r  RNASeq_MultiQC_Data_Mapped_Length}
+
+# Mapped_FragLength_chimp <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/alignment/Mapped_FragLength_chimp.txt")
+# Mapped_FragLength_human <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/alignment/Mapped_FragLength_human.txt")
+# Column_Names <- c("Sample","FragLength")
+# colnames(Mapped_FragLength_chimp) <- Column_Names
+# colnames(Mapped_FragLength_human) <- Column_Names
+# Mapped_FragLength <- rbind(Mapped_FragLength_human, Mapped_FragLength_chimp)
+# saveRDS(Mapped_FragLength,"data/QC/Mapped_FragLength.RDS")
+```
+
+```{r RNASeq_MultiQC_Box_Mapped_Length. fig.height=8,fig.width=14}
+# ggplot(Mapped_FragLength,
+#        aes(x = factor(Sample), 
+#            y = FragLength)) +
+#   geom_boxplot() +
+#   labs(
+#     x = "Sample",
+#     y = "Fragment Length",
+#     title = "Mapped Fragment Length by sample"
+#   ) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# 
+```
+
+
+```{r RNASeq_MultiQC_Data_ImPropPaired_Mapped_Length}
+# NotProperlyPaired_FragLength_human <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/alignment/NotProperlyPaired_FragLength_human.txt")
+# NotProperlyPaired_FragLength_chimp <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/alignment/NotProperlyPaired_FragLength_chimp.txt")
+# rm(NotProperlyPaired_FragLength)
+# Column_Names <- c("Sample","FragLength")
+# colnames(NotProperlyPaired_FragLength_chimp) <- Column_Names
+# colnames(NotProperlyPaired_FragLength_human) <- Column_Names
+# 
+# NotProperlyPaired_FragLength <- rbind(NotProperlyPaired_FragLength_human,NotProperlyPaired_FragLength_chimp)
+# rm(NotProperlyPaired_FragLength_human)
+# saveRDS(NotProperlyPaired_FragLength,"data/QC/NotProperlyPaired_FragLength.RDS")
+```
+
+```{r RNASeq_MultiQC_Box_ImPropPaired_Mapped_Length. fig.height=8,fig.width=14}
+# ggplot(NotProperlyPaired_FragLength_human,
+#        aes(x = factor(Sample), 
+#            y = FragLength)) +
+#   geom_boxplot() +
+#   labs(
+#     x = "Sample",
+#     y = "Fragment Length",
+#     title = "Not Properly Paired Fragment Length by sample Humam"
+#   ) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```

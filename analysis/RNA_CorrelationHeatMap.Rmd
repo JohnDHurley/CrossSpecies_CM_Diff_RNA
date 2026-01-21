@@ -1,0 +1,342 @@
+---
+title: "RNA_CorrelationHeatMap"
+output: html_document
+date: "2026-01-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Setting_Up_Enviroment}
+
+####Library Loading####
+library("edgeR")
+library("ggplot2")
+library("tibble")
+library("dplyr")
+library("ggrepel")
+library("readr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("pheatmap")
+library("Cormotif")
+library("tidyverse")
+
+
+####Loadind R Objects####
+RNA_fc_df <- readRDS("data/QC/RNA_fc_df.RDS")
+RNA_fc <- readRDS("data/QC/RNA_fc_Ensemble.RDS")
+RNA_log2cpm <- readRDS("data/QC/RNA_log2cpm_Ensemble.RDS")
+Filt_RMG0_RNA_fc <- readRDS("data/QC/Filt_RMG0_RNA_fc_Ensemble.RDS")
+Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_Ensemble.RDS")
+RNA_Metadata <- readRDS("data/QC/RNA_Metadata.RDS")
+cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+Cor_metadata <- readRDS("data/QC/Cor_metadata.RDS")
+ann_colors <- readRDS("data/QC/ann_colors.RDS")
+RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_No4.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4_Ensemble.RDS")
+Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4_Ensemble.RDS")
+Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
+cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
+```
+
+```{r RNASeq_FeatureCounts_Data, eval = FALSE}
+chimp_RNA_pantro5_fc <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/c_samples_counts.txt", comment.char="#",row.names=1)
+human_RNA_hg38_fc <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/h_samples_counts.txt", comment.char="#",row.names=1)
+human_df <- human_RNA_hg38_fc %>%
+  tibble::rownames_to_column("gene")
+chimp_df <- chimp_RNA_pantro5_fc %>%
+  tibble::rownames_to_column("gene")
+RNA_joined_fc <- left_join(human_df, chimp_df, by = "gene")
+
+
+#To keep only OrthoGenes and sample columns
+RNA_fc <- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c("gene","Chr.x","Start.x","End.x","Strand.x","Length.x","Geneid.x","Chr.y","Start.y","End.y","Strand.y","Length.y","Geneid.y"))]
+# 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
+rownames(RNA_fc) <- RNA_joined_fc$gene
+
+#Rename column Names to More Useful Info
+col_names<- c("H28126_D0",
+              "H28126_D2",
+              "H28126_D4",
+              "H28126_D5",
+              "H28126_D15",
+              "H28126_D30",
+              "H17_D0",
+              "H17_D2",
+              "H17_D4",
+              "H17_D5",
+              "H17_D15",
+              "H17_D30",
+              "H78_D0",
+              "H78_D2",
+              "H78_D4",
+              "H78_D5",
+              "H78_D15",
+              "H78_D30",
+              "H20682_D0",
+              "H20682_D2",
+              "H20682_D4",
+              "H20682_D5",
+              "H20682_D15",
+              "H20682_D30",
+              "H22422_D0",
+              "H22422_D2",
+              "H22422_D4",
+              "H22422_D5",
+              "H22422_D15",
+              "H22422_D30",
+              "H21792_D0",
+              "H21792_D2",
+              "H21792_D4",
+              "H21792_D5",
+              "H21792_D15",
+              "H21792_D30",
+              "H24280_D0",
+              "H24280_D2",
+              "H24280_D4",
+              "H24280_D5",
+              "H24280_D15",
+              "H24280_D30",
+              "H20682R_D0",
+              "H20682R_D2",
+              "H20682R_D5",
+              "H20682R_D30",
+              "C3649_D0",
+              "C3649_D2",
+              "C3649_D4",
+              "C3649_D5",
+              "C3649_D15",
+              "C3649_D30",
+              "C4955_D0",
+              "C4955_D2",
+              "C4955_D4",
+              "C4955_D5",
+              "C4955_D15",
+              "C4955_D30",
+              "C3651_D0",
+              "C3651_D2",
+              "C3651_D4",
+              "C3651_D5",
+              "C3651_D15",
+              "C3651_D30",
+              "C40210_D0",
+              "C40210_D2",
+              "C40210_D4",
+              "C40210_D5",
+              "C40210_D15",
+              "C40210_D30",
+              "C8861_D0",
+              "C8861_D2",
+              "C8861_D4",
+              "C8861_D5",
+              "C8861_D15",
+              "C8861_D30",
+              "C40280_D0",
+              "C40280_D2",
+              "C40280_D4",
+              "C40280_D5",
+              "C40280_D15",
+              "C40280_D30",
+              "C3647_D0",
+              "C3647_D2",
+              "C3647_D4",
+              "C3647_D5",
+              "C3647_D15",
+              "C3647_D30"
+)
+
+dim(RNA_fc)
+# saveRDS(RNA_fc,"data/QC/RNA_fc_Ensemble.RDS")
+sum(duplicated(rownames(RNA_fc)))
+ensembl_ids_unfilt <- rownames(RNA_fc)
+entrez_ids_unfilt <- mapIds(org.Hs.eg.db,
+                            keys = ensembl_ids_unfilt,
+                            column = "ENTREZID",
+                            keytype = "ENSEMBL",
+                            multiVals = "first")
+symbol_ids_unfilt <- mapIds(org.Hs.eg.db,
+                            keys = ensembl_ids_unfilt,
+                            column = "SYMBOL",
+                            keytype = "ENSEMBL",
+                            multiVals = "first")
+
+RNA_fc_df <- as.data.frame(RNA_fc)
+RNA_fc_df <- RNA_fc_df %>%
+  rownames_to_column(var = "Ensemble") %>%
+  dplyr::mutate(
+    Entrez_ID = entrez_ids_unfilt,
+    Symbol    = symbol_ids_unfilt
+  ) %>%
+  dplyr::select(
+    Ensemble,        # 1st column
+    Entrez_ID,       # 2nd column
+    Symbol,          # 3rd column
+    everything()     # rest unchanged
+  )
+
+# saveRDS(RNA_fc_df,"data/QC/RNA_fc_df.RDS")
+
+```
+
+
+```{r RNASeq_FeatureCounts_Box_Unfiltered}
+#####Unfiltered####
+
+RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
+print(hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =4 ))
+
+boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample
+          (unfiltered)", xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_names),  # positions (one per sample)
+     labels = col_names,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.3)        # shrink label size
+# saveRDS(RNA_log2cpm,"data/QC/RNA_log2cpm_Ensemble.RDS")
+```
+
+
+
+```{r RNASeq_FeatureCounts_RMG0}
+#####RowMu>0####
+row_means <- rowMeans(RNA_log2cpm)
+Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
+Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
+
+hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+# saveRDS(Filt_RMG0_RNA_fc,"data/QC/Filt_RMG0_RNA_fc_Ensemble.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/Filt_RMG0_RNA_log2cpm_Ensemble.RDS")
+```
+
+```{r RNASeq_FeatureCounts_Box_RMG0}
+boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_names),  # positions (one per sample)
+     labels = col_names,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.3)        # shrink label size
+
+```
+
+```{r RNASeq_FeatureCounts_Cor_RMG0}
+######Cor_HeatMap####
+cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "spearman")
+individual <- RNA_Metadata$Individual
+species <- RNA_Metadata$Species
+timepoint <- RNA_Metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Filt_RMG0_RNA_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+ann_colors <- list(
+  timepoint_cor = c(
+    "Day0" = "#883268",   # Purple
+    "Day2" = "#3E7274",  # blue
+    "Day4" = "#5AAA464D",  # light green
+    "Day5" = "#94C47D",  # Green
+    "Day15" = "#C03830",  # red
+    "Day30" = "#830C05"  # dark red
+  ),
+  species_cor = c(
+    "H" = "#171717",  # black
+    "C" = "#17171717"   # light grey
+  ),
+  individual_cor = c(
+    H1 = "#091638", #Blue-Green Darkest
+    H2 = "#11185B",
+    H3 = "#0F2C71",
+    H4 = "#0D568F",
+    H5 = "#1D8296",
+    H6 = "#46A389",
+    H7 = "#9DD484", #Blue-Green Lightest
+    C1 = "#340702", #Brown-Orange darkest
+    C2 = "#5D0B02",
+    C3 = "#951302",
+    C4 = "#D32804",
+    C5 = "#F74019",
+    C6 = "#FA7A38",
+    C7 = "#FCC598"
+    
+  )
+)
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+# saveRDS(cor_Filt_RMG0_RNA_log2cpm, "data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+# saveRDS(Cor_metadata, "data/QC/Cor_metadata.RDS")
+# saveRDS(ann_colors,"data/QC/ann_colors.RDS")
+```
+
+```{r RNASeq_FeatureCounts_HeatMap_RMG0,fig.height=10,fig.width=10}
+print(
+  pheatmap(cor_Filt_RMG0_RNA_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM-RowMeans>0)")
+)
+```
+
+```{r RNASeq_FeatureCounts_RMG0_No4}
+
+####Subset####
+RNA_Metadata_No4 <- RNA_Metadata %>% 
+ filter(timepoint != "Day4")
+
+RNA_fc_NoD4 <- RNA_fc %>% 
+  dplyr::select(-ends_with("_D4"))
+
+RNA_log2cpm_NoD4 <- cpm(RNA_fc_NoD4,log=TRUE)
+dim(RNA_log2cpm_NoD4)
+dim(RNA_fc)
+row_means_NoD4 <- rowMeans(RNA_log2cpm_NoD4)
+Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_NoD4[row_means_NoD4 >0,]
+dim(Filt_RMG0_RNA_fc_NoD4)
+Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
+# saveRDS(RNA_Metadata_No4,"data/QC/RNA_Metatdata_No4.RDS")
+# saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/Filt_RMG0_RNA_fc_NoD4_Ensemble.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Filt_RMG0_RNA_log2cpm_NoD4_Ensemble.RDS")
+
+```
+
+```{r rRNASeq_FeatureCounts_Cor_RMG0_No4}
+######Cor_HeatMap####
+cor_Filt_RMG0_RNA_log2cpm_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = "spearman")
+
+Cor_metadata_No4 <- Cor_metadata %>% 
+  dplyr::filter(timepoint_cor !="Day4")
+
+ann_colors_No4 <- ann_colors
+ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
+  ann_colors$timepoint_cor != "Day4"
+]
+# saveRDS(Cor_metadata_No4, "data/QC/Cor_metadata_No4.RDS")
+# saveRDS(cor_Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(ann_colors_No4,"data/QC/ann_colors_no4.RDS")
+```
+
+
+```{r rRNASeq_FeatureCounts_HeatMap_RMG0_No4,fig.height=10,fig.width=10}
+print(
+  pheatmap(cor_Filt_RMG0_RNA_log2cpm_NoD4,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata_No4[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors_No4,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Spearman) \n (log2CPM-RowMeans>0-NoDay4)")
+)
+```
+

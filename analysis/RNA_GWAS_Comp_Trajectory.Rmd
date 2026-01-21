@@ -1,0 +1,673 @@
+---
+title: "RNA_GWAS_Associations"
+output: html_document
+date: "2026-01-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RNA_GWAS_SettingEnviroment}
+#Loading Libraries
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+
+#Loading R Objects
+Comparisons_names <- readRDS("data/DGE/Comparisons_names_Trajectory.RDS")
+quadrant_gene_lists <- readRDS("data/DGE/quadrant_gene_lists_DayBefore.RDS")
+GWAS_CongHD_associations <- readRDS("data/DGE/GWAS_CongHD_associations.RDS")
+```
+
+
+```{r Volcano_Plot_Function}
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+```
+
+```{r Volcano_Plot_GWAS_Function}
+generate_volcano_plot_GWAS <- function(toptable, title, gwas_genes = NULL) {
+  
+  # Determine significance
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", "Not Significant", "Downregulated")
+  )
+
+  # Mark GWAS hits
+  toptable <- toptable %>%
+    mutate(highlight = if_else(Gene %in% gwas_genes, TRUE, FALSE))
+
+  # Split data for layers
+  df_non_gwas <- toptable %>% filter(!highlight)
+  df_gwas     <- toptable %>% filter(highlight)
+
+  # Colors for significance
+  color_map <- c(
+    "Upregulated" = "blue",
+    "Not Significant" = "grey30",
+    "Downregulated" = "red"
+  )
+
+  p <- ggplot() +
+    # Non-GWAS points
+    geom_point(data = df_non_gwas,
+               aes(x = logFC, y = -log10(P.Value), color = Significance),
+               alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map) +
+
+    # GWAS points on top with outline
+    geom_point(data = df_gwas,
+               aes(x = logFC, y = -log10(P.Value), fill = Significance),
+               shape = 21, color = "limegreen", size = 4, stroke = 1.5) +
+
+    # Optional: label GWAS genes
+    # geom_text_repel(data = df_gwas,
+    #                 aes(x = logFC, y = -log10(P.Value), label = Gene),
+    #                 size = 3, fontface = "bold", color = "black", max.overlaps = 20) +
+
+    xlim(-20, 20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    theme_bw() +
+    theme(legend.position = "right") +
+    guides(color = guide_legend(override.aes = list(size = 3)),
+           fill = guide_legend(override.aes = list(size = 3)))
+
+  return(p)
+}
+
+```
+
+
+```{r RNA_GWAS_DataSets}
+# GWAS_CongHD_associations<- read.delim("C:/Users/jdhurley/Downloads/EFO_0005207_associations_export.tsv")
+# saveRDS(GWAS_CongHD_associations,"data/DGE/GWAS_CongHD_associations.RDS")
+
+# Make a copy to be safe
+GWAS_table_copy <- GWAS_CongHD_associations
+
+# Rename the column directly
+colnames(GWAS_table_copy)[colnames(GWAS_table_copy) == "mappedGenes"] <- "Gene"
+
+# Check
+colnames(GWAS_table_copy)
+# Should include "Gene"
+
+# Assume your GWAS table is called GWAS_table
+GWAS_table_long <- GWAS_table_copy %>%
+  filter(!is.na(Gene)) %>%                 # remove NAs
+  mutate(Gene = str_trim(Gene)) %>%        # trim spaces
+  tidyr::separate_rows(Gene, sep = ",") %>% # split comma-separated genes
+  mutate(Gene = str_trim(Gene))            # trim again
+
+#saveRDS(GWAS_table_long,"data/DGE/GWAS_table_long.RDS")
+
+dim(GWAS_CongHD_associations)
+length(unique(GWAS_table_long$Gene))
+unique(GWAS_table_long$Gene)
+
+
+# Flatten Quadran genes nested list into a data frame
+gene_quadrant_df <- lapply(names(quadrant_gene_lists), function(clust_name) {
+  lapply(names(quadrant_gene_lists[[clust_name]]), function(comp_name) {
+    quads <- quadrant_gene_lists[[clust_name]][[comp_name]]
+    # For each quadrant, create a row per gene
+    bind_rows(
+      data.frame(cluster = clust_name, comparison = comp_name, quadrant = "Down-Up", Gene = quads[["Down-Up"]], stringsAsFactors = FALSE),
+      data.frame(cluster = clust_name, comparison = comp_name, quadrant = "Up-Down", Gene = quads[["Up-Down"]], stringsAsFactors = FALSE),
+      data.frame(cluster = clust_name, comparison = comp_name, quadrant = "Up-Up", Gene = quads[["Up-Up"]], stringsAsFactors = FALSE),
+      data.frame(cluster = clust_name, comparison = comp_name, quadrant = "Down-Down", Gene = quads[["Down-Down"]], stringsAsFactors = FALSE)
+    )
+  }) %>% bind_rows()
+}) %>% bind_rows()
+
+highlight_genes <- inner_join(gene_quadrant_df, GWAS_table_long, by = "Gene")
+
+highlight_genes_expanded <- highlight_genes %>%
+  dplyr::select(cluster, comparison, Gene) %>%
+  distinct()
+
+
+# Check
+head(gene_quadrant_df)
+
+
+```
+
+```{r RNA_GWAS_Overlaps}
+quadrant_GWAS_overlap <- gene_quadrant_df %>%
+  inner_join(
+    GWAS_table_long,
+    by = "Gene",
+    relationship = "many-to-many"
+  )
+saveRDS(quadrant_GWAS_overlap,"data/DGE/quadrant_GWAS_overlap.RDS")
+
+GWAS_to_clusters <- GWAS_table_long %>%
+ inner_join(
+   gene_quadrant_df,
+   by = "Gene",
+   relationship = "many-to-many"
+ )
+
+GWAS_cluster_summary <- GWAS_to_clusters %>%
+ group_by(Gene) %>%
+ summarise(
+   clusters = list(unique(cluster)),
+   comparisons = list(unique(comparison)),
+   quadrants = list(unique(quadrant)),
+   n_clusters = n_distinct(cluster),
+   n_comparisons = n_distinct(comparison),
+   .groups = "drop"
+ )
+
+GWAS_by_cluster <- GWAS_to_clusters %>%
+ group_by(cluster, comparison, quadrant) %>%
+ summarise(
+   GWAS_genes = list(unique(Gene)),
+   n_GWAS_genes = n_distinct(Gene),
+   .groups = "drop"
+ )
+
+View(quadrant_GWAS_overlap)
+unique(quadrant_GWAS_overlap$Gene)
+length(unique(quadrant_GWAS_overlap$Gene))
+```
+
+
+```{r}
+
+# Expand comparison mapping
+comparison_map <- tibble(
+  comparison = c("Comp_0-2","Comp_2-5","Comp_5-15","Comp_15-30"),
+  H_comp = c("H_D0_D2","H_D2_D5","H_D5_D15","H_D15_D30"),
+  C_comp = c("C_D0_D2","C_D2_D5","C_D5_D15","C_D15_D30")
+)
+
+# Expand highlight_genes_expanded to actual TopTable comparison names
+highlight_genes_expanded_mapped <- highlight_genes_expanded %>%
+  left_join(comparison_map, by = "comparison") %>%
+  pivot_longer(cols = c(H_comp, C_comp), values_to = "Comparisons") %>%
+  dplyr::select(cluster, Comparisons, Gene) %>%
+  distinct()
+
+plots <- list()
+for (n in Comparisons_names) {   # n is e.g., "H_D0_D2"
+  
+  df_plot <- TopTable_RNA_All %>%
+    filter(Comparisons == n)
+
+  # Supply GWAS genes for this TopTable comparison
+  gwas_genes_n <- highlight_genes_expanded_mapped %>%
+    filter(Comparisons == n) %>%
+    pull(Gene)
+
+  plots[[n]] <- generate_volcano_plot_GWAS(df_plot, n, gwas_genes_n)
+}
+
+# Display
+for (n in names(plots)) {
+  print(plots[[n]])
+}
+```
+
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants}
+
+# --------------------------
+# 1. Define clusters & comparisons
+# --------------------------
+cluster_lists <- list(
+  clust1 = clust1_RNA,
+  clust2 = clust2_RNA,
+  clust3 = clust3_RNA,
+  clust4 = clust4_RNA,
+  clust5 = clust5_RNA,
+  clust6 = clust6_RNA,
+  clust7 = clust7_RNA,
+  clust8 = clust8_RNA,
+  clust9 = clust9_RNA,
+  clust10 = clust10_RNA,
+  clust11 = clust11_RNA
+)
+
+timepoints <- c("0-2", "2-5", "5-15", "15-30")
+H_comparisons <- paste0("H_D", gsub("-", "_D", timepoints))
+C_comparisons <- paste0("C_D", gsub("-", "_D", timepoints))
+
+# Ensure gene and comparison columns are character
+TopTable_RNA_All$Gene <- as.character(TopTable_RNA_All$Gene)
+TopTable_RNA_All$Comparisons <- as.character(TopTable_RNA_All$Comparisons)
+
+# --------------------------
+# 2. Define quadrant plotting function
+# --------------------------
+
+
+plot_quadrant_from_topTable <- function(top_table, gene_list, cluster_name, H_comp, C_comp, gwas_genes = NULL) {
+
+  # Filter genes and comparisons
+  df_filtered <- top_table %>%
+    filter(Gene %in% gene_list, Comparisons %in% c(H_comp, C_comp)) %>%
+    group_by(Gene, Comparisons) %>%
+    summarize(logFC = mean(logFC),
+              adj.P.Val = mean(adj.P.Val),
+              .groups = "drop") %>%
+    pivot_wider(names_from = Comparisons, values_from = c(logFC, adj.P.Val))
+
+  # Quadrants
+  df_filtered <- df_filtered %>%
+    filter(!is.na(.data[[paste0("logFC_", H_comp)]]) & !is.na(.data[[paste0("logFC_", C_comp)]])) %>%
+    mutate(quadrant = case_when(
+      .data[[paste0("logFC_", H_comp)]] > 0 & .data[[paste0("logFC_", C_comp)]] > 0 ~ "Up-Up",
+      .data[[paste0("logFC_", H_comp)]] < 0 & .data[[paste0("logFC_", C_comp)]] < 0 ~ "Down-Down",
+      .data[[paste0("logFC_", H_comp)]] > 0 & .data[[paste0("logFC_", C_comp)]] < 0 ~ "Up-Down",
+      .data[[paste0("logFC_", H_comp)]] < 0 & .data[[paste0("logFC_", C_comp)]] > 0 ~ "Down-Up",
+      TRUE ~ "Zero"
+    ))
+
+  # Significance
+  df_filtered <- df_filtered %>%
+    mutate(Significant = (.data[[paste0("adj.P.Val_", H_comp)]] < 0.05 &
+                          .data[[paste0("adj.P.Val_", C_comp)]] < 0.05),
+           quadrant_color = factor(ifelse(Significant, quadrant, "Zero"),
+                                   levels = c("Up-Up","Down-Down","Up-Down","Down-Up","Zero")),
+           GWAS_flag = if_else(Gene %in% gwas_genes, TRUE, FALSE))
+
+  # Quadrant colors
+  quadrant_colors <- c(
+    "Up-Up" = "red",
+    "Down-Down" = "blue",
+    "Up-Down" = "orange",
+    "Down-Up" = "purple",
+    "Zero" = "gray"
+  )
+
+  # Split
+  df_gwas_sig <- df_filtered %>% filter(GWAS_flag & Significant)
+  df_gwas_nsig <- df_filtered %>% filter(GWAS_flag & !Significant)
+  df_non_gwas <- df_filtered %>% filter(!GWAS_flag)
+
+  # Plot
+  p <- ggplot() +
+    # Non-GWAS
+    geom_point(data = df_non_gwas,
+               aes(x = .data[[paste0("logFC_", H_comp)]],
+                   y = .data[[paste0("logFC_", C_comp)]],
+                   fill = quadrant_color),
+               shape = 21, size = 3, color = "black", alpha = 0.6) +
+
+    # Non-significant GWAS
+    geom_point(data = df_gwas_nsig,
+               aes(x = .data[[paste0("logFC_", H_comp)]],
+                   y = .data[[paste0("logFC_", C_comp)]],
+                   fill = quadrant_color),
+               shape = 21, size = 4, color = "black", stroke = 1.2) +
+
+    # Significant GWAS
+    geom_point(data = df_gwas_sig,
+               aes(x = .data[[paste0("logFC_", H_comp)]],
+                   y = .data[[paste0("logFC_", C_comp)]],
+                   fill = quadrant_color),
+               shape = 21, color = "limegreen", size = 4, stroke = 1.5) +
+
+    # Labels for significant GWAS
+    geom_text_repel(
+    data = df_gwas_sig,
+    aes(x = .data[[paste0("logFC_", H_comp)]],
+        y = .data[[paste0("logFC_", C_comp)]],
+        label = Gene),
+    size = 3,
+    fontface = "bold",
+    nudge_x = 5.0,        # move labels farther horizontally
+    nudge_y = 5.0,        # move labels farther vertically
+    force = 6,            # stronger repulsion to avoid overlap
+    segment.color = "grey50",
+    segment.size = 0.5,
+    max.overlaps = Inf
+) +
+
+    # Axes lines
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+
+
+    # Fill colors
+    scale_fill_manual(values = quadrant_colors, name = "Quadrant") +
+
+    # Labels & theme
+    xlab(H_comp) +
+    ylab(C_comp) +
+    ggtitle(paste0(cluster_name, ": ", H_comp, " vs ", C_comp)) +
+    theme_bw() +
+    theme(legend.position = "right") +
+    guides(fill = guide_legend(override.aes = list(shape = 21, size = 4, stroke = 1.2)))
+
+  # Counts
+  quad_counts <- as.data.frame(table(df_filtered$quadrant_color))
+
+  list(plot = p, counts = quad_counts)
+}
+
+
+
+# --------------------------
+# Generate all plots
+# --------------------------
+all_quadrant_results <- lapply(names(cluster_lists), function(clust_name) {
+  genes <- cluster_lists[[clust_name]]
+  lapply(seq_along(H_comparisons), function(i) {
+    H_comp <- H_comparisons[i]
+    C_comp <- C_comparisons[i]
+    
+    # GWAS genes mapped to this cluster
+    gwas_genes_i <- highlight_genes_expanded_mapped %>%
+      filter(Comparisons %in% c(H_comp, C_comp), Gene %in% genes) %>%
+      pull(Gene)
+    
+    plot_quadrant_from_topTable(TopTable_RNA_All, genes, clust_name, H_comp, C_comp, gwas_genes_i)
+  })
+})
+
+names(all_quadrant_results) <- names(cluster_lists)
+for (clust_name in names(all_quadrant_results)) {
+  names(all_quadrant_results[[clust_name]]) <- paste0("Comp_", timepoints)
+}
+
+# Print plots
+for (clust_name in names(all_quadrant_results)) {
+  for (comp_name in names(all_quadrant_results[[clust_name]])) {
+    print(all_quadrant_results[[clust_name]][[comp_name]]$plot)
+  }
+}
+
+
+
+# --------------------------
+# 5. Access quadrant counts
+# --------------------------
+# Example: counts for clust1, 0-2
+all_quadrant_results$clust1[["Comp_0-2"]]$counts
+
+#saveRDS(all_quadrant_results,"data/DGE/all_quadrant_results_DayBefore.RDS")
+
+```
+
+
+```{r}
+clust1_GWAS <- intersect(cluster_lists$clust1,unique(highlight_genes_expanded_mapped$Gene))
+clust2_GWAS <- intersect(cluster_lists$clust2,unique(highlight_genes_expanded_mapped$Gene))
+clust3_GWAS <- intersect(cluster_lists$clust3,unique(highlight_genes_expanded_mapped$Gene))
+clust4_GWAS <- intersect(cluster_lists$clust4,unique(highlight_genes_expanded_mapped$Gene))
+clust5_GWAS <- intersect(cluster_lists$clust5,unique(highlight_genes_expanded_mapped$Gene))
+clust6_GWAS <- intersect(cluster_lists$clust6,unique(highlight_genes_expanded_mapped$Gene))
+clust7_GWAS <- intersect(cluster_lists$clust7,unique(highlight_genes_expanded_mapped$Gene))
+clust8_GWAS <- intersect(cluster_lists$clust8,unique(highlight_genes_expanded_mapped$Gene))
+clust9_GWAS <- intersect(cluster_lists$clust9,unique(highlight_genes_expanded_mapped$Gene))
+clust10_GWAS <- intersect(cluster_lists$clust10,unique(highlight_genes_expanded_mapped$Gene))
+clust11_GWAS <- intersect(cluster_lists$clust11,unique(highlight_genes_expanded_mapped$Gene))
+
+```
+
+```{r}
+# Create the table
+clust2_ChiSq <- matrix(c(21, (2790-21), 7, (1355-7)), nrow = 2, byrow = TRUE)
+rownames(clust2_ChiSq) <- c("Clust1", "Clust2")
+colnames(clust2_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust2_ChiSq)
+
+# Create the table
+clust3_ChiSq <- matrix(c(21, (2790-21), 7, (459-7)), nrow = 2, byrow = TRUE)
+rownames(clust3_ChiSq) <- c("Clust1", "Clust3")
+colnames(clust3_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust3_ChiSq)
+
+# Create the table
+clust4_ChiSq <- matrix(c(21, (2790-21), 10, (522-10)), nrow = 2, byrow = TRUE)
+rownames(clust4_ChiSq) <- c("Clust1", "Clust4")
+colnames(clust4_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust4_ChiSq)
+
+# Create the table
+clust5_ChiSq <- matrix(c(21, (2790-21), 2, (244-2)), nrow = 2, byrow = TRUE)
+rownames(clust5_ChiSq) <- c("Clust1", "Clust5")
+colnames(clust5_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust5_ChiSq)
+fisher.test(clust5_ChiSq)
+
+# Create the table
+clust6_ChiSq <- matrix(c(21, (2790-21), 3, (427-3)), nrow = 2, byrow = TRUE)
+rownames(clust6_ChiSq) <- c("Clust1", "Clust6")
+colnames(clust6_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust6_ChiSq)
+fisher.test(clust6_ChiSq)
+
+# Create the table
+clust7_ChiSq <- matrix(c(21, (2790-21), 9, (618-9)), nrow = 2, byrow = TRUE)
+rownames(clust7_ChiSq) <- c("Clust1", "Clust7")
+colnames(clust7_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust7_ChiSq)
+fisher.test(clust7_ChiSq)
+
+# Create the table
+clust8_ChiSq <- matrix(c(21, (2790-21), 8, (847-8)), nrow = 2, byrow = TRUE)
+rownames(clust8_ChiSq) <- c("Clust1", "Clust8")
+colnames(clust8_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust8_ChiSq)
+fisher.test(clust8_ChiSq)
+
+# Create the table
+clust9_ChiSq <- matrix(c(21, (2790-21), 3, (596-3)), nrow = 2, byrow = TRUE)
+rownames(clust9_ChiSq) <- c("Clust1", "Clust9")
+colnames(clust9_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust9_ChiSq)
+fisher.test(clust9_ChiSq)
+
+# Create the table
+clust10_ChiSq <- matrix(c(21, (2790-21), 9, (1041-9)), nrow = 2, byrow = TRUE)
+rownames(clust10_ChiSq) <- c("Clust1", "Clust10")
+colnames(clust10_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust10_ChiSq)
+fisher.test(clust10_ChiSq)
+
+# Create the table
+clust11_ChiSq <- matrix(c(21, (2790-21), 4, (975-4)), nrow = 2, byrow = TRUE)
+rownames(clust11_ChiSq) <- c("Clust1", "Clust11")
+colnames(clust11_ChiSq) <- c("Yes", "No")
+
+# Run chi-square test
+chisq.test(clust11_ChiSq)
+fisher.test(clust11_ChiSq)
+```
+
+
+```{r}
+library(dplyr)
+
+GWAS_genes <- GWAS_table_long$Gene  # your curated GWAS gene list
+
+quad_counts_gwas <- lapply(names(all_quadrant_results), function(clust_name) {
+  
+  lapply(names(all_quadrant_results[[clust_name]]), function(comp_name) {
+    
+    df <- all_quadrant_results[[clust_name]][[comp_name]]$data
+    
+    df %>%
+      # Keep only GWAS genes
+      filter(Gene %in% GWAS_genes) %>%
+      # Quadrant, assign "Zero" if not significant
+      mutate(quadrant_color = ifelse(Significant, quadrant, "Zero")) %>%
+      # Count genes per quadrant
+      count(quadrant_color) %>%
+      mutate(cluster = clust_name,
+             comparison = comp_name)
+    
+  }) %>% bind_rows()
+  
+}) %>% bind_rows()
+
+# Ensure factor levels for plotting
+quad_counts_gwas$cluster <- factor(quad_counts_gwas$cluster, levels = paste0("clust", 1:11))
+quad_counts_gwas$quadrant_color <- factor(
+  quad_counts_gwas$quadrant_color,
+  levels = c("Zero","Down-Down","Up-Up","Up-Down","Down-Up")
+)
+
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(quad_counts_gwas, aes(x = cluster, y = n, fill = quadrant_color)) +
+  geom_bar(stat = "identity", position = "fill") +  # percent stacked
+  facet_wrap(~comparison) +                        # separate bars per comparison
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c(
+    "Zero" = "gray",
+    "Down-Down" = "blue",
+    "Up-Up" = "red",
+    "Up-Down" = "orange",
+    "Down-Up" = "purple"
+  )) +
+  ylab("Percentage of GWAS genes") +
+  xlab("Cluster") +
+  ggtitle("GWAS genes: Quadrant distribution per cluster and comparison") +
+  theme_bw()
+
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Combine all clusters and comparisons
+gwas_cluster_df <- lapply(names(all_quadrant_results), function(clust_name) {
+  lapply(names(all_quadrant_results[[clust_name]]), function(comp_name) {
+    
+    df <- all_quadrant_results[[clust_name]][[comp_name]]$data
+    
+    df %>%
+      filter(Gene %in% GWAS_genes) %>%
+      dplyr::select(Gene) %>%
+      mutate(cluster = clust_name)
+    
+  }) %>% bind_rows()
+}) %>% bind_rows() %>%
+  distinct(Gene, cluster)  # remove duplicates if gene appears in multiple comparisons
+
+
+```
+
+```{r}
+gwas_cluster_counts <- gwas_cluster_df %>%
+  group_by(cluster) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  mutate(pct = n / sum(n))
+
+```
+
+
+```{r}
+ggplot(gwas_cluster_df, aes(x = cluster, y = Gene, color = cluster)) +
+  geom_point(size = 3) +
+  scale_color_brewer(palette = "Paired") +
+  labs(
+    y = "GWAS gene",
+    x = "Motif / Cluster",
+    title = "GWAS genes mapped to motifs"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+
+
+```
+

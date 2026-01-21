@@ -147,6 +147,7 @@ col_names<- c("H28126_D0",
               "C3647_D15",
               "C3647_D30"
 )
+colnames(RNA_fc) <- col_names 
 
 dim(RNA_fc)
 # saveRDS(RNA_fc,"data/QC/RNA_fc_Ensemble.RDS")
@@ -319,8 +320,9 @@ Cor_metadata_No4 <- Cor_metadata %>%
 
 ann_colors_No4 <- ann_colors
 ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
-  ann_colors$timepoint_cor != "Day4"
+  names(ann_colors$timepoint_cor) != "Day4"
 ]
+
 # saveRDS(Cor_metadata_No4, "data/QC/Cor_metadata_No4.RDS")
 # saveRDS(cor_Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 # saveRDS(ann_colors_No4,"data/QC/ann_colors_no4.RDS")

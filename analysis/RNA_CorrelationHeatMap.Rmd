@@ -58,7 +58,7 @@ RNA_fc <- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c("gene","Chr.x","Start.x
 rownames(RNA_fc) <- RNA_joined_fc$gene
 
 #Rename column Names to More Useful Info
-col_names<- c("H28126_D0",
+col_names <- c("H28126_D0",
               "H28126_D2",
               "H28126_D4",
               "H28126_D5",

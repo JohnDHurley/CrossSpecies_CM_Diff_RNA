@@ -1,0 +1,43 @@
+---
+title: "RNA_PCA"
+output: html_document
+date: "2026-01-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Setting_Up_Enviroment}
+
+####Library Loading####
+library("edgeR")
+library("ggplot2")
+library("tibble")
+library("dplyr")
+library("ggrepel")
+library("readr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("pheatmap")
+library("Cormotif")
+library("tidyverse")
+library("workflowr")
+
+####Loadind R Objects####
+RNA_fc_df <- readRDS("data/QC/RNA_fc_df.RDS")
+RNA_fc <- readRDS("data/QC/RNA_fc_Ensemble.RDS")
+RNA_log2cpm <- readRDS("data/QC/RNA_log2cpm_Ensemble.RDS")
+Filt_RMG0_RNA_fc <- readRDS("data/QC/Filt_RMG0_RNA_fc_Ensemble.RDS")
+Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_Ensemble.RDS")
+RNA_Metadata <- readRDS("data/QC/RNA_Metadata.RDS")
+cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+Cor_metadata <- readRDS("data/QC/Cor_metadata.RDS")
+ann_colors <- readRDS("data/QC/ann_colors.RDS")
+RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_No4.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4_Ensemble.RDS")
+Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4_Ensemble.RDS")
+Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
+cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
+```

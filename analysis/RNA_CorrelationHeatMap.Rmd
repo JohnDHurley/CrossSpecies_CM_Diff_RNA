@@ -342,3 +342,11 @@ print(
 )
 ```
 
+```{r Updating Website, eval = FALSE}
+
+# #git -> commit all changes
+# #git -> push
+# wflow_publish("analysis/RNA_CorrelationHeatMap.Rmd")
+
+```
+

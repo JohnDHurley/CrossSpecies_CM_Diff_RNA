@@ -10,7 +10,5 @@ editor_options:
 
 Welcome to my research website.
 
-[Countsmatrix and QC](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_countsmatrix_QC.html)
-
-[CorMotif](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_cormotif.html)
+[RNA Data Upload and Correlation Heat Map](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/docs/RNA_CorrelationHeatMap.html)
 

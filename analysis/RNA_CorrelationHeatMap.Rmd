@@ -22,7 +22,7 @@ library("AnnotationDbi")
 library("pheatmap")
 library("Cormotif")
 library("tidyverse")
-
+library("workflowr")
 
 ####Loadind R Objects####
 RNA_fc_df <- readRDS("data/QC/RNA_fc_df.RDS")
@@ -346,7 +346,7 @@ print(
 
 # #git -> commit all changes
 # #git -> push
-# wflow_publish("analysis/RNA_CorrelationHeatMap.Rmd")
+wflow_publish("analysis/RNA_CorrelationHeatMap.Rmd")
 
 ```
 

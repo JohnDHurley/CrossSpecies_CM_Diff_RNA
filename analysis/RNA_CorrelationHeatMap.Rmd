@@ -42,7 +42,7 @@ cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/cor_Filt_RMG0_RNA_log2cpm_NoD
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 ```
 
-```{r RNASeq_FeatureCounts_Data, eval = FALSE}
+```{r RNASeq_FeatureCounts_Data}
 chimp_RNA_pantro5_fc <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/c_samples_counts.txt", comment.char="#",row.names=1)
 human_RNA_hg38_fc <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/h_samples_counts.txt", comment.char="#",row.names=1)
 human_df <- human_RNA_hg38_fc %>%

@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree88bce4536012ee7c03917617bcdbb025177a60batargetblank88bce45a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree7299279e00531551bd7585c755751f069f36a746targetblank7299279a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/88bce4536012ee7c03917617bcdbb025177a60ba" target="_blank">88bce45</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/7299279e00531551bd7585c755751f069f36a746" target="_blank">7299279</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree88bce4536012ee7c03917617bcdbb025177a60batargetblank88bce45a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree7299279e00531551bd7585c755751f069f36a746targetblank7299279a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/88bce4536012ee7c03917617bcdbb025177a60ba" target="_blank">88bce45</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/7299279e00531551bd7585c755751f069f36a746" target="_blank">7299279</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -554,7 +554,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/
 
 </code></pre>
@@ -601,6 +600,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7299279e00531551bd7585c755751f069f36a746/analysis/RNA_CorrelationHeatMap.Rmd" target="_blank">7299279</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+<td>
+wflow_publish("analysis/RNA_CorrelationHeatMap.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/b4bc4cde8601b90e52e35303c9e12d5e85196b3e/analysis/RNA_CorrelationHeatMap.Rmd" target="_blank">b4bc4cd</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+<td>
+Updating Index HeatMap
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/RNA_CorrelationHeatMap.html" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+<td>
+Website Update HeatMap
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -819,7 +869,9 @@ library(&quot;Cormotif&quot;)</code></pre>
 ✖ AnnotationDbi::select()  masks dplyr::select()
 ✖ IRanges::slice()         masks dplyr::slice()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>####Loadind R Objects####
+<pre class="r"><code>library(&quot;workflowr&quot;)
+
+####Loadind R Objects####
 RNA_fc_df &lt;- readRDS(&quot;data/QC/RNA_fc_df.RDS&quot;)
 RNA_fc &lt;- readRDS(&quot;data/QC/RNA_fc_Ensemble.RDS&quot;)
 RNA_log2cpm &lt;- readRDS(&quot;data/QC/RNA_log2cpm_Ensemble.RDS&quot;)
@@ -980,6 +1032,43 @@ RNA_log2cpm &lt;- cpm(RNA_fc,log=TRUE)
 print(hist(RNA_log2cpm,  main = &quot;Histogram of all counts (unfiltered)&quot;,
      xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =4 ))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Box_Unfiltered-1">
+Past versions of RNASeq_FeatureCounts_Box_Unfiltered-1.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_Box_Unfiltered-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>$breaks
  [1] -3 -2 -1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 
@@ -1014,6 +1103,43 @@ axis(1,
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.3)        # shrink label size</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Box_Unfiltered-2">
+Past versions of RNASeq_FeatureCounts_Box_Unfiltered-2.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_Box_Unfiltered-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-2.png" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(RNA_log2cpm,&quot;data/QC/RNA_log2cpm_Ensemble.RDS&quot;)</code></pre>
 <pre class="r"><code>#####RowMu&gt;0####
 row_means &lt;- rowMeans(RNA_log2cpm)
@@ -1023,6 +1149,43 @@ Filt_RMG0_RNA_log2cpm &lt;- cpm(Filt_RMG0_RNA_fc,log=TRUE)
 hist(Filt_RMG0_RNA_log2cpm, main = &quot;Histogram of filtered counts using rowMeans &gt; 0 method&quot;,
      xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =5 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_RMG0-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_RMG0-1">
+Past versions of RNASeq_FeatureCounts_RMG0-1.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_RMG0-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_RMG0-1.png" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(Filt_RMG0_RNA_fc,&quot;data/QC/Filt_RMG0_RNA_fc_Ensemble.RDS&quot;)
 # saveRDS(Filt_RMG0_RNA_log2cpm,&quot;data/QC/Filt_RMG0_RNA_log2cpm_Ensemble.RDS&quot;)</code></pre>
 <pre class="r"><code>boxplot(Filt_RMG0_RNA_log2cpm, main = &quot;Boxplots of log cpm per sample (RowMeans&gt;0)&quot;,xaxt = &quot;n&quot;, xlab= &quot;&quot;)
@@ -1032,6 +1195,43 @@ axis(1,
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.3)        # shrink label size</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_Box_RMG0-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Box_RMG0-1">
+Past versions of RNASeq_FeatureCounts_Box_RMG0-1.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_Box_RMG0-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_Box_RMG0-1.png" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>######Cor_HeatMap####
 cor_Filt_RMG0_RNA_log2cpm &lt;- cor(Filt_RMG0_RNA_log2cpm, method = &quot;spearman&quot;)
 individual &lt;- RNA_Metadata$Individual
@@ -1092,6 +1292,43 @@ rownames(Cor_metadata) &lt;- Cor_metadata$sample_cor
          main = &quot;Sample-Sample Correlation \n(Spearman-log2CPM-RowMeans&gt;0)&quot;)
 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_HeatMap_RMG0-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_HeatMap_RMG0-1">
+Past versions of RNASeq_FeatureCounts_HeatMap_RMG0-1.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_HeatMap_RMG0-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/figure/RNA_CorrelationHeatMap.Rmd/RNASeq_FeatureCounts_HeatMap_RMG0-1.png" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####Subset####
 RNA_Metadata_No4 &lt;- RNA_Metadata %&gt;% 
  filter(timepoint != &quot;Day4&quot;)
@@ -1137,6 +1374,46 @@ ann_colors_No4$timepoint_cor &lt;- ann_colors$timepoint_cor[
          main = &quot;Sample-Sample Correlation (Spearman) \n (log2CPM-RowMeans&gt;0-NoDay4)&quot;)
 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1">
+Past versions of rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png
+</button>
+</p>
+<div id="fig-rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9aa0597ae123966e36a50ba7708089cb21c2c654/docs/figure/RNA_CorrelationHeatMap.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png" target="_blank">9aa0597</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># #git -&gt; commit all changes
+# #git -&gt; push
+wflow_publish(&quot;analysis/RNA_CorrelationHeatMap.Rmd&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

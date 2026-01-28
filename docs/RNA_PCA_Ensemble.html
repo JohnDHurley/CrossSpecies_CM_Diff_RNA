@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreea7fc350b3f12b70d6e33a73499c51ea0a0f3b253targetblanka7fc350a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreed89f478d480dfb150c766fe025c29faa17241c82targetblankd89f478a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/a7fc350b3f12b70d6e33a73499c51ea0a0f3b253" target="_blank">a7fc350</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/d89f478d480dfb150c766fe025c29faa17241c82" target="_blank">d89f478</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreea7fc350b3f12b70d6e33a73499c51ea0a0f3b253targetblanka7fc350a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreed89f478d480dfb150c766fe025c29faa17241c82targetblankd89f478a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/a7fc350b3f12b70d6e33a73499c51ea0a0f3b253" target="_blank">a7fc350</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/d89f478d480dfb150c766fe025c29faa17241c82" target="_blank">d89f478</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -607,6 +607,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d89f478d480dfb150c766fe025c29faa17241c82/analysis/RNA_PCA_Ensemble.Rmd" target="_blank">d89f478</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+<td>
+PCA Knit update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/3259a3ece90d0ddc15069674d002f1a856e4568c/docs/RNA_PCA_Ensemble.html" target="_blank">3259a3e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/a7fc350b3f12b70d6e33a73499c51ea0a0f3b253/analysis/RNA_PCA_Ensemble.Rmd" target="_blank">a7fc350</a>
 </td>
 <td>
@@ -661,246 +695,25 @@ Finalizing CorHeatMap
 </div>
 </div>
 <pre class="r"><code>####Library Loading####
-library(&quot;edgeR&quot;)</code></pre>
-<pre><code>Loading required package: limma</code></pre>
-<pre class="r"><code>library(&quot;ggplot2&quot;)
+library(&quot;edgeR&quot;)
+library(&quot;ggplot2&quot;)
 library(&quot;tibble&quot;)
-library(&quot;dplyr&quot;)</code></pre>
-<pre><code>
-Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:stats&#39;:
-
-    filter, lag</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(&quot;ggrepel&quot;)
+library(&quot;dplyr&quot;)
+library(&quot;ggrepel&quot;)
 library(&quot;readr&quot;)
-library(&quot;org.Hs.eg.db&quot;)</code></pre>
-<pre><code>Loading required package: AnnotationDbi</code></pre>
-<pre><code>Loading required package: stats4</code></pre>
-<pre><code>Loading required package: BiocGenerics</code></pre>
-<pre><code>Loading required package: generics</code></pre>
-<pre><code>
-Attaching package: &#39;generics&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:dplyr&#39;:
-
-    explain</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
-    setequal, union</code></pre>
-<pre><code>
-Attaching package: &#39;BiocGenerics&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:dplyr&#39;:
-
-    combine</code></pre>
-<pre><code>The following object is masked from &#39;package:limma&#39;:
-
-    plotMA</code></pre>
-<pre><code>The following objects are masked from &#39;package:stats&#39;:
-
-    IQR, mad, sd, var, xtabs</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
-    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
-    unsplit, which.max, which.min</code></pre>
-<pre><code>Loading required package: Biobase</code></pre>
-<pre><code>Welcome to Bioconductor
-
-    Vignettes contain introductory material; view with
-    &#39;browseVignettes()&#39;. To cite Bioconductor, see
-    &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<pre><code>Loading required package: IRanges</code></pre>
-<pre><code>Loading required package: S4Vectors</code></pre>
-<pre><code>
-Attaching package: &#39;S4Vectors&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
-
-    first, rename</code></pre>
-<pre><code>The following object is masked from &#39;package:utils&#39;:
-
-    findMatches</code></pre>
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    expand.grid, I, unname</code></pre>
-<pre><code>
-Attaching package: &#39;IRanges&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
-
-    collapse, desc, slice</code></pre>
-<pre><code>The following object is masked from &#39;package:grDevices&#39;:
-
-    windows</code></pre>
-<pre><code>
-Attaching package: &#39;AnnotationDbi&#39;</code></pre>
-<pre><code>The following object is masked from &#39;package:dplyr&#39;:
-
-    select</code></pre>
-<pre><code></code></pre>
-<pre class="r"><code>library(&quot;AnnotationDbi&quot;)
+library(&quot;org.Hs.eg.db&quot;)
+library(&quot;AnnotationDbi&quot;)
 library(&quot;pheatmap&quot;)
-library(&quot;Cormotif&quot;)</code></pre>
-<pre><code>Loading required package: affy</code></pre>
-<pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.1.0     </code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ lubridate::%within%()    masks IRanges::%within%()
-✖ IRanges::collapse()      masks dplyr::collapse()
-✖ Biobase::combine()       masks BiocGenerics::combine(), dplyr::combine()
-✖ IRanges::desc()          masks dplyr::desc()
-✖ tidyr::expand()          masks S4Vectors::expand()
-✖ dplyr::filter()          masks stats::filter()
-✖ S4Vectors::first()       masks dplyr::first()
-✖ dplyr::lag()             masks stats::lag()
-✖ lubridate::pm()          masks affy::pm()
-✖ BiocGenerics::Position() masks ggplot2::Position(), base::Position()
-✖ purrr::reduce()          masks IRanges::reduce()
-✖ S4Vectors::rename()      masks dplyr::rename()
-✖ lubridate::second()      masks S4Vectors::second()
-✖ lubridate::second&lt;-()    masks S4Vectors::second&lt;-()
-✖ AnnotationDbi::select()  masks dplyr::select()
-✖ IRanges::slice()         masks dplyr::slice()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(&quot;workflowr&quot;)
-library(&quot;RUVSeq&quot;)</code></pre>
-<pre><code>Loading required package: EDASeq
-Loading required package: ShortRead
-Loading required package: BiocParallel
-Loading required package: Biostrings
-Loading required package: XVector
-
-Attaching package: &#39;XVector&#39;
-
-The following object is masked from &#39;package:purrr&#39;:
-
-    compact
-
-Loading required package: GenomeInfoDb
-
-Attaching package: &#39;Biostrings&#39;
-
-The following object is masked from &#39;package:base&#39;:
-
-    strsplit
-
-Loading required package: Rsamtools
-Loading required package: GenomicRanges
-Loading required package: GenomicAlignments
-Loading required package: SummarizedExperiment
-Loading required package: MatrixGenerics
-Loading required package: matrixStats</code></pre>
-<pre><code>Warning: package &#39;matrixStats&#39; was built under R version 4.5.2</code></pre>
-<pre><code>
-Attaching package: &#39;matrixStats&#39;
-
-The following objects are masked from &#39;package:Biobase&#39;:
-
-    anyMissing, rowMedians
-
-The following object is masked from &#39;package:dplyr&#39;:
-
-    count
-
-
-Attaching package: &#39;MatrixGenerics&#39;
-
-The following objects are masked from &#39;package:matrixStats&#39;:
-
-    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
-    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
-    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
-    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
-    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
-    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
-    colWeightedMeans, colWeightedMedians, colWeightedSds,
-    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
-    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
-    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
-    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
-    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
-    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
-    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
-    rowWeightedSds, rowWeightedVars
-
-The following object is masked from &#39;package:Biobase&#39;:
-
-    rowMedians
-
-
-Attaching package: &#39;GenomicAlignments&#39;
-
-The following object is masked from &#39;package:dplyr&#39;:
-
-    last
-
-
-Attaching package: &#39;ShortRead&#39;
-
-The following object is masked from &#39;package:purrr&#39;:
-
-    compose
-
-The following object is masked from &#39;package:affy&#39;:
-
-    intensity
-
-The following object is masked from &#39;package:dplyr&#39;:
-
-    id
-
-The following object is masked from &#39;package:tibble&#39;:
-
-    view</code></pre>
-<pre class="r"><code>library(&quot;SummarizedExperiment&quot;)
+library(&quot;Cormotif&quot;)
+library(&quot;tidyverse&quot;)
+library(&quot;workflowr&quot;)
+library(&quot;RUVSeq&quot;)
+library(&quot;SummarizedExperiment&quot;)
 library(&quot;readxl&quot;)
-library(&quot;ggfortify&quot;)</code></pre>
-<pre><code>Warning: package &#39;ggfortify&#39; was built under R version 4.5.2</code></pre>
-<pre class="r"><code>library(&quot;ComplexHeatmap&quot;)</code></pre>
-<pre><code>Loading required package: grid
+library(&quot;ggfortify&quot;)
+library(&quot;ComplexHeatmap&quot;)
 
-Attaching package: &#39;grid&#39;
-
-The following object is masked from &#39;package:Biostrings&#39;:
-
-    pattern
-
-========================================
-ComplexHeatmap version 2.24.1
-Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
-Github page: https://github.com/jokergoo/ComplexHeatmap
-Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
-
-If you use it in published research, please cite either one:
-- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
-- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
-    genomic data. Bioinformatics 2016.
-
-
-The new InteractiveComplexHeatmap package can directly export static 
-complex heatmaps into an interactive Shiny app with zero effort. Have a try!
-
-This message can be suppressed by:
-  suppressPackageStartupMessages(library(ComplexHeatmap))
-========================================
-! pheatmap() has been masked by ComplexHeatmap::pheatmap(). Most of the arguments
-   in the original pheatmap() are identically supported in the new function. You 
-   can still use the original function by explicitly calling pheatmap::pheatmap().
-
-
-Attaching package: &#39;ComplexHeatmap&#39;
-
-The following object is masked from &#39;package:pheatmap&#39;:
-
-    pheatmap</code></pre>
-<pre class="r"><code># BiocManager::install(&quot;SummarizedExperiment&quot;)
+# BiocManager::install(&quot;SummarizedExperiment&quot;)
 
 RNA_fc_df &lt;- readRDS(&quot;data/Raw_Data/RNA_fc_df.RDS&quot;)
 RNA_Metadata &lt;- readRDS(&quot;data/Raw_Data/RNA_Metadata.RDS&quot;)
@@ -942,15 +755,44 @@ ggplot2::autoplot(prcomp_RNA,
                             vjust = -0.5,
                             max.overlaps = 50)+
   ggtitle(&quot;Unfiltered RNA Log2CPM PC1-PC2&quot;)</code></pre>
-<pre><code>Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-ℹ Please use tidy evaluation idioms with `aes()`.
-ℹ See also `vignette(&quot;ggplot2-in-packages&quot;)` for more information.
-ℹ The deprecated feature was likely used in the ggfortify package.
-  Please report the issue at &lt;https://github.com/sinhrks/ggfortify/issues&gt;.
-This warning is displayed once per session.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-generated.</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_Unfiltered_PCA_PC1_PC2-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_Unfiltered_PCA_PC1_PC2-1">
+Past versions of RNA_Unfiltered_PCA_PC1_PC2-1.png
+</button>
+</p>
+<div id="fig-RNA_Unfiltered_PCA_PC1_PC2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/3259a3ece90d0ddc15069674d002f1a856e4568c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_Unfiltered_PCA_PC1_PC2-1.png" target="_blank">3259a3e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(prcomp_RNA,&quot;data/QC/prcomp_RNA.RDS&quot;)
 # saveRDS(prcomp_RNA_meta,&quot;data/QC/prcomp_RNA_meta.RDS&quot;)</code></pre>
 <pre class="r"><code>prcomp_Filt_RMG0_RNA &lt;- prcomp(t(Filt_RMG0_RNA_log2cpm), scale=FALSE, center = TRUE)
@@ -971,6 +813,43 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA ,
                             max.overlaps = 50)+
   ggtitle(&quot;Filtered RNA Log2CPM RMG0&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_RMG0_PCA_PC1_PC2-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_RMG0_PCA_PC1_PC2-1">
+Past versions of RNA_RMG0_PCA_PC1_PC2-1.png
+</button>
+</p>
+<div id="fig-RNA_RMG0_PCA_PC1_PC2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/3259a3ece90d0ddc15069674d002f1a856e4568c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RMG0_PCA_PC1_PC2-1.png" target="_blank">3259a3e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(prcomp_Filt_RMG0_RNA,&quot;data/QC/prcomp_Filt_RMG0_RNA.RDS&quot;)
 # saveRDS(prcomp_Filt_RMG0_RNA_meta,&quot;data/QC/prcomp_Filt_RMG0_RNA_meta.RDS&quot;)</code></pre>
 <pre class="r"><code>prcomp_Filt_RMG0_RNA_log2cpm_NoD4 &lt;- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4), scale=FALSE, center = TRUE)
@@ -991,6 +870,43 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
                             max.overlaps = 50)+
   ggtitle(&quot;Filtered RNA Log2CPM RMG0 No Day 4&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_NoD4_RMG0_PCA_PC1_PC2-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_NoD4_RMG0_PCA_PC1_PC2-1">
+Past versions of RNA_NoD4_RMG0_PCA_PC1_PC2-1.png
+</button>
+</p>
+<div id="fig-RNA_NoD4_RMG0_PCA_PC1_PC2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/3259a3ece90d0ddc15069674d002f1a856e4568c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_NoD4_RMG0_PCA_PC1_PC2-1.png" target="_blank">3259a3e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,&quot;data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,&quot;data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS&quot;)</code></pre>
 <pre class="r"><code>ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
@@ -1006,6 +922,43 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
                             max.overlaps = 50)+
   ggtitle(&quot;Filtered RNA Log2CPM RMG0 No Day 4&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_NoD4_RMG0_PCA_PC3_PC4-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_NoD4_RMG0_PCA_PC3_PC4-1">
+Past versions of RNA_NoD4_RMG0_PCA_PC3_PC4-1.png
+</button>
+</p>
+<div id="fig-RNA_NoD4_RMG0_PCA_PC3_PC4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/3259a3ece90d0ddc15069674d002f1a856e4568c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_NoD4_RMG0_PCA_PC3_PC4-1.png" target="_blank">3259a3e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,&quot;data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,&quot;data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS&quot;)</code></pre>
 <pre class="r"><code># git -&gt; commit all changes

@@ -55,7 +55,7 @@ ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 ```
 
 
-```{r Setting_Up_Enviroment, results="hide"}
+```{r Setting_Up_Data, results="hide"}
 # #To keep only OrthoGenes and sample columns
 # RNA_fc <- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c("gene","Chr.x","Start.x","End.x","Strand.x","Length.x","Geneid.x","Chr.y","Start.y","End.y","Strand.y","Length.y","Geneid.y"))]
 # # 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate

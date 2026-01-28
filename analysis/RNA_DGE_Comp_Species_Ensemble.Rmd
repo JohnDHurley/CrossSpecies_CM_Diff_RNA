@@ -456,7 +456,7 @@ sets <- list(
 ```
 
 
-```{r RNASeq_DGE_Species_TopTable_Venn_ggplot_plot,fig. width=4 height=4}
+```{r RNASeq_DGE_Species_TopTable_Venn_ggplot_plot,fig.height=5,fig.width=9}
 # Create a 5-way Venn diagram
 p <- ggVennDiagram(sets,
                    label_alpha = 0,       # makes background of labels transparent

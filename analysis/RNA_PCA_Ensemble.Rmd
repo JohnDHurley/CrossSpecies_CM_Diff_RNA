@@ -4,8 +4,13 @@ output: html_document
 date: "2026-01-22"
 ---
 
-```{r setup, include=FALSE, warning=FALSE,message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
 ```
 
 

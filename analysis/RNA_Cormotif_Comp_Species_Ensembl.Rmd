@@ -1108,7 +1108,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 ```
 
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks,eval=FALSE}
+```{r RNA-Seq_CorMotif_Species_ClustSets_Saves,eval=FALSE}
 # View(motif_prob)
 # write.csv(clust1_RNA,"data/Cormotif/Species/clust1_RNA_Species.csv")
 # write.csv(clust2_RNA,"data/Cormotif/Species/clust2_RNA_Species.csv")

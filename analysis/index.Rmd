@@ -10,5 +10,7 @@ editor_options:
 
 Welcome to my research website.
 
-[RNA Data Upload and Correlation Heat Map](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CorrelationHeatMap.html)
+[RNA Data Upload and Correlation Heat Map](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CorrelationHeatMap_Ensemble.html)
+
+[RNA PCA Plots]("https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_PCA_Ensemble.Rmd")
 

@@ -4,7 +4,7 @@ output: html_document
 date: "2026-01-14"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE,warning=FALSE,message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -821,77 +821,77 @@ check_overlap <- function(list_of_lists) {
 ```
 
 ```{r RNA-Seq_CorMotif_TACC_SeedTesting}
-Seed0 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed0.rds")
-Seed1 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed1.rds")
-Seed2 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed2.rds")
-Seed3 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed3.rds")
-Seed4 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed4.rds")
-Seed5 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed5.rds")
-Seed6 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed6.rds")
-Seed7 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed7.rds")
-Seed8 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed8.rds")
-Seed9 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed9.rds")
-Seed10 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed10.rds")
-
-DayBefore_CoMortiffits_TACC <- list(
-  Seed0,
-  Seed1,
-  Seed2,
-  Seed3,
-  Seed4,
-  Seed5,
-  Seed6,
-  Seed7,
-  Seed8,
-  Seed9,
-  Seed10
-)
-
-#saveRDS(DayBefore_CoMortiffits_TACC,"data/Cormotif/DayBefore_CoMortiffits_TACC.RDS")
-Seed8$bic
+# Seed0 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed0.rds")
+# Seed1 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed1.rds")
+# Seed2 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed2.rds")
+# Seed3 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed3.rds")
+# Seed4 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed4.rds")
+# Seed5 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed5.rds")
+# Seed6 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed6.rds")
+# Seed7 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed7.rds")
+# Seed8 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed8.rds")
+# Seed9 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed9.rds")
+# Seed10 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed10.rds")
+# 
+# CoMortiffits_TACC <- list(
+#   Seed0,
+#   Seed1,
+#   Seed2,
+#   Seed3,
+#   Seed4,
+#   Seed5,
+#   Seed6,
+#   Seed7,
+#   Seed8,
+#   Seed9,
+#   Seed10
+# )
+# 
+# #saveRDS(CoMortiffits_TACC,"data/Cormotif/DayBefore_CoMortiffits_TACC.RDS")
+# Seed8$bic
 ```
 
 ```{r RNA-Seq_CorMotif_TACC_LoadingSeedTesting}
 
 
-extract_bic <- function(fit, seed_id) {
-  # bic is a 20x2 matrix: column "bic" contains the actual BIC
-  bic_values <- fit$bic[, "bic"]
-  
-  tibble(
-    seed = seed_id,
-    motifs = seq_along(bic_values),
-    BIC = as.numeric(bic_values)
-  )
-}
-
-# Define %||% if not using rlang
-`%||%` <- function(x, y) if(!is.null(x)) x else y
-
-
-names(DayBefore_CoMortiffits_TACC) <- paste0("seed_", seq_along(DayBefore_CoMortiffits_TACC))
-
-bic_table <- map2_dfr(
-  DayBefore_CoMortiffits_TACC,
-  names(DayBefore_CoMortiffits_TACC),
-  extract_bic
-)
-
-head(bic_table)
-table(bic_table$seed)
-
-bic_summary <- bic_table %>%
-  group_by(motifs) %>%
-  summarise(
-    mean_BIC = mean(BIC),
-    sd_BIC   = sd(BIC),
-    n_seeds  = n(),
-    .groups = "drop"
-  )
-
-bic_summary
-
-plotIC(Seed8)
+# extract_bic <- function(fit, seed_id) {
+#   # bic is a 20x2 matrix: column "bic" contains the actual BIC
+#   bic_values <- fit$bic[, "bic"]
+#   
+#   tibble(
+#     seed = seed_id,
+#     motifs = seq_along(bic_values),
+#     BIC = as.numeric(bic_values)
+#   )
+# }
+# 
+# # Define %||% if not using rlang
+# `%||%` <- function(x, y) if(!is.null(x)) x else y
+# 
+# 
+# names(DayBefore_CoMortiffits_TACC) <- paste0("seed_", seq_along(DayBefore_CoMortiffits_TACC))
+# 
+# bic_table <- map2_dfr(
+#   DayBefore_CoMortiffits_TACC,
+#   names(DayBefore_CoMortiffits_TACC),
+#   extract_bic
+# )
+# 
+# head(bic_table)
+# table(bic_table$seed)
+# 
+# bic_summary <- bic_table %>%
+#   group_by(motifs) %>%
+#   summarise(
+#     mean_BIC = mean(BIC),
+#     sd_BIC   = sd(BIC),
+#     n_seeds  = n(),
+#     .groups = "drop"
+#   )
+# 
+# bic_summary
+# 
+# plotIC(Seed8)
 ```
 
 ```{r}
@@ -913,21 +913,23 @@ compid <- cbind(compid_Cond1,compid_Cond2)
 
 #Model Fitting
 
-set.seed(8)
-motif.fitted<-cormotiffit(exprs = Filt_RMG0_RNA_log2cpm_NoD4_NoRep,
-                          groupid = groupid,
-                          compid = compid,
-                          K=11,
-                          max.iter = 3000,
-                          runtype = "logCPM")
-
-
-saveRDS(motif.fitted,"data/Cormotif/cormotif_RNA__seed8_k8_DayBefore_emmaCode.RDS")
+# set.seed(8)
+# motif.fitted<-cormotiffit(exprs = Filt_RMG0_RNA_log2cpm_NoD4_NoRep,
+#                           groupid = groupid,
+#                           compid = compid,
+#                           K=11,
+#                           max.iter = 3000,
+#                           runtype = "logCPM")
+# 
+# 
+# saveRDS(motif.fitted,"data/Cormotif/cormotif_RNA__seed8_k8_DayBefore_emmaCode.RDS")
+motif.fitted <- readRDS("data/Cormotif/cormotif_RNA__seed8_k8_DayBefore_emmaCode.RDS")
 plotIC(motif.fitted)
 motif.fitted$bic
 plotMotif(motif.fitted)
 
-
+#  Studies Human Day0 - 1. HDay2, 2. HDay5, 3. HDay15, 4. HDay30
+#          Chimp Day0 - 5. CDay2, 6. CDay5, 7. CDay15, 8. CDay30
 ```
 
 
@@ -971,7 +973,16 @@ ggplot(motif_df, aes(x = Comparison, y = Motif, fill = Probability)) +
     panel.grid = element_blank()
   )
 
-
+#  Comparison C1 = Human Day0
+#  Comparison C2 = Human Day2
+#  Comparison C3 = Human Day5
+#  Comparison C4 = Human Day15
+#  Comparison C5 = Human Day30
+#  Comparison C6 = Chimp Day0
+#  Comparison C7 = Chimp Day2
+#  Comparison C8 = Chimp Day5
+#  Comparison C9 = Chimp Day15
+#  Comparison C10 = Chimp Day30
 ```
 ```{r}
 motif.fit <- motif.fitted
@@ -1064,15 +1075,16 @@ log2cpm <- Filt_RMG0_RNA_log2cpm_NoD4
 #extract the cluster likelihood - which DEGs are most likely to be in this cluster
 motif_prob <- motif.fit$bestmotif$clustlike
 rownames(motif_prob) <- rownames(gene_prob_ppost)
-saveRDS(motif_prob,"data/RNA_motif_prob_Trajectory.RDS")
+# saveRDS(motif_prob,"data/RNA_motif_prob_Trajectory.RDS")
 
-motif.fitted$bestmotif$clustlike
+# motif.fitted$bestmotif$clustlike
 
 clust1_RNA <-
   motif_prob %>%
   as.data.frame() %>%
   filter(V1 > 0.5 & V2 <  0.5 & V3 < 0.5   & V4 < 0.5 & V5 < 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust1_RNA")
 length(clust1_RNA)
 
 clust2_RNA <-
@@ -1080,6 +1092,7 @@ clust2_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 > 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust2_RNA")
 length(clust2_RNA)
 
 clust3_RNA <-
@@ -1087,6 +1100,7 @@ clust3_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 > 0.5 & V4 < 0.5 & V5 < 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust3_RNA")
 length(clust3_RNA)
 
 clust4_RNA <-
@@ -1094,6 +1108,7 @@ clust4_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 > 0.5 & V5 < 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5) %>%
   rownames()
+print("clust4_RNA")
 length(clust4_RNA)
 
 clust5_RNA <-
@@ -1101,6 +1116,7 @@ clust5_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 > 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust5_RNA")
 length(clust5_RNA)
 
 clust6_RNA <-
@@ -1108,6 +1124,7 @@ clust6_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5 & V6 > 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust6_RNA")
 length(clust6_RNA)
 
 clust7_RNA <-
@@ -1115,6 +1132,7 @@ clust7_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5 & V6 < 0.5 & V7 > 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust7_RNA")
 length(clust7_RNA)
 
 clust8_RNA <-
@@ -1122,6 +1140,7 @@ clust8_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 <0.5 & V6 < 0.5 & V7 < 0.5 & V8 > 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust8_RNA")
 length(clust8_RNA)
 
 clust9_RNA <-
@@ -1129,6 +1148,7 @@ clust9_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 <0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 > 0.5 & V10 < 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust9_RNA")
 length(clust9_RNA)
 
 clust10_RNA <-
@@ -1136,6 +1156,7 @@ clust10_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 <0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 > 0.5 & V11 < 0.5) %>%
   rownames()
+print("clust10_RNA")
 length(clust10_RNA)
 
 clust11_RNA <-
@@ -1143,6 +1164,7 @@ clust11_RNA <-
   as.data.frame() %>%
   filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 <0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 > 0.5) %>%
   rownames()
+print("clust11_RNA")
 length(clust11_RNA)
 ```
 
@@ -1164,35 +1186,42 @@ clust_names_list <- list(
 
 names(clust_names_list) <- paste0("clust", 1:11)
 
-overlap_matirx <- check_overlap(clust_names_list)
+print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 
 
 ```{r RNASeq_CorMotif_ClusterSets_saves,eval=FALSE}
 #View(motif_prob)
-write.csv(clust1_RNA,"data/Cormotif/clust1_RNA_Trajectory.csv")
-write.csv(clust2_RNA,"data/Cormotif/clust2_RNA_Trajectory.csv")
-write.csv(clust3_RNA,"data/Cormotif/clust3_RNA_Trajectory.csv")
-write.csv(clust4_RNA,"data/Cormotif/clust4_RNA_Trajectory.csv")
-write.csv(clust5_RNA,"data/Cormotif/clust5_RNA_Trajectory.csv")
-write.csv(clust6_RNA,"data/Cormotif/clust6_RNA_Trajectory.csv")
-write.csv(clust7_RNA,"data/Cormotif/clust7_RNA_Trajectory.csv")
-write.csv(clust8_RNA,"data/Cormotif/clust8_RNA_Trajectory.csv")
-write.csv(clust9_RNA,"data/Cormotif/clust9_RNA_Trajectory.csv")
-write.csv(clust10_RNA,"data/Cormotif/clust10_RNA_Trajectory.csv")
-write.csv(clust11_RNA,"data/Cormotif/clust11_RNA_Trajectory.csv")
-saveRDS(clust1_RNA,"data/Cormotif/clust1_RNA_Trajectory.RDS")
-saveRDS(clust2_RNA,"data/Cormotif/clust2_RNA_Trajectory.RDS")
-saveRDS(clust3_RNA,"data/Cormotif/clust3_RNA_Trajectory.RDS")
-saveRDS(clust4_RNA,"data/Cormotif/clust4_RNA_Trajectory.RDS")
-saveRDS(clust5_RNA,"data/Cormotif/clust5_RNA_Trajectory.RDS")
-saveRDS(clust6_RNA,"data/Cormotif/clust6_RNA_Trajectory.RDS")
-saveRDS(clust7_RNA,"data/Cormotif/clust7_RNA_Trajectory.RDS")
-saveRDS(clust8_RNA,"data/Cormotif/clust8_RNA_Trajectory.RDS")
-saveRDS(clust9_RNA,"data/Cormotif/clust9_RNA_Trajectory.RDS")
-saveRDS(clust10_RNA,"data/Cormotif/clust10_RNA_Trajectory.RDS")
-saveRDS(clust1_RNA,"data/Cormotif/clust11_RNA_Trajectory.RDS")
+# write.csv(clust1_RNA,"data/Cormotif/clust1_RNA_Trajectory.csv")
+# write.csv(clust2_RNA,"data/Cormotif/clust2_RNA_Trajectory.csv")
+# write.csv(clust3_RNA,"data/Cormotif/clust3_RNA_Trajectory.csv")
+# write.csv(clust4_RNA,"data/Cormotif/clust4_RNA_Trajectory.csv")
+# write.csv(clust5_RNA,"data/Cormotif/clust5_RNA_Trajectory.csv")
+# write.csv(clust6_RNA,"data/Cormotif/clust6_RNA_Trajectory.csv")
+# write.csv(clust7_RNA,"data/Cormotif/clust7_RNA_Trajectory.csv")
+# write.csv(clust8_RNA,"data/Cormotif/clust8_RNA_Trajectory.csv")
+# write.csv(clust9_RNA,"data/Cormotif/clust9_RNA_Trajectory.csv")
+# write.csv(clust10_RNA,"data/Cormotif/clust10_RNA_Trajectory.csv")
+# write.csv(clust11_RNA,"data/Cormotif/clust11_RNA_Trajectory.csv")
+# saveRDS(clust1_RNA,"data/Cormotif/clust1_RNA_Trajectory.RDS")
+# saveRDS(clust2_RNA,"data/Cormotif/clust2_RNA_Trajectory.RDS")
+# saveRDS(clust3_RNA,"data/Cormotif/clust3_RNA_Trajectory.RDS")
+# saveRDS(clust4_RNA,"data/Cormotif/clust4_RNA_Trajectory.RDS")
+# saveRDS(clust5_RNA,"data/Cormotif/clust5_RNA_Trajectory.RDS")
+# saveRDS(clust6_RNA,"data/Cormotif/clust6_RNA_Trajectory.RDS")
+# saveRDS(clust7_RNA,"data/Cormotif/clust7_RNA_Trajectory.RDS")
+# saveRDS(clust8_RNA,"data/Cormotif/clust8_RNA_Trajectory.RDS")
+# saveRDS(clust9_RNA,"data/Cormotif/clust9_RNA_Trajectory.RDS")
+# saveRDS(clust10_RNA,"data/Cormotif/clust10_RNA_Trajectory.RDS")
+# saveRDS(clust1_RNA,"data/Cormotif/clust11_RNA_Trajectory.RDS")
+# ```
+
+
+```{r Updating Website, eval = FALSE}
+
+# git -> commit all changes
+# git -> push
+# wflow_publish("analysis/RNA_CorMotif_Trajectory_Ensemble.Rmd")
+
 ```
-
-

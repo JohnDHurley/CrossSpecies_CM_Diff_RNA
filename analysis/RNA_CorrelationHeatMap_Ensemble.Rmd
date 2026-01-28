@@ -1,0 +1,677 @@
+---
+title: "RNA_CorrelationHeatMap"
+output: html_document
+date: "2026-01-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Setting_Up_Enviroment, results="hide"}
+
+####Library Loading####
+library("edgeR")
+library("ggplot2")
+library("tibble")
+library("dplyr")
+library("ggrepel")
+library("readr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("pheatmap")
+library("Cormotif")
+library("tidyverse")
+library("workflowr")
+library("RUVSeq")
+library("SummarizedExperiment")
+library("readxl")
+library("ggfortify")
+library("ComplexHeatmap")
+
+# BiocManager::install("SummarizedExperiment")
+
+RNA_fc_df <- readRDS("data/Raw_Data/RNA_fc_df.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
+
+RNA_fc <- readRDS("data/QC/RNA_fc.RDS")
+RNA_log2cpm <- ("data/QC/RNA_log2cpm.RDS")
+
+Filt_RMG0_RNA_fc <- readRDS("data/QC/Filt_RMG0_RNA_fc.RDS")
+Filt_RMG0_RNA_log2cpm <-("data/QC/RNA_log2cpm_RMG0.RDS")
+
+Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+Cor_metadata <- readRDS("data/QC/Cor_RNA_metadata.RDS")
+ann_colors <- readRDS("data/QC/ann_colors.RDS")
+
+RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_No4.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
+Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+
+Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
+Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
+
+```
+
+
+```{r Setting_Up_Enviroment, results="hide"}
+# #To keep only OrthoGenes and sample columns
+# RNA_fc <- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c("gene","Chr.x","Start.x","End.x","Strand.x","Length.x","Geneid.x","Chr.y","Start.y","End.y","Strand.y","Length.y","Geneid.y"))]
+# # 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
+# rownames(RNA_fc) <- RNA_joined_fc$gene
+# 
+# #Rename column Names to More Useful Info
+col_names <- c("H28126_D0",
+              "H28126_D2",
+              "H28126_D4",
+              "H28126_D5",
+              "H28126_D15",
+              "H28126_D30",
+              "H17_D0",
+              "H17_D2",
+              "H17_D4",
+              "H17_D5",
+              "H17_D15",
+              "H17_D30",
+              "H78_D0",
+              "H78_D2",
+              "H78_D4",
+              "H78_D5",
+              "H78_D15",
+              "H78_D30",
+              "H20682_D0",
+              "H20682_D2",
+              "H20682_D4",
+              "H20682_D5",
+              "H20682_D15",
+              "H20682_D30",
+              "H22422_D0",
+              "H22422_D2",
+              "H22422_D4",
+              "H22422_D5",
+              "H22422_D15",
+              "H22422_D30",
+              "H21792_D0",
+              "H21792_D2",
+              "H21792_D4",
+              "H21792_D5",
+              "H21792_D15",
+              "H21792_D30",
+              "H24280_D0",
+              "H24280_D2",
+              "H24280_D4",
+              "H24280_D5",
+              "H24280_D15",
+              "H24280_D30",
+              "H20682R_D0",
+              "H20682R_D2",
+              "H20682R_D5",
+              "H20682R_D30",
+              "C3649_D0",
+              "C3649_D2",
+              "C3649_D4",
+              "C3649_D5",
+              "C3649_D15",
+              "C3649_D30",
+              "C4955_D0",
+              "C4955_D2",
+              "C4955_D4",
+              "C4955_D5",
+              "C4955_D15",
+              "C4955_D30",
+              "C3651_D0",
+              "C3651_D2",
+              "C3651_D4",
+              "C3651_D5",
+              "C3651_D15",
+              "C3651_D30",
+              "C40210_D0",
+              "C40210_D2",
+              "C40210_D4",
+              "C40210_D5",
+              "C40210_D15",
+              "C40210_D30",
+              "C8861_D0",
+              "C8861_D2",
+              "C8861_D4",
+              "C8861_D5",
+              "C8861_D15",
+              "C8861_D30",
+              "C40280_D0",
+              "C40280_D2",
+              "C40280_D4",
+              "C40280_D5",
+              "C40280_D15",
+              "C40280_D30",
+              "C3647_D0",
+              "C3647_D2",
+              "C3647_D4",
+              "C3647_D5",
+              "C3647_D15",
+              "C3647_D30"
+)
+# colnames(RNA_fc) <- col_names 
+# dim(RNA_fc)
+# 
+# sum(duplicated(rownames(RNA_fc)))
+# ensembl_ids_unfilt <- rownames(RNA_fc)
+# entrez_ids_unfilt <- mapIds(org.Hs.eg.db,
+#                             keys = ensembl_ids_unfilt,
+#                             column = "ENTREZID",
+#                             keytype = "ENSEMBL",
+#                             multiVals = "first")
+# symbol_ids_unfilt <- mapIds(org.Hs.eg.db,
+#                             keys = ensembl_ids_unfilt,
+#                             column = "SYMBOL",
+#                             keytype = "ENSEMBL",
+#                             multiVals = "first")
+# 
+# RNA_fc_df <- as.data.frame(RNA_fc)
+# RNA_fc_df <- RNA_fc_df %>%
+#   rownames_to_column(var = "Ensemble") %>%
+#   dplyr::mutate(
+#     Entrez_ID = entrez_ids_unfilt,
+#     Symbol    = symbol_ids_unfilt
+#   ) %>%
+#   dplyr::select(
+#     Ensemble,        # 1st column
+#     Entrez_ID,       # 2nd column
+#     Symbol,          # 3rd column
+#     everything()     # rest unchanged
+#   )
+# 
+# # saveRDS(RNA_fc_df,"data/Data_Frames/RNA_fc_df.RDS")
+# 
+# RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
+# 
+# # saveRDS(RNA_Metadata,"data/Data_Frames/RNA_Metadata.RDS")
+```
+
+
+```{r RNASeq_FeatureCounts_Box_Unfiltered}
+#####Unfiltered####
+RNA_fc <- RNA_fc_df %>% 
+  dplyr::select(c(-"Entrez_ID", -"Symbol")) %>% 
+  column_to_rownames("Ensemble")
+
+saveRDS(RNA_fc,"data/QC/RNA_fc.RDS")
+
+RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
+print(hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =4 ))
+
+boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample
+          (unfiltered)", xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_names),  # positions (one per sample)
+     labels = col_names,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.3)        # shrink label size
+saveRDS(RNA_log2cpm,"data/QC/RNA_log2cpm.RDS")
+```
+
+
+
+```{r RNASeq_FeatureCounts_RMG0}
+#####RowMu>0####
+row_means <- rowMeans(RNA_log2cpm)
+Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
+
+saveRDS(Filt_RMG0_RNA_fc,"data/QC/Filt_RMG0_RNA_fc.RDS")
+
+Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
+
+saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/RNA_log2cpm_RMG0.RDS")
+
+hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+```{r RNASeq_FeatureCounts_Box_RMG0}
+boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_names),  # positions (one per sample)
+     labels = col_names,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.3)        # shrink label size
+
+```
+
+```{r RNASeq_FeatureCounts_Cor_RMG0}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "spearman")
+individual <- RNA_Metadata$Individual
+species <- RNA_Metadata$Species
+timepoint <- RNA_Metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Filt_RMG0_RNA_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+ann_colors <- list(
+  timepoint_cor = c(
+    "Day0" = "#883268",   # Purple
+    "Day2" = "#3E7274",  # blue
+    "Day4" = "#5AAA464D",  # light green
+    "Day5" = "#94C47D",  # Green
+    "Day15" = "#C03830",  # red
+    "Day30" = "#830C05"  # dark red
+  ),
+  species_cor = c(
+    "H" = "#171717",  # black
+    "C" = "#17171717"   # light grey
+  ),
+  individual_cor = c(
+    H1 = "#091638", #Blue-Green Darkest
+    H2 = "#11185B",
+    H3 = "#0F2C71",
+    H4 = "#0D568F",
+    H4R = "#0D568F",
+    H5 = "#1D8296",
+    H6 = "#46A389",
+    H7 = "#9DD484", #Blue-Green Lightest
+    C1 = "#340702", #Brown-Orange darkest
+    C2 = "#5D0B02",
+    C3 = "#951302",
+    C4 = "#D32804",
+    C5 = "#F74019",
+    C6 = "#FA7A38",
+    C7 = "#FCC598"
+    
+  )
+)
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_Filt_RMG0_RNA_log2cpm, "data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+saveRDS(Cor_metadata, "data/QC/Cor_RNA_metadata.RDS")
+saveRDS(ann_colors,"data/QC/ann_colors.RDS")
+
+```
+
+```{r RNASeq_FeatureCounts_HeatMap_RMG0,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM-RowMeans>0)")
+)
+```
+
+```{r RNASeq_FeatureCounts_RMG0_No4}
+
+####Subset####
+RNA_Metadata_No4 <- RNA_Metadata %>% 
+ filter(timepoint != "Day4")
+
+RNA_fc_NoD4 <- RNA_fc %>% 
+  dplyr::select(-ends_with("_D4"))
+
+RNA_log2cpm_NoD4 <- cpm(RNA_fc_NoD4,log=TRUE)
+dim(RNA_log2cpm_NoD4)
+dim(RNA_fc)
+row_means_NoD4 <- rowMeans(RNA_log2cpm_NoD4)
+Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_NoD4[row_means_NoD4 >0,]
+dim(Filt_RMG0_RNA_fc_NoD4)
+Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
+
+saveRDS(RNA_Metadata_No4,"data/QC/RNA_Metatdata_No4.RDS")
+saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
+saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+
+```
+
+```{r rRNASeq_FeatureCounts_Cor_RMG0_No4}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = "spearman")
+
+Cor_metadata_No4 <- Cor_metadata %>% 
+  dplyr::filter(timepoint_cor !="Day4")
+
+ann_colors_No4 <- ann_colors
+ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
+  names(ann_colors$timepoint_cor) != "Day4"
+]
+
+saveRDS(Cor_metadata_No4, "data/QC/Cor_metadata_No4.RDS")
+saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+saveRDS(ann_colors_No4,"data/QC/ann_colors_no4.RDS")
+```
+
+
+```{r rRNASeq_FeatureCounts_HeatMap_RMG0_No4,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_NoD4,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata_No4[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors_No4,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Spearman) \n (log2CPM-RowMeans>0-NoDay4)")
+)
+```
+
+```{r RNASeq_FeatureCounts_RMG0_No4_RUV}
+filt_gene_list <- rownames(Filt_RMG0_RNA_log2cpm_NoD4)
+#14838
+length(filt_gene_list)
+
+
+# in order to make this match with annot later down the line, change the col names for counts_raw_matrix to match final_sample_names in annot
+
+# i'll also want to make sure I keep the replicate for this set
+
+Ind_RUV <- c(rep("H1",5),
+             rep("H2",5),
+             rep("H3",5),
+             rep("H4",5),
+             rep("H5",5),
+             rep("H6",5),
+             rep("H7",5),
+             rep("H4R",4),
+             rep("C1",5),
+             rep("C2",5),
+             rep("C3",5),
+             rep("C4",5),
+             rep("C5",5),
+             rep("C6",5),
+             rep("C7",5)
+             )
+RNA_Metadata_No4$Ind_RUV <- Ind_RUV
+RNA_Metadata_No4_RUV <- RNA_Metadata_No4 %>%
+   mutate(
+    Ind_RUV = factor(Ind_RUV,
+                        levels = c("H1","H2","H3","H4","H5","H6","H7","H4R","C1","C2","C3","C4","C5","C6","C7"),ordered=TRUE),
+    Timepoint = factor(Timepoint,
+                       levels = c("Day0","Day2","Day5","Day15","Day30"),ordered=TRUE),
+    Species = factor(Species,
+                     levels = c("H","C"),ordered=TRUE),
+    Condition = factor(
+      Condition,
+      levels = expand.grid(
+        Ind_RUV = levels(Ind_RUV),
+        Timepoint = levels(Timepoint),
+        Species = levels(Species)
+      ) %>%
+        transmute(Condition=paste(Species,Timepoint,Ind_RUV,sep="_")) %>%
+        pull(Condition),
+      ordered=TRUE
+    )
+  )
+
+saveRDS(RNA_Metadata_No4_RUV,"data/QC/RNA_MetaData_NoD4_RUV.RDS")
+RNA_Metadata_No4_RUV <- readRDS("data/QC/RNA_MetaData_NoD4_RUV.RDS")
+
+RNA_fc_NoD4_RUV <- RNA_fc_NoD4
+colnames(RNA_fc_NoD4_RUV) <- RNA_Metadata_No4_RUV$Condition
+
+RUV_filt_counts <- RNA_fc_NoD4_RUV %>% 
+  as.data.frame() %>% 
+  dplyr::filter(., row.names(.)%in% filt_gene_list)
+saveRDS(RUV_filt_counts, "data/DGE/RUV_filt_counts.RDS")
+dim(RUV_filt_counts)
+
+#add in the annotation files
+ind_num <- RNA_Metadata_No4_RUV$Ind_RUV
+type(ind_num)
+length(ind_num)
+
+annot <- as.data.frame(RNA_Metadata_No4_RUV)
+type(annot)
+is.data.frame(annot)
+#same as Metadata
+
+
+#  counts need to be integer values and in a numeric matrix
+# note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
+counts <- as.matrix(RUV_filt_counts)
+  
+# saveRDS(counts, "data/QC/filt_counts_matrix.RDS")
+
+# Create a DataFrame for the phenoData
+phenoData <- DataFrame(annot)
+
+set <- SummarizedExperiment(assays = counts, metadata = phenoData)
+
+scIdx <- RUVSeq::makeGroups(phenoData$Cond)
+
+# # Generate a background matrix
+# # The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
+# Day0 <- c(16,36)
+# Day2 <- c(17,37)
+# Day5 <- c(18,38)
+# Day30 <- c(20,39)
+# scIdx <- rbind(Day0,Day2,Day5,Day30)
+# rownames(scIdx) <- c("[1,]","[2,]","[3,]","[4,]")
+# colnames(scIdx) <- c("[,1]","[,2]")
+```
+
+
+
+```{r}
+#now I've made all of the data I need for this - they are located in each section for k values
+
+#DO NOT USE THESE COUNTS FOR LINEAR MODELING
+
+#colors for all of the plots
+# txtime_col
+# ind_col
+# time_col
+# tx_col
+log2cpm <- cpm(counts,log=TRUE)
+# before ruv (counts PCA)
+prcomp_res_log2 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4), scale=FALSE, center = TRUE)
+annot_prcomp_res <- prcomp_res_log2$x %>% cbind(., annot)
+# 
+# group_2 <- annot$dgelist
+# dgelist_col <- annot$dgelist
+# individual_list <- annot$Individual
+```
+
+
+```{r}
+
+#now plot my PCA for filtered counts
+####PC1/PC2####
+individual_list <- RNA_Metadata_No4_RUV$Individual
+
+suppressWarnings(
+  ggplot2::autoplot(prcomp_res_log2,
+                    data = annot,
+                    colour = "Timepoint",
+                    shape = "Species",
+                    size = 4,
+                    x = 1,
+                    y = 2) +
+    scale_color_manual(values = ann_colors_No4$timepoint_cor) +
+    ggrepel::geom_text_repel(
+      label = individual_list,
+      vjust = -0.5,
+      max.overlaps = 50
+    ) +
+    ggtitle("RNA log2cpm RMG0")
+)
+
+```
+
+```{r}
+ggplot2::autoplot(prcomp_res_log2,
+                  data = annot,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=2,
+                  y=3) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = individual_list,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("RNA log2cpm RMG0")
+
+```
+
+```{r}
+ggplot2::autoplot(prcomp_res_log2,
+                  data = annot,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = individual_list,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("RNA log2cpm RMG0")
+
+```
+
+```{r}
+ggplot2::autoplot(prcomp_res_log2,
+                  data = annot,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=4,
+                  y=5) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = individual_list,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("RNA log2cpm RMG0")
+
+```
+
+```{r}
+# set1 <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
+# 
+# # Get the RUV factors (weights) for modeling
+# RUV_df1 <- set1$W %>% as.data.frame()
+# RUV_df1$Condition <- rownames(RUV_df1)
+# 
+# RUV_df_rm1 <- RUV_df1[RUV_df1$Condition %in% annot$Condition, ]
+# View(RUV_df_rm1)
+# RUV_1 <- RUV_df_rm1$W_1
+# 
+# saveRDS(RUV_df_rm1, "data/QC/RUV_df_rm1.RDS")
+# saveRDS(RUV_1, "data/QC/RUV_1.RDS")
+# 
+# 
+# log2cpm_k1 <- cpm(set1$normalizedCounts, log = TRUE)
+# 
+# prcomp_res_log2_k1 <- prcomp(t(log2cpm_k1), scale=FALSE, center = TRUE)
+# annot_prcomp_res_k1 <- prcomp_res_log2_k1$x %>% cbind(., RNA_Metadata_No4)
+# #PCA checks
+# #k=1
+# 
+# ggplot2::autoplot(prcomp_res_log2_k1,
+#                   data = annot_prcomp_res_k1,
+#                   colour = "Timepoint",
+#                   shape = "Species",
+#                   size = 4,
+#                   x=1,
+#                   y=2) +
+#   scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+#   ggrepel::geom_text_repel(label = individual_list,
+#                             vjust = -0.5,
+#                             max.overlaps = 50)+
+#   ggtitle("RUV Correction k=1 log2cpm")
+
+```
+
+
+```{r}
+# set2 <- RUVSeq::RUVs(x = counts, k =2, scIdx = scIdx, isLog = FALSE)
+# 
+# # Get the RUV factors (weights) for modeling
+# RUV_df2 <- set2$W %>% as.data.frame()
+# RUV_df2$Condition <- rownames(RUV_df2)
+# 
+# RUV_df_rm2 <- RUV_df2[RUV_df2$Condition %in% annot$Condition, ]
+# View(RUV_df_rm2)
+# RUV_2 <- RUV_df_rm2$W_1
+# 
+# saveRDS(RUV_df_rm2, "data/DE/RUV_df_rm2.RDS")
+# saveRDS(RUV_2, "data/DE/RUV_2.RDS")
+# 
+# 
+# log2cpm_k2 <- cpm(set2$normalizedCounts, log = TRUE)
+# 
+# prcomp_res_log2_k2 <- prcomp(t(log2cpm_k2), scale=FALSE, center = TRUE)
+# annot_prcomp_res_k2 <- prcomp_res_log2_k2$x %>% cbind(., RNA_Metadata_No4)
+# #PCA checks
+# #k=1
+# 
+# ggplot2::autoplot(prcomp_res_log2_k2,
+#                   data = annot,
+#                   colour = "Timepoint",
+#                   shape = "Species",
+#                   size = 4,
+#                   x=1,
+#                   y=2) +
+#   scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+#   ggrepel::geom_text_repel(label = individual_list,
+#                             vjust = -0.5,
+#                             max.overlaps = 50)+
+#   ggtitle("RUV Correction k=2 log2cpm")
+
+```
+
+```{r}
+# 
+# set3 <- RUVSeq::RUVs(x = counts, k =3, scIdx = scIdx, isLog = FALSE)
+# 
+# # Get the RUV factors (weights) for modeling
+# RUV_df3 <- set3$W %>% as.data.frame()
+# RUV_df3$Condition <- rownames(RUV_df3)
+# 
+# RUV_df_rm3 <- RUV_df3[RUV_df3$Condition %in% annot$Condition, ]
+# View(RUV_df_rm3)
+# RUV_3 <- RUV_df_rm3$W_1
+# 
+# saveRDS(RUV_df_rm1, "data/DE/RUV_df_rm1.RDS")
+# saveRDS(RUV_1, "data/DE/RUV_1.RDS")
+# 
+# 
+# log2cpm_k3 <- cpm(set3$normalizedCounts, log = TRUE)
+# 
+# prcomp_res_log2_k3 <- prcomp(t(log2cpm_k3), scale=FALSE, center = TRUE)
+# annot_prcomp_res_k3 <- prcomp_res_log2_k3$x %>% cbind(., RNA_Metadata_No4)
+# #PCA checks
+# #k=1
+# 
+# ggplot2::autoplot(prcomp_res_log2_k3,
+#                   data = annot,
+#                   colour = "Timepoint",
+#                   shape = "Species",
+#                   size = 4,
+#                   x=1,
+#                   y=2) +
+#   scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+#   ggrepel::geom_text_repel(label = individual_list,
+#                             vjust = -0.5,
+#                             max.overlaps = 50)+
+#   ggtitle("RUV Correction k=3 log2cpm")
+
+```
+
+
+```{r Updating Website, eval = FALSE}
+
+git -> commit all changes
+git -> push
+wflow_publish("analysis/RNA_CorrelationHeatMap.Rmd")
+
+```
+
+

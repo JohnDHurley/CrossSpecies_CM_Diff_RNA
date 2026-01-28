@@ -1,0 +1,394 @@
+---
+title: "RNA_CHDGene_Comp_Species"
+output: html_document
+date: "2026-01-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RNA_GWAS_SettingEnviroment}
+#Loading Libraries
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(biomaRt)
+library(tidyverse)
+library(readxl)
+library(readr)
+library(reshape2)
+library(circlize)
+library(grid)
+library(stringr)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+library(gprofiler2)
+library(purrr)
+# install.packages("biomartr")
+
+#Loading R Objects
+# quadrant_gene_lists <- readRDS("data/DGE/quadrant_gene_lists_DayBefore.RDS")
+# chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
+Day0_DEGs_HC <- readRDS("data/DGE/Species/Day0_DEGs_HC.RDS")
+Day2_DEGs_HC <- readRDS("data/DGE/Species/Day2_DEGs_HC.RDS")
+Day5_DEGs_HC <- readRDS("data/DGE/Species/Day5_DEGs_HC.RDS")
+Day15_DEGs_HC <- readRDS("data/DGE/Species/Day15_DEGs_HC.RDS")
+Day30_DEGs_HC <- readRDS("data/DGE/Species/Day30_DEGs_HC.RDS")
+all_intersections <- readRDS("data/DGE/Species/all_intersections.RDS")
+```
+
+
+```{r Volcano_Plot_Function}
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+```
+
+```{r Volcano_Plot_chdgene_Function}
+generate_volcano_plot_CHDGene <- function(toptable, title, chdgene_genes = NULL) {
+  
+  # Determine significance
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", "Not Significant", "Downregulated")
+  )
+
+  # Mark GWAS hits
+  toptable <- toptable %>%
+    mutate(highlight = if_else(Gene %in% chdgene_genes, TRUE, FALSE))
+
+  # Split data for layers
+  df_non_chdgene <- toptable %>% filter(!highlight)
+  df_chdgene     <- toptable %>% filter(highlight)
+
+  # Colors for significance
+  color_map <- c(
+    "Upregulated" = "blue",
+    "Not Significant" = "grey30",
+    "Downregulated" = "red"
+  )
+
+  p <- ggplot() +
+    # Non-chdgene points
+    geom_point(data = df_non_chdgene,
+               aes(x = logFC, y = -log10(P.Value), color = Significance),
+               alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map) +
+
+    # GWAS points on top with outline
+    geom_point(data = df_chdgene,
+               aes(x = logFC, y = -log10(P.Value), fill = Significance),
+               shape = 21, color = "limegreen", size = 4, stroke = 1.5) +
+
+    # Optional: label chdgene genes
+    # geom_text_repel(data = df_gwas,
+    #                 aes(x = logFC, y = -log10(P.Value), label = Gene),
+    #                 size = 3, fontface = "bold", color = "black", max.overlaps = 20) +
+
+    xlim(-20, 20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    theme_bw() +
+    theme(legend.position = "right") +
+    guides(color = guide_legend(override.aes = list(size = 3)),
+           fill = guide_legend(override.aes = list(size = 3)))
+
+  return(p)
+}
+
+```
+
+```{r RNA_CHDGene_DataSets}
+chdgene_table <- read.csv("C:/Users/jdhurley/Downloads/chdgene_table.csv")
+saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
+
+# Make a copy to be safe
+chdgene_table_copy <- chdgene_table
+
+# Check
+colnames(chdgene_table_copy)
+# Should include "Gene"
+
+dim(chdgene_table_copy)
+length(unique(chdgene_table_copy$Gene))
+unique(chdgene_table_copy$Gene)
+
+# Connect to Ensembl
+ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+
+# Your Day0-only DEGs (Ensembl IDs)
+day0_only <- all_intersections$Day0
+
+# Map Ensembl IDs to gene symbols
+mapping <- getBM(
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_gene_id",
+  values = day0_only,
+  mart = ensembl
+)
+
+# Remove empty mappings
+mapping <- mapping[mapping$hgnc_symbol != "", ]
+
+# Filter by your known gene list
+known_genes <- chdgene_table_copy$Gene 
+day0_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+
+# Optional: get gene symbols for filtered genes
+day0_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+
+saveRDS(day0_filtered_symbols,"data/DGE/Species/Day0_Only_DEGs_CHDGenes.RDS")
+
+# Your day2-only DEGs (Ensembl IDs)
+day2_only <- all_intersections$Day2
+
+# Map Ensembl IDs to gene symbols
+mapping <- getBM(
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_gene_id",
+  values = day2_only,
+  mart = ensembl
+)
+
+# Remove empty mappings
+mapping <- mapping[mapping$hgnc_symbol != "", ]
+
+# Filter by your known gene list
+known_genes <- chdgene_table_copy$Gene 
+day2_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+
+# Optional: get gene symbols for filtered genes
+day2_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+
+saveRDS(day2_filtered_symbols,"data/DGE/Species/Day2_Only_DEGs_CHDGenes.RDS")
+
+# Your day2-only DEGs (Ensembl IDs)
+day5_only <- all_intersections$Day5
+
+# Map Ensembl IDs to gene symbols
+mapping <- getBM(
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_gene_id",
+  values = day5_only,
+  mart = ensembl
+)
+
+# Remove empty mappings
+mapping <- mapping[mapping$hgnc_symbol != "", ]
+
+# Filter by your known gene list
+known_genes <- chdgene_table_copy$Gene 
+day5_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+
+# Optional: get gene symbols for filtered genes
+day5_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+
+saveRDS(day5_filtered_symbols,"data/DGE/Species/day5_Only_DEGs_CHDGenes.RDS")  
+
+# Your day2-only DEGs (Ensembl IDs)
+day15_only <- all_intersections$Day15
+
+# Map Ensembl IDs to gene symbols
+mapping <- getBM(
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_gene_id",
+  values = day15_only,
+  mart = ensembl
+)
+
+# Remove empty mappings
+mapping <- mapping[mapping$hgnc_symbol != "", ]
+
+# Filter by your known gene list
+known_genes <- chdgene_table_copy$Gene 
+day15_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+
+# Optional: get gene symbols for filtered genes
+day15_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+
+saveRDS(day15_filtered_symbols,"data/DGE/Species/day15_Only_DEGs_CHDGenes.RDS")  
+
+# Your day2-only DEGs (Ensembl IDs)
+day30_only <- all_intersections$Day30
+
+# Map Ensembl IDs to gene symbols
+mapping <- getBM(
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_gene_id",
+  values = day30_only,
+  mart = ensembl
+)
+
+# Remove empty mappings
+mapping <- mapping[mapping$hgnc_symbol != "", ]
+
+# Filter by your known gene list
+known_genes <- chdgene_table_copy$Gene 
+day30_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+
+# Optional: get gene symbols for filtered genes
+day30_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+
+saveRDS(day30_filtered_symbols,"data/DGE/Species/day30_Only_DEGs_CHDGenes.RDS")  
+
+# Your day2-only DEGs (Ensembl IDs)
+AllDays_only <- all_intersections$`Day0&Day2&Day5&Day15&Day30`
+
+# Map Ensembl IDs to gene symbols
+mapping <- getBM(
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  filters = "ensembl_gene_id",
+  values = AllDays_only,
+  mart = ensembl
+)
+
+# Remove empty mappings
+mapping <- mapping[mapping$hgnc_symbol != "", ]
+
+# Filter by your known gene list
+known_genes <- chdgene_table_copy$Gene 
+AllDays_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+
+# Optional: get gene symbols for filtered genes
+AllDays_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+
+saveRDS(AllDays_filtered_symbols,"data/DGE/Species/AllDays_Only_DEGs_CHDGenes.RDS")  
+
+```
+```{r}
+# Create the table
+Day0_Only_DEGs_ChiSq <- matrix(c(16, 1719, 8, 1184), nrow = 2, byrow = TRUE)
+rownames(Day0_Only_DEGs_ChiSq) <- c("Day0", "Day0-2-5-15-30")
+colnames(Day0_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day0_Only_DEGs_ChiSq)
+
+# Create the table
+Day2_Only_DEGs_ChiSq <- matrix(c(6, 441, 8, 1184), nrow = 2, byrow = TRUE)
+rownames(Day2_Only_DEGs_ChiSq) <- c("Day2", "Day0-2-5-15-30")
+colnames(Day2_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day2_Only_DEGs_ChiSq)
+
+# Create the table
+Day5_Only_DEGs_ChiSq <- matrix(c(6,499, 8, 1184), nrow = 2, byrow = TRUE)
+rownames(Day5_Only_DEGs_ChiSq) <- c("Day5", "Day0-2-5-15-30")
+colnames(Day5_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day5_Only_DEGs_ChiSq)
+
+# Create the table
+Day15_Only_DEGs_ChiSq <- matrix(c(14,602, 8, 1184), nrow = 2, byrow = TRUE)
+rownames(Day15_Only_DEGs_ChiSq) <- c("Day15", "Day0-2-5-15-30")
+colnames(Day15_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day15_Only_DEGs_ChiSq)
+
+# Create the table
+Day30_Only_DEGs_ChiSq <- matrix(c(18,1217, 8, 1184), nrow = 2, byrow = TRUE)
+rownames(Day30_Only_DEGs_ChiSq) <- c("Day30", "Day0-2-5-15-30")
+colnames(Day30_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day30_Only_DEGs_ChiSq)
+```
+```{r}
+df <- data.frame(
+  Day = c("Day0", "Day2", "Day5", "Day15", "Day30","Shared_All"),
+  CHDGene = c(16,6,6,14,18,8),
+  Non_CHDGene = c(1719,441,499,602,1217,1884)
+)
+
+# Convert to long format for ggplot
+df_long <- df %>%
+  pivot_longer(cols = c(CHDGene, Non_CHDGene),
+               names_to = "Type",
+               values_to = "Count") %>%
+  group_by(Day) %>%
+  mutate(Proportion = Count / sum(Count))  # calculate proportions
+
+df_long$Day <- factor(df_long$Day, levels = c("Day0", "Day2", "Day5", "Day15", "Day30","Shared_All"), ordered = TRUE)
+
+ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
+  scale_fill_manual(values = c("DEGs" = "#E41A1C", "CHDGene" = "#377EB8")) + # custom colors
+  labs(y = "Proportion", x = "Day", fill = "") +
+  theme_minimal(base_size = 14)
+```
+
+
+
+

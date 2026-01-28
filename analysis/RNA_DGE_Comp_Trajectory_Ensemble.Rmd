@@ -1,0 +1,637 @@
+---
+title: "RNA_DGE_Comp_Trajectory"
+output: html_document
+date: "2026-01-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Setting the Enviroment}
+
+#Loading Libraries
+library(tidyverse)
+library(readxl)
+library(readr)
+library(ggrepel)
+library(ggfortify)
+library(patchwork)
+library(eulerr)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+library(ggVennDiagram)
+library(ggrastr)
+library(edgeR)
+library(limma)
+library("ggsignif")
+
+
+
+#Loading R Objects
+Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol.RDS")
+          #RNA_Cormotif_Comp_Trajectory.Rmd
+Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol <- readRDS("data/Cormotif/Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol.RDS")
+          #RNA_Cormotif_Comp_Trajectory.Rmd
+RNA_Metadata <- readRDS("data/QC/RNA_Metadata.RDS")
+RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+clust1_RNA <- readRDS("data/Cormotif/clust1_RNA_Trajectory.RDS")
+clust2_RNA <- readRDS("data/Cormotif/clust2_RNA_Trajectory.RDS")
+clust3_RNA <- readRDS("data/Cormotif/clust3_RNA_Trajectory.RDS")
+clust4_RNA <- readRDS("data/Cormotif/clust4_RNA_Trajectory.RDS")
+clust5_RNA <- readRDS("data/Cormotif/clust5_RNA_Trajectory.RDS")
+clust6_RNA <- readRDS("data/Cormotif/clust6_RNA_Trajectory.RDS")
+clust7_RNA <- readRDS("data/Cormotif/clust7_RNA_Trajectory.RDS")
+clust8_RNA <- readRDS("data/Cormotif/clust8_RNA_Trajectory.RDS")
+clust9_RNA <- readRDS("data/Cormotif/clust9_RNA_Trajectory.RDS")
+clust10_RNA <- readRDS("data/Cormotif/clust10_RNA_Trajectory.RDS")
+clust11_RNA <- readRDS("data/Cormotif/clust11_RNA_Trajectory.RDS")
+```
+
+```{r Volcano_Plot_Function}
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+```
+
+```{r}
+plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_D0_D2","H_D2_D5","H_D5_D15","H_D15_D30",
+      "C_D0_D2","C_D2_D5","C_D5_D15","C_D15_D30"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(paste0(cluster_name, " RNA FC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r}
+plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_D0_D2","H_D2_D5","H_D5_D15","H_D15_D30",
+      "C_D0_D2","C_D2_D5","C_D5_D15","C_D15_D30"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbsFC") +
+    ggtitle(paste0(cluster_name, " RNA AbsFC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r Save_Plot_Function}
+
+save_plot <- function(plot, filename, 
+                      folder = ".", 
+                      width = 8, 
+                      height = 6, 
+                      units = "in", 
+                      dpi = 300, 
+                      add_date = TRUE) {
+  if (missing(filename)) stop("Please provide a filename (without extension) for the plot.")
+
+  date_str <- if (add_date) paste0("_", format(Sys.Date(), "%y%m%d")) else ""
+  pdf_file <- file.path(folder, paste0(filename, date_str, ".pdf"))
+  png_file <- file.path(folder, paste0(filename, date_str, ".png"))
+  ggsave(filename = pdf_file, plot = plot, device = cairo_pdf, width = width, height = height, units = units, bg = "transparent")
+  ggsave(filename = png_file, plot = plot, device = "png", width = width, height = height, units = units, dpi = dpi, bg = "transparent")
+  message("Saved plot as Cairo PDF: ", pdf_file)
+  message("Saved plot as PNG: ", png_file)
+}
+
+output_folder <- "C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/Stressor Project/Full Set RNAseq/plots"
+
+
+#save plot function created
+#to use: just define the plot name, filename_base, width, height
+```
+
+```{r}
+plot_quadrant_from_topTable <- function(top_table, gene_list, cluster_name, H_comp, C_comp) {
+  
+  df <- top_table %>%
+    filter(Gene %in% gene_list, Comparisons %in% c(H_comp, C_comp)) %>%
+    pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+    mutate(quadrant = case_when(
+      .data[[H_comp]] > 0 & .data[[C_comp]] > 0 ~ "Up-Up",
+      .data[[H_comp]] < 0 & .data[[C_comp]] < 0 ~ "Down-Down",
+      .data[[H_comp]] > 0 & .data[[C_comp]] < 0 ~ "Up-Down",
+      .data[[H_comp]] < 0 & .data[[C_comp]] > 0 ~ "Down-Up",
+      TRUE ~ "Zero"
+    ))
+  
+  ggplot(df, aes(x = !!sym(H_comp), y = !!sym(C_comp), color = quadrant)) +
+    geom_point(size = 3) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
+    scale_x_continuous(limits = c(-10, 10)) +  # fixed x-axis
+    scale_y_continuous(limits = c(-10, 10)) +  # fixed y-axis
+    xlab(paste0(H_comp, " logFC")) +
+    ylab(paste0(C_comp, " logFC")) +
+    ggtitle(paste0(cluster_name, ": ", H_comp, " vs ", C_comp)) +
+    theme_bw() +
+    scale_color_manual(values = c("Up-Up"="red",
+                                  "Down-Down"="blue",
+                                  "Up-Down"="orange",
+                                  "Down-Up"="purple",
+                                  "Zero"="gray"))
+}
+```
+
+```{r RNASeq_DGE_Data}
+# Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol <- Filt_RMG0_RNA_fc_NoD4_NoRep_EntrezID_Symbol %>% 
+#   dplyr::select(-Entrez_ID) %>% 
+#   column_to_rownames("SYMBOL")
+
+RNA_Metadata_NoD4_NoRep <- RNA_Metadata %>% 
+  dplyr::filter(Timepoint != "Day4") %>% 
+  dplyr::slice(-43:-46)
+rownames(RNA_Metadata_NoD4_NoRep) <- colnames(Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol)
+#saveRDS(RNA_Metadata_NoD4_NoRep,"data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+
+#create DGEList object
+dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol)
+dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+#dim(dge)
+#saveRDS(dge, "data/RNA_dge_matrix.RDS")
+#dge$samples
+
+
+```
+
+
+```{r RNASeq_DGE_Model}
+design1 <- model.matrix(~ 0 + RNA_Metadata_NoD4_NoRep$dgelist)
+colnames(design1) <- gsub("RNA_Metadata_NoD4_NoRep\\$dgelist", "", colnames(design1))
+View(design1)
+
+corfit <- duplicateCorrelation(object = dge$counts, design = design1, block = RNA_Metadata_NoD4_NoRep$Individual)
+v <- voom(dge, design1, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit$consensus.correlation, plot = TRUE)
+fit <- lmFit(v, design1, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit$consensus.correlation)
+
+contrast_matrix <- makeContrasts(
+  H_D0_D2 = Human_Day2 - Human_Day0,
+  H_D2_D5 = Human_Day5 - Human_Day2,
+  H_D5_D15 = Human_Day15 - Human_Day5,
+  H_D15_D30 = Human_Day30 - Human_Day15,
+  C_D0_D2 = Chimp_Day2 - Chimp_Day0,
+  C_D2_D5 = Chimp_Day5 - Chimp_Day2,
+  C_D5_D15 = Chimp_Day15 - Chimp_Day5,
+  C_D15_D30 = Chimp_Day30 - Chimp_Day15,
+  levels = design1)
+
+fit2 <- contrasts.fit(fit,contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+```
+
+```{r RNASeq_DGE_TopTables}
+
+#Create Human TopTable. using listapply, then you can pull specific comp using the $
+TopTables_RNA_names <- colnames(fit2$coefficients) 
+
+colnames(fit2$coefficients)
+
+TopTable_RNA_All <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+TopTable_RNA_All$Comparisons
+saveRDS(TopTable_RNA_All,"data/TopTable_RNA_all.RDS")
+head(TopTable_RNA_All)
+```
+
+
+
+```{r RNASeq_DGE_VolcancoPlots}
+Comparisons_names <- unique(TopTable_RNA_All$Comparisons)
+saveRDS(Comparisons_names,"data/DGE/Comparisons_names_Trajectory.RDS")
+plot <- list()
+for (n in Comparisons_names) {
+
+plot[[n]] <- TopTable_RNA_All %>% 
+  dplyr::filter(Comparisons == paste0(n)) %>% 
+  generate_volcano_plot(.,n)
+}
+
+for (n in Comparisons_names) {
+  print(plot[[n]])
+        }
+```
+
+```{r RNASeq_DGE_FoldChange}
+TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
+cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA","clust5_RNA","clust6_RNA","clust7_RNA","clust8_RNA","clust9_RNA","clust10_RNA","clust11_RNA")
+
+
+```
+
+```{r RNASeq_DGE_Clusters_FC}
+cluster_lists <- list(
+  clust1_RNA  = clust1_RNA,
+  clust2_RNA  = clust2_RNA,
+  clust3_RNA  = clust3_RNA,
+  clust4_RNA  = clust4_RNA,
+  clust5_RNA  = clust5_RNA,
+  clust6_RNA  = clust6_RNA,
+  clust7_RNA  = clust7_RNA,
+  clust8_RNA  = clust8_RNA,
+  clust9_RNA  = clust9_RNA,
+  clust10_RNA = clust10_RNA,
+  clust11_RNA = clust11_RNA
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_DGE_Clusters_AbsFC}
+cluster_lists <- list(
+  clust1_RNA  = clust1_RNA,
+  clust2_RNA  = clust2_RNA,
+  clust3_RNA  = clust3_RNA,
+  clust4_RNA  = clust4_RNA,
+  clust5_RNA  = clust5_RNA,
+  clust6_RNA  = clust6_RNA,
+  clust7_RNA  = clust7_RNA,
+  clust8_RNA  = clust8_RNA,
+  clust9_RNA  = clust9_RNA,
+  clust10_RNA = clust10_RNA,
+  clust11_RNA = clust11_RNA
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants}
+
+# --------------------------
+# 1. Define clusters & comparisons
+# --------------------------
+cluster_lists <- list(
+  clust1 = clust1_RNA,
+  clust2 = clust2_RNA,
+  clust3 = clust3_RNA,
+  clust4 = clust4_RNA,
+  clust5 = clust5_RNA,
+  clust6 = clust6_RNA,
+  clust7 = clust7_RNA,
+  clust8 = clust8_RNA,
+  clust9 = clust9_RNA,
+  clust10 = clust10_RNA,
+  clust11 = clust11_RNA
+)
+
+timepoints <- c("0-2", "2-5", "5-15", "15-30")
+H_comparisons <- paste0("H_D", gsub("-", "_D", timepoints))
+C_comparisons <- paste0("C_D", gsub("-", "_D", timepoints))
+
+# Ensure gene and comparison columns are character
+TopTable_RNA_All$Gene <- as.character(TopTable_RNA_All$Gene)
+TopTable_RNA_All$Comparisons <- as.character(TopTable_RNA_All$Comparisons)
+
+# --------------------------
+# 2. Define quadrant plotting function
+# --------------------------
+plot_quadrant_from_topTable <- function(top_table, gene_list, cluster_name, H_comp, C_comp) {
+  
+  df_wide <- top_table %>%
+    filter(Gene %in% gene_list, Comparisons %in% c(H_comp, C_comp)) %>%
+    group_by(Gene, Comparisons) %>%
+    summarize(logFC = mean(logFC), .groups = "drop") %>%    # combine duplicates
+    pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+    filter(!is.na(.data[[H_comp]]) & !is.na(.data[[C_comp]])) %>%   # remove any remaining NAs
+    mutate(quadrant = case_when(
+      .data[[H_comp]] > 0 & .data[[C_comp]] > 0 ~ "Up-Up",
+      .data[[H_comp]] < 0 & .data[[C_comp]] < 0 ~ "Down-Down",
+      .data[[H_comp]] > 0 & .data[[C_comp]] < 0 ~ "Up-Down",
+      .data[[H_comp]] < 0 & .data[[C_comp]] > 0 ~ "Down-Up",
+      TRUE ~ "Zero"
+    ))
+  
+  # Count genes per quadrant
+  quad_counts <- as.data.frame(table(df_wide$quadrant))
+  
+  # Create plot
+  p <- ggplot(df_wide, aes(x = !!sym(H_comp), y = !!sym(C_comp), color = quadrant)) +
+    geom_point(size = 3) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    scale_x_continuous(limits = c(-13, 13)) +  # fixed x-axis
+    scale_y_continuous(limits = c(-13, 13)) +  # fixed y-axis
+    scale_color_manual(values = c("Up-Up"="red",
+                                  "Down-Down"="blue",
+                                  "Up-Down"="orange",
+                                  "Down-Up"="purple",
+                                  "Zero"="gray")) +
+    xlab(H_comp) +
+    ylab(C_comp) +
+    ggtitle(paste0(cluster_name, ": ", H_comp, " vs ", C_comp)) +
+    theme_bw()
+  
+  list(plot = p, counts = quad_counts)
+}
+
+#saveRDS(plot_quadrant_from_topTable,"data/DGE/plot_quadrant_from_topTable_DayBefore.RDS")
+
+# --------------------------
+# 3. Generate all plots and summaries
+# --------------------------
+all_quadrant_results <- lapply(names(cluster_lists), function(clust_name) {
+  genes <- cluster_lists[[clust_name]]
+  
+  lapply(seq_along(H_comparisons), function(i) {
+    H_comp <- H_comparisons[i]
+    C_comp <- C_comparisons[i]
+    
+    plot_quadrant_from_topTable(TopTable_RNA_All, genes, clust_name, H_comp, C_comp)
+  })
+})
+
+names(all_quadrant_results) <- names(cluster_lists)
+for (clust_name in names(all_quadrant_results)) {
+  names(all_quadrant_results[[clust_name]]) <- paste0("Comp_", timepoints)
+}
+
+# --------------------------
+# 4. Print plots
+# --------------------------
+for (clust_name in names(all_quadrant_results)) {
+  for (comp_name in names(all_quadrant_results[[clust_name]])) {
+    print(all_quadrant_results[[clust_name]][[comp_name]]$plot)
+  }
+}
+
+# --------------------------
+# 5. Access quadrant counts
+# --------------------------
+# Example: counts for clust1, 0-2
+all_quadrant_results$clust1[["Comp_0-2"]]$counts
+
+#saveRDS(all_quadrant_results,"data/DGE/all_quadrant_results_DayBefore.RDS")
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_GeneList}
+# Initialize list to store results
+quadrant_gene_lists <- lapply(names(cluster_lists), function(clust_name) {
+  genes <- cluster_lists[[clust_name]]
+  
+  # Loop over comparisons
+  lapply(seq_along(H_comparisons), function(i) {
+    H_comp <- H_comparisons[i]
+    C_comp <- C_comparisons[i]
+    
+    # Filter and pivot
+    df_wide <- TopTable_RNA_All %>%
+      filter(Gene %in% genes, Comparisons %in% c(H_comp, C_comp)) %>%
+      group_by(Gene, Comparisons) %>%
+      summarize(logFC = mean(logFC), .groups = "drop") %>%
+      pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+      filter(!is.na(.data[[H_comp]]) & !is.na(.data[[C_comp]])) %>%
+      mutate(quadrant = case_when(
+        .data[[H_comp]] > 0 & .data[[C_comp]] > 0 ~ "Up-Up",
+        .data[[H_comp]] < 0 & .data[[C_comp]] < 0 ~ "Down-Down",
+        .data[[H_comp]] > 0 & .data[[C_comp]] < 0 ~ "Up-Down",
+        .data[[H_comp]] < 0 & .data[[C_comp]] > 0 ~ "Down-Up",
+        TRUE ~ "Zero"
+      ))
+    
+    # Extract genes for Down-Up and Up-Down quadrants
+    list(
+      "Down-Up" = df_wide %>% filter(quadrant == "Down-Up") %>% pull(Gene),
+      "Up-Down" = df_wide %>% filter(quadrant == "Up-Down") %>% pull(Gene),
+      "Up-Up" = df_wide %>% filter(quadrant == "Up-Up") %>% pull(Gene),
+      "Down-Down" = df_wide %>% filter(quadrant == "Down-Down") %>% pull(Gene)
+    )
+  })
+})
+
+# Name the lists for clarity
+names(quadrant_gene_lists) <- names(cluster_lists)
+for (clust_name in names(quadrant_gene_lists)) {
+  names(quadrant_gene_lists[[clust_name]]) <- paste0("Comp_", timepoints)
+}
+
+# Example access:
+# Genes in Down-Up quadrant for clust1, 0-2
+# quadrant_gene_lists$clust1[["Comp_0-2"]][["Down-Up"]]
+
+# Genes in Up-Down quadrant for clust3, 5-15
+# quadrant_gene_lists$clust3[["Comp_5-15"]][["Up-Down"]]
+saveRDS(quadrant_gene_lists,"data/DGE/quadrant_gene_lists_DayBefore.RDS")
+
+```
+
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Combine all clusters + comparisons into one tibble
+quad_counts_df <- lapply(names(all_quadrant_results), function(clust_name) {
+  
+  # Combine comparisons for this cluster
+  do.call(rbind, lapply(names(all_quadrant_results[[clust_name]]), function(comp_name) {
+    
+    df <- all_quadrant_results[[clust_name]][[comp_name]]$data
+    
+    df %>%
+      mutate(quadrant_color = ifelse(Significant, quadrant, "Zero")) %>%
+      count(quadrant_color) %>%
+      mutate(cluster = clust_name,
+             comparison = comp_name)
+    
+  }))
+  
+}) %>% bind_rows()
+
+# Ensure cluster order 1-11
+quad_counts_df$cluster <- factor(
+  quad_counts_df$cluster,
+  levels = paste0("clust", 1:11)
+)
+
+# Ensure quadrant order
+quad_counts_df$quadrant_color <- factor(
+  quad_counts_df$quadrant_color,
+  levels = c("Zero", "Down-Down", "Up-Up", "Up-Down", "Down-Up")
+)
+```
+
+
+```{r}
+ggplot(quad_counts_df, aes(x = cluster, y = n, fill = quadrant_color)) +
+  geom_bar(stat = "identity", position = "fill") +   # position="fill" converts to proportion
+  scale_y_continuous(labels = scales::percent) +    # show % on y-axis
+  scale_fill_manual(values = c(
+    "Zero" = "gray",
+    "Down-Down" = "blue",
+    "Up-Up" = "red",
+    "Up-Down" = "orange",
+    "Down-Up" = "purple"
+  )) +
+  ylab("Percentage of genes") +
+  xlab("Cluster") +
+  ggtitle("Quadrant distribution per cluster") +
+  theme_bw() +
+  theme(legend.position = "right")
+
+
+```
+
+```{r}
+ggplot(quad_counts_df, aes(x = cluster, y = n, fill = quadrant_color)) +
+  geom_bar(stat = "identity", position = "fill") +
+  facet_wrap(~comparison) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c(
+    "Zero" = "gray",
+    "Down-Down" = "blue",
+    "Up-Up" = "red",
+    "Up-Down" = "orange",
+    "Down-Up" = "purple"
+  )) +
+  theme_bw()
+
+```
+

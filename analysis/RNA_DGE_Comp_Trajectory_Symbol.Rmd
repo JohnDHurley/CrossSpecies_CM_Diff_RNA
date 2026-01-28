@@ -1,7 +1,7 @@
 ---
-title: "RNA_DGE_Comp_Trajectory"
+title: "RNA_DGE_Comp_Trajectory_Symbol"
 output: html_document
-date: "2026-01-15"
+date: "2026-01-27"
 ---
 
 ```{r setup, include=FALSE}
@@ -29,23 +29,20 @@ library("ggsignif")
 
 
 #Loading R Objects
-Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol.RDS")
-          #RNA_Cormotif_Comp_Trajectory.Rmd
-Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol <- readRDS("data/Cormotif/Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol.RDS")
-          #RNA_Cormotif_Comp_Trajectory.Rmd
-RNA_Metadata <- readRDS("data/QC/RNA_Metadata.RDS")
-RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
-clust1_RNA <- readRDS("data/Cormotif/clust1_RNA_Trajectory.RDS")
-clust2_RNA <- readRDS("data/Cormotif/clust2_RNA_Trajectory.RDS")
-clust3_RNA <- readRDS("data/Cormotif/clust3_RNA_Trajectory.RDS")
-clust4_RNA <- readRDS("data/Cormotif/clust4_RNA_Trajectory.RDS")
-clust5_RNA <- readRDS("data/Cormotif/clust5_RNA_Trajectory.RDS")
-clust6_RNA <- readRDS("data/Cormotif/clust6_RNA_Trajectory.RDS")
-clust7_RNA <- readRDS("data/Cormotif/clust7_RNA_Trajectory.RDS")
-clust8_RNA <- readRDS("data/Cormotif/clust8_RNA_Trajectory.RDS")
-clust9_RNA <- readRDS("data/Cormotif/clust9_RNA_Trajectory.RDS")
-clust10_RNA <- readRDS("data/Cormotif/clust10_RNA_Trajectory.RDS")
-clust11_RNA <- readRDS("data/Cormotif/clust11_RNA_Trajectory.RDS")
+Filt_RMG0_RNA_fc_NoD4_NoRep <- readRDS("data/Cormotif/Symbol/Filt_RMG0_RNA_fc_NoD4_NoRep.RDS")
+RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_no4.RDS")
+# RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+clust1_RNA <- readRDS("data/Cormotif/Symbol/clust1_RNA_Symbol.RDS")
+clust2_RNA <- readRDS("data/Cormotif/Symbol/clust2_RNA_Symbol.RDS")
+clust3_RNA <- readRDS("data/Cormotif/Symbol/clust3_RNA_Symbol.RDS")
+clust4_RNA <- readRDS("data/Cormotif/Symbol/clust4_RNA_Symbol.RDS")
+clust5_RNA <- readRDS("data/Cormotif/Symbol/clust5_RNA_Symbol.RDS")
+clust6_RNA <- readRDS("data/Cormotif/Symbol/clust6_RNA_Symbol.RDS")
+clust7_RNA <- readRDS("data/Cormotif/Symbol/clust7_RNA_Symbol.RDS")
+clust8_RNA <- readRDS("data/Cormotif/Symbol/clust8_RNA_Symbol.RDS")
+clust9_RNA <- readRDS("data/Cormotif/Symbol/clust9_RNA_Symbol.RDS")
+clust10_RNA <- readRDS("data/Cormotif/Symbol/clust10_RNA_Symbol.RDS")
+clust11_RNA <- readRDS("data/Cormotif/Symbol/clust11_RNA_Symbol.RDS")
 ```
 
 ```{r Volcano_Plot_Function}
@@ -242,34 +239,35 @@ plot_quadrant_from_topTable <- function(top_table, gene_list, cluster_name, H_co
 #   dplyr::select(-Entrez_ID) %>% 
 #   column_to_rownames("SYMBOL")
 
-RNA_Metadata_NoD4_NoRep <- RNA_Metadata %>% 
+RNA_Metadata_NoD4_NoRep <- RNA_Metadata_No4 %>% 
   dplyr::filter(Timepoint != "Day4") %>% 
   dplyr::slice(-43:-46)
-rownames(RNA_Metadata_NoD4_NoRep) <- colnames(Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol)
-#saveRDS(RNA_Metadata_NoD4_NoRep,"data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+rownames(RNA_Metadata_NoD4_NoRep) <- colnames(Filt_RMG0_RNA_fc_NoD4_NoRep)
+# saveRDS(RNA_Metadata_NoD4_NoRep,"data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
 
 #create DGEList object
-dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol)
-dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
+dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep)
+dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$Cond)
 dge <- calcNormFactors(dge, method = "TMM")
 dge$samples
 
 #dim(dge)
-#saveRDS(dge, "data/RNA_dge_matrix.RDS")
+# saveRDS(dge, "data/DGE/Symbol/RNA_dge_matrix.RDS")
 #dge$samples
 
 
 ```
-
-
 ```{r RNASeq_DGE_Model}
+RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30"),7),
+                                     rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+
 design1 <- model.matrix(~ 0 + RNA_Metadata_NoD4_NoRep$dgelist)
 colnames(design1) <- gsub("RNA_Metadata_NoD4_NoRep\\$dgelist", "", colnames(design1))
 View(design1)
 
 corfit <- duplicateCorrelation(object = dge$counts, design = design1, block = RNA_Metadata_NoD4_NoRep$Individual)
 v <- voom(dge, design1, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit$consensus.correlation, plot = TRUE)
-
 fit <- lmFit(v, design1, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit$consensus.correlation)
 
 contrast_matrix <- makeContrasts(
@@ -324,6 +322,121 @@ TopTable_RNA_All$Comparisons
 saveRDS(TopTable_RNA_All,"data/TopTable_RNA_all.RDS")
 head(TopTable_RNA_All)
 ```
+
+```{r Subsetting the Data}
+# Thresholds
+padj_cutoff <- 0.05
+
+# Add Species column
+TopTable_RNA_All <- TopTable_RNA_All %>%
+  mutate(Species = ifelse(startsWith(Comparisons, "H"), "Human", "Chimp"))
+
+# Get unique species and comparisons
+species <- unique(TopTable_RNA_All$Species)
+comparisons <- unique(TopTable_RNA_All$Comparisons)
+
+# Loop over species and comparisons
+for (sp in species) {
+  for (comp in comparisons) {
+    
+    # Subset the species + comparison
+    df_sub <- TopTable_RNA_All %>%
+      filter(Species == sp & Comparisons == comp)
+    
+    # Skip if no rows for this combination
+    if (nrow(df_sub) == 0) next
+    
+    # Significant
+    df_sig <- df_sub %>% filter(adj.P.Val < padj_cutoff & abs(logFC) > logFC_cutoff)
+    
+    # Non-significant
+    df_nonSig <- df_sub %>% filter(!(adj.P.Val < padj_cutoff & abs(logFC) > logFC_cutoff))
+    
+    # Create dynamic names
+    sig_name <- paste(sp, comp, "Significant", sep = "_")
+    nonSig_name <- paste(sp, comp, "NonSignificant", sep = "_")
+    
+    # Assign data frames to the global environment
+    assign(sig_name, df_sig, envir = .GlobalEnv)
+    assign(nonSig_name, df_nonSig, envir = .GlobalEnv)
+  }
+}
+```
+
+```{r ,fig.height=9,fig.width=9}
+library(ggVennDiagram)
+library(ggplot2)
+library(patchwork)
+
+# Get all Human significant DF names
+human_sig_dfs <- ls(pattern = "^Human_.*_Significant$")
+
+venn_plots <- list()
+
+for (human_df_name in human_sig_dfs) {
+  
+  # Extract comparison suffix by removing "Human_" prefix
+  suffix <- sub("^Human_", "", human_df_name)
+  
+  # Construct corresponding Chimp DF name (replace "H_" with "C_")
+  chimp_df_name <- sub("^H_", "C_", suffix)            # "H_D0_D2_Significant" -> "C_D0_D2_Significant"
+  chimp_df_name <- paste0("Chimp_", chimp_df_name)     # "Chimp_C_D0_D2_Significant"
+  
+  # Get gene vectors
+  human_genes <- get(human_df_name)$Gene
+  chimp_genes <- get(chimp_df_name)$Gene
+  
+  # Generate Venn diagram
+  p <- ggVennDiagram(list(Human = human_genes, Chimp = chimp_genes)) +
+    ggtitle(suffix) +
+    scale_fill_gradient(low = "white", high = "red") +
+    theme_minimal()
+  
+  # Store plot in list
+  venn_plots[[suffix]] <- p
+}
+
+# Display one Venn diagram
+venn_plots[["H_D0_D2_Significant"]]
+venn_plots[["H_D2_D5_Significant"]]
+venn_plots[["H_D5_D15_Significant"]]
+venn_plots[["H_D15_D30_Significant"]]
+
+# Combine multiple Venn diagrams into a single figure (2 columns)
+library(patchwork)
+wrap_plots(venn_plots, ncol = 2)
+
+```
+
+
+```{r}
+# All Human significant DF names
+human_sig_dfs <- ls(pattern = "^Human_.*_Significant$")
+
+# All Chimp significant DF names
+chimp_sig_dfs <- ls(pattern = "^Chimp_.*_Significant$")
+
+shared_DEGs_list <- list()
+
+for (h_df in human_sig_dfs) {
+  # Extract suffix, e.g., H_D0_D2
+  suffix <- sub("^Human_", "", h_df)
+  
+  # Find corresponding Chimp DF
+  c_df <- grep(suffix, chimp_sig_dfs, value = TRUE)
+  
+  if (length(c_df) == 0) next  # skip if no match
+  
+  # Compute overlap
+  shared_genes <- get_overlap_genes(h_df, c_df)
+  
+  # Store in list
+  list_name <- paste0("Shared_", suffix)
+  shared_DEGs_list[[list_name]] <- shared_genes
+}
+```
+
+
 
 
 
@@ -402,7 +515,6 @@ for (p in cluster_plots) print(p)
 
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants}
-
 # --------------------------
 # 1. Define clusters & comparisons
 # --------------------------
@@ -428,6 +540,10 @@ C_comparisons <- paste0("C_D", gsub("-", "_D", timepoints))
 TopTable_RNA_All$Gene <- as.character(TopTable_RNA_All$Gene)
 TopTable_RNA_All$Comparisons <- as.character(TopTable_RNA_All$Comparisons)
 
+```
+
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2}
 # --------------------------
 # 2. Define quadrant plotting function
 # --------------------------
@@ -635,4 +751,3 @@ ggplot(quad_counts_df, aes(x = cluster, y = n, fill = quadrant_color)) +
   theme_bw()
 
 ```
-

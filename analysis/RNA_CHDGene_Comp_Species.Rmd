@@ -398,6 +398,6 @@ ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/DGE/RNA_DGE_Comp_Species_Ensemble.Rmd")
+# wflow_publish("analysis/RNA_CHDGene_Comp_Species.Rmd")
 
 ```

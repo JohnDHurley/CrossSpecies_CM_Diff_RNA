@@ -668,9 +668,9 @@ ggplot2::autoplot(prcomp_res_log2,
 
 ```{r Updating Website, eval = FALSE}
 
-git -> commit all changes
-git -> push
-wflow_publish("analysis/RNA_CorrelationHeatMap.Rmd")
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/RNA_CorrelationHeatMap_Ensemble.Rmd")
 
 ```
 

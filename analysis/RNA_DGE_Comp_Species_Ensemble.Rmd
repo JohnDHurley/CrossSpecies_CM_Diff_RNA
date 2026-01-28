@@ -447,11 +447,11 @@ library(ggplot2)
 
 # Your DEGs per day (already defined)
 sets <- list(
-  Day0 = Day0,
-  Day2 = Day2,
-  Day5 = Day5,
-  Day15 = Day15,
-  Day30 = Day30
+  Day0 = Day0_DEGs_HC$Gene,       # TopTable data.frame
+  Day2 = Day2_DEGs_HC$Gene,
+  Day5 = Day5_DEGs_HC$Gene,
+  Day15 = Day15_DEGs_HC$Gene,
+  Day30 = Day30_DEGs_HC$Gene
 )
 ```
 

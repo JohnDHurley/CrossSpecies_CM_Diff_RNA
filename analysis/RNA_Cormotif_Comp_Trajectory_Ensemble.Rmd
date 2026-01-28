@@ -4,8 +4,8 @@ output: html_document
 date: "2026-01-14"
 ---
 
-```{r setup, include=FALSE,warning=FALSE,message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE,warning=FALSE,message=FALSE, dev=c("png","pdf"))
 ```
 
 ```{r Setting_Up_Enviroment, results="hide"}

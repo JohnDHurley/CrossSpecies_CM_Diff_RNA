@@ -5,7 +5,12 @@ date: "2026-01-28"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
 ```
 
 ```{r RNA_GWAS_SettingEnviroment}
@@ -166,7 +171,7 @@ generate_volcano_plot_CHDGene <- function(toptable, title, chdgene_genes = NULL)
 
 ```
 
-```{r RNA_CHDGene_DataSets}
+```{r RNA_CHDGene_Species_DataSets}
 chdgene_table <- read.csv("C:/Users/jdhurley/Downloads/chdgene_table.csv")
 saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
 
@@ -177,9 +182,9 @@ chdgene_table_copy <- chdgene_table
 colnames(chdgene_table_copy)
 # Should include "Gene"
 
-dim(chdgene_table_copy)
-length(unique(chdgene_table_copy$Gene))
-unique(chdgene_table_copy$Gene)
+# dim(chdgene_table_copy)
+# length(unique(chdgene_table_copy$Gene))
+# unique(chdgene_table_copy$Gene)
 
 # Connect to Ensembl
 ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")

@@ -5,7 +5,12 @@ date: "2026-01-15"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
 ```
 
 ```{r Setting the Enviroment}
@@ -29,11 +34,7 @@ library("ggsignif")
 
 
 #Loading R Objects
-Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep_Symbol.RDS")
-          #RNA_Cormotif_Comp_Trajectory.Rmd
-Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol <- readRDS("data/Cormotif/Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol.RDS")
-          #RNA_Cormotif_Comp_Trajectory.Rmd
-RNA_Metadata <- readRDS("data/QC/RNA_Metadata.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
 RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
 clust1_RNA <- readRDS("data/Cormotif/clust1_RNA_Trajectory.RDS")
 clust2_RNA <- readRDS("data/Cormotif/clust2_RNA_Trajectory.RDS")

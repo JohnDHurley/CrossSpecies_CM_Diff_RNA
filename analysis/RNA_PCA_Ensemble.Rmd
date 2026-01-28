@@ -4,7 +4,7 @@ output: html_document
 date: "2026-01-22"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE,message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -58,7 +58,7 @@ prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- readRDS("data/QC/prcomp_Filt_RMG0_RNA_
 
 ```
 
-```{r RNA_PCA_RawData_PCA}
+```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
 prcomp_RNA <- prcomp(t(RNA_log2cpm), scale=FALSE, center = TRUE)
 prcomp_RNA_meta <- prcomp_RNA$x %>% cbind(., RNA_Metadata)
 #PCA checks
@@ -75,7 +75,7 @@ ggplot2::autoplot(prcomp_RNA,
   ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Unfiltered RNA Log2CPM")
+  ggtitle("Unfiltered RNA Log2CPM PC1-PC2")
 
 # saveRDS(prcomp_RNA,"data/QC/prcomp_RNA.RDS")
 # saveRDS(prcomp_RNA_meta,"data/QC/prcomp_RNA_meta.RDS")
@@ -83,19 +83,7 @@ ggplot2::autoplot(prcomp_RNA,
 ```
 
 
-```{r RNA_PCA_RawData_PCA Plot,fig.height=4,fig.width=9}
-ggplot(prcomp_RNA_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = SampleName), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "PCA of log2CPM RNA-Seq Data Unfiltered",
-       x = paste0("PC1 (", round(summary(prcomp_RNA)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(prcomp_RNA)$importance[2, 2] * 100, 1), "%)"))
-
-```
-
-
-```{r RNA_PCA_RawData_PCA}
+```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
 prcomp_Filt_RMG0_RNA <- prcomp(t(Filt_RMG0_RNA_log2cpm), scale=FALSE, center = TRUE)
 prcomp_Filt_RMG0_RNA_meta <- prcomp_Filt_RMG0_RNA$x %>% cbind(., RNA_Metadata)
 #PCA checks
@@ -112,26 +100,15 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA ,
   ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Filtered RMG0 RNA Log2CPM")
+  ggtitle("Filtered RNA Log2CPM RMG0")
 
 # saveRDS(prcomp_Filt_RMG0_RNA,"data/QC/prcomp_Filt_RMG0_RNA.RDS")
 # saveRDS(prcomp_Filt_RMG0_RNA_meta,"data/QC/prcomp_Filt_RMG0_RNA_meta.RDS")
 
 ```
 
-```{r RNA_PCA_RawData_PCA Plot,fig.height=4,fig.width=9}
-ggplot(prcomp_Filt_RMG0_RNA_meta, aes(x = PC1, y = PC2, color = timepoint, shape = species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = SampleName), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "Filtered RMG0 PCA of log2CPM RNA-Seq Data",
-       x = paste0("PC1 (", round(summary(prcomp_Filt_RMG0_RNA)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(prcomp_Filt_RMG0_RNA)$importance[2, 2] * 100, 1), "%)"))
 
-```
-
-
-```{r RNA_PCA_RMG0_NoD4}
+```{r RNA_NoD4_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
 prcomp_Filt_RMG0_RNA_log2cpm_NoD4 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4), scale=FALSE, center = TRUE)
 prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- prcomp_Filt_RMG0_RNA_log2cpm_NoD4$x %>% cbind(., RNA_Metadata_No4)
@@ -149,23 +126,37 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
   ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Filtered RMG0 RNA Log2CPM")
+  ggtitle("Filtered RNA Log2CPM RMG0 No Day 4")
 
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
 
 ```
 
+```{r RNA_NoD4_RMG0_PCA_PC3_PC4, fig.height=6,fig.width=8}
 
-```{r RNA_PCA_RawData_PCA Plot,fig.height=4,fig.width=9}
-ggplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta, aes(x = PC1, y = PC2, color = Timepoint, shape = Species)) +
-  geom_point(size = 3, alpha = 0.8) +
-  geom_text_repel(aes(label = SampleName), size = 3, max.overlaps = 100) +
-  theme_minimal() +
-  labs(title = "Filtered RMG0 No Day 4 PCA of log2CPM RNA-Seq Data",
-       x = paste0("PC1 (", round(summary(prcomp_Filt_RMG0_RNA_log2cpm_NoD4)$importance[2, 1] * 100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(prcomp_Filt_RMG0_RNA_log2cpm_NoD4)$importance[2, 2] * 100, 1), "%)"))
+ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
+                  data = prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("Filtered RNA Log2CPM RMG0 No Day 4")
+
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
 
 ```
 
+```{r Updating Website, eval = FALSE}
 
+# git -> commit all changes
+# git -> push
+# wflow_publish("analysis/RNA_CorrelationHeatMap_Ensemble.Rmd")
+
+```

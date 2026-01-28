@@ -1126,6 +1126,6 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/RNA_CorMotif_Trajectory_Ensemble.Rmd")
+# wflow_publish("analysis/RNA_Cormotif_Comp_Species_Ensemble.Rmd")
 
 ```

@@ -472,14 +472,6 @@ print(p)
 
 ```{r RNASeq_DGE_Species_TopTable_Venn_Intersections}
 
-# Your sets
-sets <- list(
-  Day0 = Day0,
-  Day2 = Day2,
-  Day5 = Day5,
-  Day15 = Day15,
-  Day30 = Day30
-)
 
 # Helper function to get intersections
 get_intersections <- function(sets_list) {

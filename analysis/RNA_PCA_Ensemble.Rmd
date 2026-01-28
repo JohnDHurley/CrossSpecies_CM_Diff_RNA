@@ -157,6 +157,6 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/RNA_CorrelationHeatMap_Ensemble.Rmd")
+# wflow_publish("analysis/RNA_PCA_Ensemble.Rmd")
 
 ```

@@ -328,7 +328,7 @@ AllDays_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_g
 saveRDS(AllDays_filtered_symbols,"data/DGE/Species/AllDays_Only_DEGs_CHDGenes.RDS")  
 
 ```
-```{r}
+```{r RNA_CHDGene_Species_DataSets_Significance}
 # Create the table
 Day0_Only_DEGs_ChiSq <- matrix(c(16, 1719, 8, 1184), nrow = 2, byrow = TRUE)
 rownames(Day0_Only_DEGs_ChiSq) <- c("Day0", "Day0-2-5-15-30")
@@ -369,7 +369,7 @@ colnames(Day30_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
 # Run chi-square test
 chisq.test(Day30_Only_DEGs_ChiSq)
 ```
-```{r}
+```{r RNA_CHDGene_Species_Barplot}
 df <- data.frame(
   Day = c("Day0", "Day2", "Day5", "Day15", "Day30","Shared_All"),
   CHDGene = c(16,6,6,14,18,8),
@@ -394,6 +394,10 @@ ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
   theme_minimal(base_size = 14)
 ```
 
+```{r Updating Website, eval = FALSE}
 
+# git -> commit all changes
+# git -> push
+# wflow_publish("analysis/DGE/RNA_DGE_Comp_Species_Ensemble.Rmd")
 
-
+```

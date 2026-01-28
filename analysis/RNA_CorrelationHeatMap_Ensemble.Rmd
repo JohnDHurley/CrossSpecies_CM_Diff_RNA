@@ -4,7 +4,7 @@ output: html_document
 date: "2026-01-14"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -195,7 +195,7 @@ RNA_fc <- RNA_fc_df %>%
   dplyr::select(c(-"Entrez_ID", -"Symbol")) %>% 
   column_to_rownames("Ensemble")
 
-saveRDS(RNA_fc,"data/QC/RNA_fc.RDS")
+# saveRDS(RNA_fc,"data/QC/RNA_fc.RDS")
 
 RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
 print(hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
@@ -208,7 +208,7 @@ axis(1,
      labels = col_names,        # your labels vector
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.3)        # shrink label size
-saveRDS(RNA_log2cpm,"data/QC/RNA_log2cpm.RDS")
+# saveRDS(RNA_log2cpm,"data/QC/RNA_log2cpm.RDS")
 ```
 
 
@@ -218,11 +218,11 @@ saveRDS(RNA_log2cpm,"data/QC/RNA_log2cpm.RDS")
 row_means <- rowMeans(RNA_log2cpm)
 Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
 
-saveRDS(Filt_RMG0_RNA_fc,"data/QC/Filt_RMG0_RNA_fc.RDS")
+# saveRDS(Filt_RMG0_RNA_fc,"data/QC/Filt_RMG0_RNA_fc.RDS")
 
 Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
 
-saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/RNA_log2cpm_RMG0.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/RNA_log2cpm_RMG0.RDS")
 
 hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
      xlab =expression("Log"[2]*" counts-per-million"), col =5 )
@@ -288,9 +288,9 @@ ann_colors <- list(
 )
 rownames(Cor_metadata) <- Cor_metadata$sample_cor
 
-saveRDS(Cor_Filt_RMG0_RNA_log2cpm, "data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
-saveRDS(Cor_metadata, "data/QC/Cor_RNA_metadata.RDS")
-saveRDS(ann_colors,"data/QC/ann_colors.RDS")
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm, "data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+# saveRDS(Cor_metadata, "data/QC/Cor_RNA_metadata.RDS")
+# saveRDS(ann_colors,"data/QC/ann_colors.RDS")
 
 ```
 
@@ -324,9 +324,9 @@ Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_NoD4[row_means_NoD4 >0,]
 dim(Filt_RMG0_RNA_fc_NoD4)
 Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
 
-saveRDS(RNA_Metadata_No4,"data/QC/RNA_Metatdata_No4.RDS")
-saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(RNA_Metadata_No4,"data/QC/RNA_Metatdata_No4.RDS")
+# saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 
 ```
 
@@ -342,9 +342,9 @@ ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
   names(ann_colors$timepoint_cor) != "Day4"
 ]
 
-saveRDS(Cor_metadata_No4, "data/QC/Cor_metadata_No4.RDS")
-saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-saveRDS(ann_colors_No4,"data/QC/ann_colors_no4.RDS")
+# saveRDS(Cor_metadata_No4, "data/QC/Cor_metadata_No4.RDS")
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD4, "data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(ann_colors_No4,"data/QC/ann_colors_no4.RDS")
 ```
 
 
@@ -367,192 +367,148 @@ filt_gene_list <- rownames(Filt_RMG0_RNA_log2cpm_NoD4)
 length(filt_gene_list)
 
 
-# in order to make this match with annot later down the line, change the col names for counts_raw_matrix to match final_sample_names in annot
-
-# i'll also want to make sure I keep the replicate for this set
-
-Ind_RUV <- c(rep("H1",5),
-             rep("H2",5),
-             rep("H3",5),
-             rep("H4",5),
-             rep("H5",5),
-             rep("H6",5),
-             rep("H7",5),
-             rep("H4R",4),
-             rep("C1",5),
-             rep("C2",5),
-             rep("C3",5),
-             rep("C4",5),
-             rep("C5",5),
-             rep("C6",5),
-             rep("C7",5)
-             )
-RNA_Metadata_No4$Ind_RUV <- Ind_RUV
-RNA_Metadata_No4_RUV <- RNA_Metadata_No4 %>%
-   mutate(
-    Ind_RUV = factor(Ind_RUV,
-                        levels = c("H1","H2","H3","H4","H5","H6","H7","H4R","C1","C2","C3","C4","C5","C6","C7"),ordered=TRUE),
-    Timepoint = factor(Timepoint,
-                       levels = c("Day0","Day2","Day5","Day15","Day30"),ordered=TRUE),
-    Species = factor(Species,
-                     levels = c("H","C"),ordered=TRUE),
-    Condition = factor(
-      Condition,
-      levels = expand.grid(
-        Ind_RUV = levels(Ind_RUV),
-        Timepoint = levels(Timepoint),
-        Species = levels(Species)
-      ) %>%
-        transmute(Condition=paste(Species,Timepoint,Ind_RUV,sep="_")) %>%
-        pull(Condition),
-      ordered=TRUE
-    )
-  )
-
-saveRDS(RNA_Metadata_No4_RUV,"data/QC/RNA_MetaData_NoD4_RUV.RDS")
-RNA_Metadata_No4_RUV <- readRDS("data/QC/RNA_MetaData_NoD4_RUV.RDS")
-
-RNA_fc_NoD4_RUV <- RNA_fc_NoD4
-colnames(RNA_fc_NoD4_RUV) <- RNA_Metadata_No4_RUV$Condition
-
-RUV_filt_counts <- RNA_fc_NoD4_RUV %>% 
-  as.data.frame() %>% 
-  dplyr::filter(., row.names(.)%in% filt_gene_list)
-saveRDS(RUV_filt_counts, "data/DGE/RUV_filt_counts.RDS")
-dim(RUV_filt_counts)
-
-#add in the annotation files
-ind_num <- RNA_Metadata_No4_RUV$Ind_RUV
-type(ind_num)
-length(ind_num)
-
-annot <- as.data.frame(RNA_Metadata_No4_RUV)
-type(annot)
-is.data.frame(annot)
-#same as Metadata
-
-
-#  counts need to be integer values and in a numeric matrix
-# note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
-counts <- as.matrix(RUV_filt_counts)
-  
-# saveRDS(counts, "data/QC/filt_counts_matrix.RDS")
-
-# Create a DataFrame for the phenoData
-phenoData <- DataFrame(annot)
-
-set <- SummarizedExperiment(assays = counts, metadata = phenoData)
-
-scIdx <- RUVSeq::makeGroups(phenoData$Cond)
-
-# # Generate a background matrix
-# # The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
-# Day0 <- c(16,36)
-# Day2 <- c(17,37)
-# Day5 <- c(18,38)
-# Day30 <- c(20,39)
-# scIdx <- rbind(Day0,Day2,Day5,Day30)
-# rownames(scIdx) <- c("[1,]","[2,]","[3,]","[4,]")
-# colnames(scIdx) <- c("[,1]","[,2]")
-```
-
-
-
-```{r}
-#now I've made all of the data I need for this - they are located in each section for k values
-
-#DO NOT USE THESE COUNTS FOR LINEAR MODELING
-
-#colors for all of the plots
-# txtime_col
-# ind_col
-# time_col
-# tx_col
-log2cpm <- cpm(counts,log=TRUE)
-# before ruv (counts PCA)
-prcomp_res_log2 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4), scale=FALSE, center = TRUE)
-annot_prcomp_res <- prcomp_res_log2$x %>% cbind(., annot)
+# # in order to make this match with annot later down the line, change the col names for counts_raw_matrix to match final_sample_names in annot
 # 
-# group_2 <- annot$dgelist
-# dgelist_col <- annot$dgelist
-# individual_list <- annot$Individual
+# # i'll also want to make sure I keep the replicate for this set
+# 
+# Ind_RUV <- c(rep("H1",5),
+#              rep("H2",5),
+#              rep("H3",5),
+#              rep("H4",5),
+#              rep("H5",5),
+#              rep("H6",5),
+#              rep("H7",5),
+#              rep("H4R",4),
+#              rep("C1",5),
+#              rep("C2",5),
+#              rep("C3",5),
+#              rep("C4",5),
+#              rep("C5",5),
+#              rep("C6",5),
+#              rep("C7",5)
+#              )
+# RNA_Metadata_No4$Ind_RUV <- Ind_RUV
+# RNA_Metadata_No4_RUV <- RNA_Metadata_No4 %>%
+#    mutate(
+#     Ind_RUV = factor(Ind_RUV,
+#                         levels = c("H1","H2","H3","H4","H5","H6","H7","H4R","C1","C2","C3","C4","C5","C6","C7"),ordered=TRUE),
+#     Timepoint = factor(Timepoint,
+#                        levels = c("Day0","Day2","Day5","Day15","Day30"),ordered=TRUE),
+#     Species = factor(Species,
+#                      levels = c("H","C"),ordered=TRUE),
+#     Condition = factor(
+#       Condition,
+#       levels = expand.grid(
+#         Ind_RUV = levels(Ind_RUV),
+#         Timepoint = levels(Timepoint),
+#         Species = levels(Species)
+#       ) %>%
+#         transmute(Condition=paste(Species,Timepoint,Ind_RUV,sep="_")) %>%
+#         pull(Condition),
+#       ordered=TRUE
+#     )
+#   )
+# 
+# # saveRDS(RNA_Metadata_No4_RUV,"data/QC/RNA_MetaData_NoD4_RUV.RDS")
+# RNA_Metadata_No4_RUV <- readRDS("data/QC/RNA_MetaData_NoD4_RUV.RDS")
+# 
+# RNA_fc_NoD4_RUV <- RNA_fc_NoD4
+# colnames(RNA_fc_NoD4_RUV) <- RNA_Metadata_No4_RUV$Condition
+# 
+# RUV_filt_counts <- RNA_fc_NoD4_RUV %>% 
+#   as.data.frame() %>% 
+#   dplyr::filter(., row.names(.)%in% filt_gene_list)
+# # saveRDS(RUV_filt_counts, "data/DGE/RUV_filt_counts.RDS")
+# dim(RUV_filt_counts)
+# 
+# #add in the annotation files
+# ind_num <- RNA_Metadata_No4_RUV$Ind_RUV
+# type(ind_num)
+# length(ind_num)
+# 
+# annot <- as.data.frame(RNA_Metadata_No4_RUV)
+# type(annot)
+# is.data.frame(annot)
+# #same as Metadata
+# 
+# 
+# #  counts need to be integer values and in a numeric matrix
+# # note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
+# counts <- as.matrix(RUV_filt_counts)
+#   
+# # saveRDS(counts, "data/QC/filt_counts_matrix.RDS")
+# 
+# # Create a DataFrame for the phenoData
+# phenoData <- DataFrame(annot)
+# 
+# set <- SummarizedExperiment(assays = counts, metadata = phenoData)
+# 
+# scIdx <- RUVSeq::makeGroups(phenoData$Cond)
+# 
+# # # Generate a background matrix
+# # # The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
+# # Day0 <- c(16,36)
+# # Day2 <- c(17,37)
+# # Day5 <- c(18,38)
+# # Day30 <- c(20,39)
+# # scIdx <- rbind(Day0,Day2,Day5,Day30)
+# # rownames(scIdx) <- c("[1,]","[2,]","[3,]","[4,]")
+# # colnames(scIdx) <- c("[,1]","[,2]")
+# ```
+# 
+# 
+# 
+# ```{r}
+# #now I've made all of the data I need for this - they are located in each section for k values
+# 
+# #DO NOT USE THESE COUNTS FOR LINEAR MODELING
+# 
+# #colors for all of the plots
+# # txtime_col
+# # ind_col
+# # time_col
+# # tx_col
+# log2cpm <- cpm(counts,log=TRUE)
+# # before ruv (counts PCA)
+# prcomp_res_log2 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4), scale=FALSE, center = TRUE)
+# annot_prcomp_res <- prcomp_res_log2$x %>% cbind(., annot)
+# # 
+# # group_2 <- annot$dgelist
+# # dgelist_col <- annot$dgelist
+# # individual_list <- annot$Individual
 ```
 
 
-```{r}
-
-#now plot my PCA for filtered counts
-####PC1/PC2####
-individual_list <- RNA_Metadata_No4_RUV$Individual
-
-suppressWarnings(
-  ggplot2::autoplot(prcomp_res_log2,
-                    data = annot,
-                    colour = "Timepoint",
-                    shape = "Species",
-                    size = 4,
-                    x = 1,
-                    y = 2) +
-    scale_color_manual(values = ann_colors_No4$timepoint_cor) +
-    ggrepel::geom_text_repel(
-      label = individual_list,
-      vjust = -0.5,
-      max.overlaps = 50
-    ) +
-    ggtitle("RNA log2cpm RMG0")
-)
-
-```
-
-```{r}
-ggplot2::autoplot(prcomp_res_log2,
-                  data = annot,
-                  colour = "Timepoint",
-                  shape = "Species",
-                  size = 4,
-                  x=2,
-                  y=3) +
-  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
-  ggrepel::geom_text_repel(label = individual_list,
-                            vjust = -0.5,
-                            max.overlaps = 50)+
-  ggtitle("RNA log2cpm RMG0")
+```{r RNASeq_FeatureCounts_RMG0_No4_RUV_StartingPCA}
+# 
+# #now plot my PCA for filtered counts
+# ####PC1/PC2####
+# individual_list <- RNA_Metadata_No4_RUV$Individual
+# 
+# suppressWarnings(
+#   ggplot2::autoplot(prcomp_res_log2,
+#                     data = annot,
+#                     colour = "Timepoint",
+#                     shape = "Species",
+#                     size = 4,
+#                     x = 1,
+#                     y = 2) +
+#     scale_color_manual(values = ann_colors_No4$timepoint_cor) +
+#     ggrepel::geom_text_repel(
+#       label = individual_list,
+#       vjust = -0.5,
+#       max.overlaps = 50
+#     ) +
+#     ggtitle("RNA log2cpm RMG0")
+# )
 
 ```
 
-```{r}
-ggplot2::autoplot(prcomp_res_log2,
-                  data = annot,
-                  colour = "Timepoint",
-                  shape = "Species",
-                  size = 4,
-                  x=3,
-                  y=4) +
-  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
-  ggrepel::geom_text_repel(label = individual_list,
-                            vjust = -0.5,
-                            max.overlaps = 50)+
-  ggtitle("RNA log2cpm RMG0")
 
-```
 
-```{r}
-ggplot2::autoplot(prcomp_res_log2,
-                  data = annot,
-                  colour = "Timepoint",
-                  shape = "Species",
-                  size = 4,
-                  x=4,
-                  y=5) +
-  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
-  ggrepel::geom_text_repel(label = individual_list,
-                            vjust = -0.5,
-                            max.overlaps = 50)+
-  ggtitle("RNA log2cpm RMG0")
 
-```
 
-```{r}
+```{r RNASeq_FeatureCounts_RMG0_No4_RUV_RM1_PCA}
 # set1 <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
 # 
 # # Get the RUV factors (weights) for modeling
@@ -589,81 +545,6 @@ ggplot2::autoplot(prcomp_res_log2,
 
 ```
 
-
-```{r}
-# set2 <- RUVSeq::RUVs(x = counts, k =2, scIdx = scIdx, isLog = FALSE)
-# 
-# # Get the RUV factors (weights) for modeling
-# RUV_df2 <- set2$W %>% as.data.frame()
-# RUV_df2$Condition <- rownames(RUV_df2)
-# 
-# RUV_df_rm2 <- RUV_df2[RUV_df2$Condition %in% annot$Condition, ]
-# View(RUV_df_rm2)
-# RUV_2 <- RUV_df_rm2$W_1
-# 
-# saveRDS(RUV_df_rm2, "data/DE/RUV_df_rm2.RDS")
-# saveRDS(RUV_2, "data/DE/RUV_2.RDS")
-# 
-# 
-# log2cpm_k2 <- cpm(set2$normalizedCounts, log = TRUE)
-# 
-# prcomp_res_log2_k2 <- prcomp(t(log2cpm_k2), scale=FALSE, center = TRUE)
-# annot_prcomp_res_k2 <- prcomp_res_log2_k2$x %>% cbind(., RNA_Metadata_No4)
-# #PCA checks
-# #k=1
-# 
-# ggplot2::autoplot(prcomp_res_log2_k2,
-#                   data = annot,
-#                   colour = "Timepoint",
-#                   shape = "Species",
-#                   size = 4,
-#                   x=1,
-#                   y=2) +
-#   scale_color_manual(values=ann_colors_No4$timepoint_cor)+
-#   ggrepel::geom_text_repel(label = individual_list,
-#                             vjust = -0.5,
-#                             max.overlaps = 50)+
-#   ggtitle("RUV Correction k=2 log2cpm")
-
-```
-
-```{r}
-# 
-# set3 <- RUVSeq::RUVs(x = counts, k =3, scIdx = scIdx, isLog = FALSE)
-# 
-# # Get the RUV factors (weights) for modeling
-# RUV_df3 <- set3$W %>% as.data.frame()
-# RUV_df3$Condition <- rownames(RUV_df3)
-# 
-# RUV_df_rm3 <- RUV_df3[RUV_df3$Condition %in% annot$Condition, ]
-# View(RUV_df_rm3)
-# RUV_3 <- RUV_df_rm3$W_1
-# 
-# saveRDS(RUV_df_rm1, "data/DE/RUV_df_rm1.RDS")
-# saveRDS(RUV_1, "data/DE/RUV_1.RDS")
-# 
-# 
-# log2cpm_k3 <- cpm(set3$normalizedCounts, log = TRUE)
-# 
-# prcomp_res_log2_k3 <- prcomp(t(log2cpm_k3), scale=FALSE, center = TRUE)
-# annot_prcomp_res_k3 <- prcomp_res_log2_k3$x %>% cbind(., RNA_Metadata_No4)
-# #PCA checks
-# #k=1
-# 
-# ggplot2::autoplot(prcomp_res_log2_k3,
-#                   data = annot,
-#                   colour = "Timepoint",
-#                   shape = "Species",
-#                   size = 4,
-#                   x=1,
-#                   y=2) +
-#   scale_color_manual(values=ann_colors_No4$timepoint_cor)+
-#   ggrepel::geom_text_repel(label = individual_list,
-#                             vjust = -0.5,
-#                             max.overlaps = 50)+
-#   ggtitle("RUV Correction k=3 log2cpm")
-
-```
 
 
 ```{r Updating Website, eval = FALSE}

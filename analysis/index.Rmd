@@ -12,7 +12,9 @@ Welcome to my research website.
 
 [RNA Data Upload and Correlation Heat Map](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CorrelationHeatMap_Ensemble.html)
 
-[RNA PCA Plots]("https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_PCA_Ensemble.Rmd")
+[RNA PCA Plots](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_PCA_Ensemble.html)
 
-[RNA Cormotif]("https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CorMotif_Trajectory_Ensemble.Rmd")
+[RNA Cormotif Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Trajectory_Ensemble.html)
+
+[RNA Cormotif Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Species_Ensembl.html)
 

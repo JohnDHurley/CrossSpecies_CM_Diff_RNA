@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r RNA_GWAS_SettingEnviroment}
+```{r RNA_GWAS_SettingEnviroment, include=FALSE}
 #Loading Libraries
 library(dplyr)
 library(tidyr)
@@ -46,7 +46,7 @@ TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
 ```
 
-```{r Volcano_Plot_Function}
+```{r Volcano_Plot_Function. include=FALSE}
 generate_volcano_plot <- function(toptable, title) {
   
   # #check for entrezid 
@@ -110,7 +110,7 @@ generate_volcano_plot <- function(toptable, title) {
 
 ```
 
-```{r Volcano_Plot_chdgene_Function}
+```{r Volcano_Plot_chdgene_Function, include=FALSE}
 generate_volcano_plot_CHDGene <- function(toptable, title, chdgene_genes = NULL) {
   
   # Determine significance
@@ -175,14 +175,14 @@ generate_volcano_plot_CHDGene <- function(toptable, title, chdgene_genes = NULL)
 ```{r RNA_CHDGene_Species_DataSets}
 # #CHD Curated Gene List
 # chdgene_table <- read.csv("C:/Users/jdhurley/Downloads/chdgene_table.csv")
-# saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
-
-# Make a copy to be safe
+# # saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
+# 
+# # Make a copy to be safe
 chdgene_table_copy <- chdgene_table
-
-# Check
-colnames(chdgene_table_copy)
-
+# 
+# # Check
+# colnames(chdgene_table_copy)
+# 
 # #ENSEMBL ID
 # all_ensembl_ids <- unique(TopTable_RNA_All$Gene)
 # 
@@ -205,7 +205,7 @@ colnames(chdgene_table_copy)
 #   "data/DGE/Species/Ensembl_to_HGNC_mapping.RDS"
 # )
 
-# ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
+ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
 
 # Loop through my data sets to overlap
 known_genes <- chdgene_table_copy$Gene
@@ -314,10 +314,14 @@ df_long$Cond <- factor(df_long$Cond, levels = c("Day0_DEG","Day0_NonDEG","Day2_D
 
 ggplot(df_long, aes(x = Cond, y = Proportion, fill = Type)) +
   geom_bar(stat = "identity") +
-  scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
-  scale_fill_manual(values = c("DEGs" = "#E41A1C", "CHDGene" = "#377EB8")) + # custom colors
-  labs(y = "Proportion", x = "Cond", fill = "") +
-  theme_minimal(base_size = 14)
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_manual(values = c("DEGs" = "#E41A1C", "CHDGene" = "#377EB8")) +
+  labs(y = "Proportion", x = "Cond", fill = "",title = "Overlaps of CHD Genes by Day") +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
 ```
 
 ```{r RNA_CHDGene_Species_LogFoldChange}
@@ -436,6 +440,33 @@ TopTable_Filt %>%
 ```
 
 
+
+```{r RNA_CHDGene_Species_Barplot_DGE_Venn}
+df <- data.frame(
+  Day = c("Day0-Only", "Day2-Only", "Day5-Only", "Day15-Only", "Day30-Only","Shared_All"),
+  CHDGene = c(16,6,6,14,18,8),
+  Non_CHDGene = c(1719,441,499,602,1217,1884)
+)
+
+# Convert to long format for ggplot
+df_long <- df %>%
+  pivot_longer(cols = c(CHDGene, Non_CHDGene),
+               names_to = "Type",
+               values_to = "Count") %>%
+  group_by(Day) %>%
+  mutate(Proportion = Count / sum(Count))  # calculate proportions
+
+df_long$Day <- factor(df_long$Day, levels = c("Day0-Only", "Day2-Only", "Day5-Only", "Day15-Only", "Day30-Only","Shared_All"), ordered = TRUE)
+
+ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
+  scale_fill_manual(values = c("DEGs" = "#E41A1C", "CHDGene" = "#377EB8")) + # custom colors
+  labs(y = "Proportion", x = "Day", fill = "",title = "Species DEGs overlaping CHD Gene
+Based on DGE Venn Overlaps") +
+  theme_minimal(base_size = 14)
+```
+
 ```{r RNA_CHDGene_Species_DataSets_Significance}
 # Create the table
 Day0_Only_DEGs_ChiSq <- matrix(c(16, 1719, 8, 1184), nrow = 2, byrow = TRUE)
@@ -476,31 +507,6 @@ colnames(Day30_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
 
 # Run chi-square test
 chisq.test(Day30_Only_DEGs_ChiSq)
-```
-
-```{r RNA_CHDGene_Species_Barplot}
-df <- data.frame(
-  Day = c("Day0", "Day2", "Day5", "Day15", "Day30","Shared_All"),
-  CHDGene = c(16,6,6,14,18,8),
-  Non_CHDGene = c(1719,441,499,602,1217,1884)
-)
-
-# Convert to long format for ggplot
-df_long <- df %>%
-  pivot_longer(cols = c(CHDGene, Non_CHDGene),
-               names_to = "Type",
-               values_to = "Count") %>%
-  group_by(Day) %>%
-  mutate(Proportion = Count / sum(Count))  # calculate proportions
-
-df_long$Day <- factor(df_long$Day, levels = c("Day0", "Day2", "Day5", "Day15", "Day30","Shared_All"), ordered = TRUE)
-
-ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
-  geom_bar(stat = "identity") +
-  scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
-  scale_fill_manual(values = c("DEGs" = "#E41A1C", "CHDGene" = "#377EB8")) + # custom colors
-  labs(y = "Proportion", x = "Day", fill = "") +
-  theme_minimal(base_size = 14)
 ```
 
 ```{r Updating Website, eval = FALSE}

@@ -4,7 +4,7 @@ output: html_document
 date: "2026-01-22"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE,warning=FALSE}
 knitr::opts_chunk$set(
 	echo = TRUE,
 	message = FALSE,
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r Setting_Up_Enviroment, results="hide"}
+```{r Setting_Up_Enviroment, include=FALSE,warning=FALSE}
 
 ####Library Loading####
 library("edgeR")
@@ -80,7 +80,8 @@ ggplot2::autoplot(prcomp_RNA,
   ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Unfiltered RNA Log2CPM PC1-PC2")
+  ggtitle("PC1 v. PC2
+Unfiltered RNA-Seq Log2CPM")
 
 # saveRDS(prcomp_RNA,"data/QC/prcomp_RNA.RDS")
 # saveRDS(prcomp_RNA_meta,"data/QC/prcomp_RNA_meta.RDS")
@@ -105,7 +106,9 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA ,
   ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Filtered RNA Log2CPM RMG0")
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+Row Means > 0")
 
 # saveRDS(prcomp_Filt_RMG0_RNA,"data/QC/prcomp_Filt_RMG0_RNA.RDS")
 # saveRDS(prcomp_Filt_RMG0_RNA_meta,"data/QC/prcomp_Filt_RMG0_RNA_meta.RDS")
@@ -131,7 +134,10 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
   ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Filtered RNA Log2CPM RMG0 No Day 4")
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+No Day 4
+Row Means > 0")
 
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
@@ -151,7 +157,10 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
   ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("Filtered RNA Log2CPM RMG0 No Day 4")
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+No Day 4
+Row Means > 0")
 
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")

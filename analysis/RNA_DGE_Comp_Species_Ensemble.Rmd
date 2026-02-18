@@ -400,7 +400,7 @@ names(RNA_sets) <- paste0("Day", sub("D", "", days), "_HC")
 ```
 
 
-```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.05}
+```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.05_Eulers}
 all_genes <- unique(TopTable_RNA_All$Gene)
   
 DEG_Lists <- list(
@@ -442,7 +442,7 @@ for (name in names(DEG_Lists)) {
 
 ```
 
-```{r RNASeq_DGE_Species_TopTable_Subsetting_barplot}
+```{r RNASeq_DGE_Species_TopTable_Subsetting0.5_barplot}
 ####proportion bar plots####
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
@@ -492,7 +492,7 @@ names(RNA_sets_0.1) <- paste0("Day", sub("D", "", days), "_HC")
 # saveRDS(RNA_sets_0.1,"data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
 ```
 
-```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.1}
+```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.1_Eulers}
 all_genes <- unique(TopTable_RNA_All$Gene)
   
 DEG_Lists <- list(
@@ -534,7 +534,7 @@ for (name in names(DEG_Lists)) {
 
 ```
 
-```{r RNASeq_DGE_Species_TopTable_Subsetting_barplot0.1}
+```{r RNASeq_DGE_Species_TopTable_Subsetting0.1_barplot}
 ####proportion bar plots####
 #first factor the timepoints so that they are in the right order
 df <- data.frame(

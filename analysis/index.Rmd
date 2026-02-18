@@ -14,10 +14,10 @@ Welcome to my research website.
 
 [RNA PCA Plots](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_PCA_Ensemble.html)
 
-[RNA Cormotif Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Trajectory_Ensemble.html)
+[RNA DGE Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Comp_Species_Ensemble.html)
+
+[RNA CHDGene Overlaps Species DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Species.html)
 
 [RNA Cormotif Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Species_Ensembl.html)
 
-[RNA DGE Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Comp_Species_Ensemble.html)
-
-[RNA CHDGene Overlaps Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Species.html)
+[RNA Cormotif Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Trajectory_Ensemble.html)

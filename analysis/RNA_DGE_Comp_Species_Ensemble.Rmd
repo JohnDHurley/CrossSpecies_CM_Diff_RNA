@@ -960,6 +960,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/DGE/RNA_DGE_Comp_Species_Ensemble.Rmd")
+# wflow_publish("analysis/RNA_DGE_Comp_Species_Ensemble.Rmd")
 
 ```

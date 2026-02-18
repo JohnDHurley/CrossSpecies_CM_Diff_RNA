@@ -1109,7 +1109,55 @@ names(clust_names_list) <- paste0("clust", 1:4)
 print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
+```{r RNASeq_CoMortif_Species_DGE}
+TopTable_RNA_All <- readRDS("data/TopTable_RNA_all.RDS")
+clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
+clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
+clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
+clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
 
+
+TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
+cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA")
+
+
+```
+
+```{r RNASeq_CoMortif_Species_DGE_FC}
+cluster_lists <- list(
+  clust1_RNA  = clust1_RNA,
+  clust2_RNA  = clust2_RNA,
+  clust3_RNA  = clust3_RNA,
+  clust4_RNA  = clust4_RNA
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_CoMortif_Species_DGE_AbsFC}
+cluster_lists <- list(
+  clust1_RNA  = clust1_RNA,
+  clust2_RNA  = clust2_RNA,
+  clust3_RNA  = clust3_RNA,
+  clust4_RNA  = clust4_RNA
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
 
 ```{r RNA-Seq_CorMotif_Species_ClustSets_Saves,eval=FALSE}
 # View(motif_prob)

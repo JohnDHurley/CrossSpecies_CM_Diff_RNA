@@ -45,6 +45,8 @@ dge <- readRDS("data/DGE/Species/RNA_dge_matrix.RDS")
 fit2 <- readRDS("data/DGE/Species/fit2.RDS")
 TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 Comparisons_names <- readRDS("data/DGE/Species/Comparisons_names_Trajectory.RDS")
+all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
+deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
 RNA_sets_0.1 <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
 all_intersections <- readRDS("data/DGE/Species/all_intersections.RDS")
@@ -532,7 +534,7 @@ for (name in names(DEG_Lists)) {
 
 ```
 
-```{r RNASeq_DGE_Species_TopTable_Subsetting_barplot}
+```{r RNASeq_DGE_Species_TopTable_Subsetting_barplot0.1}
 ####proportion bar plots####
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
@@ -607,7 +609,7 @@ print(mean(Day30_AllGenes$logFC))
 
 ```
 
-```{r RNASeq_DGE_Species_TopTable_Subsetting_FC}
+```{r RNASeq_DGE_Species_TopTable_Subsetting_AbsFC}
 all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
 deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 
@@ -731,7 +733,7 @@ all_intersections <- get_intersections(sets)
 ```
 
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_0_2}
 H_comp <- "HC_D0"
 C_comp <- "HC_D2"
 
@@ -786,7 +788,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   )
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_5}
 H_comp <- "HC_D2"
 C_comp <- "HC_D5"
 
@@ -843,7 +845,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   )
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_5_15}
 H_comp <- "HC_D5"
 C_comp <- "HC_D15"
 
@@ -898,7 +900,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   )
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_15_30}
 H_comp <- "HC_D15"
 C_comp <- "HC_D30"
 
@@ -953,55 +955,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   )
 ```
 
-```{r RNASeq_DGE_FC_CormotifClusters}
-TopTable_RNA_All <- readRDS("data/TopTable_RNA_all.RDS")
-clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
-clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
-clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
-clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
-
-
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA")
-
-
-```
-
-```{r RNASeq_DGE_Clusters_FC}
-cluster_lists <- list(
-  clust1_RNA  = clust1_RNA,
-  clust2_RNA  = clust2_RNA,
-  clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-
-
-```
-
-```{r RNASeq_DGE_Clusters_AbsFC}
-cluster_lists <- list(
-  clust1_RNA  = clust1_RNA,
-  clust2_RNA  = clust2_RNA,
-  clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_absfc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-
-
-```
 
 ```{r Updating Website, eval = FALSE}
 

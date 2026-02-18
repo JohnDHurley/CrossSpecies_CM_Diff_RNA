@@ -69,6 +69,8 @@ prcomp_RNA_meta <- prcomp_RNA$x %>% cbind(., RNA_Metadata)
 #PCA checks
 #k=1
 
+prcomp_RNA_meta$Timepoint <- factor(prcomp_RNA_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
 ggplot2::autoplot(prcomp_RNA,
                   data = prcomp_RNA_meta,
                   colour = "Timepoint",
@@ -94,6 +96,8 @@ prcomp_Filt_RMG0_RNA <- prcomp(t(Filt_RMG0_RNA_log2cpm), scale=FALSE, center = T
 prcomp_Filt_RMG0_RNA_meta <- prcomp_Filt_RMG0_RNA$x %>% cbind(., RNA_Metadata)
 #PCA checks
 #k=1
+
+prcomp_Filt_RMG0_RNA_meta$Timepoint <- factor(prcomp_Filt_RMG0_RNA_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
 
 ggplot2::autoplot(prcomp_Filt_RMG0_RNA ,
                   data = prcomp_Filt_RMG0_RNA_meta,
@@ -123,6 +127,8 @@ prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- prcomp_Filt_RMG0_RNA_log2cpm_NoD4$x %>
 #PCA checks
 #k=1
 
+prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta$Timepoint <- factor(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
+
 ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
                   data = prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,
                   colour = "Timepoint",
@@ -145,6 +151,8 @@ Row Means > 0")
 ```
 
 ```{r RNA_NoD4_RMG0_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta$Timepoint <- factor(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
 
 ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
                   data = prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,

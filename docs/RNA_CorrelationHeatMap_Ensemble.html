@@ -388,7 +388,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-28
+<strong>Last updated:</strong> 2026-02-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0fcf7c3f86b6f61814c4e1f7878aa284b8c82266targetblank0fcf7c3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreec85837b9cf4737e7032493f7577a8de43816a5catargetblankc85837ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0fcf7c3f86b6f61814c4e1f7878aa284b8c82266" target="_blank">0fcf7c3</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/c85837b9cf4737e7032493f7577a8de43816a5ca" target="_blank">c85837b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0fcf7c3f86b6f61814c4e1f7878aa284b8c82266targetblank0fcf7c3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreec85837b9cf4737e7032493f7577a8de43816a5catargetblankc85837ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0fcf7c3f86b6f61814c4e1f7878aa284b8c82266" target="_blank">0fcf7c3</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/c85837b9cf4737e7032493f7577a8de43816a5ca" target="_blank">c85837b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -555,9 +555,6 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -603,6 +600,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/c85837b9cf4737e7032493f7577a8de43816a5ca/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">c85837b</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-02-18
+</td>
+<td>
+SiteUpDate_CorrelationHeatMap
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/7789dff2d523574968d63456a5a6b948efcc1da2/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -729,52 +760,19 @@ Finalizing CorHeatMap
 </div>
 </div>
 </div>
-<pre class="r"><code>####Library Loading####
-library(&quot;edgeR&quot;)
-library(&quot;ggplot2&quot;)
-library(&quot;tibble&quot;)
-library(&quot;dplyr&quot;)
-library(&quot;ggrepel&quot;)
-library(&quot;readr&quot;)
-library(&quot;org.Hs.eg.db&quot;)
-library(&quot;AnnotationDbi&quot;)
-library(&quot;pheatmap&quot;)
-library(&quot;Cormotif&quot;)
-library(&quot;tidyverse&quot;)
-library(&quot;workflowr&quot;)
-library(&quot;RUVSeq&quot;)
-library(&quot;SummarizedExperiment&quot;)
-library(&quot;readxl&quot;)
-library(&quot;ggfortify&quot;)
-library(&quot;ComplexHeatmap&quot;)
+<pre class="r"><code>h_samples_counts &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/h_samples_counts.txt&quot;, comment.char=&quot;#&quot;)
 
-# BiocManager::install(&quot;SummarizedExperiment&quot;)
+c_samples_counts &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/c_samples_counts.txt&quot;, comment.char=&quot;#&quot;)
 
-RNA_fc_df &lt;- readRDS(&quot;data/Raw_Data/RNA_fc_df.RDS&quot;)
-RNA_Metadata &lt;- readRDS(&quot;data/Raw_Data/RNA_Metadata.RDS&quot;)
+RNA_joined_fc &lt;- left_join(h_samples_counts,c_samples_counts, by = &quot;Geneid&quot;)
 
-RNA_fc &lt;- readRDS(&quot;data/QC/RNA_fc.RDS&quot;)
-RNA_log2cpm &lt;- (&quot;data/QC/RNA_log2cpm.RDS&quot;)
+#To keep only OrthoGenes and sample columns
+RNA_fc &lt;- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c(&quot;gene&quot;,&quot;Chr.x&quot;,&quot;Start.x&quot;,&quot;End.x&quot;,&quot;Strand.x&quot;,&quot;Length.x&quot;,&quot;Geneid.x&quot;,&quot;Chr.y&quot;,&quot;Start.y&quot;,&quot;End.y&quot;,&quot;Strand.y&quot;,&quot;Length.y&quot;,&quot;Geneid.y&quot;))]
+# 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
 
-Filt_RMG0_RNA_fc &lt;- readRDS(&quot;data/QC/Filt_RMG0_RNA_fc.RDS&quot;)
-Filt_RMG0_RNA_log2cpm &lt;-(&quot;data/QC/RNA_log2cpm_RMG0.RDS&quot;)
+RNA_fc &lt;- RNA_fc %&gt;%
+  column_to_rownames(&quot;Geneid&quot;)
 
-Cor_Filt_RMG0_RNA_log2cpm &lt;- readRDS(&quot;data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;)
-Cor_metadata &lt;- readRDS(&quot;data/QC/Cor_RNA_metadata.RDS&quot;)
-ann_colors &lt;- readRDS(&quot;data/QC/ann_colors.RDS&quot;)
-
-RNA_Metadata_No4 &lt;- readRDS(&quot;data/QC/RNA_Metatdata_No4.RDS&quot;)
-Filt_RMG0_RNA_fc_NoD4 &lt;- readRDS(&quot;data/QC/Filt_RMG0_RNA_fc_NoD4.RDS&quot;)
-Filt_RMG0_RNA_log2cpm_NoD4 &lt;- readRDS(&quot;data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)
-
-Cor_metadata_No4 &lt;- readRDS(&quot;data/QC/Cor_metadata_No4.RDS&quot;)
-Cor_Filt_RMG0_RNA_log2cpm_NoD4 &lt;- readRDS(&quot;data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)
-ann_colors_No4 &lt;- readRDS(&quot;data/QC/ann_colors_no4.RDS&quot;)</code></pre>
-<pre class="r"><code># #To keep only OrthoGenes and sample columns
-# RNA_fc &lt;- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c(&quot;gene&quot;,&quot;Chr.x&quot;,&quot;Start.x&quot;,&quot;End.x&quot;,&quot;Strand.x&quot;,&quot;Length.x&quot;,&quot;Geneid.x&quot;,&quot;Chr.y&quot;,&quot;Start.y&quot;,&quot;End.y&quot;,&quot;Strand.y&quot;,&quot;Length.y&quot;,&quot;Geneid.y&quot;))]
-# # 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
-# rownames(RNA_fc) &lt;- RNA_joined_fc$gene
-# 
 # #Rename column Names to More Useful Info
 col_names &lt;- c(&quot;H28126_D0&quot;,
               &quot;H28126_D2&quot;,
@@ -865,41 +863,104 @@ col_names &lt;- c(&quot;H28126_D0&quot;,
               &quot;C3647_D15&quot;,
               &quot;C3647_D30&quot;
 )
-# colnames(RNA_fc) &lt;- col_names 
-# dim(RNA_fc)
-# 
-# sum(duplicated(rownames(RNA_fc)))
-# ensembl_ids_unfilt &lt;- rownames(RNA_fc)
-# entrez_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
-#                             keys = ensembl_ids_unfilt,
-#                             column = &quot;ENTREZID&quot;,
-#                             keytype = &quot;ENSEMBL&quot;,
-#                             multiVals = &quot;first&quot;)
-# symbol_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
-#                             keys = ensembl_ids_unfilt,
-#                             column = &quot;SYMBOL&quot;,
-#                             keytype = &quot;ENSEMBL&quot;,
-#                             multiVals = &quot;first&quot;)
-# 
-# RNA_fc_df &lt;- as.data.frame(RNA_fc)
-# RNA_fc_df &lt;- RNA_fc_df %&gt;%
-#   rownames_to_column(var = &quot;Ensemble&quot;) %&gt;%
-#   dplyr::mutate(
-#     Entrez_ID = entrez_ids_unfilt,
-#     Symbol    = symbol_ids_unfilt
-#   ) %&gt;%
-#   dplyr::select(
-#     Ensemble,        # 1st column
-#     Entrez_ID,       # 2nd column
-#     Symbol,          # 3rd column
-#     everything()     # rest unchanged
-#   )
-# 
-# # saveRDS(RNA_fc_df,&quot;data/Data_Frames/RNA_fc_df.RDS&quot;)
-# 
-# RNA_Metadata &lt;- read_excel(&quot;~/diff_timeline_tes/RNA/RNA_Metadata.xlsx&quot;)
-# 
-# # saveRDS(RNA_Metadata,&quot;data/Data_Frames/RNA_Metadata.RDS&quot;)</code></pre>
+colnames(RNA_fc) &lt;- col_names
+dim(RNA_fc)
+
+ensembl_ids_unfilt &lt;- rownames(RNA_fc)
+entrez_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
+                            keys = ensembl_ids_unfilt,
+                            column = &quot;ENTREZID&quot;,
+                            keytype = &quot;ENSEMBL&quot;,
+                            multiVals = &quot;first&quot;)
+symbol_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
+                            keys = ensembl_ids_unfilt,
+                            column = &quot;SYMBOL&quot;,
+                            keytype = &quot;ENSEMBL&quot;,
+                            multiVals = &quot;first&quot;)
+
+RNA_fc_df &lt;- as.data.frame(RNA_fc)
+RNA_fc_df &lt;- RNA_fc_df %&gt;%
+  rownames_to_column(var = &quot;Ensemble&quot;) %&gt;%
+  dplyr::mutate(
+    Entrez_ID = entrez_ids_unfilt,
+    Symbol    = symbol_ids_unfilt
+  ) %&gt;%
+  dplyr::select(
+    Ensemble,        # 1st column
+    Entrez_ID,       # 2nd column
+    Symbol,          # 3rd column
+    everything()     # rest unchanged
+  )
+
+# saveRDS(RNA_fc_df,&quot;data/Raw_Data/RNA_fc_df.RDS&quot;)
+
+RNA_Metadata &lt;- read_excel(&quot;~/diff_timeline_tes/RNA/RNA_Metadata.xlsx&quot;)
+
+# saveRDS(RNA_Metadata,&quot;data/Raw_Data/RNA_Metadata.RDS&quot;)</code></pre>
+<pre class="r"><code># -----------------------------
+# 1. Prepare long-format data
+# -----------------------------
+day_levels &lt;- c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+marker_levels &lt;- c(&quot;OCT3/4&quot;, &quot;Brachy&quot;, &quot;ISL-1&quot;, &quot;TNNT-2&quot;)
+
+df_long_all &lt;- RNA_Metadata_NoD4_NoRep %&gt;%
+  dplyr::select(Cond, `OCT3/4`, Brachy, `ISL-1`, `TNNT-2`) %&gt;%
+  mutate(
+    `OCT3/4` = as.numeric(`OCT3/4`),
+    Brachy = as.numeric(Brachy),
+    `ISL-1` = as.numeric(`ISL-1`),
+    `TNNT-2` = as.numeric(`TNNT-2`),
+    Group = ifelse(grepl(&quot;^H_&quot;, Cond), &quot;H&quot;, &quot;C&quot;)
+  ) %&gt;%
+  pivot_longer(
+    cols = c(`OCT3/4`, Brachy, `ISL-1`, `TNNT-2`),
+    names_to = &quot;Marker&quot;,
+    values_to = &quot;Percent_Positive&quot;
+  ) %&gt;%
+  mutate(
+    Day = gsub(&quot;.*_(Day\\d+)$&quot;, &quot;\\1&quot;, Cond),
+    Day = factor(Day, levels = day_levels, ordered = TRUE),
+    Marker = factor(Marker, levels = marker_levels, ordered = TRUE)
+  )
+
+# -----------------------------
+# 2. Compute summary with SEM
+# -----------------------------
+summary_df &lt;- df_long_all %&gt;%
+  group_by(Marker, Day, Group) %&gt;%
+  summarise(
+    Mean = mean(Percent_Positive, na.rm = TRUE),
+    SD = sd(Percent_Positive, na.rm = TRUE),
+    N = sum(!is.na(Percent_Positive)),
+    SEM = SD / sqrt(N),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre class="r"><code># -----------------------------
+# 3. Plot lines over time with SEM error bars
+# -----------------------------
+ggplot(summary_df, aes(x = Day, y = Mean, color = Group, group = Group)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2) +
+  geom_errorbar(
+    aes(ymin = Mean - SEM, ymax = Mean + SEM),
+    width = 0.2
+  ) +
+  facet_wrap(~ Marker, nrow = 1) +
+  scale_color_manual(values = c(&quot;H&quot; = &quot;skyblue&quot;, &quot;C&quot; = &quot;salmon&quot;)) +
+  scale_y_continuous(limits = c(0, 100)) +
+  labs(
+    title = &quot;Mean Percent Positive Across Timepoints for Each Marker&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Mean Percent Positive (%)&quot;,
+    caption = &quot;Error bars represent SEM (Standard Error of the Mean)&quot;
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;,
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    plot.caption = element_text(hjust = 0, face = &quot;italic&quot;, size = 10)
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#####Unfiltered####
 RNA_fc &lt;- RNA_fc_df %&gt;% 
   dplyr::select(c(-&quot;Entrez_ID&quot;, -&quot;Symbol&quot;)) %&gt;% 
@@ -908,9 +969,9 @@ RNA_fc &lt;- RNA_fc_df %&gt;%
 # saveRDS(RNA_fc,&quot;data/QC/RNA_fc.RDS&quot;)
 
 RNA_log2cpm &lt;- cpm(RNA_fc,log=TRUE)
-print(hist(RNA_log2cpm,  main = &quot;Histogram of all counts (unfiltered)&quot;,
-     xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =4 ))</code></pre>
-<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+hist(RNA_log2cpm,  main = &quot;Histogram of all counts (unfiltered)&quot;,
+     xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =4 )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Box_Unfiltered-1">
 Past versions of RNASeq_FeatureCounts_Box_Unfiltered-1.png
@@ -935,6 +996,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7789dff2d523574968d63456a5a6b948efcc1da2/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d9f15a6bf73c125f6d78e861d9c80666a566be7e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" target="_blank">d9f15a6</a>
 </td>
 <td>
@@ -948,40 +1020,14 @@ John D. Hurley
 </table>
 </div>
 </div>
-<pre><code>$breaks
- [1] -3 -2 -1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
-
-$counts
- [1] 2026734  332340  206543  159084  134510  130097  148151  195453  219757
-[10]  174507   94391   39658   15034    5070    1267     310      70      21
-[19]       3
-
-$density
- [1] 5.219506e-01 8.558846e-02 5.319160e-02 4.096935e-02 3.464074e-02
- [6] 3.350425e-02 3.815375e-02 5.033557e-02 5.659464e-02 4.494128e-02
-[11] 2.430878e-02 1.021324e-02 3.871749e-03 1.305691e-03 3.262941e-04
-[16] 7.983518e-05 1.802730e-05 5.408190e-06 7.725985e-07
-
-$mids
- [1] -2.5 -1.5 -0.5  0.5  1.5  2.5  3.5  4.5  5.5  6.5  7.5  8.5  9.5 10.5 11.5
-[16] 12.5 13.5 14.5 15.5
-
-$xname
-[1] &quot;RNA_log2cpm&quot;
-
-$equidist
-[1] TRUE
-
-attr(,&quot;class&quot;)
-[1] &quot;histogram&quot;</code></pre>
 <pre class="r"><code>boxplot(RNA_log2cpm, main = &quot;Boxplots of log cpm per sample
           (unfiltered)&quot;, xaxt = &quot;n&quot;, xlab= &quot;&quot;)
 axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
      las = 2,               # rotate text vertically (like srt=90)
-     cex.axis = 0.3)        # shrink label size</code></pre>
-<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+     cex.axis = 0.6)        # shrink label size</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Box_Unfiltered-2">
 Past versions of RNASeq_FeatureCounts_Box_Unfiltered-2.png
@@ -1004,6 +1050,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7789dff2d523574968d63456a5a6b948efcc1da2/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-2.png" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d9f15a6bf73c125f6d78e861d9c80666a566be7e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-2.png" target="_blank">d9f15a6</a>
@@ -1057,6 +1114,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7789dff2d523574968d63456a5a6b948efcc1da2/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_RMG0-1.png" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d9f15a6bf73c125f6d78e861d9c80666a566be7e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_RMG0-1.png" target="_blank">d9f15a6</a>
 </td>
 <td>
@@ -1101,6 +1169,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7789dff2d523574968d63456a5a6b948efcc1da2/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_RMG0-1.png" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d9f15a6bf73c125f6d78e861d9c80666a566be7e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_RMG0-1.png" target="_blank">d9f15a6</a>
 </td>
 <td>
@@ -1116,7 +1195,7 @@ John D. Hurley
 </div>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm &lt;- cor(Filt_RMG0_RNA_log2cpm, method = &quot;spearman&quot;)
-individual &lt;- RNA_Metadata$Individual
+individual &lt;- RNA_Metadata$Individual_Label
 species &lt;- RNA_Metadata$Species
 timepoint &lt;- RNA_Metadata$Timepoint
 timepoint &lt;- factor(timepoint,levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;))
@@ -1200,6 +1279,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7789dff2d523574968d63456a5a6b948efcc1da2/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_HeatMap_RMG0-1.png" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d9f15a6bf73c125f6d78e861d9c80666a566be7e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_HeatMap_RMG0-1.png" target="_blank">d9f15a6</a>
 </td>
 <td>
@@ -1215,7 +1305,7 @@ John D. Hurley
 </div>
 <pre class="r"><code>####Subset####
 RNA_Metadata_No4 &lt;- RNA_Metadata %&gt;% 
- filter(timepoint != &quot;Day4&quot;)
+ filter(Timepoint != &quot;Day4&quot;)
 
 RNA_fc_NoD4 &lt;- RNA_fc %&gt;% 
   dplyr::select(-ends_with(&quot;_D4&quot;))
@@ -1283,6 +1373,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7789dff2d523574968d63456a5a6b948efcc1da2/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png" target="_blank">7789dff</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d9f15a6bf73c125f6d78e861d9c80666a566be7e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png" target="_blank">d9f15a6</a>
 </td>
 <td>
@@ -1296,173 +1397,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-<pre class="r"><code>filt_gene_list &lt;- rownames(Filt_RMG0_RNA_log2cpm_NoD4)
-#14838
-length(filt_gene_list)</code></pre>
-<pre><code>[1] 14838</code></pre>
-<pre class="r"><code># # in order to make this match with annot later down the line, change the col names for counts_raw_matrix to match final_sample_names in annot
-# 
-# # i&#39;ll also want to make sure I keep the replicate for this set
-# 
-# Ind_RUV &lt;- c(rep(&quot;H1&quot;,5),
-#              rep(&quot;H2&quot;,5),
-#              rep(&quot;H3&quot;,5),
-#              rep(&quot;H4&quot;,5),
-#              rep(&quot;H5&quot;,5),
-#              rep(&quot;H6&quot;,5),
-#              rep(&quot;H7&quot;,5),
-#              rep(&quot;H4R&quot;,4),
-#              rep(&quot;C1&quot;,5),
-#              rep(&quot;C2&quot;,5),
-#              rep(&quot;C3&quot;,5),
-#              rep(&quot;C4&quot;,5),
-#              rep(&quot;C5&quot;,5),
-#              rep(&quot;C6&quot;,5),
-#              rep(&quot;C7&quot;,5)
-#              )
-# RNA_Metadata_No4$Ind_RUV &lt;- Ind_RUV
-# RNA_Metadata_No4_RUV &lt;- RNA_Metadata_No4 %&gt;%
-#    mutate(
-#     Ind_RUV = factor(Ind_RUV,
-#                         levels = c(&quot;H1&quot;,&quot;H2&quot;,&quot;H3&quot;,&quot;H4&quot;,&quot;H5&quot;,&quot;H6&quot;,&quot;H7&quot;,&quot;H4R&quot;,&quot;C1&quot;,&quot;C2&quot;,&quot;C3&quot;,&quot;C4&quot;,&quot;C5&quot;,&quot;C6&quot;,&quot;C7&quot;),ordered=TRUE),
-#     Timepoint = factor(Timepoint,
-#                        levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;),ordered=TRUE),
-#     Species = factor(Species,
-#                      levels = c(&quot;H&quot;,&quot;C&quot;),ordered=TRUE),
-#     Condition = factor(
-#       Condition,
-#       levels = expand.grid(
-#         Ind_RUV = levels(Ind_RUV),
-#         Timepoint = levels(Timepoint),
-#         Species = levels(Species)
-#       ) %&gt;%
-#         transmute(Condition=paste(Species,Timepoint,Ind_RUV,sep=&quot;_&quot;)) %&gt;%
-#         pull(Condition),
-#       ordered=TRUE
-#     )
-#   )
-# 
-# # saveRDS(RNA_Metadata_No4_RUV,&quot;data/QC/RNA_MetaData_NoD4_RUV.RDS&quot;)
-# RNA_Metadata_No4_RUV &lt;- readRDS(&quot;data/QC/RNA_MetaData_NoD4_RUV.RDS&quot;)
-# 
-# RNA_fc_NoD4_RUV &lt;- RNA_fc_NoD4
-# colnames(RNA_fc_NoD4_RUV) &lt;- RNA_Metadata_No4_RUV$Condition
-# 
-# RUV_filt_counts &lt;- RNA_fc_NoD4_RUV %&gt;% 
-#   as.data.frame() %&gt;% 
-#   dplyr::filter(., row.names(.)%in% filt_gene_list)
-# # saveRDS(RUV_filt_counts, &quot;data/DGE/RUV_filt_counts.RDS&quot;)
-# dim(RUV_filt_counts)
-# 
-# #add in the annotation files
-# ind_num &lt;- RNA_Metadata_No4_RUV$Ind_RUV
-# type(ind_num)
-# length(ind_num)
-# 
-# annot &lt;- as.data.frame(RNA_Metadata_No4_RUV)
-# type(annot)
-# is.data.frame(annot)
-# #same as Metadata
-# 
-# 
-# #  counts need to be integer values and in a numeric matrix
-# # note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
-# counts &lt;- as.matrix(RUV_filt_counts)
-#   
-# # saveRDS(counts, &quot;data/QC/filt_counts_matrix.RDS&quot;)
-# 
-# # Create a DataFrame for the phenoData
-# phenoData &lt;- DataFrame(annot)
-# 
-# set &lt;- SummarizedExperiment(assays = counts, metadata = phenoData)
-# 
-# scIdx &lt;- RUVSeq::makeGroups(phenoData$Cond)
-# 
-# # # Generate a background matrix
-# # # The column &quot;Cond&quot; holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
-# # Day0 &lt;- c(16,36)
-# # Day2 &lt;- c(17,37)
-# # Day5 &lt;- c(18,38)
-# # Day30 &lt;- c(20,39)
-# # scIdx &lt;- rbind(Day0,Day2,Day5,Day30)
-# # rownames(scIdx) &lt;- c(&quot;[1,]&quot;,&quot;[2,]&quot;,&quot;[3,]&quot;,&quot;[4,]&quot;)
-# # colnames(scIdx) &lt;- c(&quot;[,1]&quot;,&quot;[,2]&quot;)
-# ```
-# 
-# 
-# 
-# ```{r}
-# #now I&#39;ve made all of the data I need for this - they are located in each section for k values
-# 
-# #DO NOT USE THESE COUNTS FOR LINEAR MODELING
-# 
-# #colors for all of the plots
-# # txtime_col
-# # ind_col
-# # time_col
-# # tx_col
-# log2cpm &lt;- cpm(counts,log=TRUE)
-# # before ruv (counts PCA)
-# prcomp_res_log2 &lt;- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4), scale=FALSE, center = TRUE)
-# annot_prcomp_res &lt;- prcomp_res_log2$x %&gt;% cbind(., annot)
-# # 
-# # group_2 &lt;- annot$dgelist
-# # dgelist_col &lt;- annot$dgelist
-# # individual_list &lt;- annot$Individual</code></pre>
-<pre class="r"><code># 
-# #now plot my PCA for filtered counts
-# ####PC1/PC2####
-# individual_list &lt;- RNA_Metadata_No4_RUV$Individual
-# 
-# suppressWarnings(
-#   ggplot2::autoplot(prcomp_res_log2,
-#                     data = annot,
-#                     colour = &quot;Timepoint&quot;,
-#                     shape = &quot;Species&quot;,
-#                     size = 4,
-#                     x = 1,
-#                     y = 2) +
-#     scale_color_manual(values = ann_colors_No4$timepoint_cor) +
-#     ggrepel::geom_text_repel(
-#       label = individual_list,
-#       vjust = -0.5,
-#       max.overlaps = 50
-#     ) +
-#     ggtitle(&quot;RNA log2cpm RMG0&quot;)
-# )</code></pre>
-<pre class="r"><code># set1 &lt;- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
-# 
-# # Get the RUV factors (weights) for modeling
-# RUV_df1 &lt;- set1$W %&gt;% as.data.frame()
-# RUV_df1$Condition &lt;- rownames(RUV_df1)
-# 
-# RUV_df_rm1 &lt;- RUV_df1[RUV_df1$Condition %in% annot$Condition, ]
-# View(RUV_df_rm1)
-# RUV_1 &lt;- RUV_df_rm1$W_1
-# 
-# saveRDS(RUV_df_rm1, &quot;data/QC/RUV_df_rm1.RDS&quot;)
-# saveRDS(RUV_1, &quot;data/QC/RUV_1.RDS&quot;)
-# 
-# 
-# log2cpm_k1 &lt;- cpm(set1$normalizedCounts, log = TRUE)
-# 
-# prcomp_res_log2_k1 &lt;- prcomp(t(log2cpm_k1), scale=FALSE, center = TRUE)
-# annot_prcomp_res_k1 &lt;- prcomp_res_log2_k1$x %&gt;% cbind(., RNA_Metadata_No4)
-# #PCA checks
-# #k=1
-# 
-# ggplot2::autoplot(prcomp_res_log2_k1,
-#                   data = annot_prcomp_res_k1,
-#                   colour = &quot;Timepoint&quot;,
-#                   shape = &quot;Species&quot;,
-#                   size = 4,
-#                   x=1,
-#                   y=2) +
-#   scale_color_manual(values=ann_colors_No4$timepoint_cor)+
-#   ggrepel::geom_text_repel(label = individual_list,
-#                             vjust = -0.5,
-#                             max.overlaps = 50)+
-#   ggtitle(&quot;RUV Correction k=1 log2cpm&quot;)</code></pre>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
 # wflow_publish(&quot;analysis/RNA_CorrelationHeatMap_Ensemble.Rmd&quot;)</code></pre>
@@ -1505,59 +1439,59 @@ other attached packages:
 [11] Rsamtools_2.24.0            GenomicRanges_1.60.0       
 [13] Biostrings_2.76.0           GenomeInfoDb_1.44.3        
 [15] XVector_0.48.0              BiocParallel_1.42.1        
-[17] lubridate_1.9.4             forcats_1.0.1              
-[19] stringr_1.5.2               purrr_1.1.0                
-[21] tidyr_1.3.1                 tidyverse_2.0.0            
+[17] lubridate_1.9.5             forcats_1.0.1              
+[19] stringr_1.6.0               purrr_1.2.1                
+[21] tidyr_1.3.2                 tidyverse_2.0.0            
 [23] Cormotif_1.54.0             affy_1.86.0                
 [25] pheatmap_1.0.13             org.Hs.eg.db_3.21.0        
 [27] AnnotationDbi_1.70.0        IRanges_2.42.0             
 [29] S4Vectors_0.46.0            Biobase_2.68.0             
-[31] BiocGenerics_0.54.0         generics_0.1.4             
-[33] readr_2.1.5                 ggrepel_0.9.6              
-[35] dplyr_1.1.4                 tibble_3.3.0               
-[37] ggplot2_4.0.0               edgeR_4.6.3                
+[31] BiocGenerics_0.54.1         generics_0.1.4             
+[33] readr_2.1.6                 ggrepel_0.9.6              
+[35] dplyr_1.1.4                 tibble_3.3.1               
+[37] ggplot2_4.0.2               edgeR_4.6.3                
 [39] limma_3.64.3                workflowr_1.7.2            
 
 loaded via a namespace (and not attached):
-  [1] later_1.4.4             BiocIO_1.18.0           bitops_1.0-9           
+  [1] later_1.4.5             BiocIO_1.18.0           bitops_1.0-9           
   [4] filelock_1.0.3          R.oo_1.27.1             cellranger_1.1.0       
   [7] preprocessCore_1.70.0   XML_3.99-0.20           lifecycle_1.0.5        
  [10] httr2_1.2.2             pwalign_1.4.0           doParallel_1.0.17      
  [13] rprojroot_2.1.1         processx_3.8.6          lattice_0.22-7         
- [16] MASS_7.3-65             magrittr_2.0.3          sass_0.4.10            
- [19] rmarkdown_2.30          jquerylib_0.1.4         yaml_2.3.10            
+ [16] MASS_7.3-65             magrittr_2.0.4          sass_0.4.10            
+ [19] rmarkdown_2.30          jquerylib_0.1.4         yaml_2.3.12            
  [22] httpuv_1.6.16           otel_0.2.0              DBI_1.2.3              
  [25] RColorBrewer_1.1-3      abind_1.4-8             R.utils_2.13.0         
  [28] RCurl_1.98-1.17         rappdirs_0.3.4          git2r_0.36.2           
  [31] circlize_0.4.17         GenomeInfoDbData_1.2.14 codetools_0.2-20       
- [34] DelayedArray_0.34.1     xml2_1.5.1              tidyselect_1.2.1       
+ [34] DelayedArray_0.34.1     xml2_1.5.2              tidyselect_1.2.1       
  [37] shape_1.4.6.1           UCSC.utils_1.4.0        farver_2.1.2           
  [40] BiocFileCache_2.16.2    jsonlite_2.0.0          GetoptLong_1.1.0       
  [43] iterators_1.0.14        foreach_1.5.2           tools_4.5.1            
- [46] progress_1.2.3          Rcpp_1.1.0              glue_1.8.0             
- [49] gridExtra_2.3           SparseArray_1.8.1       xfun_0.53              
+ [46] progress_1.2.3          Rcpp_1.1.1              glue_1.8.0             
+ [49] gridExtra_2.3           SparseArray_1.8.1       xfun_0.56              
  [52] withr_3.0.2             BiocManager_1.30.27     fastmap_1.2.0          
- [55] latticeExtra_0.6-31     callr_3.7.6             digest_0.6.37          
- [58] timechange_0.3.0        R6_2.6.1                colorspace_2.1-2       
+ [55] latticeExtra_0.6-31     callr_3.7.6             digest_0.6.39          
+ [58] timechange_0.4.0        R6_2.6.1                colorspace_2.1-2       
  [61] Cairo_1.7-0             jpeg_0.1-11             biomaRt_2.64.0         
- [64] RSQLite_2.4.3           R.methodsS3_1.8.2       rtracklayer_1.68.0     
+ [64] RSQLite_2.4.5           R.methodsS3_1.8.2       rtracklayer_1.68.0     
  [67] prettyunits_1.2.0       httr_1.4.7              S4Arrays_1.8.1         
  [70] whisker_0.4.1           pkgconfig_2.0.3         gtable_0.3.6           
- [73] blob_1.3.0              S7_0.2.0                hwriter_1.3.2.1        
- [76] htmltools_0.5.8.1       clue_0.3-66             scales_1.4.0           
+ [73] blob_1.3.0              S7_0.2.1                hwriter_1.3.2.1        
+ [76] htmltools_0.5.9         clue_0.3-66             scales_1.4.0           
  [79] png_0.1-8               knitr_1.51              rstudioapi_0.18.0      
  [82] tzdb_0.5.0              rjson_0.2.23            curl_7.0.0             
  [85] cachem_1.1.0            GlobalOptions_0.1.3     parallel_4.5.1         
- [88] restfulr_0.0.16         pillar_1.11.1           vctrs_0.6.5            
- [91] promises_1.3.3          dbplyr_2.5.1            cluster_2.1.8.1        
+ [88] restfulr_0.0.16         pillar_1.11.1           vctrs_0.7.1            
+ [91] promises_1.5.0          dbplyr_2.5.1            cluster_2.1.8.1        
  [94] evaluate_1.0.5          GenomicFeatures_1.60.0  cli_3.6.5              
- [97] locfit_1.5-9.12         compiler_4.5.1          rlang_1.1.6            
-[100] crayon_1.5.3            interp_1.1-6            aroma.light_3.38.0     
-[103] ps_1.9.1                getPass_0.2-4           fs_1.6.6               
-[106] stringi_1.8.7           deldir_2.0-4            Matrix_1.7-3           
-[109] hms_1.1.4               bit64_4.6.0-1           KEGGREST_1.48.1        
-[112] statmod_1.5.0           memoise_2.0.1           affyio_1.78.0          
-[115] bslib_0.9.0             bit_4.6.0              </code></pre>
+ [97] locfit_1.5-9.12         compiler_4.5.1          rlang_1.1.7            
+[100] crayon_1.5.3            labeling_0.4.3          interp_1.1-6           
+[103] aroma.light_3.38.0      ps_1.9.1                getPass_0.2-4          
+[106] fs_1.6.6                stringi_1.8.7           deldir_2.0-4           
+[109] Matrix_1.7-4            hms_1.1.4               bit64_4.6.0-1          
+[112] KEGGREST_1.48.1         statmod_1.5.1           memoise_2.0.1          
+[115] affyio_1.78.0           bslib_0.10.0            bit_4.6.0              </code></pre>
 </div>
 </div>
 </div>

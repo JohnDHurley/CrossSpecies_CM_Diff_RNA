@@ -4,7 +4,7 @@ output: html_document
 date: "2026-01-27"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE,warning=FALSE}
 knitr::opts_chunk$set(
 	echo = TRUE,
 	message = FALSE,
@@ -13,43 +13,45 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r Setting the Enviroment}
+```{r Setting the Enviroment, include=FALSE,warning=FALSE}
 
 #Loading Libraries
-library(tidyverse)
-library(readxl)
-library(readr)
-library(ggrepel)
-library(ggfortify)
-library(patchwork)
-library(eulerr)
-library(org.Hs.eg.db)
-library(AnnotationDbi)
-library(ggVennDiagram)
-library(ggrastr)
-library(edgeR)
-library(limma)
+library("tidyverse")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
 library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
 
-
-
-#Loading R Objects
+#Loading R Objects Other WorkflowR
 Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-
 RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
-
 RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
 
-Day0_DEGs_HC <- readRDS("data/DGE/Species/Day0_DEGs_HC.RDS")
-Day2_DEGs_HC <- readRDS("data/DGE/Species/Day2_DEGs_HC.RDS")
-Day5_DEGs_HC <- readRDS("data/DGE/Species/Day5_DEGs_HC.RDS")
-Day15_DEGs_HC <- readRDS("data/DGE/Species/Day15_DEGs_HC.RDS")
-Day30_DEGs_HC <- readRDS("data/DGE/Species/Day30_DEGs_HC.RDS")
-
+#Loading R Objects Generated in this WorkflowR
+dge <- readRDS("data/DGE/Species/RNA_dge_matrix.RDS")
+fit2 <- readRDS("data/DGE/Species/fit2.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
+Comparisons_names <- readRDS("data/DGE/Species/Comparisons_names_Trajectory.RDS")
+RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+RNA_sets_0.1 <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+all_intersections <- readRDS("data/DGE/Species/all_intersections.RDS")
 
 ```
 
-```{r Volcano_Plot_Function}
+```{r Volcano_Plot_Function,Result="Hide",warning=FALSE}
 generate_volcano_plot <- function(toptable, title) {
   
   # #check for entrezid 
@@ -271,9 +273,6 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 ```
 
 ```{r RNASeq_DGE_Species_Data}
-# Filt_RMG0_RNA_fc_NoD4_NoRep_Symbol <- Filt_RMG0_RNA_fc_NoD4_NoRep_EntrezID_Symbol %>% 
-#   dplyr::select(-Entrez_ID) %>% 
-#   column_to_rownames("SYMBOL")
 
 Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>% 
   dplyr::select(-(contains("R")))
@@ -330,8 +329,6 @@ summary(results_summary)
 ```
 
 ```{r RNASeq_DGE_Species_TopTable}
-fit2 <- readRDS("data/DGE/Species/fit2.RDS")
-
 #Create Human TopTable. using listapply, then you can pull specific comp using the $
 TopTables_RNA_names <- colnames(fit2$coefficients) 
 
@@ -356,7 +353,7 @@ TopTable_RNA_All <- do.call(
   })
 )
 
-TopTable_RNA_All$Comparisons
+# TopTable_RNA_All$Comparisons
 # saveRDS(TopTable_RNA_All,"data/DGE/Species/TopTable_RNA_all.RDS")
 head(TopTable_RNA_All)
 ```
@@ -364,7 +361,6 @@ head(TopTable_RNA_All)
 
 
 ```{r RNASeq_DGE_Species_TopTable_VolcancoPlots}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 Comparisons_names <- unique(TopTable_RNA_All$Comparisons)
 # saveRDS(Comparisons_names,"data/DGE/Species/Comparisons_names_Trajectory.RDS")
 plot <- list()
@@ -381,11 +377,6 @@ for (n in Comparisons_names) {
 ```
 
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.05}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-
-library(dplyr)
-library(purrr)
-
 days <- c("D0", "D2", "D5", "D15", "D30")
 
 RNA_sets <- map(
@@ -403,14 +394,11 @@ RNA_sets <- map(
 
 names(RNA_sets) <- paste0("Day", sub("D", "", days), "_HC")
 
-saveRDS(RNA_sets,"data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+# saveRDS(RNA_sets,"data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
 ```
 
 
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.05}
-RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-
 all_genes <- unique(TopTable_RNA_All$Gene)
   
 DEG_Lists <- list(
@@ -444,7 +432,7 @@ for (name in names(DEG_Lists)) {
       ),
       labels = c("NonDEGs", "DEGs"),
       quantities = TRUE,
-      main = name
+      main = paste0(name, " (p < 0.05)")
     )
   )
 }
@@ -471,102 +459,75 @@ df_long <- df %>%
 
 df_long$Day <- factor(df_long$Day,levels = c("Day0", "Day2", "Day5", "Day15", "Day30"),ordered = TRUE)
 
-df_long
+# df_long
 
 ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
   scale_fill_manual(values = c("DEGs" = "#E41A1C", "Non_DEGs" = "#377EB8")) + # custom colors
-  labs(y = "Proportion", x = "Day", fill = "") +
+  labs(y = "Proportion", x = "", fill = "",title = "Proportion of Species DEGs p < 0.05") +
   theme_minimal(base_size = 14)
 
 ```
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.1}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
+days <- c("D0", "D2", "D5", "D15", "D30")
 
-Day0_DEGs_HC <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D0",
-                adj.P.Val <0.1)
-print("Day0_DEGs_HC")
-length(Day0_DEGs_HC$Gene)
+RNA_sets_0.1 <- map(
+  days,
+  ~ {
+    df <- TopTable_RNA_All %>%
+      filter(Comparisons == paste0("HC_", .x))
 
-Day2_DEGs_HC <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D2",
-                adj.P.Val <0.1)
-print("Day2_DEGs_HC")
-length(Day2_DEGs_HC$Gene)
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.1),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.1)
+    )
+  }
+)
 
-Day5_DEGs_HC <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D5",
-                adj.P.Val <0.1)
-print("Day5_DEGs_HC")
-length(Day5_DEGs_HC$Gene)
+names(RNA_sets_0.1) <- paste0("Day", sub("D", "", days), "_HC")
 
-Day15_DEGs_HC <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D15",
-                adj.P.Val <0.1)
-print("Day15_DEGs_HC")
-length(Day15_DEGs_HC$Gene)
+# saveRDS(RNA_sets_0.1,"data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+```
 
-Day30_DEGs_HC <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D30",
-                adj.P.Val <0.1)
-print("Day30_DEGs_HC")
-length(Day30_DEGs_HC$Gene)
-
+```{r RNASeq_DGE_Species_TopTable_Subsetting_DEGs0.1}
 all_genes <- unique(TopTable_RNA_All$Gene)
-print("All Expressed Genes")
-length(all_genes)
-
-deg_genes <- TopTable_RNA_All %>%
-  dplyr::filter(adj.P.Val <0.1) %>%
-  dplyr::pull(Gene) %>%
-  unique()
-print("DEG in at least one time point")
-length(deg_genes)
-
-# saveRDS(Day0_DEGs_HC,"data/DGE/Species/Day0_DEGs_HC_0.1.RDS")
-# saveRDS(Day2_DEGs_HC,"data/DGE/Species/Day2_DEGs_HC_0.1.RDS")
-# saveRDS(Day5_DEGs_HC,"data/DGE/Species/Day5_DEGs_HC_0.1.RDS")
-# saveRDS(Day15_DEGs_HC,"data/DGE/Species/Day15_DEGs HC_0.1HC.RDS")
-# saveRDS(Day30_DEGs_HC,"data/DGE/Species/Day30_DEGs_HC_0.1HC.RDS")
-# saveRDS(all_genes,"data/DGE/Species/ExpressedGenes.RDS")
-# saveRDS(deg_genes,"data/DGE/Species/DEG_AtLeastOne_0.1.RDS")
-
+  
 DEG_Lists <- list(
-  all_deg_genes = deg_genes,             # can be a vector
-  Day0_DEGs_HC = Day0_DEGs_HC$Gene,       # TopTable data.frame
-  Day2_DEGs_HC = Day2_DEGs_HC$Gene,
-  Day5_DEGs_HC = Day5_DEGs_HC$Gene,
-  Day15_DEGs_HC = Day15_DEGs_HC$Gene,
-  Day30_DEGs_HC = Day30_DEGs_HC$Gene
+  Day0_DEGs_HC = RNA_sets_0.1$Day0_HC$DEGs,       # TopTable data.frame
+  Day2_DEGs_HC = RNA_sets_0.1$Day2_HC$DEGs,
+  Day5_DEGs_HC = RNA_sets_0.1$Day5_HC$DEGs,
+  Day15_DEGs_HC = RNA_sets_0.1$Day15_HC$DEGs,
+  Day30_DEGs_HC = RNA_sets_0.1$Day30_HC$DEGs
 )
 
 fit_list <- list()
 
 for (name in names(DEG_Lists)) {
-  
-  deg_vector <- DEG_Lists[[name]]   # extract the gene vector
-  
-  # Create Euler object
+
+  # DEG gene vector
+  deg_vector <- unique(DEG_Lists[[name]]$Gene)
+
+  # Euler with containment
   fit_list[[name]] <- euler(list(
-    NonDEGs = all_genes,
+    AllGenes = all_genes,
     DEGs = deg_vector
   ))
-  
-  # Print plot in RMarkdown
-  print(plot(
-    fit_list[[name]],
-    fills = list(
-      fill = c("grey80", "firebrick"),
-      alpha = 0.6
-    ),
-    labels = TRUE,
-    quantities = TRUE,
-    main = name   # title
-  ))
-}
 
+  # Plot
+  print(
+    plot(
+      fit_list[[name]],
+      fills = list(
+        fill = c("grey85", "firebrick"),
+        alpha = 0.6
+      ),
+      labels = c("NonDEGs", "DEGs"),
+      quantities = TRUE,
+      main = paste0(name, " (p < 0.1)")
+    )
+  )
+}
 
 
 ```
@@ -590,13 +551,13 @@ df_long <- df %>%
 
 df_long$Day <- factor(df_long$Day,levels = c("Day0", "Day2", "Day5", "Day15", "Day30"),ordered = TRUE)
 
-df_long
+# df_long
 
 ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
   scale_fill_manual(values = c("DEGs" = "#E41A1C", "Non_DEGs" = "#377EB8")) + # custom colors
-  labs(y = "Proportion", x = "Day", fill = "") +
+  labs(y = "Proportion", x = "", fill = "", title = "Proportion of Species DEGs p < 0.1") +
   theme_minimal(base_size = 14)
 
 ```
@@ -604,11 +565,6 @@ ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
 
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_FC}
 TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-Day0_DEGs_HC <- readRDS("data/DGE/Species/Day0_DEGs_HC.RDS")
-Day2_DEGs_HC <- readRDS("data/DGE/Species/Day2_DEGs_HC.RDS")
-Day5_DEGs_HC <- readRDS("data/DGE/Species/Day5_DEGs_HC.RDS")
-Day15_DEGs_HC <- readRDS("data/DGE/Species/Day15_DEGs_HC.RDS")
-Day30_DEGs_HC <- readRDS("data/DGE/Species/Day30_DEGs_HC.RDS")
 all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
 deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 
@@ -652,12 +608,6 @@ print(mean(Day30_AllGenes$logFC))
 ```
 
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_FC}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-Day0_DEGs_HC <- readRDS("data/DGE/Species/Day0_DEGs_HC.RDS")
-Day2_DEGs_HC <- readRDS("data/DGE/Species/Day2_DEGs_HC.RDS")
-Day5_DEGs_HC <- readRDS("data/DGE/Species/Day5_DEGs_HC.RDS")
-Day15_DEGs_HC <- readRDS("data/DGE/Species/Day15_DEGs_HC.RDS")
-Day30_DEGs_HC <- readRDS("data/DGE/Species/Day30_DEGs_HC.RDS")
 all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
 deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 
@@ -701,57 +651,22 @@ print("Day 30 Average AbslogFC")
 print(mean(Day30_AllGenes$AbsFC))
 ```
 
-```{r RNASeq_DGE_Species_TopTable_Venn_Eulers}
-# # Your DEGs per day
-# Day0 <- unique(Day0_DEGs_HC$Gene)
-# Day2 <- unique(Day2_DEGs_HC$Gene)
-# Day5 <- unique(Day5_DEGs_HC$Gene)
-# Day15 <- unique(Day15_DEGs_HC$Gene)
-# Day30 <- unique(Day30_DEGs_HC$Gene)
-# 
-# sets <- list(Day0 = Day0, Day2 = Day2, Day5 = Day5, Day15 = Day15, Day30 = Day30)
-# 
-# 
-# fit5 <- euler(sets)
-# 
-# # Extract counts for all intersections
-# counts <- as.data.frame(fit5$original.values)
-# counts$Intersection <- rownames(counts)
-# 
-# # Rearrange columns for clarity
-# counts <- counts[, c("Intersection", "fit5$original.values")]
-# colnames(counts) <- c("Days", "GeneCount")
-# 
-# counts
-# 
-# # saveRDS(fit5,"data/DGE/Species/Venn_Day_Overlaps.RDS")
-# 
-# plot(
-#   fit5,
-#   fills = list(
-#     alpha = 0.6
-#   ),
-#   quantities = TRUE,
-#   main = "5-way DEGs"
-# )
-```
-
 ```{r RNASeq_DGE_Species_TopTable_Venn_ggplot}
-library(ggVennDiagram)
-library(ggplot2)
 
 # Your DEGs per day (already defined)
+
 sets <- list(
-  Day0 = Day0_DEGs_HC$Gene,       # TopTable data.frame
-  Day2 = Day2_DEGs_HC$Gene,
-  Day5 = Day5_DEGs_HC$Gene,
-  Day15 = Day15_DEGs_HC$Gene,
-  Day30 = Day30_DEGs_HC$Gene
+  Day0_DEGs_HC = RNA_sets$Day0_HC$DEGs$Gene,       # TopTable data.frame
+  Day2_DEGs_HC = RNA_sets$Day2_HC$DEGs$Gene,
+  Day5_DEGs_HC = RNA_sets$Day5_HC$DEGs$Gene,
+  Day15_DEGs_HC = RNA_sets$Day15_HC$DEGs$Gene,
+  Day30_DEGs_HC = RNA_sets$Day30_HC$DEGs$Gene
 )
+
 ```
 
 
-```{r RNASeq_DGE_Species_TopTable_Venn_ggplot_plot,fig.height=5,fig.width=9}
+```{r RNASeq_DGE_Species_TopTable_Venn_ggplot_plot,fig.height=13,fig.width=12}
 # Create a 5-way Venn diagram
 p <- ggVennDiagram(sets,
                    label_alpha = 0,       # makes background of labels transparent
@@ -804,7 +719,7 @@ get_intersections <- function(sets_list) {
 
 # Compute all intersections
 all_intersections <- get_intersections(sets)
-saveRDS(all_intersections,"data/DGE/Species/all_intersections.RDS")
+# saveRDS(all_intersections,"data/DGE/Species/all_intersections.RDS")
 
 # # Example: genes only in Day0
 # all_intersections$Day0
@@ -817,13 +732,9 @@ saveRDS(all_intersections,"data/DGE/Species/all_intersections.RDS")
 
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 H_comp <- "HC_D0"
 C_comp <- "HC_D2"
 
-library(dplyr)
-library(tidyr)
-
 df_wide <- TopTable_RNA_All %>%
   filter(Comparisons %in% c(H_comp, C_comp)) %>%
   dplyr::select(Gene, Comparisons, logFC) %>%
@@ -832,8 +743,8 @@ df_wide <- TopTable_RNA_All %>%
   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
 
-head(df_wide)
-nrow(df_wide)
+# head(df_wide)
+# nrow(df_wide)
 
 fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
 summary(fit)
@@ -841,12 +752,10 @@ summary(fit)
 r2 <- summary(fit)$r.squared
 pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
 
-r2
-pval
+# r2
+# pval
 
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
+# format(pval, scientific = TRUE, digits =3)
 
 x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
 x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
@@ -878,13 +787,9 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 H_comp <- "HC_D2"
 C_comp <- "HC_D5"
 
-library(dplyr)
-library(tidyr)
-
 df_wide <- TopTable_RNA_All %>%
   filter(Comparisons %in% c(H_comp, C_comp)) %>%
   dplyr::select(Gene, Comparisons, logFC) %>%
@@ -893,8 +798,8 @@ df_wide <- TopTable_RNA_All %>%
   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
 
-head(df_wide)
-nrow(df_wide)
+# head(df_wide)
+# nrow(df_wide)
 
 fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
 summary(fit)
@@ -902,10 +807,10 @@ summary(fit)
 r2 <- summary(fit)$r.squared
 pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
 
-r2
-pval
+# r2
+# pval
 
-format(pval, scientific = TRUE, digits = 3)
+# format(pval, scientific = TRUE, digits = 3)
 
 library(ggplot2)
 
@@ -939,13 +844,9 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 H_comp <- "HC_D5"
 C_comp <- "HC_D15"
 
-library(dplyr)
-library(tidyr)
-
 df_wide <- TopTable_RNA_All %>%
   filter(Comparisons %in% c(H_comp, C_comp)) %>%
   dplyr::select(Gene, Comparisons, logFC) %>%
@@ -954,8 +855,8 @@ df_wide <- TopTable_RNA_All %>%
   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
 
-head(df_wide)
-nrow(df_wide)
+# head(df_wide)
+# nrow(df_wide)
 
 fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
 summary(fit)
@@ -963,12 +864,10 @@ summary(fit)
 r2 <- summary(fit)$r.squared
 pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
 
-r2
-pval
+# r2
+# pval
 
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
+# format(pval, scientific = TRUE, digits = 3)
 
 x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
 x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
@@ -1000,12 +899,8 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
 H_comp <- "HC_D15"
 C_comp <- "HC_D30"
-
-library(dplyr)
-library(tidyr)
 
 df_wide <- TopTable_RNA_All %>%
   filter(Comparisons %in% c(H_comp, C_comp)) %>%
@@ -1015,8 +910,8 @@ df_wide <- TopTable_RNA_All %>%
   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
 
-head(df_wide)
-nrow(df_wide)
+# head(df_wide)
+# nrow(df_wide)
 
 fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
 summary(fit)
@@ -1024,12 +919,10 @@ summary(fit)
 r2 <- summary(fit)$r.squared
 pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
 
-r2
-pval
+# r2
+# pval
 
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
+# format(pval, scientific = TRUE, digits = 3)
 
 x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
 x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side

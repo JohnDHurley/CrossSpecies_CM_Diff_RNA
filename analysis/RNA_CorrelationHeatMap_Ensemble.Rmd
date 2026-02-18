@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r Setting_Up_Enviroment, results="hide"}
+```{r Setting_Up_Enviroment, include=FALSE, warning = FALSE, message=FALSE}
 
 ####Library Loading####
 library("edgeR")
@@ -33,6 +33,12 @@ library("SummarizedExperiment")
 library("readxl")
 library("ggfortify")
 library("ComplexHeatmap")
+library("tidyr")
+library("forcats")
+
+
+library(tidyr)
+library(ggplot2)
 
 # BiocManager::install("SummarizedExperiment")
 
@@ -56,16 +62,25 @@ Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
-
+RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.RDS")
 ```
 
 
 ```{r Setting_Up_Data, results="hide"}
-# #To keep only OrthoGenes and sample columns
-# RNA_fc <- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c("gene","Chr.x","Start.x","End.x","Strand.x","Length.x","Geneid.x","Chr.y","Start.y","End.y","Strand.y","Length.y","Geneid.y"))]
-# # 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
-# rownames(RNA_fc) <- RNA_joined_fc$gene
-# 
+
+h_samples_counts <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/h_samples_counts.txt", comment.char="#")
+
+c_samples_counts <- read.delim("~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/c_samples_counts.txt", comment.char="#")
+
+RNA_joined_fc <- left_join(h_samples_counts,c_samples_counts, by = "Geneid")
+
+#To keep only OrthoGenes and sample columns
+RNA_fc <- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c("gene","Chr.x","Start.x","End.x","Strand.x","Length.x","Geneid.x","Chr.y","Start.y","End.y","Strand.y","Length.y","Geneid.y"))]
+# 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
+
+RNA_fc <- RNA_fc %>%
+  column_to_rownames("Geneid")
+
 # #Rename column Names to More Useful Info
 col_names <- c("H28126_D0",
               "H28126_D2",
@@ -156,45 +171,116 @@ col_names <- c("H28126_D0",
               "C3647_D15",
               "C3647_D30"
 )
-# colnames(RNA_fc) <- col_names 
-# dim(RNA_fc)
-# 
-# sum(duplicated(rownames(RNA_fc)))
-# ensembl_ids_unfilt <- rownames(RNA_fc)
-# entrez_ids_unfilt <- mapIds(org.Hs.eg.db,
-#                             keys = ensembl_ids_unfilt,
-#                             column = "ENTREZID",
-#                             keytype = "ENSEMBL",
-#                             multiVals = "first")
-# symbol_ids_unfilt <- mapIds(org.Hs.eg.db,
-#                             keys = ensembl_ids_unfilt,
-#                             column = "SYMBOL",
-#                             keytype = "ENSEMBL",
-#                             multiVals = "first")
-# 
-# RNA_fc_df <- as.data.frame(RNA_fc)
-# RNA_fc_df <- RNA_fc_df %>%
-#   rownames_to_column(var = "Ensemble") %>%
-#   dplyr::mutate(
-#     Entrez_ID = entrez_ids_unfilt,
-#     Symbol    = symbol_ids_unfilt
-#   ) %>%
-#   dplyr::select(
-#     Ensemble,        # 1st column
-#     Entrez_ID,       # 2nd column
-#     Symbol,          # 3rd column
-#     everything()     # rest unchanged
-#   )
-# 
-# # saveRDS(RNA_fc_df,"data/Data_Frames/RNA_fc_df.RDS")
-# 
-# RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
-# 
-# # saveRDS(RNA_Metadata,"data/Data_Frames/RNA_Metadata.RDS")
+colnames(RNA_fc) <- col_names
+dim(RNA_fc)
+
+ensembl_ids_unfilt <- rownames(RNA_fc)
+entrez_ids_unfilt <- mapIds(org.Hs.eg.db,
+                            keys = ensembl_ids_unfilt,
+                            column = "ENTREZID",
+                            keytype = "ENSEMBL",
+                            multiVals = "first")
+symbol_ids_unfilt <- mapIds(org.Hs.eg.db,
+                            keys = ensembl_ids_unfilt,
+                            column = "SYMBOL",
+                            keytype = "ENSEMBL",
+                            multiVals = "first")
+
+RNA_fc_df <- as.data.frame(RNA_fc)
+RNA_fc_df <- RNA_fc_df %>%
+  rownames_to_column(var = "Ensemble") %>%
+  dplyr::mutate(
+    Entrez_ID = entrez_ids_unfilt,
+    Symbol    = symbol_ids_unfilt
+  ) %>%
+  dplyr::select(
+    Ensemble,        # 1st column
+    Entrez_ID,       # 2nd column
+    Symbol,          # 3rd column
+    everything()     # rest unchanged
+  )
+
+# saveRDS(RNA_fc_df,"data/Raw_Data/RNA_fc_df.RDS")
+
+RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
+
+# saveRDS(RNA_Metadata,"data/Raw_Data/RNA_Metadata.RDS")
 ```
 
 
-```{r RNASeq_FeatureCounts_Box_Unfiltered}
+```{r RNASeq_Purities,results="hide"}
+# -----------------------------
+# 1. Prepare long-format data
+# -----------------------------
+day_levels <- c("Day0","Day2","Day4","Day5","Day15","Day30")
+marker_levels <- c("OCT3/4", "Brachy", "ISL-1", "TNNT-2")
+
+df_long_all <- RNA_Metadata_NoD4_NoRep %>%
+  dplyr::select(Cond, `OCT3/4`, Brachy, `ISL-1`, `TNNT-2`) %>%
+  mutate(
+    `OCT3/4` = as.numeric(`OCT3/4`),
+    Brachy = as.numeric(Brachy),
+    `ISL-1` = as.numeric(`ISL-1`),
+    `TNNT-2` = as.numeric(`TNNT-2`),
+    Group = ifelse(grepl("^H_", Cond), "H", "C")
+  ) %>%
+  pivot_longer(
+    cols = c(`OCT3/4`, Brachy, `ISL-1`, `TNNT-2`),
+    names_to = "Marker",
+    values_to = "Percent_Positive"
+  ) %>%
+  mutate(
+    Day = gsub(".*_(Day\\d+)$", "\\1", Cond),
+    Day = factor(Day, levels = day_levels, ordered = TRUE),
+    Marker = factor(Marker, levels = marker_levels, ordered = TRUE)
+  )
+
+# -----------------------------
+# 2. Compute summary with SEM
+# -----------------------------
+summary_df <- df_long_all %>%
+  group_by(Marker, Day, Group) %>%
+  summarise(
+    Mean = mean(Percent_Positive, na.rm = TRUE),
+    SD = sd(Percent_Positive, na.rm = TRUE),
+    N = sum(!is.na(Percent_Positive)),
+    SEM = SD / sqrt(N),
+    .groups = "drop"
+  )
+```
+
+
+```{r RNASeq_Purities_graph, fig.height=6,fig.width=12}
+# -----------------------------
+# 3. Plot lines over time with SEM error bars
+# -----------------------------
+ggplot(summary_df, aes(x = Day, y = Mean, color = Group, group = Group)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2) +
+  geom_errorbar(
+    aes(ymin = Mean - SEM, ymax = Mean + SEM),
+    width = 0.2
+  ) +
+  facet_wrap(~ Marker, nrow = 1) +
+  scale_color_manual(values = c("H" = "skyblue", "C" = "salmon")) +
+  scale_y_continuous(limits = c(0, 100)) +
+  labs(
+    title = "Mean Percent Positive Across Timepoints for Each Marker",
+    x = "Day",
+    y = "Mean Percent Positive (%)",
+    caption = "Error bars represent SEM (Standard Error of the Mean)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "top",
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    plot.caption = element_text(hjust = 0, face = "italic", size = 10)
+  )
+
+
+```
+
+```{r RNASeq_FeatureCounts_Box_Unfiltered, fig.height=6,fig.width=12}
 #####Unfiltered####
 RNA_fc <- RNA_fc_df %>% 
   dplyr::select(c(-"Entrez_ID", -"Symbol")) %>% 
@@ -203,8 +289,8 @@ RNA_fc <- RNA_fc_df %>%
 # saveRDS(RNA_fc,"data/QC/RNA_fc.RDS")
 
 RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
-print(hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
-     xlab =expression("Log"[2]*" counts-per-million"), col =4 ))
+hist(RNA_log2cpm,  main = "Histogram of all counts (unfiltered)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =4 )
 
 boxplot(RNA_log2cpm, main = "Boxplots of log cpm per sample
           (unfiltered)", xaxt = "n", xlab= "")
@@ -212,7 +298,7 @@ axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
      las = 2,               # rotate text vertically (like srt=90)
-     cex.axis = 0.3)        # shrink label size
+     cex.axis = 0.6)        # shrink label size
 # saveRDS(RNA_log2cpm,"data/QC/RNA_log2cpm.RDS")
 ```
 
@@ -247,7 +333,7 @@ axis(1,
 ```{r RNASeq_FeatureCounts_Cor_RMG0}
 ######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "spearman")
-individual <- RNA_Metadata$Individual
+individual <- RNA_Metadata$Individual_Label
 species <- RNA_Metadata$Species
 timepoint <- RNA_Metadata$Timepoint
 timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
@@ -316,7 +402,7 @@ print(
 
 ####Subset####
 RNA_Metadata_No4 <- RNA_Metadata %>% 
- filter(timepoint != "Day4")
+ filter(Timepoint != "Day4")
 
 RNA_fc_NoD4 <- RNA_fc %>% 
   dplyr::select(-ends_with("_D4"))
@@ -366,7 +452,9 @@ print(
 )
 ```
 
-```{r RNASeq_FeatureCounts_RMG0_No4_RUV}
+
+
+```{r RNASeq_FeatureCounts_RMG0_No4_RUV, include = FALSE}
 filt_gene_list <- rownames(Filt_RMG0_RNA_log2cpm_NoD4)
 #14838
 length(filt_gene_list)
@@ -484,7 +572,7 @@ length(filt_gene_list)
 ```
 
 
-```{r RNASeq_FeatureCounts_RMG0_No4_RUV_StartingPCA}
+```{r RNASeq_FeatureCounts_RMG0_No4_RUV_StartingPCA, include = FALSE}
 # 
 # #now plot my PCA for filtered counts
 # ####PC1/PC2####
@@ -513,7 +601,7 @@ length(filt_gene_list)
 
 
 
-```{r RNASeq_FeatureCounts_RMG0_No4_RUV_RM1_PCA}
+```{r RNASeq_FeatureCounts_RMG0_No4_RUV_RM1_PCA, include = FALSE}
 # set1 <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
 # 
 # # Get the RUV factors (weights) for modeling

@@ -19,6 +19,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+library(ggrepel)
 library(biomaRt)
 library(tidyverse)
 library(readxl)
@@ -28,22 +29,22 @@ library(circlize)
 library(grid)
 library(stringr)
 library(org.Hs.eg.db)
+library(GO.db)
 library(AnnotationDbi)
 library(gprofiler2)
 library(purrr)
-# install.packages("biomartr")
+# install.packages("GO.db")
+# BiocManager::install("GO.db")
 
 #Loading R Objects
 # quadrant_gene_lists <- readRDS("data/DGE/quadrant_gene_lists_DayBefore.RDS")
-# chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
-Day0_DEGs_HC <- readRDS("data/DGE/Species/Day0_DEGs_HC.RDS")
-Day2_DEGs_HC <- readRDS("data/DGE/Species/Day2_DEGs_HC.RDS")
-Day5_DEGs_HC <- readRDS("data/DGE/Species/Day5_DEGs_HC.RDS")
-Day15_DEGs_HC <- readRDS("data/DGE/Species/Day15_DEGs_HC.RDS")
-Day30_DEGs_HC <- readRDS("data/DGE/Species/Day30_DEGs_HC.RDS")
-all_intersections <- readRDS("data/DGE/Species/all_intersections.RDS")
+chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
+all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
+deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
+RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
+ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
 ```
-
 
 ```{r Volcano_Plot_Function}
 generate_volcano_plot <- function(toptable, title) {
@@ -172,162 +173,269 @@ generate_volcano_plot_CHDGene <- function(toptable, title, chdgene_genes = NULL)
 ```
 
 ```{r RNA_CHDGene_Species_DataSets}
-chdgene_table <- read.csv("C:/Users/jdhurley/Downloads/chdgene_table.csv")
-saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
+# #CHD Curated Gene List
+# chdgene_table <- read.csv("C:/Users/jdhurley/Downloads/chdgene_table.csv")
+# saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
 
 # Make a copy to be safe
 chdgene_table_copy <- chdgene_table
 
 # Check
 colnames(chdgene_table_copy)
-# Should include "Gene"
 
-# dim(chdgene_table_copy)
-# length(unique(chdgene_table_copy$Gene))
-# unique(chdgene_table_copy$Gene)
+# #ENSEMBL ID
+# all_ensembl_ids <- unique(TopTable_RNA_All$Gene)
+# 
+# ensembl <- useMart(
+#   "ensembl",
+#   dataset = "hsapiens_gene_ensembl"
+# )
+# 
+# ensembl_to_hgnc <- getBM(
+#   attributes = c("ensembl_gene_id", "hgnc_symbol"),
+#   filters = "ensembl_gene_id",
+#   values = all_ensembl_ids,
+#   mart = ensembl
+# ) %>%
+#   filter(hgnc_symbol != "") %>%
+#   distinct()
+# 
+# saveRDS(
+#   ensembl_to_hgnc,
+#   "data/DGE/Species/Ensembl_to_HGNC_mapping.RDS"
+# )
 
-# Connect to Ensembl
-ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+# ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
 
-# Your Day0-only DEGs (Ensembl IDs)
-day0_only <- all_intersections$Day0
+# Loop through my data sets to overlap
+known_genes <- chdgene_table_copy$Gene
 
-# Map Ensembl IDs to gene symbols
-mapping <- getBM(
-  attributes = c("ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_gene_id",
-  values = day0_only,
-  mart = ensembl
-)
+CHD_overlap_results <- list()
 
-# Remove empty mappings
-mapping <- mapping[mapping$hgnc_symbol != "", ]
+for (day in names(RNA_sets)) {
 
-# Filter by your known gene list
-known_genes <- chdgene_table_copy$Gene 
-day0_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
+  message("Processing ", day)
 
-# Optional: get gene symbols for filtered genes
-day0_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
+  DEG_Set <- unique(RNA_sets[[day]]$DEGs$Gene)
+  Non_DEG_Set <- unique(RNA_sets[[day]]$NonDEGs$Gene)
 
-saveRDS(day0_filtered_symbols,"data/DGE/Species/Day0_Only_DEGs_CHDGenes.RDS")
+  # ---- DEG overlaps ----
+  DEG_Overlaps_symbols <- ensembl_to_hgnc$ensembl_gene_id[
+    ensembl_to_hgnc$ensembl_gene_id %in% DEG_Set &
+    ensembl_to_hgnc$hgnc_symbol %in% known_genes 
+  ]
 
-# Your day2-only DEGs (Ensembl IDs)
-day2_only <- all_intersections$Day2
+  # ---- Non-DEG overlaps ----
+  Non_DEG_Overlaps_symbols <- ensembl_to_hgnc$ensembl_gene_id[
+    ensembl_to_hgnc$ensembl_gene_id %in% Non_DEG_Set &
+    ensembl_to_hgnc$hgnc_symbol %in% known_genes
+  ]
 
-# Map Ensembl IDs to gene symbols
-mapping <- getBM(
-  attributes = c("ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_gene_id",
-  values = day2_only,
-  mart = ensembl
-)
+  CHD_overlap_results[[day]] <- list(
+    DEG_CHD_Genes = unique(DEG_Overlaps_symbols),
+    NonDEG_CHD_Genes = unique(Non_DEG_Overlaps_symbols)
+  )
 
-# Remove empty mappings
-mapping <- mapping[mapping$hgnc_symbol != "", ]
+  saveRDS(
+    unique(DEG_Overlaps_symbols),
+    paste0("data/DGE/Species/", day, "_DEG_CHDGenes.RDS")
+  )
 
-# Filter by your known gene list
-known_genes <- chdgene_table_copy$Gene 
-day2_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
-
-# Optional: get gene symbols for filtered genes
-day2_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
-
-saveRDS(day2_filtered_symbols,"data/DGE/Species/Day2_Only_DEGs_CHDGenes.RDS")
-
-# Your day2-only DEGs (Ensembl IDs)
-day5_only <- all_intersections$Day5
-
-# Map Ensembl IDs to gene symbols
-mapping <- getBM(
-  attributes = c("ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_gene_id",
-  values = day5_only,
-  mart = ensembl
-)
-
-# Remove empty mappings
-mapping <- mapping[mapping$hgnc_symbol != "", ]
-
-# Filter by your known gene list
-known_genes <- chdgene_table_copy$Gene 
-day5_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
-
-# Optional: get gene symbols for filtered genes
-day5_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
-
-saveRDS(day5_filtered_symbols,"data/DGE/Species/day5_Only_DEGs_CHDGenes.RDS")  
-
-# Your day2-only DEGs (Ensembl IDs)
-day15_only <- all_intersections$Day15
-
-# Map Ensembl IDs to gene symbols
-mapping <- getBM(
-  attributes = c("ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_gene_id",
-  values = day15_only,
-  mart = ensembl
-)
-
-# Remove empty mappings
-mapping <- mapping[mapping$hgnc_symbol != "", ]
-
-# Filter by your known gene list
-known_genes <- chdgene_table_copy$Gene 
-day15_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
-
-# Optional: get gene symbols for filtered genes
-day15_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
-
-saveRDS(day15_filtered_symbols,"data/DGE/Species/day15_Only_DEGs_CHDGenes.RDS")  
-
-# Your day2-only DEGs (Ensembl IDs)
-day30_only <- all_intersections$Day30
-
-# Map Ensembl IDs to gene symbols
-mapping <- getBM(
-  attributes = c("ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_gene_id",
-  values = day30_only,
-  mart = ensembl
-)
-
-# Remove empty mappings
-mapping <- mapping[mapping$hgnc_symbol != "", ]
-
-# Filter by your known gene list
-known_genes <- chdgene_table_copy$Gene 
-day30_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
-
-# Optional: get gene symbols for filtered genes
-day30_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
-
-saveRDS(day30_filtered_symbols,"data/DGE/Species/day30_Only_DEGs_CHDGenes.RDS")  
-
-# Your day2-only DEGs (Ensembl IDs)
-AllDays_only <- all_intersections$`Day0&Day2&Day5&Day15&Day30`
-
-# Map Ensembl IDs to gene symbols
-mapping <- getBM(
-  attributes = c("ensembl_gene_id", "hgnc_symbol"),
-  filters = "ensembl_gene_id",
-  values = AllDays_only,
-  mart = ensembl
-)
-
-# Remove empty mappings
-mapping <- mapping[mapping$hgnc_symbol != "", ]
-
-# Filter by your known gene list
-known_genes <- chdgene_table_copy$Gene 
-AllDays_filtered <- mapping$ensembl_gene_id[mapping$hgnc_symbol %in% known_genes]
-
-# Optional: get gene symbols for filtered genes
-AllDays_filtered_symbols <- mapping$hgnc_symbol[mapping$hgnc_symbol %in% known_genes]
-
-saveRDS(AllDays_filtered_symbols,"data/DGE/Species/AllDays_Only_DEGs_CHDGenes.RDS")  
+  saveRDS(
+    unique(Non_DEG_Overlaps_symbols),
+    paste0("data/DGE/Species/", day, "_NonDEG_CHDGenes.RDS")
+  )
+}
 
 ```
+
+```{r RNA_CHDGene_Species_DataSets_Significance}
+
+# Create the table
+Day0_DEGs_CHD_ChiSq  <- matrix(c(58,(6569-58),106,(8269-106)), nrow = 2, byrow = TRUE)
+rownames(Day0_DEGs_CHD_ChiSq) <- c("Day0 DEGs", "Day0 NonDEGs")
+colnames(Day0_DEGs_CHD_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day0_DEGs_CHD_ChiSq)
+
+# Create the table
+Day2_DEGs_CHD_ChiSq  <- matrix(c(27,(4094-27),137,(10744-137)), nrow = 2, byrow = TRUE)
+rownames(Day2_DEGs_CHD_ChiSq) <- c("Day2 DEGs", "Day2 NonDEGs")
+colnames(Day2_DEGs_CHD_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day2_DEGs_CHD_ChiSq)
+
+# Create the table
+Day5_DEGs_CHD_ChiSq <- matrix(c(33,(4154-33),131,(10648-131)), nrow = 2, byrow = TRUE)
+rownames(Day5_DEGs_CHD_ChiSq) <- c("Day5 DEGs", "Day5 NonDEGs")
+colnames(Day5_DEGs_CHD_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day5_DEGs_CHD_ChiSq)
+
+# Create the table
+Day15_DEGs_CHD_ChiSq  <- matrix(c(56,(5070-56),108,(9768-108)), nrow = 2, byrow = TRUE)
+rownames(Day15_DEGs_CHD_ChiSq) <- c("Day15 DEGs", "Day15 NonDEGs")
+colnames(Day15_DEGs_CHD_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day15_DEGs_CHD_ChiSq)
+
+# Create the table
+Day30_DEGs_CHD_ChiSq  <- matrix(c(59,(5990-59),105,(8848-105)), nrow = 2, byrow = TRUE)
+rownames(Day30_DEGs_CHD_ChiSq) <- c("Day30 DEGs", "Day30 NonDEGs")
+colnames(Day30_DEGs_CHD_ChiSq) <- c("CHDGene", "Non-CHDGene")
+
+# Run chi-square test
+chisq.test(Day30_DEGs_CHD_ChiSq)
+```
+
+
+```{r RNA_CHDGene_Species_Barplot}
+df <- data.frame(
+  Day = c("Day0","Day0","Day2","Day2","Day5","Day5","Day15","Day15","Day30","Day30"),
+  Status = c("DEG","NonDEG","DEG","NonDEG","DEG","NonDEG","DEG","NonDEG","DEG","NonDEG"),
+  Cond = c("Day0_DEG","Day0_NonDEG","Day2_DEG","Day2_NonDEG","Day5_DEG","Day5_NonDEG","Day15_DEG","Day15_NonDEG","Day30_DEG","Day30_NonDEG"),
+  CHDGene = c(58,106,27,137,33,131,56,108,59,105),
+  Non_CHDGene = c(6511,8163,4067,10607,4121,10517,5014,9660,5931,8743)
+)
+
+# Convert to long format for ggplot
+df_long <- df %>%
+  pivot_longer(cols = c(CHDGene, Non_CHDGene),
+               names_to = "Type",
+               values_to = "Count") %>%
+  group_by(Cond) %>%
+  mutate(Proportion = Count / sum(Count))  # calculate proportions
+
+df_long$Cond <- factor(df_long$Cond, levels = c("Day0_DEG","Day0_NonDEG","Day2_DEG","Day2_NonDEG","Day5_DEG","Day5_NonDEG","Day15_DEG","Day15_NonDEG","Day30_DEG","Day30_NonDEG"), ordered = TRUE)
+
+ggplot(df_long, aes(x = Cond, y = Proportion, fill = Type)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
+  scale_fill_manual(values = c("DEGs" = "#E41A1C", "CHDGene" = "#377EB8")) + # custom colors
+  labs(y = "Proportion", x = "Cond", fill = "") +
+  theme_minimal(base_size = 14)
+```
+
+```{r RNA_CHDGene_Species_LogFoldChange}
+median_all_df <- TopTable_RNA_All %>%
+  group_by(Comparisons) %>%
+  summarise(
+    median_logFC = median(logFC, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+gene_set <- chdgene_table$Gene
+
+gene_vector <- ensembl_to_hgnc %>% 
+  dplyr::filter(hgnc_symbol %in% gene_set) %>% 
+  dplyr::pull(ensembl_gene_id)
+
+TopTable_Filt <- TopTable_RNA_All %>% 
+  dplyr::filter(Gene %in% gene_vector) %>% 
+  dplyr::mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = c("HC_D0", "HC_D2", "HC_D5", "HC_D15", "HC_D30")
+    )
+  )
+
+TopTable_Filt <- TopTable_Filt %>%
+  rowwise() %>%
+  mutate(
+    isDEG = Gene %in% RNA_sets[[Comparisons]]$DEGs$Gene
+  ) %>%
+  ungroup()
+
+
+# Determine bottom-left coordinates
+x_min <- min(as.numeric(TopTable_Filt$Comparisons))  # first comparison
+y_min <- min(TopTable_Filt$logFC, na.rm = TRUE) - 0.5     # lowest logFC among CHD genes
+
+ggplot(TopTable_Filt, aes(x = Comparisons, y = logFC, group = Gene)) +
+  geom_line(alpha = 0.25) +
+  geom_point(aes(color = isDEG), size = 2, alpha = 0.8) +
+  scale_color_manual(values = c("FALSE" = "grey70", "TRUE" = "dodgerblue")) +
+
+  # Median line (all genes)
+  geom_line(
+    data = median_all_df,
+    aes(x = Comparisons, y = median_logFC, group = 1),
+    inherit.aes = FALSE,
+    linewidth = 1.6,
+    color = "firebrick"
+  ) +
+  geom_point(
+    data = TopTable_Filt %>% filter(!isDEG),
+    aes(x = Comparisons, y = logFC),
+    color = "grey70",
+    size = 2,
+    alpha = 0.8
+  ) +
+
+  # DEG points on top (blue)
+  geom_point(
+    data = TopTable_Filt %>% filter(isDEG),
+    aes(x = Comparisons, y = logFC),
+    color = "dodgerblue",
+    size = 2,
+    alpha = 0.8
+  ) +
+  # Median label bottom-left
+  geom_text(
+    data = data.frame(
+      x = 1,
+      y = min(TopTable_Filt$logFC, na.rm = TRUE) - 0.5
+    ),
+    aes(x = x, y = y, label = "Median (all genes)"),
+    inherit.aes = FALSE,
+    color = "firebrick",
+    size = 4
+  ) +
+
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Comparison",
+    y = "log2 Fold Change",
+    color = "DEG",
+    title = "CHD gene trajectories with DEGs highlighted"
+  )
+
+```
+```{r}
+
+gene_categories <- TopTable_Filt %>%
+  group_by(Gene) %>%
+  summarize(
+    n_comparisons = n(),
+    n_DEG = sum(isDEG),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    category = case_when(
+      n_DEG == n_comparisons ~ "DEG in all comparisons",
+      n_DEG == 0            ~ "Non-DEG in all comparisons",
+      TRUE                   ~ "Other"
+    )
+  )
+
+TopTable_Filt <- TopTable_Filt %>%
+  left_join(gene_categories %>% 
+  dplyr::select(Gene, category), by = "Gene")
+
+TopTable_Filt %>%
+  group_by(category) %>%
+  summarize(n_genes = n_distinct(Gene)) %>%
+  arrange(desc(n_genes))
+
+```
+
+
 ```{r RNA_CHDGene_Species_DataSets_Significance}
 # Create the table
 Day0_Only_DEGs_ChiSq <- matrix(c(16, 1719, 8, 1184), nrow = 2, byrow = TRUE)
@@ -369,6 +477,7 @@ colnames(Day30_Only_DEGs_ChiSq) <- c("CHDGene", "Non-CHDGene")
 # Run chi-square test
 chisq.test(Day30_Only_DEGs_ChiSq)
 ```
+
 ```{r RNA_CHDGene_Species_Barplot}
 df <- data.frame(
   Day = c("Day0", "Day2", "Day5", "Day15", "Day30","Shared_All"),

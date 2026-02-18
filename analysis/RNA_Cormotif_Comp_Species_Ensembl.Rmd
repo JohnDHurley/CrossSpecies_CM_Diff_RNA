@@ -900,8 +900,11 @@ Filt_RMG0_RNA_log2cpm_NoD4_NoRep <- Filt_RMG0_RNA_log2cpm_NoD4 %>%
   dplyr::select(-contains("R")) %>%  # remove columns containing "R"
   as.matrix()                     # convert back to matrix
 
+RNA_Metadata_NoD4_NoRep <- RNA_Metadata_No4 %>%
+  dplyr::filter(!grepl("R", Individual))
 
 # saveRDS(Filt_RMG0_RNA_log2cpm_NoD4_NoRep,"data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep.RDS")
+# saveRDS(RNA_Metadata_NoD4_NoRep,"data/Cormotif/RNA_Metadata_NoD4_NoRep.RDS")
 ```
 
 

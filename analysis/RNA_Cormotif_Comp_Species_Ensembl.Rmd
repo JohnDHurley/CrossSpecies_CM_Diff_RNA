@@ -8,7 +8,7 @@ date: "2026-01-28"
 knitr::opts_chunk$set(echo = TRUE,warning=FALSE,message=FALSE, dev=c("png","pdf"))
 ```
 
-```{r Setting_Up_Enviroment, results="hide"}
+```{r Setting_Up_Enviroment,include = FALSE, warning=FALSE, message=FALSE}
 
 ####Library Loading####
 library("edgeR")
@@ -41,10 +41,17 @@ ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 
 Filt_RMG0_RNA_fc_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_fc_NoD4_NoRep.RDS")
 Filt_RMG0_RNA_log2cpm_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep.RDS")
+
+TopTable_RNA_All <- readRDS("data/TopTable_RNA_all.RDS")
+
+clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
+clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
+clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
+clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
 ```
 
 
-```{r Cormotif Function, warning=FALSE, message=FALSE, results="hide"}
+```{r Cormotif Function, include=FALSE, message=FALSE, warning=FALSE}
 ## Fit limma model using code as it is found in the original cormotif code. It has
 ## only been modified to add names to the matrix of t values, as well as the
 ## limma fits
@@ -795,7 +802,7 @@ plotMotif<-function(fitted_cormotif,title="")
 
 ```
 
-```{r Check_Overlap Function, warning=FALSE, message=FALSE, results="hide"}
+```{r Check_Overlap Function, warning=FALSE, message=FALSE, include=FALSE}
 check_overlap <- function(list_of_lists) {
   # create empty list to store results
   overlap_results <- list()
@@ -820,7 +827,7 @@ check_overlap <- function(list_of_lists) {
 }
 ```
 
-```{r RNA-Seq_CorMotif_TACC_SeedTesting}
+```{r RNA-Seq_CorMotif_TACC_SeedTesting, include = FALSE}
 # Seed0 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed0.rds")
 # Seed1 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed1.rds")
 # Seed2 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed2.rds")
@@ -851,7 +858,7 @@ check_overlap <- function(list_of_lists) {
 # Seed8$bic
 ```
 
-```{r RNA-Seq_CorMotif_TACC_LoadingSeedTesting}
+```{r RNA-Seq_CorMotif_TACC_LoadingSeedTesting, include = FALSE}
 
 
 # extract_bic <- function(fit, seed_id) {
@@ -1110,20 +1117,13 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 ```{r RNASeq_CoMortif_Species_DGE}
-TopTable_RNA_All <- readRDS("data/TopTable_RNA_all.RDS")
-clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
-clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
-clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
-clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
-
-
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
 cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA")
 
 
 ```
 
-```{r RNASeq_CoMortif_Species_DGE_FC}
+```{r RNA-Seq_CorMotif_Species_ClustSets_DGE_FC}
 cluster_lists <- list(
   clust1_RNA  = clust1_RNA,
   clust2_RNA  = clust2_RNA,
@@ -1141,7 +1141,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_CoMortif_Species_DGE_AbsFC}
+```{r RNA-Seq_CorMotif_Species_ClustSets_DGE_AbsFC}
 cluster_lists <- list(
   clust1_RNA  = clust1_RNA,
   clust2_RNA  = clust2_RNA,
@@ -1159,7 +1159,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Saves,eval=FALSE}
+```{r RNA-Seq_CorMotif_Species_ClustSets_Saves,include = FALSE}
 # View(motif_prob)
 # write.csv(clust1_RNA,"data/Cormotif/Species/clust1_RNA_Species.csv")
 # write.csv(clust2_RNA,"data/Cormotif/Species/clust2_RNA_Species.csv")

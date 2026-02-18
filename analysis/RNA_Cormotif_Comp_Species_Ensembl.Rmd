@@ -1177,6 +1177,6 @@ for (p in cluster_plots) print(p)
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/RNA_Cormotif_Comp_Species_Ensemble.Rmd")
+# wflow_publish("analysis/RNA_Cormotif_Comp_Species_Ensembl.Rmd")
 
 ```

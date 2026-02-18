@@ -50,8 +50,7 @@ clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
 clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
 ```
 
-
-```{r Cormotif Function, message=FALSE, warning=FALSE}
+```{r Cormotif Function, message=FALSE, warning=FALSE,include=FALSE}
 ## Fit limma model using code as it is found in the original cormotif code. It has
 ## only been modified to add names to the matrix of t values, as well as the
 ## limma fits
@@ -899,6 +898,162 @@ check_overlap <- function(list_of_lists) {
 # bic_summary
 # 
 # plotIC(Seed8)
+```
+
+```{r FC_Plot_Function, include = FALSE}
+plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HC_D0","HC_D2","HC_D5","HC_D15","HC_D30","All_Genes","All_DEGs"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(paste0(cluster_name, " RNA FC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r FC_Plot_Function_sig, include = FALSE}
+plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HC_D0","HC_D2","HC_D5","HC_D15","HC_D30"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # Global test across comparisons
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+```
+
+```{r AbsFC_Plot_Function, include = FALSE}
+plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HC_D0","HC_D2","HC_D5","HC_D15","HC_D30"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbsFC") +
+    ggtitle(paste0(cluster_name, " RNA AbsFC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r AbsFC_Plot_Function_sig, include = FALSE}
+plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HC_D0","HC_D2","HC_D5","HC_D15","HC_D30"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+  
+  # Global test across comparisons
+  kw <- kruskal.test(AbsFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$AbsFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbslogFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA AbsFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
 ```
 
 ```{r RNA-Seq_CorMotif_Data}

@@ -8,7 +8,7 @@ date: "2026-01-28"
 knitr::opts_chunk$set(echo = TRUE,warning=FALSE,message=FALSE, dev=c("png","pdf"))
 ```
 
-```{r Setting_Up_Enviroment,include = FALSE, warning=FALSE, message=FALSE}
+```{r Setting_Up_Enviroment, warning=FALSE, message=FALSE}
 
 ####Library Loading####
 library("edgeR")
@@ -51,7 +51,7 @@ clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
 ```
 
 
-```{r Cormotif Function, include=FALSE, message=FALSE, warning=FALSE}
+```{r Cormotif Function, message=FALSE, warning=FALSE}
 ## Fit limma model using code as it is found in the original cormotif code. It has
 ## only been modified to add names to the matrix of t values, as well as the
 ## limma fits
@@ -802,7 +802,7 @@ plotMotif<-function(fitted_cormotif,title="")
 
 ```
 
-```{r Check_Overlap Function, warning=FALSE, message=FALSE, include=FALSE}
+```{r Check_Overlap Function, warning=FALSE, message=FALSE}
 check_overlap <- function(list_of_lists) {
   # create empty list to store results
   overlap_results <- list()

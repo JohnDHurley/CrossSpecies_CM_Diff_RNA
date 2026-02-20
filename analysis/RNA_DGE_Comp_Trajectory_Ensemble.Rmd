@@ -1102,9 +1102,6 @@ label_map <- c(
 df_plot <- df_plot %>%
   dplyr::mutate(Quadrant = label_map[Quadrant])
 
-stats_df <- stats_df %>%
-  dplyr::mutate(Quadrant = label_map[Quadrant])
-
 stats_df <- df_plot %>%
   dplyr::group_by(Quadrant) %>%
   dplyr::summarize(
@@ -1118,6 +1115,8 @@ stats_df <- df_plot %>%
     vjust = seq(1.1, by = 1.1, length.out = n())
   )
 
+stats_df <- stats_df %>%
+  dplyr::mutate(Quadrant = label_map[Quadrant])
 
 library(ggplot2)
 

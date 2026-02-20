@@ -52,7 +52,7 @@ all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
 
 ```
 
-```{r Volcano_Plot_Function,Result="Hide",warning=FALSE}
+```{r Volcano_Plot_Function,Result="Hide",warning=FALSE, include = FALSE}
 generate_volcano_plot <- function(toptable, title) {
   
   # #check for entrezid 
@@ -116,7 +116,7 @@ generate_volcano_plot <- function(toptable, title) {
 
 ```
 
-```{r FC_Plot_Function}
+```{r FC_Plot_Function, include = FALSE}
 plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
   
   # Filter TopTable for the genes in this cluster
@@ -148,7 +148,7 @@ plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
 }
 ```
 
-```{r FC_Plot_Function_sig}
+```{r FC_Plot_Function_sig, include = FALSE}
 plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%
@@ -195,7 +195,7 @@ plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
 ```
 
 
-```{r AbsFC_Plot_Function}
+```{r AbsFC_Plot_Function, include = FALSE}
 plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
   
   # Filter TopTable for the genes in this cluster
@@ -227,7 +227,7 @@ plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
 }
 ```
 
-```{r AbsFC_Plot_Function_sig}
+```{r AbsFC_Plot_Function_sig, include = FALSE}
 plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%

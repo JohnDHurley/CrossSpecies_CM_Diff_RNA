@@ -442,7 +442,7 @@ for (name in names(DEG_Lists)) {
 
 ```
 
-```{r RNASeq_DGE_Trajectory_TopTable_Subsetting_barplot}
+```{r RNASeq_DGE_Trajectory_TopTable_Subsetting0.05_barplot}
 ####proportion bar plots####
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
@@ -540,7 +540,7 @@ for (name in names(DEG_Lists)) {
 
 ```
 
-```{r RNASeq_DGE_Trajectory_TopTable_Subsetting_barplot}
+```{r RNASeq_DGE_Trajectory_TopTable_Subsetting0.1_barplot}
 ####proportion bar plots####
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
@@ -598,7 +598,7 @@ for (comp in Comparisons_names) {
 
 ```
 
-```{r RNASeq_DGE_Trajectory_TopTable_Subsetting_FC}
+```{r RNASeq_DGE_Trajectory_TopTable_Subsetting_AbsFC}
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
 
 Gene_list <- list(
@@ -623,7 +623,7 @@ for (comp in Comparisons_names) {
 }
 ```
 
-```{r RNASeq_DGE_Trajectory_TopTable_Venn_Eulers}
+```{r RNASeq_DGE_Trajectory_TopTable_Venn_Eulers, include = FALSE}
 # # Your DEGs per day
 # Day0 <- unique(Day0_DEGs_HC$Gene)
 # Day2 <- unique(Day2_DEGs_HC$Gene)
@@ -811,7 +811,7 @@ Inersection_combined_df <- bind_rows(lapply(names(all_results), function(nm) {
 write.csv(Inersection_combined_df, "data/DGE/Trajectory/All_Intersections.csv", row.names = FALSE)
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
 TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H2_H0"
 C_comp <- "C2_C0"
@@ -870,7 +870,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_5_2}
 TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H5_H2"
 C_comp <- "C5_C2"
@@ -927,7 +927,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_15_5}
 TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H15_H5"
 C_comp <- "C15_C5"
@@ -984,7 +984,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   )
 
 ```
-```{r RNASeq_DGE_Clusters_FC_Quadrants}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_30_15}
 TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H30_H15"
 C_comp <- "C30_C15"

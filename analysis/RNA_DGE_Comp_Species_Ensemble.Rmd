@@ -566,9 +566,6 @@ ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
 
 
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_FC}
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
-deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 
 Gene_list <- list(
   All_genes  = all_genes,
@@ -582,30 +579,14 @@ names(cluster_plots) <- names(Gene_list)
 
 for (p in cluster_plots) print(p)
 
-Day0_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D0")
-print("Day 0 Average logFC")
-print(mean(Day0_AllGenes$logFC))
+for (comp in Comparisons_names) {
 
-Day2_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D2")
-print("Day 2 Average logFC")
-print(mean(Day2_AllGenes$logFC))
+  subset_df <- TopTable_RNA_All %>%
+    dplyr::filter(Comparisons == comp)
 
-Day5_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D5")
-print("Day 5 Average logFC")
-print(mean(Day5_AllGenes$logFC))
-
-Day15_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D15")
-print("Day 15 Average logFC")
-print(mean(Day15_AllGenes$logFC))
-
-Day30_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D30")
-print("Day 30 Average logFC")
-print(mean(Day30_AllGenes$logFC))
+  cat("\n", comp, "Average logFC:\n")
+  cat(mean(subset_df$logFC, na.rm = TRUE), "\n")
+}
 
 ```
 
@@ -627,30 +608,14 @@ names(cluster_plots) <- names(Gene_list)
 
 for (p in cluster_plots) print(p)
 
-Day0_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D0")
-print("Day 0 Average AbslogFC")
-print(mean(Day0_AllGenes$AbsFC))
+for (comp in Comparisons_names) {
 
-Day2_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D2")
-print("Day 2 Average AbslogFC")
-print(mean(Day2_AllGenes$AbsFC))
+  subset_df <- TopTable_RNA_All %>%
+    dplyr::filter(Comparisons == comp)
 
-Day5_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D5")
-print("Day 5 Average AbslogFC")
-print(mean(Day5_AllGenes$AbsFC))
-
-Day15_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D15")
-print("Day 15 Average AbslogFC")
-print(mean(Day15_AllGenes$AbsFC))
-
-Day30_AllGenes <- TopTable_RNA_All %>% 
-  dplyr::filter(Comparisons == "HC_D30")
-print("Day 30 Average AbslogFC")
-print(mean(Day30_AllGenes$AbsFC))
+  cat("\n", comp, "Average AbsFC:\n")
+  cat(mean(subset_df$AbsFC, na.rm = TRUE), "\n")
+}
 ```
 
 ```{r RNASeq_DGE_Species_TopTable_Venn_ggplot}

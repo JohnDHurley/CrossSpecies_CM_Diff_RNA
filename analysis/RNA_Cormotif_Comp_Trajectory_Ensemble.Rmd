@@ -44,7 +44,7 @@ Filt_RMG0_RNA_log2cpm_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm
 ```
 
 
-```{r Cormotif Function, warning=FALSE, message=FALSE, results="hide"}
+```{r Cormotif Function, warning=FALSE, message=FALSE, results="hide", include = FALSE}
 ## Fit limma model using code as it is found in the original cormotif code. It has
 ## only been modified to add names to the matrix of t values, as well as the
 ## limma fits
@@ -820,7 +820,163 @@ check_overlap <- function(list_of_lists) {
 }
 ```
 
-```{r RNA-Seq_CorMotif_TACC_SeedTesting}
+```{r FC_Plot_Function, include = FALSE}
+plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(paste0(cluster_name, " RNA FC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r FC_Plot_Function_sig, include = FALSE}
+plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # Global test across comparisons
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+```
+
+```{r AbsFC_Plot_Function, include = FALSE}
+plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbsFC") +
+    ggtitle(paste0(cluster_name, " RNA AbsFC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r AbsFC_Plot_Function_sig, include = FALSE}
+plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+  
+  # Global test across comparisons
+  kw <- kruskal.test(AbsFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$AbsFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbslogFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA AbsFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+```
+
+```{r RNA-Seq_CorMotif_TACC_SeedTesting, include = FALSE}
 # Seed0 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_DayBefore_seed0.rds")
 # Seed1 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed1.rds")
 # Seed2 <- readRDS("~/diff_timeline_tes/RNA/Run1_Run2_Concat/cormotif/CorMotif_k1_k20_seed2.rds")
@@ -851,7 +1007,7 @@ check_overlap <- function(list_of_lists) {
 # Seed8$bic
 ```
 
-```{r RNA-Seq_CorMotif_TACC_LoadingSeedTesting}
+```{r RNA-Seq_CorMotif_TACC_LoadingSeedTesting, include = FALSE}
 
 
 # extract_bic <- function(fit, seed_id) {
@@ -927,8 +1083,8 @@ compid <- cbind(compid_Cond1,compid_Cond2)
 # 
 # saveRDS(motif.fitted,"data/Cormotif/cormotif_RNA__seed8_k8_DayBefore_emmaCode.RDS")
 motif.fitted <- readRDS("data/Cormotif/cormotif_RNA__seed8_k8_DayBefore_emmaCode.RDS")
-plotIC(motif.fitted)
-motif.fitted$bic
+# plotIC(motif.fitted)
+# motif.fitted$bic
 plotMotif(motif.fitted)
 
 #  Studies Human Day0 - 1. HDay2, 2. HDay5, 3. HDay15, 4. HDay30
@@ -1191,8 +1347,66 @@ names(clust_names_list) <- paste0("clust", 1:11)
 
 print(overlap_matirx <- check_overlap(clust_names_list))
 
+saveRDS(clust_names_list,"data/Cormotif/Trajectory/clust_genes,RDS")
+```
+```{r RNASeq_CoMortif_Species_DGE}
+TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
+cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA")
+
+
 ```
 
+```{r RNA-Seq_CorMotif_Species_ClustSets_DGE_FC}
+cluster_lists <- list(
+  clust1_RNA,
+  clust2_RNA,
+  clust3_RNA,
+  clust4_RNA,
+  clust5_RNA,
+  clust6_RNA,
+  clust7_RNA,
+  clust8_RNA,
+  clust9_RNA,
+  clust10_RNA,
+  clust11_RNA
+)
+
+cluster_plots <- lapply(seq_along(cluster_lists), function(i) {
+  clust_name <- paste0("clust", i)
+  plot_cluster_fc(cluster_lists[[i]], clust_name, TopTable_RNA_All)
+})
+names(cluster_plots) <- paste0("clust", 1:11)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNA-Seq_CorMotif_Species_ClustSets_DGE_FC}
+cluster_lists <- list(
+  clust1_RNA,
+  clust2_RNA,
+  clust3_RNA,
+  clust4_RNA,
+  clust5_RNA,
+  clust6_RNA,
+  clust7_RNA,
+  clust8_RNA,
+  clust9_RNA,
+  clust10_RNA,
+  clust11_RNA
+)
+
+cluster_plots <- lapply(seq_along(cluster_lists), function(i) {
+  clust_name <- paste0("clust", i)
+  plot_cluster_absfc(cluster_lists[[i]], clust_name, TopTable_RNA_All)
+})
+names(cluster_plots) <- paste0("clust", 1:11)
+
+for (p in cluster_plots) print(p)
+
+
+```
 
 ```{r RNASeq_CorMotif_ClusterSets_saves,eval=FALSE}
 #View(motif_prob)
@@ -1218,7 +1432,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 # saveRDS(clust9_RNA,"data/Cormotif/clust9_RNA_Trajectory.RDS")
 # saveRDS(clust10_RNA,"data/Cormotif/clust10_RNA_Trajectory.RDS")
 # saveRDS(clust1_RNA,"data/Cormotif/clust11_RNA_Trajectory.RDS")
-# ```
+```
 
 
 ```{r Updating Website, eval = FALSE}

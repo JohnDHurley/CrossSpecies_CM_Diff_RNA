@@ -20,4 +20,8 @@ Welcome to my research website.
 
 [RNA Cormotif Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Comp_Species_Ensembl.html)
 
+[RNA DGE Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Comp_Trajectory_Ensemble.html)
+
+[RNA CHDGene Overlaps Trajecotory DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Trajceotry.html)
+
 [RNA Cormotif Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Comp_Trajectory_Ensemble.html)

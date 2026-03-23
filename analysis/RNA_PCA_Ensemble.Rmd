@@ -37,29 +37,37 @@ library("ComplexHeatmap")
 
 # BiocManager::install("SummarizedExperiment")
 
-RNA_fc_df <- readRDS("data/Raw_Data/RNA_fc_df.RDS")
-RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
 
-RNA_fc <- readRDS("data/QC/RNA_fc.RDS")
-RNA_log2cpm <- readRDS("data/QC/RNA_log2cpm.RDS")
+RNA_fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
-Filt_RMG0_RNA_fc <- readRDS("data/QC/Filt_RMG0_RNA_fc.RDS")
-Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/RNA_log2cpm_RMG0.RDS")
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+RNA_log2cpm <- readRDS("data/QC/concat/RNA_log2cpm.RDS")
 
-ann_colors <- readRDS("data/QC/ann_colors.RDS")
+Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 
-RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_No4.RDS")
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
+ann_colors <- readRDS("data/QC/concat/ann_colors.RDS")
 
+RNA_Metadata_No4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+
+Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
+Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
+RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.RDS")
 
-prcomp_RNA <- readRDS("data/QC/prcomp_RNA.RDS")
-prcomp_RNA_meta <- readRDS("data/QC/prcomp_RNA_meta.RDS")
-prcomp_Filt_RMG0_RNA <- readRDS("data/QC/prcomp_Filt_RMG0_RNA.RDS")
-prcomp_Filt_RMG0_RNA_meta <- readRDS("data/QC/prcomp_Filt_RMG0_RNA_meta.RDS")
-prcomp_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- readRDS("data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+# ann_colors_No4 <- readRDS("data/QC/concat/ann_colors_no4.RDS")
+# 
+# prcomp_RNA <- readRDS("data/QC/concat/prcomp_RNA.RDS")
+# prcomp_RNA_meta <- readRDS("data/QC/concat/prcomp_RNA_meta.RDS")
+# prcomp_Filt_RMG0_RNA <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA.RDS")
+# prcomp_Filt_RMG0_RNA_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_meta.RDS")
+# prcomp_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
 
 ```
 
@@ -85,13 +93,14 @@ ggplot2::autoplot(prcomp_RNA,
   ggtitle("PC1 v. PC2
 Unfiltered RNA-Seq Log2CPM")
 
-# saveRDS(prcomp_RNA,"data/QC/prcomp_RNA.RDS")
-# saveRDS(prcomp_RNA_meta,"data/QC/prcomp_RNA_meta.RDS")
+# saveRDS(prcomp_RNA,"data/QC/concat/prcomp_RNA.RDS")
+# saveRDS(prcomp_RNA_meta,"data/QC/concat/prcomp_RNA_meta.RDS")
 
 ```
 
 
 ```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+Filt_RMG0_RNA_log2cpm <-data.frame(Filt_RMG0_RNA_log2cpm)
 prcomp_Filt_RMG0_RNA <- prcomp(t(Filt_RMG0_RNA_log2cpm), scale=FALSE, center = TRUE)
 prcomp_Filt_RMG0_RNA_meta <- prcomp_Filt_RMG0_RNA$x %>% cbind(., RNA_Metadata)
 #PCA checks
@@ -114,8 +123,8 @@ ggplot2::autoplot(prcomp_Filt_RMG0_RNA ,
 Filtered RNA-Seq Log2CPM 
 Row Means > 0")
 
-# saveRDS(prcomp_Filt_RMG0_RNA,"data/QC/prcomp_Filt_RMG0_RNA.RDS")
-# saveRDS(prcomp_Filt_RMG0_RNA_meta,"data/QC/prcomp_Filt_RMG0_RNA_meta.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA,"data/QC/concat/prcomp_Filt_RMG0_RNA.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_meta.RDS")
 
 ```
 
@@ -145,8 +154,8 @@ Filtered RNA-Seq Log2CPM
 No Day 4
 Row Means > 0")
 
-# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
 
 ```
 
@@ -170,8 +179,8 @@ Filtered RNA-Seq Log2CPM
 No Day 4
 Row Means > 0")
 
-# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
 
 ```
 

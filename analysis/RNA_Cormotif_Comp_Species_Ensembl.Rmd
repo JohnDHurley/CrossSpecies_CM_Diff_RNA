@@ -27,22 +27,23 @@ library("SummarizedExperiment")
 library("readxl")
 library("ggfortify")
 library("ComplexHeatmap")
+library("clusterProfiler")
+library("enrichplot")
+library("gprofiler2")
 
 # BiocManager::install("SummarizedExperiment")
 
 RNA_fc_df <- readRDS("data/Raw_Data/RNA_fc_df.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
 ann_colors <- readRDS("data/QC/ann_colors.RDS")
-
 RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_No4.RDS")
 Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
 Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
-
 Filt_RMG0_RNA_fc_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_fc_NoD4_NoRep.RDS")
 Filt_RMG0_RNA_log2cpm_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep.RDS")
-
-TopTable_RNA_All <- readRDS("data/TopTable_RNA_all.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
+all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
 
 clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
 clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
@@ -1071,13 +1072,13 @@ RNA_Metadata_NoD4_NoRep <- RNA_Metadata_No4 %>%
 
 
 ```{r RNA-Seq_CorMotif_Species_Modeling}
-# groupid <- c(rep(1:5,7),rep(6:10,7))
-# compid_Cond1 <- c(1,2,3,4,5)
-# compid_Cond2 <- c(6,7,8,9,10)
-# compid <- cbind(compid_Cond1,compid_Cond2)
-# 
-# #Model Fitting
-# 
+groupid <- c(rep(1:5,7),rep(6:10,7))
+compid_Cond1 <- c(1,2,3,4,5)
+compid_Cond2 <- c(6,7,8,9,10)
+compid <- cbind(compid_Cond1,compid_Cond2)
+
+#Model Fitting
+
 # set.seed(8)
 # motif.fitted<-cormotiffit(exprs = Filt_RMG0_RNA_log2cpm_NoD4_NoRep,
 #                           groupid = groupid,
@@ -1219,14 +1220,14 @@ log2cpm <- Filt_RMG0_RNA_log2cpm_NoD4
 #extract the cluster likelihood - which DEGs are most likely to be in this cluster
 motif_prob <- motif.fit$bestmotif$clustlike
 rownames(motif_prob) <- rownames(gene_prob_ppost)
-# saveRDS(motif_prob,"data/RNA_motif_prob_Trajectory.RDS")
+# saveRDS(motif_prob,"data/Cormotif/Species/RNA_motif_prob_Species.RDS")
 
 # motif.fitted$bestmotif$clustlike
 
 clust1_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 > 0.5 & V2 <  0.5 & V3 < 0.5   & V4 < 0.5)  %>%
+  filter(V1 > 0.5 & V2 <  0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
   rownames()
 print("clust1_RNA")
 length(clust1_RNA)
@@ -1234,7 +1235,7 @@ length(clust1_RNA)
 clust2_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 < 0.5 & V2 > 0.5 & V3 < 0.5 & V4 < 0.5)  %>%
+  filter(V1 < 0.5 & V2 > 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
   rownames()
 print("clust2_RNA")
 length(clust2_RNA)
@@ -1242,7 +1243,7 @@ length(clust2_RNA)
 clust3_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 < 0.5 & V2 < 0.5 & V3 > 0.5 & V4)  %>%
+  filter(V1 < 0.5 & V2 < 0.5 & V3 > 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
   rownames()
 print("clust3_RNA")
 length(clust3_RNA)
@@ -1250,10 +1251,18 @@ length(clust3_RNA)
 clust4_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 > 0.5) %>%
+  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 > 0.5 & V5 < 0.5) %>%
   rownames()
 print("clust4_RNA")
 length(clust4_RNA)
+
+clust5_RNA <-
+  motif_prob %>%
+  as.data.frame() %>%
+  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 > 0.5) %>%
+  rownames()
+print("clust5_RNA")
+length(clust5_RNA)
 
 ```
 
@@ -1263,17 +1272,18 @@ clust_names_list <- list(
   clust1_RNA,
   clust2_RNA,
   clust3_RNA,
-  clust4_RNA
+  clust4_RNA,
+  clust5_RNA
 )
 
-names(clust_names_list) <- paste0("clust", 1:4)
+names(clust_names_list) <- paste0("clust", 1:5)
 
 print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 ```{r RNASeq_CoMortif_Species_DGE}
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA")
+cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA","clust5_RNA")
 
 
 ```
@@ -1283,7 +1293,8 @@ cluster_lists <- list(
   clust1_RNA  = clust1_RNA,
   clust2_RNA  = clust2_RNA,
   clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA
+  clust4_RNA  = clust4_RNA,
+  clust5_RNA = clust5_RNA
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
@@ -1301,7 +1312,8 @@ cluster_lists <- list(
   clust1_RNA  = clust1_RNA,
   clust2_RNA  = clust2_RNA,
   clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA
+  clust4_RNA  = clust4_RNA,
+  clust5_RNA = clust5_RNA
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
@@ -1326,6 +1338,332 @@ for (p in cluster_plots) print(p)
 # saveRDS(clust4_RNA,"data/Cormotif/Species/clust4_RNA_Species.RDS")
 
 ```
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler}
+convert_to_entrez_df <- function(genes) {
+
+  genes <- sub("\\..*", "", genes)
+
+  bitr(
+    genes,
+    fromType = "ENSEMBL",
+    toType   = "ENTREZID",
+    OrgDb    = org.Hs.eg.db
+  ) %>% distinct()
+}
+
+background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
+
+gost_results <- setNames(
+
+  lapply(names(clust_names_list), function(clust_name) {
+
+    genes <- clust_names_list[[clust_name]]
+
+    entrez_df <- convert_to_entrez_df(genes)
+
+    if (nrow(entrez_df) == 0) return(NULL)
+
+    gost(
+      query = entrez_df$ENTREZID,
+
+      organism = "hsapiens",
+
+      significant = FALSE,
+      ordered_query = FALSE,         # TRUE only if ranked
+      domain_scope = "custom",
+
+      measure_underrepresentation = FALSE,
+      evcodes = FALSE,
+
+      numeric_ns = "ENTREZGENE",
+
+      user_threshold = 0.05,
+      correction_method = "fdr",
+
+      custom_bg = background_entrez,
+
+      sources = c("GO:BP", "KEGG")
+    )
+  }),
+
+  names(clust_names_list)
+)
+
+gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
+
+  res <- gost_results[[clust_name]]
+
+  if (is.null(res)) return(NULL)
+
+  df <- res$result
+  df$Cluster <- clust_name
+  df
+}))
+
+saveRDS(gost_results, "data/Cormotif/Species/gost_all_clusters.RDS")
+
+gost_export <- gost_combined
+
+gost_export[] <- lapply(gost_export, function(col) {
+
+  if (is.list(col)) {
+    sapply(col, paste, collapse = ";")
+  } else {
+    col
+  }
+
+})
+
+write.csv(gost_export,
+          "data/Cormotif/Species/gost_all_clusters.csv",
+          row.names = FALSE)
+```
+
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=5, fig.width=7}
+
+
+top_terms <- gost_combined %>%
+  filter(source == "GO:BP") %>%        # keep only BP terms
+  group_by(Cluster) %>%
+  slice_min(p_value, n = 20) %>%       # top 10 per cluster
+  ungroup()
+
+cluster_list <- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df <- cluster_list[[clust_name]]
+  
+  p <- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = "white") +
+    scale_fill_gradient(low = "grey90", high = "firebrick") +
+    labs(fill = "-log10(p-value)",
+         x = "Cluster",
+         y = "GO Term") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+  # Optional: save each plot as a file
+  ggsave(filename = paste0("GO_heatmap_", clust_name, ".png"),
+         plot = p,
+         width = 6, height = 4)
+}
+```
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=5, fig.width=6}
+
+
+top_terms <- gost_combined %>%
+  filter(source == "KEGG") %>%        # keep only BP terms
+  group_by(Cluster) %>%
+  slice_min(p_value, n = 20) %>%       # top 10 per cluster
+  ungroup()
+
+cluster_list <- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df <- cluster_list[[clust_name]]
+  
+  p <- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = "white") +
+    scale_fill_gradient(low = "grey90", high = "firebrick") +
+    labs(fill = "-log10(p-value)",
+         x = "Cluster",
+         y = "KEGG Term") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+  # # Optional: save each plot as a file
+  # ggsave(filename = paste0("GO_heatmap_", clust_name, ".png"),
+  #        plot = p,
+  #        width = 6, height = 4)
+}
+```
+
+
+
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=12, fig.width=12}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh <- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster <- gost_combined %>%
+  filter(source == "GO:BP") %>%
+  group_by(Cluster) %>%
+  filter(p_value < sig_thresh) %>%                    # keep only significant
+  slice_min(order_by = p_value, n = 20, with_ties = FALSE) %>%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms <- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data <- gost_combined %>%
+  filter(source == "GO:BP", term_name %in% unique_terms) %>%
+  mutate(logp = -log10(p_value)) %>%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide <- heatmap_data %>%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+# 5. Convert to long format for ggplot
+heatmap_long <- heatmap_wide %>%
+  pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey90", high = "firebrick", na.value = "white") +
+  labs(fill = "-log10(p-value)", x = "Cluster", y = "GO Term") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))
+
+```
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=12, fig.width=12}
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix <- heatmap_wide %>%
+  column_to_rownames(var = "term_name") %>%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] <- 0
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c("grey90", "firebrick"))(100),
+  cluster_rows = TRUE,    # cluster GO terms
+  cluster_cols = TRUE,    # cluster clusters
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = "GO:BP Enrichment Heatmap"
+)
+```
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=12, fig.width=12}
+heatmap_long <- heatmap_long %>%
+  group_by(term_name) %>%
+  mutate(min_logp = min(logp, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(min_logp)) %>%
+  mutate(term_name = factor(term_name, levels = unique(term_name)))
+
+library(pheatmap)
+
+# Create matrix: rows = GO terms, columns = clusters
+heatmap_matrix <- heatmap_wide %>%
+  column_to_rownames("term_name") %>%
+  as.matrix()
+
+# Replace NAs with 0 for clustering
+heatmap_matrix[is.na(heatmap_matrix)] <- 0
+
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c("grey90", "firebrick"))(100),
+  cluster_cols = TRUE,   # cluster clusters by similarity
+  cluster_rows = FALSE,  # keep rows ordered by overall significance
+  show_rownames = TRUE
+)
+```
+
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=20, fig.width=12}
+library(pheatmap)
+
+# --- Set significance threshold ---
+sig_thresh <- 0.05
+# Convert to -log2(p) if your matrix is -log2(p-value)
+# If heatmap_matrix_capped already stores transformed values, set threshold accordingly
+logp_thresh <- -log10(sig_thresh)
+
+# --- Create a matrix of symbols for significance ---
+sig_matrix <- matrix("", nrow = nrow(heatmap_matrix), ncol = ncol(heatmap_matrix))
+rownames(sig_matrix) <- rownames(heatmap_matrix)
+colnames(sig_matrix) <- colnames(heatmap_matrix)
+
+sig_matrix[heatmap_matrix >= logp_thresh] <- "*"  # mark significant cells
+
+# --- Define color palette ---
+palette_colors <- c("white", colorRampPalette(c("grey90", "yellow", "orange", "firebrick"))(99))
+
+# Define the order
+desired_order <- paste0("clust", 1:5)
+
+# Reorder columns
+heatmap_matrix <- heatmap_matrix[, desired_order]
+
+# --- Plot heatmap with significance symbols ---
+pheatmap(
+  heatmap_matrix,
+  color = palette_colors,
+  cluster_rows = TRUE,
+  cluster_cols = FALSE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  display_numbers = sig_matrix,
+  number_color = "black",
+  main = "GO:BP Enrichment Heatmap (0 = white, * = p < 0.05)"
+)
+
+# # --- 8. Plot clustered heatmap ---
+# pheatmap(
+#   heatmap_matrix_capped,
+#   color = colorRampPalette(c("grey90", "yellow", "orange", "firebrick"))(100),
+#   cluster_rows = TRUE,   # keep GO terms in original order or reorder manually
+#   cluster_cols = TRUE,    # cluster clusters by similarity
+#   show_rownames = TRUE,
+#   show_colnames = TRUE,
+#   main = "GO:BP Enrichment Heatmap (capped, clustered)"
+# )
+```
+
+```{r RNA-Seq_CorMotif_Species_ClustSets_FC}
+
+library(ggplot2)
+plot_cluster_trajectories <- function(cluster_genes, TopTable) {
+  tt_clust <- TopTable[TopTable$Gene %in% cluster_genes, ]
+  tt_clust$Comparisons <- factor(tt_clust$Comparisons,
+                                 levels = c("HC_D0","HC_D2","HC_D5","HC_D15","HC_D30"))
+  ggplot(tt_clust, aes(x = Comparisons, y = logFC, group = Gene)) +
+    geom_line(alpha = 0.3, color = "steelblue") +
+    geom_point(size = 1, alpha = 0.5, color = "steelblue") +
+    scale_y_continuous(limits = c(-15, 15)) +  # manual y-axis range
+    theme_minimal(base_size = 14) +
+    labs(title = "logFC Trajectories", x = "Comparison", y = "logFC")
+}
+
+plot_cluster_trajectories(clust1_RNA, TopTable_RNA_All)
+plot_cluster_trajectories(clust2_RNA, TopTable_RNA_All)
+plot_cluster_trajectories(clust3_RNA, TopTable_RNA_All)
+plot_cluster_trajectories(clust4_RNA, TopTable_RNA_All)
+plot_cluster_trajectories(clust5_RNA, TopTable_RNA_All)
+```
+
 
 
 ```{r Updating Website, eval = FALSE}

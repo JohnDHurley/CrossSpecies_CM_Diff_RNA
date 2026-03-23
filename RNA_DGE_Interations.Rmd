@@ -1,0 +1,1069 @@
+---
+title: "RNA_DGE_Interactions"
+output: html_document
+date: "2026-03-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{r Setting the Enviroment}
+
+#loading libraries
+library("tidyverse")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+
+
+
+
+#Loading R Objects Other WorkflowR
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
+RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
+
+#Loading R Objects from this WorflowR
+dge <- readRDS("data/DGE/Trajectory/RNA_dge_matrix.RDS")
+fit2 <- readRDS("data/DGE/Trajectory/fit2.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
+Comparisons_names <- readRDS("data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
+RNA_sets <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_05.RDS")
+RNA_sets0.1 <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_0.1.RDS")
+all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
+
+```
+
+```{r Volcano_Plot_Function,Result="Hide",warning=FALSE, include = FALSE}
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+```
+
+```{r FC_Plot_Function, include = FALSE}
+plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels =c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15","All_Genes","All_DEGs"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(paste0(cluster_name, " RNA FC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r FC_Plot_Function_sig, include = FALSE}
+plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # Global test across comparisons
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+```
+
+
+```{r AbsFC_Plot_Function, include = FALSE}
+plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15","All_Genes","All_DEGs"
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, ":", dim(df)[1], "rows,", length(unique(df$Gene)), "unique genes\n")
+  
+  # Create boxplot
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = "Comparisons")) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbsFC") +
+    ggtitle(paste0(cluster_name, " RNA AbsFC Comparisons")) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = "black"),
+      strip.background = element_rect(fill = "#CAD899"),
+      axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+      strip.text.x = element_text(size = 12, colour = "black", face = "bold")
+    )
+  
+  return(p)
+}
+```
+
+```{r AbsFC_Plot_Function_sig, include = FALSE}
+plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+  
+  # Global test across comparisons
+  kw <- kruskal.test(AbsFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$AbsFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbslogFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA AbsFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+```
+
+
+```{r RNASeq_DGE_Trajectory_Data}
+Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>%
+  dplyr::select(-(contains("R")))
+
+RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30"),7), rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep)
+dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+# keep <- filterByExpr(dge, design = design_int)
+# dge_keep <- dge[keep, , keep.lib.sizes=FALSE]
+# 
+# nrow(Filt_RMG0_RNA_fc_NoD4_NoRep)
+# sum(filterByExpr(dge, design_int))
+#dim(dge)
+# saveRDS(dge, "data/DGE/Trajectory/RNA_dge_matrix.RDS")
+#dge$samples
+
+```
+
+```{r RNASeq_DGE_Trajectory_Data_Model}
+RNA_Metadata_NoD4_NoRep$Species <- factor(
+  RNA_Metadata_NoD4_NoRep$Species,
+  levels = c("C", "H")   # Chimp baseline
+)
+
+RNA_Metadata_NoD4_NoRep$Timepoint <- factor(
+  RNA_Metadata_NoD4_NoRep$Timepoint,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+design_int <- model.matrix(~ Species * Timepoint,
+                           data = RNA_Metadata_NoD4_NoRep)
+
+colnames(design_int)
+colnames(design_int) <- make.names(colnames(design_int))
+
+```
+
+
+```{r RNASeq_DGE_Trajectory_Data_Model}
+# Step 1: voom first
+v1 <- voom(dge, design_int, plot = TRUE)
+
+# Step 2: estimate duplicate correlation on voom-transformed data
+corfit <- duplicateCorrelation(v1, design_int, block = RNA_Metadata_NoD4_NoRep$Individual)
+corfit.correlation <- corfit$consensus.correlation
+
+# Step 3: voom again including correlation
+v2 <- voom(dge, design_int, plot = TRUE,
+           block = RNA_Metadata_NoD4_NoRep$Individual,
+           correlation = corfit.correlation)
+
+# Step 4: fit linear model
+fit <- lmFit(v2, design_int, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit.correlation)
+fit <- eBayes(fit)
+
+pal <- rainbow(length(unique(RNA_Metadata_NoD4_NoRep$Timepoint)))
+day <- RNA_Metadata_NoD4_NoRep$Timepoint
+
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+```
+
+
+```{r RNASeq_DGE_Trajectory_Data_Model}
+contrast_matrix <- makeContrasts(
+
+  # Species differences
+  HvC_Day0  = SpeciesH,
+  HvC_Day2  = SpeciesH + SpeciesH.TimepointDay2,
+  HvC_Day5  = SpeciesH + SpeciesH.TimepointDay5,
+  HvC_Day15 = SpeciesH + SpeciesH.TimepointDay15,
+  HvC_Day30 = SpeciesH + SpeciesH.TimepointDay30,
+  
+  #Trajectory differences
+  H_Day02 = TimepointDay2 + SpeciesH.TimepointDay2,
+  H_Day25 = TimepointDay5 + SpeciesH.TimepointDay5 - TimepointDay2 - SpeciesH.TimepointDay2,
+  H_Day515 = TimepointDay15 + SpeciesH.TimepointDay15 - TimepointDay5 - SpeciesH.TimepointDay5,
+  H_Day1530 = TimepointDay30 + SpeciesH.TimepointDay30 - TimepointDay15 - SpeciesH.TimepointDay15,
+  C_Day02 = TimepointDay2,
+  C_Day25 = TimepointDay5 - TimepointDay2,
+  C_Day515 = TimepointDay15 - TimepointDay5,
+  C_Day1530 = TimepointDay30 - TimepointDay15,
+  
+  # True interaction tests trajectory
+  Sig_Sp_inter_Traj02 = SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj25 = SpeciesH.TimepointDay5 - SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj515 = SpeciesH.TimepointDay15 - SpeciesH.TimepointDay5,
+  Sig_Sp_inter_Traj1530 = SpeciesH.TimepointDay30 - SpeciesH.TimepointDay15,
+  
+  levels = design_int
+)
+
+fit2 <- contrasts.fit(fit, contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+# saveRDS(fit2,"data/DGE/Trajectory/fit2.RDS")
+```
+
+
+```{r RNASeq_DGE_Trajectory_TopTable}
+#Create Human TopTable. using listapply, then you can pull specific comp using the $
+TopTables_RNA_names <- colnames(fit2$coefficients) 
+
+# colnames(fit2$coefficients)
+
+TopTable_RNA_All <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+TopTable_RNA_All$Comparisons
+# saveRDS(TopTable_RNA_All,"data/DGE/Trajectory/TopTable_RNA_all.RDS")
+head(TopTable_RNA_All)
+```
+
+
+```{r RNASeq_DGE_Trajectory_TopTable_VolcancoPlots}
+Comparisons_names <- unique(TopTable_RNA_All$Comparisons)
+# saveRDS(Comparisons_names,"data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
+
+# Calculate global axis limits
+x_limits <- range(TopTable_RNA_All$logFC, na.rm = TRUE)
+y_limits <- range(-log10(TopTable_RNA_All$P.Value), na.rm = TRUE)
+
+plot <- list()
+
+for (n in Comparisons_names) {
+  data_n <- TopTable_RNA_All %>% 
+    dplyr::filter(Comparisons == n)
+  
+  plot[[n]] <- generate_volcano_plot(data_n, n) +
+    ggplot2::xlim(x_limits) +
+    ggplot2::ylim(y_limits)
+}
+
+# Print plots
+for (n in Comparisons_names) {
+  print(plot[[n]])
+}
+```
+```{r RNASeq_DGE_Trajectory_TopTable_Subsetting0.05}
+RNA_sets <- map(
+  Comparisons_names,
+  ~ {
+    df <- TopTable_RNA_All %>%
+      filter(Comparisons == paste0(.x))
+
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.05),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+    )
+  }
+)
+
+
+names(RNA_sets) <- paste0(Comparisons_names)
+
+# saveRDS(RNA_sets,"data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_05.RDS")
+```
+
+```{r RNASeq_DGE_Interactions_Day2, fig.width = 15, fig.height= 10}
+int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02")
+top_int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02", number=20)
+top_genes <- rownames(top_int_Traj2)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v2$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r RNASeq_DGE_Interactions_Day5, fig.width = 15, fig.height= 10}
+int_Traj5 <- topTable(fit2, coef="Sig_Sp_inter_Traj25")
+top_int_Traj5 <- topTable(fit2, coef="Sig_Sp_inter_Traj25", number=20)
+top_genes <- rownames(top_int_Traj5)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v2$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r RNASeq_DGE_Interactions_Day15, fig.width = 15, fig.height= 10}
+int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj515")
+top_int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj515", number=20)
+top_genes <- rownames(top_int_Traj15)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v2$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r RNASeq_DGE_Interactions_Day30, fig.width = 15, fig.height= 10}
+int_Traj30 <- topTable(fit2, coef="Sig_Sp_inter_Traj1530")
+top_int_Traj30 <- topTable(fit2, coef="Sig_Sp_inter_Traj1530", number=20)
+top_genes <- rownames(top_int_Traj30)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v2$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r RNASeq_DGE_Interactions_Overlaps, fig.width = 15, fig.height= 10}
+
+# Make a copy to be safe
+chdgene_table_copy <- chdgene_table
+# 
+# # Check
+# colnames(chdgene_table_copy)
+# 
+# #ENSEMBL ID
+# all_ensembl_ids <- unique(TopTable_RNA_All$Gene)
+# 
+# ensembl <- useMart(
+#   "ensembl",
+#   dataset = "hsapiens_gene_ensembl"
+# )
+# 
+# ensembl_to_hgnc <- getBM(
+#   attributes = c("ensembl_gene_id", "hgnc_symbol"),
+#   filters = "ensembl_gene_id",
+#   values = all_ensembl_ids,
+#   mart = ensembl
+# ) %>%
+#   filter(hgnc_symbol != "") %>%
+#   distinct()
+# 
+# saveRDS(
+#   ensembl_to_hgnc,
+#   "data/DGE/Species/Ensembl_to_HGNC_mapping.RDS"
+# )
+
+ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
+
+# Loop through my data sets to overlap
+known_genes <- chdgene_table_copy$Gene
+
+CHD_overlap_results <- list()
+
+for (day in names(RNA_sets)) {
+
+  message("Processing ", day)
+
+  DEG_Set <- unique(RNA_sets[[day]]$DEGs$Gene)
+  Non_DEG_Set <- unique(RNA_sets[[day]]$NonDEGs$Gene)
+
+  # ---- DEG overlaps ----
+  DEG_Overlaps_symbols <- ensembl_to_hgnc$ensembl_gene_id[
+    ensembl_to_hgnc$ensembl_gene_id %in% DEG_Set &
+    ensembl_to_hgnc$hgnc_symbol %in% known_genes 
+  ]
+
+  # ---- Non-DEG overlaps ----
+  Non_DEG_Overlaps_symbols <- ensembl_to_hgnc$ensembl_gene_id[
+    ensembl_to_hgnc$ensembl_gene_id %in% Non_DEG_Set &
+    ensembl_to_hgnc$hgnc_symbol %in% known_genes
+  ]
+
+  CHD_overlap_results[[day]] <- list(
+    DEG_CHD_Genes = unique(DEG_Overlaps_symbols),
+    NonDEG_CHD_Genes = unique(Non_DEG_Overlaps_symbols)
+  )
+
+  saveRDS(
+    unique(DEG_Overlaps_symbols),
+    paste0("data/DGE/Species/", day, "_DEG_CHDGenes.RDS")
+  )
+
+  saveRDS(
+    unique(Non_DEG_Overlaps_symbols),
+    paste0("data/DGE/Species/", day, "_NonDEG_CHDGenes.RDS")
+  )
+}
+
+```
+
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
+H_comp <- "H_Day02"
+C_comp <- "C_Day02"
+
+df_wide <- TopTable_RNA_All %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = x_neg,
+    y = y_pos,
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 1,
+    vjust = 1
+  ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp)
+  )
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
+H_comp <- "H_Day25"
+C_comp <- "C_Day25"
+
+df_wide <- TopTable_RNA_All %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = x_neg,
+    y = y_pos,
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 1,
+    vjust = 1
+  ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp)
+  )
+
+
+```
+
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
+H_comp <- "H_Day515"
+C_comp <- "C_Day515"
+
+df_wide <- TopTable_RNA_All %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = x_neg,
+    y = y_pos,
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 1,
+    vjust = 1
+  ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp)
+  )
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
+H_comp <- "H_Day1530"
+C_comp <- "C_Day1530"
+
+df_wide <- TopTable_RNA_All %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = x_neg,
+    y = y_pos,
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 1,
+    vjust = 1
+  ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp)
+  )
+```

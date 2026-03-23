@@ -47,11 +47,11 @@ ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
 ```
 
 ```{r RNA_CHDGene_Species_DataSets}
-# #CHD Curated Gene List
+#CHD Curated Gene List
 # chdgene_table <- read.csv("C:/Users/jdhurley/Downloads/chdgene_table.csv")
-# # saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
-# 
-# # Make a copy to be safe
+# saveRDS(chdgene_table,"data/DGE/chdgene_table.RDS")
+
+# Make a copy to be safe
 chdgene_table_copy <- chdgene_table
 # 
 # # Check

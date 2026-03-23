@@ -36,6 +36,8 @@ library("ggplot2")
 library("tidyr")
 
 
+
+
 #Loading R Objects Other WorkflowR
 Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
@@ -466,8 +468,8 @@ df_long
 ggplot(df_long, aes(x = Comp, y = Proportion, fill = Type)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
-  scale_fill_manual(values = c("DEGs" = "#E41A1C", "Non_DEGs" = "#377EB8")) + # custom colors
-  labs(y = "Proportion", x = "Comp", fill = "",title = "Proportion of Species DEGs p < 0.05") +
+  scale_fill_manual(values = c("DEGs" = "darkgreen", "Non_DEGs" = "black")) + # custom colors
+  labs(y = "Proportion", x = "Comp", fill = "",title = "Proportion of Trajectory DEGs p < 0.05") +
   theme_minimal(base_size = 14)
 
 ```
@@ -707,7 +709,7 @@ HC_30_15_DEGs_Lists <- list(
 Venn_DEGs_List <- c("H_DEG_Lists","C_DEG_Lists","HC_2_0_DEGs_Lists","HC_5_2_DEGs_Lists","HC_15_5_DEGs_Lists","HC_30_15_DEGs_Lists")
 ```
 
-```{r RNASeq_DGE_Trajectory_TopTable_Venn_ggplot_plot,fig.height=10,fig.width=16}
+```{r RNASeq_DGE_Trajectory_TopTable_Venn_ggplot_plot,fig.height=5,fig.width=5}
 
 for (list_name in Venn_DEGs_List) {
 
@@ -718,7 +720,7 @@ for (list_name in Venn_DEGs_List) {
         label_alpha = 0,
         label = "count"
       ) +
-      scale_fill_gradient(low = "skyblue", high = "navy") +
+      scale_fill_gradient(low = "skyblue", high = "blue") +
       theme(legend.position = "none") +
       ggtitle(list_name)
 
@@ -1143,6 +1145,361 @@ ggplot(df_plot, aes(x = x, y = y, color = Quadrant)) +
   )
 
 ```
+
+
+```{r}
+design_int <- model.matrix(~ 0 + RNA_Metadata_NoD4_NoRep$dgelist)
+colnames(design_int) <- gsub("RNA_Metadata_NoD4_NoRep\\$dgelist", "", colnames(design_int))
+View(design_int)
+
+corfit <- duplicateCorrelation(object = dge$counts, design = design_int, block = RNA_Metadata_NoD4_NoRep$Individual)
+v <- voom(dge, design_int, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit$consensus.correlation, plot = TRUE)
+fit <- lmFit(v, design_int, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit$consensus.correlation)
+
+contrast_matrix <- makeContrasts(
+  H2_H0 = Human_Day2 - Human_Day0,
+  H5_H2 = Human_Day5 - Human_Day2,
+  H15_H5 = Human_Day15 - Human_Day5,
+  H30_H15 = Human_Day30 - Human_Day15,
+  C2_C0 = Chimp_Day2 - Chimp_Day0,
+  C5_C2 = Chimp_Day5 - Chimp_Day2,
+  C15_C5 = Chimp_Day15 - Chimp_Day5,
+  C30_C15 = Chimp_Day30 - Chimp_Day15,
+  int_2_0 = (Human_Day2 - Human_Day0) - (Chimp_Day2 - Chimp_Day0),
+  int_5_2  = (Human_Day5 - Human_Day2) - (Chimp_Day5 - Chimp_Day2),
+  int_15_5 = (Human_Day15 - Human_Day5) - (Chimp_Day15 - Chimp_Day5),
+  int_30_15 = (Human_Day30 - Human_Day15) - (Chimp_Day30 - Chimp_Day15),
+  levels = design_int)
+
+fit2 <- contrasts.fit(fit,contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary_int <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary_int)
+saveRDS(fit2,"data/DGE/Trajectory/fit2_int.RDS")
+```
+```{r RNASeq_DGE_Trajectory_TopTable}
+#Create Human TopTable. using listapply, then you can pull specific comp using the $
+TopTables_RNA_names_int <- colnames(fit2$coefficients) 
+
+# colnames(fit2$coefficients)
+
+TopTable_RNA_All_int <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names_int,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+TopTable_RNA_All_int$Comparisons
+# saveRDS(TopTable_RNA_All,"data/DGE/Trajectory/TopTable_RNA_all.RDS")
+head(TopTable_RNA_All_int)
+```
+
+```{r RNASeq_DGE_Trajectory_TopTable_VolcancoPlots}
+Comparisons_names_int <- unique(TopTable_RNA_All_int$Comparisons)
+# saveRDS(Comparisons_names,"data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
+
+plot <- list()
+for (n in Comparisons_names_int) {
+
+plot[[n]] <- TopTable_RNA_All_int %>% 
+  dplyr::filter(Comparisons == paste0(n)) %>% 
+  generate_volcano_plot(.,n)
+}
+
+for (n in Comparisons_names_int) {
+  print(plot[[n]])
+        }
+```
+```{r}
+top_int <- topTable(fit2, coef="int_2_0", number=20)
+top_genes <- rownames(top_int)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v_int$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+```
+
+```{r}
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r}
+top_int <- topTable(fit2, coef="int_5_2", number=20)
+top_genes <- rownames(top_int)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v_int$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+```
+
+```{r}
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r}
+top_int <- topTable(fit2, coef="int_15_5", number=20)
+top_genes <- rownames(top_int)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v_int$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+```
+
+```{r}
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
+```{r}
+top_int <- topTable(fit2, coef="int_30_15", number=20)
+top_genes <- rownames(top_int)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v_int$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+```
+
+```{r}
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+```
+
 
 ```{r Updating Website, eval = FALSE}
 

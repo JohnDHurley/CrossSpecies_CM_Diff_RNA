@@ -466,7 +466,7 @@ df_long$Day <- factor(df_long$Day,levels = c("Day0", "Day2", "Day5", "Day15", "D
 ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
-  scale_fill_manual(values = c("DEGs" = "#E41A1C", "Non_DEGs" = "#377EB8")) + # custom colors
+  scale_fill_manual(values = c("DEGs" = "darkgreen", "Non_DEGs" = "black")) + # custom colors
   labs(y = "Proportion", x = "", fill = "",title = "Proportion of Species DEGs p < 0.05") +
   theme_minimal(base_size = 14)
 
@@ -633,12 +633,12 @@ sets <- list(
 ```
 
 
-```{r RNASeq_DGE_Species_TopTable_Venn_ggplot_plot,fig.height=13,fig.width=12}
+```{r RNASeq_DGE_Species_TopTable_Venn_ggplot_plot,fig.height=8,fig.width=8}
 # Create a 5-way Venn diagram
 p <- ggVennDiagram(sets,
                    label_alpha = 0,       # makes background of labels transparent
                    label = "count") +     # show counts in intersections
-  scale_fill_gradient(low = "skyblue", high = "navy") + # optional color gradient
+  scale_fill_gradient(low = "skyblue", high = "blue") + # optional color gradient
   theme(legend.position = "none") +                     # hide legend
   ggtitle("5-way DEGs")
 

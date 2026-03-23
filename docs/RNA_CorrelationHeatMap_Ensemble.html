@@ -388,7 +388,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-20
+<strong>Last updated:</strong> 2026-03-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree5c4d94cf481b36bf3edb04a4fe56444e50df5c0etargetblank5c4d94ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree01611df6c8d12272c41c6076fcea92edb03f0b0etargetblank01611dfa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/5c4d94cf481b36bf3edb04a4fe56444e50df5c0e" target="_blank">5c4d94c</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/01611df6c8d12272c41c6076fcea92edb03f0b0e" target="_blank">01611df</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree5c4d94cf481b36bf3edb04a4fe56444e50df5c0etargetblank5c4d94ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree01611df6c8d12272c41c6076fcea92edb03f0b0etargetblank01611dfa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/5c4d94cf481b36bf3edb04a4fe56444e50df5c0e" target="_blank">5c4d94c</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/01611df6c8d12272c41c6076fcea92edb03f0b0e" target="_blank">01611df</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -600,6 +600,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/01611df6c8d12272c41c6076fcea92edb03f0b0e/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">01611df</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-03-23
+</td>
+<td>
+Data updates
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/8bce9df7764ef92c62071a001b91a331b0893535/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">8bce9df</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-02-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -777,109 +811,17 @@ Finalizing CorHeatMap
 </div>
 </div>
 </div>
-<pre class="r"><code>h_samples_counts &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/h_samples_counts.txt&quot;, comment.char=&quot;#&quot;)
+<pre class="r"><code>RNA_Metadata &lt;- read_excel(&quot;~/diff_timeline_tes/RNA/RNA_Metadata.xlsx&quot;)
 
-c_samples_counts &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/Run1_Run2_Concat/featurecounts/c_samples_counts.txt&quot;, comment.char=&quot;#&quot;)
+counts_table &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt&quot;)
 
-RNA_joined_fc &lt;- left_join(h_samples_counts,c_samples_counts, by = &quot;Geneid&quot;)
-
-#To keep only OrthoGenes and sample columns
-RNA_fc &lt;- RNA_joined_fc[ , !(names(RNA_joined_fc) %in% c(&quot;gene&quot;,&quot;Chr.x&quot;,&quot;Start.x&quot;,&quot;End.x&quot;,&quot;Strand.x&quot;,&quot;Length.x&quot;,&quot;Geneid.x&quot;,&quot;Chr.y&quot;,&quot;Start.y&quot;,&quot;End.y&quot;,&quot;Strand.y&quot;,&quot;Length.y&quot;,&quot;Geneid.y&quot;))]
-# 89 columns; 7 x 6 = 42 Human Exp, 7 x 6 = 42 Chimp Exp, 4 Human Replicate
-
-RNA_fc &lt;- RNA_fc %&gt;%
+RNA_fc &lt;- counts_table %&gt;%
+  filter(Geneid != &quot;#&quot;) %&gt;%
+  filter(Geneid != &quot;Geneid&quot;) %&gt;%
   column_to_rownames(&quot;Geneid&quot;)
 
 # #Rename column Names to More Useful Info
-col_names &lt;- c(&quot;H28126_D0&quot;,
-              &quot;H28126_D2&quot;,
-              &quot;H28126_D4&quot;,
-              &quot;H28126_D5&quot;,
-              &quot;H28126_D15&quot;,
-              &quot;H28126_D30&quot;,
-              &quot;H17_D0&quot;,
-              &quot;H17_D2&quot;,
-              &quot;H17_D4&quot;,
-              &quot;H17_D5&quot;,
-              &quot;H17_D15&quot;,
-              &quot;H17_D30&quot;,
-              &quot;H78_D0&quot;,
-              &quot;H78_D2&quot;,
-              &quot;H78_D4&quot;,
-              &quot;H78_D5&quot;,
-              &quot;H78_D15&quot;,
-              &quot;H78_D30&quot;,
-              &quot;H20682_D0&quot;,
-              &quot;H20682_D2&quot;,
-              &quot;H20682_D4&quot;,
-              &quot;H20682_D5&quot;,
-              &quot;H20682_D15&quot;,
-              &quot;H20682_D30&quot;,
-              &quot;H22422_D0&quot;,
-              &quot;H22422_D2&quot;,
-              &quot;H22422_D4&quot;,
-              &quot;H22422_D5&quot;,
-              &quot;H22422_D15&quot;,
-              &quot;H22422_D30&quot;,
-              &quot;H21792_D0&quot;,
-              &quot;H21792_D2&quot;,
-              &quot;H21792_D4&quot;,
-              &quot;H21792_D5&quot;,
-              &quot;H21792_D15&quot;,
-              &quot;H21792_D30&quot;,
-              &quot;H24280_D0&quot;,
-              &quot;H24280_D2&quot;,
-              &quot;H24280_D4&quot;,
-              &quot;H24280_D5&quot;,
-              &quot;H24280_D15&quot;,
-              &quot;H24280_D30&quot;,
-              &quot;H20682R_D0&quot;,
-              &quot;H20682R_D2&quot;,
-              &quot;H20682R_D5&quot;,
-              &quot;H20682R_D30&quot;,
-              &quot;C3649_D0&quot;,
-              &quot;C3649_D2&quot;,
-              &quot;C3649_D4&quot;,
-              &quot;C3649_D5&quot;,
-              &quot;C3649_D15&quot;,
-              &quot;C3649_D30&quot;,
-              &quot;C4955_D0&quot;,
-              &quot;C4955_D2&quot;,
-              &quot;C4955_D4&quot;,
-              &quot;C4955_D5&quot;,
-              &quot;C4955_D15&quot;,
-              &quot;C4955_D30&quot;,
-              &quot;C3651_D0&quot;,
-              &quot;C3651_D2&quot;,
-              &quot;C3651_D4&quot;,
-              &quot;C3651_D5&quot;,
-              &quot;C3651_D15&quot;,
-              &quot;C3651_D30&quot;,
-              &quot;C40210_D0&quot;,
-              &quot;C40210_D2&quot;,
-              &quot;C40210_D4&quot;,
-              &quot;C40210_D5&quot;,
-              &quot;C40210_D15&quot;,
-              &quot;C40210_D30&quot;,
-              &quot;C8861_D0&quot;,
-              &quot;C8861_D2&quot;,
-              &quot;C8861_D4&quot;,
-              &quot;C8861_D5&quot;,
-              &quot;C8861_D15&quot;,
-              &quot;C8861_D30&quot;,
-              &quot;C40280_D0&quot;,
-              &quot;C40280_D2&quot;,
-              &quot;C40280_D4&quot;,
-              &quot;C40280_D5&quot;,
-              &quot;C40280_D15&quot;,
-              &quot;C40280_D30&quot;,
-              &quot;C3647_D0&quot;,
-              &quot;C3647_D2&quot;,
-              &quot;C3647_D4&quot;,
-              &quot;C3647_D5&quot;,
-              &quot;C3647_D15&quot;,
-              &quot;C3647_D30&quot;
-)
+col_names &lt;- RNA_Metadata$SampleName
 colnames(RNA_fc) &lt;- col_names
 dim(RNA_fc)
 
@@ -909,19 +851,326 @@ RNA_fc_df &lt;- RNA_fc_df %&gt;%
     everything()     # rest unchanged
   )
 
-# saveRDS(RNA_fc_df,&quot;data/Raw_Data/RNA_fc_df.RDS&quot;)
+rn &lt;- rownames(RNA_fc)
 
-RNA_Metadata &lt;- read_excel(&quot;~/diff_timeline_tes/RNA/RNA_Metadata.xlsx&quot;)
+RNA_fc &lt;- as.data.frame(
+  lapply(RNA_fc, function(x) as.numeric(as.character(x)))
+)
 
-# saveRDS(RNA_Metadata,&quot;data/Raw_Data/RNA_Metadata.RDS&quot;)</code></pre>
+rownames(RNA_fc) &lt;- rn
+
+# saveRDS(RNA_fc,&quot;data/QC/concat/RNA_fc.RDS&quot;)
+# saveRDS(RNA_fc_df,&quot;data/Raw_Data/concat/RNA_fc_df.RDS&quot;)
+# saveRDS(RNA_Metadata,&quot;data/Raw_Data/concat/RNA_Metadata.RDS&quot;)</code></pre>
+<pre class="r"><code>library(tidyverse)
+
+total_reads_df &lt;- RNA_fc %&gt;%
+  as.data.frame() %&gt;%
+  mutate(Gene = rownames(.)) %&gt;%
+  dplyr::select(-Gene) %&gt;%
+  summarise(across(everything(), \(x) sum(x, na.rm = TRUE))) %&gt;%
+  pivot_longer(
+    cols = everything(),
+    names_to = &quot;Sample&quot;,
+    values_to = &quot;Total_Counts&quot;
+  ) %&gt;%
+  left_join(RNA_Metadata, by = c(&quot;Sample&quot; = &quot;SampleName&quot;))
+
+day_levels &lt;- c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+
+total_reads_df &lt;- total_reads_df %&gt;%
+  mutate(
+    Timepoint = factor(Timepoint, levels = day_levels, ordered = TRUE),
+
+    # force species order: chimp first, human second
+    Species = factor(Species, levels = c(&quot;C&quot;, &quot;H&quot;)),
+
+    Individual_Color = ann_colors$individual_cor[Individual]
+  ) %&gt;%
+  arrange(Species, Individual, Timepoint) %&gt;%
+  mutate(Sample = factor(Sample, levels = Sample))</code></pre>
+<pre class="r"><code>library(ggplot2)
+
+ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
+  geom_col() +
+  geom_text(aes(label = Individual, color = Individual), 
+            y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Total Reads per Sample&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Total Reads&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-2-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Sample, y = Mapped_Reads, fill = Timepoint)) +
+  geom_col() +
+  geom_text(aes(label = Individual, color = Individual), 
+            y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Mapped Reads per Sample&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Mapped Reads&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-2-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Sample, y = Percent_Mapped, fill = Timepoint)) +
+  geom_col() +
+  geom_text(aes(label = Individual, color = Individual), 
+            y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Percent Mapping per Sample&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Percent Mapping&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-2-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Sample, y = Usable_Fragments, fill = Timepoint)) +
+  geom_col() +
+  geom_text(aes(label = Individual, color = Individual), 
+            y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Usable Fragments per Sample&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Number Fragments&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-2-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Total_Reads)) +
+  geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Total Reads per Species&quot;,
+    x = &quot;Species&quot;,
+    y = &quot;Total_Reads&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-3-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Mapped_Reads)) +
+  geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Mapped Reads per Species&quot;,
+    x = &quot;Species&quot;,
+    y = &quot;Mapped_Reads&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-3-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Percent_Mapped)) +
+  geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Percent of Reads Mapped per Species&quot;,
+    x = &quot;Species&quot;,
+    y = &quot;Percent of reads Mapping&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-3-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
+  geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Usable Fragments per Species&quot;,
+    x = &quot;Species&quot;,
+    y = &quot;Number of Fragments&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-3-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
+  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Total Reads per Day by Species&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Total Reads&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-4-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
+  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Mapped Reads per Day by Species&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Mapped Reads&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-4-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
+  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Percent of Reads Mapping per Day by Species&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Percent_Mapped&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-4-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
+  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Usable Fragments per Day by Species&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Number of Fragments&quot;,
+    fill = &quot;Timepoint&quot;,
+    color = &quot;Individual&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-4-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
+  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  scale_fill_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Total Reads per Individual by Species&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Total Reads&quot;,
+    fill = &quot;Individual&quot;,
+    color = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-5-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
+  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  scale_fill_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Mapped Reads per Individual by Species&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Mapped Reads&quot;,
+    fill = &quot;Individual&quot;,
+    color = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-5-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
+  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  scale_fill_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Percentage of Mapped Reads per Individual by Species&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Percentage of Mapped Reads&quot;,
+    fill = &quot;Individual&quot;,
+    color = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-5-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
+  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
+  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  scale_fill_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = &quot;top&quot;) +
+  labs(
+    title = &quot;Usable Fragments per Individual by Species&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Number of Fragments&quot;,
+    fill = &quot;Individual&quot;,
+    color = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-5-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
 day_levels &lt;- c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
 marker_levels &lt;- c(&quot;OCT3/4&quot;, &quot;Brachy&quot;, &quot;ISL-1&quot;, &quot;TNNT-2&quot;)
 
-df_long_all &lt;- RNA_Metadata_NoD4_NoRep %&gt;%
-  dplyr::select(Cond, `OCT3/4`, Brachy, `ISL-1`, `TNNT-2`) %&gt;%
+RNA_Metadata_NoRep &lt;- RNA_Metadata %&gt;%
+  dplyr::filter(!SampleName %in% c(
+    &quot;H20682R_Day0&quot;,
+    &quot;H20682R_Day2&quot;,
+    &quot;H20682R_Day5&quot;,
+    &quot;H20682R_Day30&quot;
+  ))
+
+df_long_all &lt;- RNA_Metadata_NoRep %&gt;%
+  dplyr::select(Individual,Cond, `OCT3/4`, Brachy, `ISL-1`, `TNNT-2`) %&gt;%
   mutate(
     `OCT3/4` = as.numeric(`OCT3/4`),
     Brachy = as.numeric(Brachy),
@@ -955,22 +1204,83 @@ summary_df &lt;- df_long_all %&gt;%
 <pre class="r"><code># -----------------------------
 # 3. Plot lines over time with SEM error bars
 # -----------------------------
-ggplot(summary_df, aes(x = Day, y = Mean, color = Group, group = Group)) +
-  geom_line(linewidth = 1.1) +
-  geom_point(size = 2) +
-  geom_errorbar(
-    aes(ymin = Mean - SEM, ymax = Mean + SEM),
-    width = 0.2
+library(dplyr)
+library(scales)
+
+ggplot(summary_df,
+       aes(x = Day, y = Mean,
+           linetype = Group,
+           group = Group)) +
+
+  # Individual points
+  geom_point(
+    data = df_long_all,
+    aes(
+      x = Day,
+      y = Percent_Positive,
+      color = Individual,
+      shape = Group
+    ),
+    size = 2.5,
+    alpha = 0.9,
+    position = position_jitter(width = 0.08, height = 0)
   ) +
+
+  # Mean line (black, texture = species)
+  geom_line(
+    linewidth = 0.5,
+    color = &quot;black&quot;
+  ) +
+
+  # Mean point (black)
+  geom_point(
+    size = 0.5,
+    color = &quot;black&quot;
+  ) +
+
+  # Error bars (black)
+  geom_errorbar(
+    aes(ymin = Mean - SD, ymax = Mean + SD),
+    width = 0.2,
+    color = &quot;black&quot;
+  ) +
+
   facet_wrap(~ Marker, nrow = 1) +
-  scale_color_manual(values = c(&quot;H&quot; = &quot;skyblue&quot;, &quot;C&quot; = &quot;salmon&quot;)) +
-  scale_y_continuous(limits = c(0, 100)) +
+
+  # species as line texture
+  scale_linetype_manual(
+    values = c(
+      &quot;H&quot; = &quot;solid&quot;,
+      &quot;C&quot; = &quot;dashed&quot;
+    ),
+    name = &quot;Species&quot;
+  ) +
+
+  # species as shape
+  scale_shape_manual(
+    values = c(
+      &quot;H&quot; = 17,  # triangle
+      &quot;C&quot; = 16   # circle
+    ),
+    name = &quot;Species&quot;
+  ) +
+
+  # individual colors from your manual palette
+  scale_color_manual(
+    values = ann_colors$individual_cor,
+    name = &quot;Individual&quot;
+  ) +
+
+  # Use coord_cartesian instead of scale_y_continuous to avoid dropped points
+  coord_cartesian(ylim = c(0, 100)) +
+
   labs(
     title = &quot;Mean Percent Positive Across Timepoints for Each Marker&quot;,
     x = &quot;Day&quot;,
     y = &quot;Mean Percent Positive (%)&quot;,
-    caption = &quot;Error bars represent SEM (Standard Error of the Mean)&quot;
+    caption = &quot;Color = individual, shape/line = species, error bars = SD&quot;
   ) +
+
   theme_minimal(base_size = 14) +
   theme(
     legend.position = &quot;top&quot;,
@@ -1015,14 +1325,143 @@ John D. Hurley
 </table>
 </div>
 </div>
+<pre class="r"><code># -----------------------------
+# 1. Prepare long-format data
+# -----------------------------
+day_levels &lt;- c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+marker_levels &lt;- c(&quot;OCT3/4&quot;, &quot;Brachy&quot;, &quot;ISL-1&quot;, &quot;TNNT-2&quot;)
+
+RNA_Metadata_NoD4_NoRep &lt;- RNA_Metadata %&gt;%
+  dplyr::filter(Timepoint != &quot;Day4&quot;) %&gt;%
+  dplyr::filter(!SampleName %in% c(
+    &quot;H20682R_Day0&quot;,
+    &quot;H20682R_Day2&quot;,
+    &quot;H20682R_Day5&quot;,
+    &quot;H20682R_Day30&quot;
+  ))
+
+df_long_all &lt;- RNA_Metadata_NoD4_NoRep %&gt;%
+  dplyr::select(Individual,Cond, `OCT3/4`, Brachy, `ISL-1`, `TNNT-2`) %&gt;%
+  mutate(
+    `OCT3/4` = as.numeric(`OCT3/4`),
+    Brachy = as.numeric(Brachy),
+    `ISL-1` = as.numeric(`ISL-1`),
+    `TNNT-2` = as.numeric(`TNNT-2`),
+    Group = ifelse(grepl(&quot;^H_&quot;, Cond), &quot;H&quot;, &quot;C&quot;)
+  ) %&gt;%
+  pivot_longer(
+    cols = c(`OCT3/4`, Brachy, `ISL-1`, `TNNT-2`),
+    names_to = &quot;Marker&quot;,
+    values_to = &quot;Percent_Positive&quot;
+  ) %&gt;%
+  mutate(
+    Day = gsub(&quot;.*_(Day\\d+)$&quot;, &quot;\\1&quot;, Cond),
+    Day = factor(Day, levels = day_levels, ordered = TRUE),
+    Marker = factor(Marker, levels = marker_levels, ordered = TRUE)
+  )
+
+# -----------------------------
+# 2. Compute summary with SEM
+# -----------------------------
+summary_df &lt;- df_long_all %&gt;%
+  group_by(Marker, Day, Group) %&gt;%
+  summarise(
+    Mean = mean(Percent_Positive, na.rm = TRUE),
+    SD = sd(Percent_Positive, na.rm = TRUE),
+    N = sum(!is.na(Percent_Positive)),
+    SEM = SD / sqrt(N),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre class="r"><code># -----------------------------
+# 3. Plot lines over time with SEM error bars
+# -----------------------------
+library(dplyr)
+library(scales)
+
+ggplot(summary_df,
+       aes(x = Day, y = Mean,
+           linetype = Group,
+           group = Group)) +
+
+  # Individual points
+  geom_point(
+    data = df_long_all,
+    aes(
+      x = Day,
+      y = Percent_Positive,
+      color = Individual,
+      shape = Group
+    ),
+    size = 2.5,
+    alpha = 0.9,
+    position = position_jitter(width = 0.08, height = 0)
+  ) +
+
+  # Mean line (black, texture = species)
+  geom_line(
+    linewidth = 0.5,
+    color = &quot;black&quot;
+  ) +
+
+  # Mean point (black)
+  geom_point(
+    size = 0.5,
+    color = &quot;black&quot;
+  ) +
+
+  # Error bars (black)
+  geom_errorbar(
+    aes(ymin = Mean - SD, ymax = Mean + SD),
+    width = 0.2,
+    color = &quot;black&quot;
+  ) +
+
+  facet_wrap(~ Marker, nrow = 1) +
+
+  # species as line texture
+  scale_linetype_manual(
+    values = c(
+      &quot;H&quot; = &quot;solid&quot;,
+      &quot;C&quot; = &quot;dashed&quot;
+    ),
+    name = &quot;Species&quot;
+  ) +
+
+  # species as shape
+  scale_shape_manual(
+    values = c(
+      &quot;H&quot; = 17,  # triangle
+      &quot;C&quot; = 16   # circle
+    ),
+    name = &quot;Species&quot;
+  ) +
+
+  # individual colors from your manual palette
+  scale_color_manual(
+    values = ann_colors$individual_cor,
+    name = &quot;Individual&quot;
+  ) +
+
+  # Use coord_cartesian instead of scale_y_continuous to avoid dropped points
+  coord_cartesian(ylim = c(0, 100)) +
+
+  labs(
+    title = &quot;Mean Percent Positive Across Timepoints for Each Marker&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Mean Percent Positive (%)&quot;,
+    caption = &quot;Color = individual, shape/line = species, error bars = SD&quot;
+  ) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;,
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    plot.caption = element_text(hjust = 0, face = &quot;italic&quot;, size = 10)
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph_No4-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#####Unfiltered####
-RNA_fc &lt;- RNA_fc_df %&gt;% 
-  dplyr::select(c(-&quot;Entrez_ID&quot;, -&quot;Symbol&quot;)) %&gt;% 
-  column_to_rownames(&quot;Ensemble&quot;)
+RNA_log2cpm &lt;- cpm(RNA_fc, log = TRUE)
 
-# saveRDS(RNA_fc,&quot;data/QC/RNA_fc.RDS&quot;)
-
-RNA_log2cpm &lt;- cpm(RNA_fc,log=TRUE)
 hist(RNA_log2cpm,  main = &quot;Histogram of all counts (unfiltered)&quot;,
      xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =4 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_Unfiltered-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
@@ -1152,20 +1591,20 @@ John D. Hurley
 </table>
 </div>
 </div>
-<pre class="r"><code># saveRDS(RNA_log2cpm,&quot;data/QC/RNA_log2cpm.RDS&quot;)</code></pre>
+<pre class="r"><code># saveRDS(RNA_log2cpm,&quot;data/QC/concat/RNA_log2cpm.RDS&quot;)</code></pre>
 <pre class="r"><code>#####RowMu&gt;0####
 row_means &lt;- rowMeans(RNA_log2cpm)
 Filt_RMG0_RNA_fc &lt;- RNA_fc[row_means &gt;0,]
 
-# saveRDS(Filt_RMG0_RNA_fc,&quot;data/QC/Filt_RMG0_RNA_fc.RDS&quot;)
+# saveRDS(Filt_RMG0_RNA_fc,&quot;data/QC/concat/Filt_RMG0_RNA_fc.RDS&quot;)
 
 Filt_RMG0_RNA_log2cpm &lt;- cpm(Filt_RMG0_RNA_fc,log=TRUE)
 
-# saveRDS(Filt_RMG0_RNA_log2cpm,&quot;data/QC/RNA_log2cpm_RMG0.RDS&quot;)
+# saveRDS(Filt_RMG0_RNA_log2cpm,&quot;data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS&quot;)
 
 hist(Filt_RMG0_RNA_log2cpm, main = &quot;Histogram of filtered counts using rowMeans &gt; 0 method&quot;,
      xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =5 )</code></pre>
-<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_RMG0-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_RMG0-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_RMG0-1">
 Past versions of RNASeq_FeatureCounts_RMG0-1.png
@@ -1219,8 +1658,8 @@ axis(1,
      at = 1:length(col_names),  # positions (one per sample)
      labels = col_names,        # your labels vector
      las = 2,               # rotate text vertically (like srt=90)
-     cex.axis = 0.3)        # shrink label size</code></pre>
-<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_RMG0-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+     cex.axis = 0.6)        # shrink label size</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Box_RMG0-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Box_RMG0-1">
 Past versions of RNASeq_FeatureCounts_Box_RMG0-1.png
@@ -1269,9 +1708,308 @@ John D. Hurley
 </table>
 </div>
 </div>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+
+# Define ordered day factor
+day_levels &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;, &quot;Day4&quot;, &quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;)
+
+total_reads_df &lt;- total_reads_df %&gt;%
+  mutate(
+    # Order Timepoint for bars
+    Timepoint = factor(Timepoint, levels = day_levels, ordered = TRUE),
+    
+    # Individual text color
+    Individual_Color = ann_colors$individual_cor[Individual]
+  ) %&gt;%
+  # Order Sample for x-axis: first by Individual, then by Day
+  arrange(Individual, Timepoint) %&gt;%
+  mutate(Sample = factor(Sample, levels = Sample))  # preserve order in ggplot
+
+# Plot
+ggplot(total_reads_df, aes(x = Sample, y = Total_Counts, fill = Timepoint)) +
+  
+  # Bars colored by Timepoint
+  geom_col() +
+
+  # Annotate Individual names under bars, colored by individual
+  geom_text(
+    aes(label = Individual, color = Individual_Color),
+    y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3
+  ) +
+
+  # Manual Timepoint colors
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+
+  # Use exact color for individual labels
+  scale_color_identity() +
+
+  # Facet by Species if desired
+  facet_grid(~Species, scales = &quot;free_x&quot;, space = &quot;free_x&quot;) +
+
+  # Theme
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_blank(),  # hide default X labels
+    axis.ticks.x = element_blank(),
+    legend.position = &quot;top&quot;
+  ) +
+
+  labs(
+    title = &quot;Counts per Sample&quot;,
+    x = &quot;Individual (bars grouped by individual, ordered by day)&quot;,
+    y = &quot;Total Counts&quot;,
+    fill = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-6-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Total_Counts)) +
+  
+  # Boxplot for each species
+  geom_boxplot(aes(fill = Species), alpha = 0.3, outlier.shape = NA) + 
+  
+  # Overlay individual points colored by individual
+  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+
+  # Use individual colors
+  scale_color_manual(values = ann_colors$individual_cor) +
+
+  # Optional: species fill colors (light grey / black)
+  scale_fill_manual(values = c(&quot;H&quot; = &quot;#17171717&quot;, &quot;C&quot; = &quot;#17171717&quot;)) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;
+  ) +
+
+  labs(
+    title = &quot;Counts per Species&quot;,
+    x = &quot;Species&quot;,
+    y = &quot;Total Counts&quot;,
+    color = &quot;Individual&quot;,
+    fill = &quot;Species&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-6-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Total_Counts)) +
+  
+  # Boxplot per day
+  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
+
+  # Overlay individual points colored by individual
+  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+
+  # Use individual colors
+  scale_color_manual(values = ann_colors$individual_cor) +
+
+  # Use timepoint colors for boxplots
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+
+  # Separate x-axis by species
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;,
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  labs(
+    title = &quot;Counts per Day by Species&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Total Counts&quot;,
+    color = &quot;Individual&quot;,
+    fill = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-6-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plot
+ggplot(total_reads_df, aes(x = Individual, y = Total_Counts)) +
+  
+  # Boxplots colored by individual
+  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
+
+  # Overlay points colored by Timepoint
+  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+
+  # Use manual colors
+  scale_fill_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+
+  # Facet by species
+  facet_wrap(~Species, scales = &quot;free_x&quot;, nrow = 1) +
+
+  # Theme
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;,
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  labs(
+    title = &quot;Counts per Individual by Species&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Total Counts&quot;,
+    fill = &quot;Individual&quot;,
+    color = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-6-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(tidyverse)
+
+total_reads_df &lt;- RNA_fc %&gt;%
+  as.data.frame() %&gt;%
+  mutate(Gene = rownames(.)) %&gt;%
+  dplyr::select(-Gene) %&gt;%
+  summarise(across(everything(), \(x) sum(x, na.rm = TRUE))) %&gt;%
+  pivot_longer(
+    cols = everything(),
+    names_to = &quot;Sample&quot;,
+    values_to = &quot;Total_Reads&quot;
+  ) %&gt;%
+  left_join(RNA_Metadata, by = c(&quot;Sample&quot; = &quot;SampleName&quot;))</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+
+# Define ordered day factor
+day_levels &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;, &quot;Day4&quot;, &quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;)
+
+total_reads_df &lt;- total_reads_df %&gt;%
+  mutate(
+    # Order Timepoint for bars
+    Timepoint = factor(Timepoint, levels = day_levels, ordered = TRUE),
+    
+    # Individual text color
+    Individual_Color = ann_colors$individual_cor[Individual]
+  ) %&gt;%
+  # Order Sample for x-axis: first by Individual, then by Day
+  arrange(Individual, Timepoint) %&gt;%
+  mutate(Sample = factor(Sample, levels = Sample))  # preserve order in ggplot
+
+# Plot
+ggplot(total_reads_df, aes(x = Sample, y = Total_Reads.x, fill = Timepoint)) +
+  
+  # Bars colored by Timepoint
+  geom_col() +
+
+  # Annotate Individual names under bars, colored by individual
+  geom_text(
+    aes(label = Individual, color = Individual_Color),
+    y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3
+  ) +
+
+  # Manual Timepoint colors
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+
+  # Use exact color for individual labels
+  scale_color_identity() +
+
+  # Facet by Species if desired
+  facet_grid(~Species, scales = &quot;free_x&quot;, space = &quot;free_x&quot;) +
+
+  # Theme
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_blank(),  # hide default X labels
+    axis.ticks.x = element_blank(),
+    legend.position = &quot;top&quot;
+  ) +
+
+  labs(
+    title = &quot;Total Reads per Sample&quot;,
+    x = &quot;Individual (bars grouped by individual, ordered by day)&quot;,
+    y = &quot;Total Reads&quot;,
+    fill = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-8-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Total_Reads.x)) +
+  
+  # Boxplot for each species
+  geom_boxplot(aes(fill = Species), alpha = 0.3, outlier.shape = NA) + 
+  
+  # Overlay individual points colored by individual
+  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+
+  # Use individual colors
+  scale_color_manual(values = ann_colors$individual_cor) +
+
+  # Optional: species fill colors (light grey / black)
+  scale_fill_manual(values = c(&quot;H&quot; = &quot;#17171717&quot;, &quot;C&quot; = &quot;#17171717&quot;)) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;
+  ) +
+
+  labs(
+    title = &quot;Total Reads per Species&quot;,
+    x = &quot;Species&quot;,
+    y = &quot;Total Reads&quot;,
+    color = &quot;Individual&quot;,
+    fill = &quot;Species&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-8-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads.x)) +
+  
+  # Boxplot per day
+  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
+
+  # Overlay individual points colored by individual
+  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+
+  # Use individual colors
+  scale_color_manual(values = ann_colors$individual_cor) +
+
+  # Use timepoint colors for boxplots
+  scale_fill_manual(values = ann_colors$timepoint_cor) +
+
+  # Separate x-axis by species
+  facet_wrap(~Species, scales = &quot;free_x&quot;) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;,
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  labs(
+    title = &quot;Total Reads per Day by Species&quot;,
+    x = &quot;Day&quot;,
+    y = &quot;Total Reads&quot;,
+    color = &quot;Individual&quot;,
+    fill = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-8-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plot
+ggplot(total_reads_df, aes(x = Individual, y = Total_Reads.x)) +
+  
+  # Boxplots colored by individual
+  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
+
+  # Overlay points colored by Timepoint
+  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+
+  # Use manual colors
+  scale_fill_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+
+  # Facet by species
+  facet_wrap(~Species, scales = &quot;free_x&quot;, nrow = 1) +
+
+  # Theme
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;top&quot;,
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  labs(
+    title = &quot;Total Reads per Individual by Species&quot;,
+    x = &quot;Individual&quot;,
+    y = &quot;Total Reads&quot;,
+    fill = &quot;Individual&quot;,
+    color = &quot;Timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/unnamed-chunk-8-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm &lt;- cor(Filt_RMG0_RNA_log2cpm, method = &quot;spearman&quot;)
-individual &lt;- RNA_Metadata$Individual_Label
+individual &lt;- RNA_Metadata$Individual
 species &lt;- RNA_Metadata$Species
 timepoint &lt;- RNA_Metadata$Timepoint
 timepoint &lt;- factor(timepoint,levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;))
@@ -1317,9 +2055,9 @@ ann_colors &lt;- list(
 )
 rownames(Cor_metadata) &lt;- Cor_metadata$sample_cor
 
-# saveRDS(Cor_Filt_RMG0_RNA_log2cpm, &quot;data/QC/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;)
-# saveRDS(Cor_metadata, &quot;data/QC/Cor_RNA_metadata.RDS&quot;)
-# saveRDS(ann_colors,&quot;data/QC/ann_colors.RDS&quot;)</code></pre>
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm, &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;)
+# saveRDS(Cor_metadata, &quot;data/QC/concat/Cor_RNA_metadata.RDS&quot;)
+# saveRDS(ann_colors,&quot;data/QC/concat/ann_colors.RDS&quot;)</code></pre>
 <pre class="r"><code>print(
   pheatmap(Cor_Filt_RMG0_RNA_log2cpm,
          fontsize_row = 5,
@@ -1395,7 +2133,7 @@ RNA_Metadata_No4 &lt;- RNA_Metadata %&gt;%
  filter(Timepoint != &quot;Day4&quot;)
 
 RNA_fc_NoD4 &lt;- RNA_fc %&gt;% 
-  dplyr::select(-ends_with(&quot;_D4&quot;))
+  dplyr::select(-ends_with(&quot;_Day4&quot;))
 
 RNA_log2cpm_NoD4 &lt;- cpm(RNA_fc_NoD4,log=TRUE)
 dim(RNA_log2cpm_NoD4)</code></pre>
@@ -1405,12 +2143,12 @@ dim(RNA_log2cpm_NoD4)</code></pre>
 <pre class="r"><code>row_means_NoD4 &lt;- rowMeans(RNA_log2cpm_NoD4)
 Filt_RMG0_RNA_fc_NoD4 &lt;- RNA_fc_NoD4[row_means_NoD4 &gt;0,]
 dim(Filt_RMG0_RNA_fc_NoD4)</code></pre>
-<pre><code>[1] 14838    74</code></pre>
+<pre><code>[1] 14084    74</code></pre>
 <pre class="r"><code>Filt_RMG0_RNA_log2cpm_NoD4 &lt;- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
 
-# saveRDS(RNA_Metadata_No4,&quot;data/QC/RNA_Metatdata_No4.RDS&quot;)
-# saveRDS(Filt_RMG0_RNA_fc_NoD4,&quot;data/QC/Filt_RMG0_RNA_fc_NoD4.RDS&quot;)
-# saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, &quot;data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)</code></pre>
+# saveRDS(RNA_Metadata_No4,&quot;data/QC/concat/RNA_Metatdata_No4.RDS&quot;)
+# saveRDS(Filt_RMG0_RNA_fc_NoD4,&quot;data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS&quot;)
+# saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, &quot;data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)</code></pre>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 &lt;- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = &quot;spearman&quot;)
 
@@ -1422,9 +2160,9 @@ ann_colors_No4$timepoint_cor &lt;- ann_colors$timepoint_cor[
   names(ann_colors$timepoint_cor) != &quot;Day4&quot;
 ]
 
-# saveRDS(Cor_metadata_No4, &quot;data/QC/Cor_metadata_No4.RDS&quot;)
-# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD4, &quot;data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)
-# saveRDS(ann_colors_No4,&quot;data/QC/ann_colors_no4.RDS&quot;)</code></pre>
+# saveRDS(Cor_metadata_No4, &quot;data/QC/concat/Cor_metadata_No4.RDS&quot;)
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD4, &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS&quot;)
+# saveRDS(ann_colors_No4,&quot;data/QC/concat/ann_colors_no4.RDS&quot;)</code></pre>
 <pre class="r"><code>print(
   pheatmap(Cor_Filt_RMG0_RNA_log2cpm_NoD4,
          fontsize_row = 5,
@@ -1497,7 +2235,7 @@ John D. Hurley
 </div>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
-# wflow_publish(&quot;analysis/RNA_CorrelationHeatMap_Ensemble.Rmd&quot;)</code></pre>
+wflow_publish(&quot;analysis/RNA_CorrelationHeatMap_Ensemble.Rmd&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1529,26 +2267,27 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] ComplexHeatmap_2.24.1       ggfortify_0.4.19           
- [3] readxl_1.4.5                RUVSeq_1.42.0              
- [5] EDASeq_2.42.0               ShortRead_1.66.0           
- [7] GenomicAlignments_1.44.0    SummarizedExperiment_1.38.1
- [9] MatrixGenerics_1.20.0       matrixStats_1.5.0          
-[11] Rsamtools_2.24.0            GenomicRanges_1.60.0       
-[13] Biostrings_2.76.0           GenomeInfoDb_1.44.3        
-[15] XVector_0.48.0              BiocParallel_1.42.1        
-[17] lubridate_1.9.5             forcats_1.0.1              
-[19] stringr_1.6.0               purrr_1.2.1                
-[21] tidyr_1.3.2                 tidyverse_2.0.0            
-[23] Cormotif_1.54.0             affy_1.86.0                
-[25] pheatmap_1.0.13             org.Hs.eg.db_3.21.0        
-[27] AnnotationDbi_1.70.0        IRanges_2.42.0             
-[29] S4Vectors_0.46.0            Biobase_2.68.0             
-[31] BiocGenerics_0.54.1         generics_0.1.4             
-[33] readr_2.1.6                 ggrepel_0.9.6              
-[35] dplyr_1.1.4                 tibble_3.3.1               
-[37] ggplot2_4.0.2               edgeR_4.6.3                
-[39] limma_3.64.3                workflowr_1.7.2            
+ [1] scales_1.4.0                ComplexHeatmap_2.24.1      
+ [3] ggfortify_0.4.19            readxl_1.4.5               
+ [5] RUVSeq_1.42.0               EDASeq_2.42.0              
+ [7] ShortRead_1.66.0            GenomicAlignments_1.44.0   
+ [9] SummarizedExperiment_1.38.1 MatrixGenerics_1.20.0      
+[11] matrixStats_1.5.0           Rsamtools_2.24.0           
+[13] GenomicRanges_1.60.0        Biostrings_2.76.0          
+[15] GenomeInfoDb_1.44.3         XVector_0.48.0             
+[17] BiocParallel_1.42.1         lubridate_1.9.5            
+[19] forcats_1.0.1               stringr_1.6.0              
+[21] purrr_1.2.1                 tidyr_1.3.2                
+[23] tidyverse_2.0.0             Cormotif_1.54.0            
+[25] affy_1.86.0                 pheatmap_1.0.13            
+[27] org.Hs.eg.db_3.21.0         AnnotationDbi_1.70.0       
+[29] IRanges_2.42.0              S4Vectors_0.46.0           
+[31] Biobase_2.68.0              BiocGenerics_0.54.1        
+[33] generics_0.1.4              readr_2.1.6                
+[35] ggrepel_0.9.6               dplyr_1.1.4                
+[37] tibble_3.3.1                ggplot2_4.0.2              
+[39] edgeR_4.6.3                 limma_3.64.3               
+[41] workflowr_1.7.2            
 
 loaded via a namespace (and not attached):
   [1] later_1.4.5             BiocIO_1.18.0           bitops_1.0-9           
@@ -1558,7 +2297,7 @@ loaded via a namespace (and not attached):
  [13] rprojroot_2.1.1         processx_3.8.6          lattice_0.22-7         
  [16] MASS_7.3-65             magrittr_2.0.4          sass_0.4.10            
  [19] rmarkdown_2.30          jquerylib_0.1.4         yaml_2.3.12            
- [22] httpuv_1.6.16           otel_0.2.0              DBI_1.2.3              
+ [22] httpuv_1.6.16           otel_0.2.0              DBI_1.3.0              
  [25] RColorBrewer_1.1-3      abind_1.4-8             R.utils_2.13.0         
  [28] RCurl_1.98-1.17         rappdirs_0.3.4          git2r_0.36.2           
  [31] circlize_0.4.17         GenomeInfoDbData_1.2.14 codetools_0.2-20       
@@ -1573,23 +2312,23 @@ loaded via a namespace (and not attached):
  [58] timechange_0.4.0        R6_2.6.1                colorspace_2.1-2       
  [61] Cairo_1.7-0             jpeg_0.1-11             biomaRt_2.64.0         
  [64] RSQLite_2.4.5           R.methodsS3_1.8.2       rtracklayer_1.68.0     
- [67] prettyunits_1.2.0       httr_1.4.7              S4Arrays_1.8.1         
+ [67] prettyunits_1.2.0       httr_1.4.8              S4Arrays_1.8.1         
  [70] whisker_0.4.1           pkgconfig_2.0.3         gtable_0.3.6           
  [73] blob_1.3.0              S7_0.2.1                hwriter_1.3.2.1        
- [76] htmltools_0.5.9         clue_0.3-66             scales_1.4.0           
- [79] png_0.1-8               knitr_1.51              rstudioapi_0.18.0      
- [82] tzdb_0.5.0              rjson_0.2.23            curl_7.0.0             
- [85] cachem_1.1.0            GlobalOptions_0.1.3     parallel_4.5.1         
- [88] restfulr_0.0.16         pillar_1.11.1           vctrs_0.7.1            
- [91] promises_1.5.0          dbplyr_2.5.1            cluster_2.1.8.1        
- [94] evaluate_1.0.5          GenomicFeatures_1.60.0  cli_3.6.5              
- [97] locfit_1.5-9.12         compiler_4.5.1          rlang_1.1.7            
-[100] crayon_1.5.3            labeling_0.4.3          interp_1.1-6           
-[103] aroma.light_3.38.0      ps_1.9.1                getPass_0.2-4          
-[106] fs_1.6.6                stringi_1.8.7           deldir_2.0-4           
-[109] Matrix_1.7-4            hms_1.1.4               bit64_4.6.0-1          
-[112] KEGGREST_1.48.1         statmod_1.5.1           memoise_2.0.1          
-[115] affyio_1.78.0           bslib_0.10.0            bit_4.6.0              </code></pre>
+ [76] htmltools_0.5.9         clue_0.3-66             png_0.1-8              
+ [79] knitr_1.51              rstudioapi_0.18.0       tzdb_0.5.0             
+ [82] rjson_0.2.23            curl_7.0.0              cachem_1.1.0           
+ [85] GlobalOptions_0.1.3     parallel_4.5.1          restfulr_0.0.16        
+ [88] pillar_1.11.1           vctrs_0.7.1             promises_1.5.0         
+ [91] dbplyr_2.5.2            cluster_2.1.8.1         evaluate_1.0.5         
+ [94] GenomicFeatures_1.60.0  cli_3.6.5               locfit_1.5-9.12        
+ [97] compiler_4.5.1          rlang_1.1.7             crayon_1.5.3           
+[100] labeling_0.4.3          interp_1.1-6            aroma.light_3.38.0     
+[103] ps_1.9.1                getPass_0.2-4           fs_1.6.6               
+[106] stringi_1.8.7           deldir_2.0-4            Matrix_1.7-4           
+[109] hms_1.1.4               bit64_4.6.0-1           KEGGREST_1.48.1        
+[112] statmod_1.5.1           memoise_2.0.1           affyio_1.78.0          
+[115] bslib_0.10.0            bit_4.6.0              </code></pre>
 </div>
 </div>
 </div>

@@ -39,18 +39,18 @@ library("tidyr")
 
 
 #Loading R Objects Other WorkflowR
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
-RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+RNA_Metadata_NoD4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
 
 #Loading R Objects from this WorflowR
-dge <- readRDS("data/DGE/Trajectory/RNA_dge_matrix.RDS")
-fit2 <- readRDS("data/DGE/Trajectory/fit2.RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
-Comparisons_names <- readRDS("data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
-RNA_sets <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_05.RDS")
-RNA_sets0.1 <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_0.1.RDS")
-all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
+dge <- readRDS("data/DGE/Trajectory/concat/RNA_dge_matrix.RDS")
+fit2 <- readRDS("data/DGE/Trajectory/concat/fit2.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Trajectory/concat/TopTable_RNA_all.RDS")
+Comparisons_names <- readRDS("data/DGE/Trajectory/concat/Comparisons_names_Trajectory.RDS")
+# RNA_sets <- readRDS("data/DGE/Trajectory/concat/RNA_DEG_Non_DEG_sets_05.RDS")
+# RNA_sets0.1 <- readRDS("data/DGE/Trajectory/concat/RNA_DEG_Non_DEG_sets_0.1.RDS")
+# all_genes <- readRDS("data/DGE/Trajectory/concat/all_genes.RDS")
 
 ```
 
@@ -277,10 +277,13 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 
 
 ```{r RNASeq_DGE_Trajectory_Data}
+RNA_Metadata_NoD4_NoRep <- RNA_Metadata_NoD4 %>%
+  filter(!grepl("R$",Individual))
+
 Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>%
   dplyr::select(-(contains("R")))
 
-RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30"),7), rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
 
 #create DGEList object
 dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep)
@@ -288,9 +291,9 @@ dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
 dge <- calcNormFactors(dge, method = "TMM")
 dge$samples
 
-#dim(dge)
-# saveRDS(dge, "data/DGE/Trajectory/RNA_dge_matrix.RDS")
-#dge$samples
+# dim(dge)
+# saveRDS(dge, "data/DGE/Trajectory/concat/RNA_dge_matrix.RDS")
+# dge$samples
 
 ```
 
@@ -323,7 +326,7 @@ results_summary <- decideTests(fit2,
                                adjust.method = "BH",
                                p.value = 0.05)
 summary(results_summary)
-# saveRDS(fit2,"data/DGE/Trajectory/fit2.RDS")
+# saveRDS(fit2,"data/DGE/Trajectory/concat/fit2.RDS")
 ```
 
 
@@ -353,7 +356,7 @@ TopTable_RNA_All <- do.call(
 )
 
 TopTable_RNA_All$Comparisons
-# saveRDS(TopTable_RNA_All,"data/DGE/Trajectory/TopTable_RNA_all.RDS")
+# saveRDS(TopTable_RNA_All,"data/DGE/Trajectory/concat/TopTable_RNA_all.RDS")
 head(TopTable_RNA_All)
 ```
 
@@ -361,7 +364,7 @@ head(TopTable_RNA_All)
 
 ```{r RNASeq_DGE_Trajectory_TopTable_VolcancoPlots}
 Comparisons_names <- unique(TopTable_RNA_All$Comparisons)
-# saveRDS(Comparisons_names,"data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
+# saveRDS(Comparisons_names,"data/DGE/Trajectory/concat/Comparisons_names_Trajectory.RDS")
 
 plot <- list()
 for (n in Comparisons_names) {
@@ -394,13 +397,13 @@ RNA_sets <- map(
 
 names(RNA_sets) <- paste0(days)
 
-# saveRDS(RNA_sets,"data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_05.RDS")
+# saveRDS(RNA_sets,"data/DGE/Trajectory/concat/RNA_DEG_Non_DEG_sets_05.RDS")
 ```
 
 
 ```{r RNASeq_DGE_Trajectory_TopTable_Subsetting0.05_Eulers}
 all_genes <- unique(TopTable_RNA_All$Gene)
-# saveRDS(all_genes,"data/DGE/Trajectory/all_genes.RDS")
+# saveRDS(all_genes,"data/DGE/Trajectory/concat/all_genes.RDS")
   
 DEG_Lists <- list(
   H2_H0_DEGs = RNA_sets$H2_H0$DEGs,       # TopTable data.frame
@@ -449,8 +452,8 @@ for (name in names(DEG_Lists)) {
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
   Comp = c("H2_0", "H5_2", "H15_5", "H30_15","C2_0","C5_2","C15_5","C30_15"),
-  DEGs = c(5512,5968,6614,5278,5082,4929,5509,5069),
-  Non_DEGs = c(9326,8870,8224,9560,9756,9909,9329,9769)
+  DEGs = c(4849,5325,5996,4655,4435,4286,4852,4369),
+  Non_DEGs = c(9235,8759,8088,9429,9649,9798,9232,9715)
 )
 
 # Convert to long format for ggplot
@@ -493,7 +496,7 @@ RNA_sets0.1 <- map(
 
 names(RNA_sets0.1) <- paste0(days)
 
-# saveRDS(RNA_sets0.1,"data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_0.1.RDS")
+# saveRDS(RNA_sets0.1,"data/DGE/Trajectory/concat/RNA_DEG_Non_DEG_sets_0.1.RDS")
 ```
 
 
@@ -547,8 +550,8 @@ for (name in names(DEG_Lists)) {
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
   Comp = c("H2_0", "H5_2", "H15_5", "H30_15","C2_0","C5_2","C15_5","C30_15"),
-  DEGs = c(6560,7020,7630,6359,6140,5921,6535,6207),
-  Non_DEGs = c(8278,7818,7208,8479,8698,8917,8303,8631)
+  DEGs = c(5837,6387,7048,5692,5420,5144,5825,5432),
+  Non_DEGs = c(8247,7697,7036,8392,8664,8940,8259,8652)
 )
 
 # Convert to long format for ggplot
@@ -574,12 +577,9 @@ ggplot(df_long, aes(x = Comp, y = Proportion, fill = Type)) +
 
 
 ```{r RNASeq_DGE_Trajectory_TopTable_Subsetting_FC}
-deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 
-Gene_list <- list(
-  All_genes  = all_genes,
-  DEGs = deg_genes
-)
+
+Gene_list <- TopTable_RNA_All$Gene
 
 cluster_plots <- lapply(names(Gene_list), function(clust_name) {
   plot_cluster_fc_sig(Gene_list[[clust_name]], clust_name, TopTable_RNA_All)
@@ -602,11 +602,6 @@ for (comp in Comparisons_names) {
 
 ```{r RNASeq_DGE_Trajectory_TopTable_Subsetting_AbsFC}
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-
-Gene_list <- list(
-  All_genes  = all_genes,
-  DEGs = deg_genes
-)
 
 cluster_plots <- lapply(names(Gene_list), function(clust_name) {
   plot_cluster_absfc_sig(Gene_list[[clust_name]], clust_name, TopTable_RNA_All)
@@ -709,7 +704,7 @@ HC_30_15_DEGs_Lists <- list(
 Venn_DEGs_List <- c("H_DEG_Lists","C_DEG_Lists","HC_2_0_DEGs_Lists","HC_5_2_DEGs_Lists","HC_15_5_DEGs_Lists","HC_30_15_DEGs_Lists")
 ```
 
-```{r RNASeq_DGE_Trajectory_TopTable_Venn_ggplot_plot,fig.height=5,fig.width=5}
+```{r RNASeq_DGE_Trajectory_TopTable_Venn_ggplot_plot,fig.height=10,fig.width=10}
 
 for (list_name in Venn_DEGs_List) {
 
@@ -810,11 +805,10 @@ Inersection_combined_df <- bind_rows(lapply(names(all_results), function(nm) {
   )
 }))
 
-write.csv(Inersection_combined_df, "data/DGE/Trajectory/All_Intersections.csv", row.names = FALSE)
+write.csv(Inersection_combined_df, "data/DGE/Trajectory/concat/All_Intersections.csv", row.names = FALSE)
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H2_H0"
 C_comp <- "C2_C0"
 
@@ -847,6 +841,12 @@ x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
 
 y_pos <- max(df_wide[[C_comp]]) * 0.95
 
+# Optional: make axes symmetric around 0 for a nicer visual
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+# max_val <- max(abs(c(x_limits, y_limits)))
+
+# Plot
 ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
@@ -863,6 +863,8 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
     hjust = 1,
     vjust = 1
   ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
   theme_bw() +
   labs(
     x = H_comp,
@@ -870,10 +872,10 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
     title = paste0(H_comp, " vs ", C_comp)
   )
 
+
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_5_2}
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H5_H2"
 C_comp <- "C5_C2"
 
@@ -904,6 +906,12 @@ x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
 
 y_pos <- max(df_wide[[C_comp]]) * 0.95
 
+# Optional: make axes symmetric around 0 for a nicer visual
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+# max_val <- max(abs(c(x_limits, y_limits)))
+
+# Plot
 ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
@@ -920,6 +928,8 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
     hjust = 1,
     vjust = 1
   ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
   theme_bw() +
   labs(
     x = H_comp,
@@ -930,7 +940,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_15_5}
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H15_H5"
 C_comp <- "C15_C5"
 
@@ -962,6 +971,12 @@ x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
 
 y_pos <- max(df_wide[[C_comp]]) * 0.95
 
+# Optional: make axes symmetric around 0 for a nicer visual
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+# max_val <- max(abs(c(x_limits, y_limits)))
+
+# Plot
 ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
@@ -978,6 +993,8 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
     hjust = 1,
     vjust = 1
   ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
   theme_bw() +
   labs(
     x = H_comp,
@@ -987,7 +1004,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 
 ```
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_30_15}
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
 H_comp <- "H30_H15"
 C_comp <- "C30_C15"
 
@@ -1019,6 +1035,12 @@ x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
 
 y_pos <- max(df_wide[[C_comp]]) * 0.95
 
+# Optional: make axes symmetric around 0 for a nicer visual
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+# max_val <- max(abs(c(x_limits, y_limits)))
+
+# Plot
 ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
@@ -1035,18 +1057,19 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
     hjust = 1,
     vjust = 1
   ) +
+  xlim(x_limits) +
+  ylim(y_limits) +
   theme_bw() +
   labs(
     x = H_comp,
     y = C_comp,
     title = paste0(H_comp, " vs ", C_comp)
   )
-
 ```
 
 ```{r RNASeq_DGE_FC_CormotifClusters}
-clust_names_list <- readRDS("data/Cormotif/Trajectory/clust_genes,RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
+clust_names_list <- readRDS("data/Cormotif/Trajectory/concat/clust_genes,RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Trajectory/concat/TopTable_RNA_all.RDS")
 
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
 cluster_names <- c(

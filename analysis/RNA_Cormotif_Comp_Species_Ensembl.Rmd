@@ -33,22 +33,37 @@ library("gprofiler2")
 
 # BiocManager::install("SummarizedExperiment")
 
-RNA_fc_df <- readRDS("data/Raw_Data/RNA_fc_df.RDS")
-RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
-ann_colors <- readRDS("data/QC/ann_colors.RDS")
-RNA_Metadata_No4 <- readRDS("data/QC/RNA_Metatdata_No4.RDS")
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
-Filt_RMG0_RNA_fc_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_fc_NoD4_NoRep.RDS")
-Filt_RMG0_RNA_log2cpm_NoD4_NoRep <- readRDS("data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep.RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
+RNA_fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
-clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
-clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
-clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
-clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+RNA_log2cpm <- readRDS("data/QC/concat/RNA_log2cpm.RDS")
+
+Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm_RMG0.RDS")
+
+Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
+ann_colors <- readRDS("data/QC/concat/ann_colors.RDS")
+
+RNA_Metadata_No4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+
+Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
+Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
+RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.RDS")
+
+
+ann_colors <- readRDS("data/QC/ann_colors.RDS")
+ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
+chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
+
+# clust1_RNA <- readRDS("data/Cormotif/Species/clust1_RNA_Species.RDS")
+# clust2_RNA <- readRDS("data/Cormotif/Species/clust2_RNA_Species.RDS")
+# clust3_RNA <- readRDS("data/Cormotif/Species/clust3_RNA_Species.RDS")
+# clust4_RNA <- readRDS("data/Cormotif/Species/clust4_RNA_Species.RDS")
 ```
 
 ```{r Cormotif Function, message=FALSE, warning=FALSE,include=FALSE}
@@ -1066,13 +1081,13 @@ Filt_RMG0_RNA_log2cpm_NoD4_NoRep <- Filt_RMG0_RNA_log2cpm_NoD4 %>%
 RNA_Metadata_NoD4_NoRep <- RNA_Metadata_No4 %>%
   dplyr::filter(!grepl("R", Individual))
 
-# saveRDS(Filt_RMG0_RNA_log2cpm_NoD4_NoRep,"data/Cormotif/Filt_RMG0_RNA_log2cpm_NoD4_NoRep.RDS")
-# saveRDS(RNA_Metadata_NoD4_NoRep,"data/Cormotif/RNA_Metadata_NoD4_NoRep.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_NoD4_NoRep,"data/Cormotif/concat/Filt_RMG0_RNA_log2cpm_NoD4_NoRep.RDS")
+# saveRDS(RNA_Metadata_NoD4_NoRep,"data/Cormotif/concat/RNA_Metadata_NoD4_NoRep.RDS")
 ```
 
 
 ```{r RNA-Seq_CorMotif_Species_Modeling}
-groupid <- c(rep(1:5,7),rep(6:10,7))
+groupid <- c(rep(1:10,7))
 compid_Cond1 <- c(1,2,3,4,5)
 compid_Cond2 <- c(6,7,8,9,10)
 compid <- cbind(compid_Cond1,compid_Cond2)
@@ -1083,27 +1098,38 @@ compid <- cbind(compid_Cond1,compid_Cond2)
 # motif.fitted<-cormotiffit(exprs = Filt_RMG0_RNA_log2cpm_NoD4_NoRep,
 #                           groupid = groupid,
 #                           compid = compid,
-#                           K=1:10,
+#                           K=1:15,
 #                           max.iter = 3000,
 #                           runtype = "logCPM")
 # 
 # 
-# saveRDS(motif.fitted,"data/Cormotif/Species/cormotif_RNA_seed8_k1_10_HC_Day_emmaCode.RDS")
+# saveRDS(motif.fitted,"data/Cormotif/Species/cormotif_RNA_seed8_k1_15_HC_Day_emmaCode.RDS")
 
-motif.fitted <- readRDS("data/Cormotif/Species/cormotif_RNA_seed8_k1_10_HC_Day_emmaCode.RDS")
+motif.fitted <- readRDS("data/Cormotif/Species/cormotif_RNA_seed8_k1_15_HC_Day_emmaCode.RDS")
 plotIC(motif.fitted)
 motif.fitted$bic
 plotMotif(motif.fitted)
+cols <- gray(seq(1, 0, length.out = 6))
+
+legend(
+  "topright",
+  legend = seq(0, 1, length.out = 6),
+  fill = cols,
+  border = "black",
+  title = "Posterior probability")
+
+print(motif.fitted$bestmotif$p.post)
 
 #  Studies Human Day0 - 1. HDay2, 2. HDay5, 3. HDay15, 4. HDay30
 #          Chimp Day0 - 5. CDay2, 6. CDay5, 7. CDay15, 8. CDay30
 ```
 
 
+
 ```{r RNA-Seq_CorMotif_Species_Plotting,fig.height=5,fig.width=9}
 
 # Set up Variables
-groupid <- c(rep(1:5,7),rep(6:10,7))
+groupid <- c(rep(1:10,7))
 compid_Cond1 <- c(1,2,3,4,5)
 compid_Cond2 <- c(6,7,8,9,10)
 compid <- cbind(compid_Cond1,compid_Cond2)
@@ -1204,12 +1230,6 @@ gene_prob_ppost %>%
   xlim(0,1)+
   ggtitle("Cormtif p.post RNA V4")
 
-gene_prob_ppost %>%
-  as.data.frame() %>%
-  ggplot(., aes(x = V5))+
-  geom_histogram(bins = 50)+
-  xlim(0,1)+
-  ggtitle("Cormtif p.post RNA V5")
 
 
 ```
@@ -1227,7 +1247,7 @@ rownames(motif_prob) <- rownames(gene_prob_ppost)
 clust1_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 > 0.5 & V2 <  0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
+  filter(V1 > 0.59 & V2 <  0.5 & V3 < 0.5 & V4 < 0.5)  %>%
   rownames()
 print("clust1_RNA")
 length(clust1_RNA)
@@ -1235,7 +1255,7 @@ length(clust1_RNA)
 clust2_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 < 0.5 & V2 > 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
+  filter(V1 < 0.5 & V2 > 0.5 & V3 < 0.5 & V4 < 0.5)  %>%
   rownames()
 print("clust2_RNA")
 length(clust2_RNA)
@@ -1243,7 +1263,7 @@ length(clust2_RNA)
 clust3_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 < 0.5 & V2 < 0.5 & V3 > 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
+  filter(V1 < 0.5 & V2 < 0.5 & V3 > 0.5 & V4 < 0.5)  %>%
   rownames()
 print("clust3_RNA")
 length(clust3_RNA)
@@ -1251,18 +1271,10 @@ length(clust3_RNA)
 clust4_RNA <-
   motif_prob %>%
   as.data.frame() %>%
-  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 > 0.5 & V5 < 0.5) %>%
+  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 > 0.5)%>%
   rownames()
 print("clust4_RNA")
 length(clust4_RNA)
-
-clust5_RNA <-
-  motif_prob %>%
-  as.data.frame() %>%
-  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 > 0.5) %>%
-  rownames()
-print("clust5_RNA")
-length(clust5_RNA)
 
 ```
 
@@ -1272,11 +1284,10 @@ clust_names_list <- list(
   clust1_RNA,
   clust2_RNA,
   clust3_RNA,
-  clust4_RNA,
-  clust5_RNA
+  clust4_RNA
 )
 
-names(clust_names_list) <- paste0("clust", 1:5)
+names(clust_names_list) <- paste0("clust", 1:4)
 
 print(overlap_matirx <- check_overlap(clust_names_list))
 
@@ -1293,8 +1304,7 @@ cluster_lists <- list(
   clust1_RNA  = clust1_RNA,
   clust2_RNA  = clust2_RNA,
   clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA,
-  clust5_RNA = clust5_RNA
+  clust4_RNA  = clust4_RNA
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {

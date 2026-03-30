@@ -36,20 +36,20 @@ library("ggplot2")
 library("tidyr")
 
 #Loading R Objects Other WorkflowR
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
-RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+RNA_Metadata_NoD4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
 
 #Loading R Objects Generated in this WorkflowR
-dge <- readRDS("data/DGE/Species/RNA_dge_matrix.RDS")
-fit2 <- readRDS("data/DGE/Species/fit2.RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
-Comparisons_names <- readRDS("data/DGE/Species/Comparisons_names_Trajectory.RDS")
-all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
-deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
-RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
-RNA_sets_0.1 <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
-all_intersections <- readRDS("data/DGE/Species/all_intersections.RDS")
+# dge <- readRDS("data/DGE/Species/RNA_dge_matrix.RDS")
+# fit2 <- readRDS("data/DGE/Species/fit2.RDS")
+# TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
+# Comparisons_names <- readRDS("data/DGE/Species/Comparisons_names_Trajectory.RDS")
+# all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
+# deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
+# RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+# RNA_sets_0.1 <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+# all_intersections <- readRDS("data/DGE/Species/all_intersections.RDS")
 
 ```
 
@@ -276,26 +276,24 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 
 ```{r RNASeq_DGE_Species_Data}
 
-Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>% 
+RNA_Metadata_NoD4_NoRep <- RNA_Metadata_NoD4 %>%
+  filter(!grepl("R$",Individual))
+
+Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>%
   dplyr::select(-(contains("R")))
 
-RNA_Metadata_NoD4_NoRep <- RNA_Metadata %>% 
-  dplyr::filter(Timepoint != "Day4") %>% 
-  dplyr::slice(-43:-46)
-rownames(RNA_Metadata_NoD4_NoRep) <- colnames(Filt_RMG0_RNA_fc_NoD4_NoRep)
-# saveRDS(RNA_Metadata_NoD4_NoRep,"data/DGE/Species/RNA_Metadata_NoD4_NoRep.RDS")
+RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
 
-RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30"),7),
-                                     rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
 #create DGEList object
 dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep)
 dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
 dge <- calcNormFactors(dge, method = "TMM")
 dge$samples
 
-#dim(dge)
-# saveRDS(dge, "data/DGE/Species/RNA_dge_matrix.RDS")
-#dge$samples
+# dim(dge)
+# saveRDS(dge, "data/DGE/Species/concat/RNA_dge_matrix.RDS")
+# dge$samples
+
 
 
 ```
@@ -447,8 +445,8 @@ for (name in names(DEG_Lists)) {
 #first factor the timepoints so that they are in the right order
 df <- data.frame(
   Day = c("Day0", "Day2", "Day5", "Day15", "Day30"),
-  DEGs = c(6569, 4094, 4145, 5070, 5990),
-  Non_DEGs = c(8269, 10744, 10684, 9768, 8848)
+  DEGs = c(5981,3620,3690,4518,5494),
+  Non_DEGs = c(8103,10464,10394,9566,8590)
 )
 
 # Convert to long format for ggplot
@@ -568,8 +566,7 @@ ggplot(df_long, aes(x = Day, y = Proportion, fill = Type)) +
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_FC}
 
 Gene_list <- list(
-  All_genes  = all_genes,
-  DEGs = deg_genes
+  All_genes  = all_genes
 )
 
 cluster_plots <- lapply(names(Gene_list), function(clust_name) {
@@ -591,14 +588,13 @@ for (comp in Comparisons_names) {
 ```
 
 ```{r RNASeq_DGE_Species_TopTable_Subsetting_AbsFC}
-all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
-deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
+# all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
+# deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
 
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
 
 Gene_list <- list(
-  All_genes  = all_genes,
-  DEGs = deg_genes
+  All_genes  = all_genes
 )
 
 cluster_plots <- lapply(names(Gene_list), function(clust_name) {

@@ -39,19 +39,18 @@ library("tidyr")
 
 
 #Loading R Objects Other WorkflowR
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/Filt_RMG0_RNA_fc_NoD4.RDS")
-RNA_Metadata <- readRDS("data/Raw_Data/RNA_Metadata.RDS")
-RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/RNA_Metadata_NoD4_NoRep.RDS")
-chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
+Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+RNA_Metadata_NoD4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
 
 #Loading R Objects from this WorflowR
-dge <- readRDS("data/DGE/Trajectory/RNA_dge_matrix.RDS")
-fit2 <- readRDS("data/DGE/Trajectory/fit2.RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
-Comparisons_names <- readRDS("data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
-RNA_sets <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_05.RDS")
-RNA_sets0.1 <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_0.1.RDS")
-all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
+# dge <- readRDS("data/DGE/Trajectory/RNA_dge_matrix.RDS")
+# fit2 <- readRDS("data/DGE/Trajectory/fit2.RDS")
+# TopTable_RNA_All <- readRDS("data/DGE/Trajectory/TopTable_RNA_all.RDS")
+# Comparisons_names <- readRDS("data/DGE/Trajectory/Comparisons_names_Trajectory.RDS")
+# RNA_sets <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_05.RDS")
+# RNA_sets0.1 <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_0.1.RDS")
+# all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
 
 ```
 
@@ -278,10 +277,13 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 
 
 ```{r RNASeq_DGE_Trajectory_Data}
+RNA_Metadata_NoD4_NoRep <- RNA_Metadata_NoD4 %>%
+  filter(!grepl("R$",Individual))
+
 Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>%
   dplyr::select(-(contains("R")))
 
-RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30"),7), rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
 
 #create DGEList object
 dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep)
@@ -289,14 +291,9 @@ dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
 dge <- calcNormFactors(dge, method = "TMM")
 dge$samples
 
-# keep <- filterByExpr(dge, design = design_int)
-# dge_keep <- dge[keep, , keep.lib.sizes=FALSE]
-# 
-# nrow(Filt_RMG0_RNA_fc_NoD4_NoRep)
-# sum(filterByExpr(dge, design_int))
-#dim(dge)
-# saveRDS(dge, "data/DGE/Trajectory/RNA_dge_matrix.RDS")
-#dge$samples
+# dim(dge)
+# saveRDS(dge, "data/DGE/Species/concat/RNA_dge_matrix.RDS")
+# dge$samples
 
 ```
 
@@ -414,6 +411,101 @@ TopTable_RNA_All <- do.call(
 TopTable_RNA_All$Comparisons
 # saveRDS(TopTable_RNA_All,"data/DGE/Trajectory/TopTable_RNA_all.RDS")
 head(TopTable_RNA_All)
+```
+
+```{r RNASeq_MarkerGenes_dataset, fig.height=6,fig.width=12}
+
+tt <- TopTable_RNA_All
+genes <- marker_genes$Ensembl.ID
+
+tt_markergenes <- tt %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% genes)
+
+```
+
+```{r RNASeq_MarkerGenes_graph, fig.height=6,fig.width=12}
+
+stages <- unique(summary_df$Stage)
+
+plot_list <- lapply(stages, function(s) {
+  
+  ggplot(
+    summary_df %>% filter(Stage == s),
+    aes(x = Timepoint, y = Mean,
+        linetype = Species,
+        group = Species)
+  ) +
+    
+    # raw points
+    geom_point(
+      data = log2cpm_long %>% filter(Stage == s),
+      aes(
+        x = Timepoint,
+        y = log2CPM,
+        color = Individual,
+        shape = Species
+      ),
+      size = 2,
+      alpha = 0.7,
+      position = position_jitter(width = 0.08)
+    ) +
+    
+    # summary line
+    geom_line(color = "black", linewidth = 0.7) +
+    
+    geom_point(color = "black", size = 2) +
+    
+    geom_errorbar(
+      aes(ymin = Mean - SD, ymax = Mean + SD),
+      width = 0.2,
+      color = "black"
+    ) +
+    
+    # 🔥 YOUR ORIGINAL COLOR SCHEME
+    scale_color_manual(
+      values = ann_colors$individual_cor,
+      name = "Individual"
+    ) +
+    
+    scale_shape_manual(
+      values = c(
+        "H" = 17,
+        "C" = 16
+      ),
+      name = "Species"
+    ) +
+    
+    scale_linetype_manual(
+      values = c(
+        "H" = "solid",
+        "C" = "dashed"
+      ),
+      name = "Species"
+    ) +
+    
+    labs(
+      title = paste("Stage:", s),
+      x = "Timepoint",
+      y = "log2 CPM"
+    ) +
+    
+    theme_minimal(base_size = 14) +
+    theme(
+      legend.position = "top",
+      axis.text.x = element_text(angle = 0, hjust = 0.5)
+    )
+})
+
+names(plot_list) <- stages
+
+plot_list[["Pluripotency"]]
+plot_list[["Mesoderm"]]
+plot_list[["CardiacMesoderm"]]
+plot_list[["CardiacProgenitors"]]
+plot_list[["EarlyCardiomyocytes"]]
+plot_list[["MatureCardiomyocytes"]]
+
 ```
 
 
@@ -1067,3 +1159,4 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
     title = paste0(H_comp, " vs ", C_comp)
   )
 ```
+

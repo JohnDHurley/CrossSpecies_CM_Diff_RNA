@@ -127,7 +127,7 @@ rownames(RNA_fc) <- rn
 # saveRDS(marker_genes,"data/Raw_Data/concat/marker_genes.RDS")
 ```
 
-```{r}
+```{r RNASeq_Statistics_data}
 total_reads_df <- RNA_fc %>%
   as.data.frame() %>%
   mutate(Gene = rownames(.)) %>%
@@ -155,7 +155,7 @@ total_reads_df <- total_reads_df %>%
   mutate(Sample = factor(Sample, levels = Sample))
 ```
 
-```{r , fig.height=6,fig.width=12}
+```{r RNASeq_perSample_graph, fig.height=6,fig.width=12}
 library(ggplot2)
 
 ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
@@ -235,7 +235,7 @@ ggplot(total_reads_df, aes(x = Sample, y = Usable_Fragments, fill = Timepoint)) 
   )
 
 ```
-```{r , fig.height=6,fig.width=12}
+```{r RNASeq_perSpecies_graph, fig.height=6,fig.width=12}
 ggplot(total_reads_df, aes(x = Species, y = Total_Reads)) +
   geom_boxplot(fill = "#CCCCCC", alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
@@ -290,7 +290,7 @@ ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
   
 ```
 
-```{r , fig.height=6,fig.width=12}
+```{r RNASeq_perDaybySpecies_graph, fig.height=6,fig.width=12}
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
@@ -361,7 +361,7 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
   )
 ```
 
-```{r , fig.height=6,fig.width=12}
+```{r RNASeq_perIndividualbySpecies_graph, fig.height=6,fig.width=12}
 ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
@@ -620,7 +620,7 @@ summary_df_No4 <- df_long_No4 %>%
 ```
 
 
-```{r RNASeq_Purities_graph_No4, fig.height=6,fig.width=12}
+```{r RNASeq_Purities_graph_No4_graph, fig.height=6,fig.width=12}
 # -----------------------------
 # 3. Plot lines over time with SEM error bars
 # -----------------------------
@@ -759,7 +759,7 @@ summary_df_No5 <- df_long_No5 %>%
   )
 ```
 
-```{r RNASeq_Purities_graph_No5, fig.height=6,fig.width=12}
+```{r RNASeq_Purities_graph_No5_graph, fig.height=6,fig.width=12}
 # -----------------------------
 # 3. Plot lines over time with SEM error bars
 # -----------------------------
@@ -893,7 +893,7 @@ axis(1,
 
 ```
 
-```{r, fig.height=6,fig.width=12}
+```{r RNASeq_Counts_graph, fig.height=6,fig.width=12}
 library(ggplot2)
 library(dplyr)
 
@@ -1040,7 +1040,7 @@ ggplot(total_reads_df, aes(x = Individual, y = Total_Counts)) +
   )
 ```
 
-```{r}
+```{r RNASeq_TotalReads_dataset}
 library(tidyverse)
 
 total_reads_df <- RNA_fc %>%
@@ -1056,7 +1056,7 @@ total_reads_df <- RNA_fc %>%
   left_join(RNA_Metadata, by = c("Sample" = "SampleName"))
 ```
 
-```{r, fig.height=6,fig.width=12}
+```{r RNASeq_TotalReads_graph, fig.height=6,fig.width=12}
 library(ggplot2)
 library(dplyr)
 

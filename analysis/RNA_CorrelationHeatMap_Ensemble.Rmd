@@ -65,6 +65,10 @@ Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.RDS")
 
+RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
+Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+
 Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
 Cor_Filt_RMG0_RNA_log2cpm_NoD5 <-readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")

@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree5535f1d2b858ef6d7da6fd60bc4b789d00c8d384targetblank5535f1da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreed95f3cc98920e4bd6a0767a1b390e1ccd214900etargetblankd95f3cca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/5535f1d2b858ef6d7da6fd60bc4b789d00c8d384" target="_blank">5535f1d</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/d95f3cc98920e4bd6a0767a1b390e1ccd214900e" target="_blank">d95f3cc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree5535f1d2b858ef6d7da6fd60bc4b789d00c8d384targetblank5535f1da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreed95f3cc98920e4bd6a0767a1b390e1ccd214900etargetblankd95f3cca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/5535f1d2b858ef6d7da6fd60bc4b789d00c8d384" target="_blank">5535f1d</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/d95f3cc98920e4bd6a0767a1b390e1ccd214900e" target="_blank">d95f3cc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -554,8 +554,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/
+
+Unstaged changes:
+    Modified:   analysis/RNA_PCA_Ensemble.Rmd
 
 </code></pre>
 <p>
@@ -601,6 +603,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/d95f3cc98920e4bd6a0767a1b390e1ccd214900e/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">d95f3cc</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+<td>
+added R Objects for No Day5
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/0c9c163c97731969fd775772d1493c9c61875bc7/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1012,6 +1048,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSample_graph-1">
+Past versions of RNASeq_perSample_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_perSample_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Sample, y = Mapped_Reads, fill = Timepoint)) +
   geom_col() +
   geom_text(aes(label = Individual, color = Individual), 
@@ -1031,6 +1104,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSample_graph-2">
+Past versions of RNASeq_perSample_graph-2.png
+</button>
+</p>
+<div id="fig-RNASeq_perSample_graph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-2.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Sample, y = Percent_Mapped, fill = Timepoint)) +
   geom_col() +
   geom_text(aes(label = Individual, color = Individual), 
@@ -1050,6 +1160,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSample_graph-3">
+Past versions of RNASeq_perSample_graph-3.png
+</button>
+</p>
+<div id="fig-RNASeq_perSample_graph-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-3.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Sample, y = Usable_Fragments, fill = Timepoint)) +
   geom_col() +
   geom_text(aes(label = Individual, color = Individual), 
@@ -1069,6 +1216,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSample_graph-4">
+Past versions of RNASeq_perSample_graph-4.png
+</button>
+</p>
+<div id="fig-RNASeq_perSample_graph-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-4.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Total_Reads)) +
   geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
@@ -1082,6 +1266,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSpecies_graph-1">
+Past versions of RNASeq_perSpecies_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_perSpecies_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Mapped_Reads)) +
   geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
@@ -1095,6 +1316,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSpecies_graph-2">
+Past versions of RNASeq_perSpecies_graph-2.png
+</button>
+</p>
+<div id="fig-RNASeq_perSpecies_graph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-2.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Percent_Mapped)) +
   geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
@@ -1108,6 +1366,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSpecies_graph-3">
+Past versions of RNASeq_perSpecies_graph-3.png
+</button>
+</p>
+<div id="fig-RNASeq_perSpecies_graph-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-3.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
   geom_boxplot(fill = &quot;#CCCCCC&quot;, alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
@@ -1121,6 +1416,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perSpecies_graph-4">
+Past versions of RNASeq_perSpecies_graph-4.png
+</button>
+</p>
+<div id="fig-RNASeq_perSpecies_graph-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-4.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
@@ -1138,6 +1470,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perDaybySpecies_graph-1">
+Past versions of RNASeq_perDaybySpecies_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_perDaybySpecies_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
@@ -1155,6 +1524,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perDaybySpecies_graph-2">
+Past versions of RNASeq_perDaybySpecies_graph-2.png
+</button>
+</p>
+<div id="fig-RNASeq_perDaybySpecies_graph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-2.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
@@ -1172,6 +1578,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perDaybySpecies_graph-3">
+Past versions of RNASeq_perDaybySpecies_graph-3.png
+</button>
+</p>
+<div id="fig-RNASeq_perDaybySpecies_graph-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-3.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
@@ -1189,6 +1632,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Individual&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perDaybySpecies_graph-4">
+Past versions of RNASeq_perDaybySpecies_graph-4.png
+</button>
+</p>
+<div id="fig-RNASeq_perDaybySpecies_graph-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-4.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
@@ -1206,6 +1686,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perIndividualbySpecies_graph-1">
+Past versions of RNASeq_perIndividualbySpecies_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_perIndividualbySpecies_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
@@ -1223,6 +1740,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perIndividualbySpecies_graph-2">
+Past versions of RNASeq_perIndividualbySpecies_graph-2.png
+</button>
+</p>
+<div id="fig-RNASeq_perIndividualbySpecies_graph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-2.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
@@ -1240,6 +1794,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perIndividualbySpecies_graph-3">
+Past versions of RNASeq_perIndividualbySpecies_graph-3.png
+</button>
+</p>
+<div id="fig-RNASeq_perIndividualbySpecies_graph-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-3.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
   geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
@@ -1257,6 +1848,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
     color = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_perIndividualbySpecies_graph-4">
+Past versions of RNASeq_perIndividualbySpecies_graph-4.png
+</button>
+</p>
+<div id="fig-RNASeq_perIndividualbySpecies_graph-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-4.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -1572,6 +2200,43 @@ ggplot(summary_df_No4,
     plot.caption = element_text(hjust = 0, face = &quot;italic&quot;, size = 10)
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph_No4_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Purities_graph_No4_graph-1">
+Past versions of RNASeq_Purities_graph_No4_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Purities_graph_No4_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph_No4_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -1706,6 +2371,43 @@ ggplot(summary_df_No5,
     plot.caption = element_text(hjust = 0, face = &quot;italic&quot;, size = 10)
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph_No5_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Purities_graph_No5_graph-1">
+Past versions of RNASeq_Purities_graph_No5_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Purities_graph_No5_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph_No5_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####Unfiltered####
 RNA_log2cpm &lt;- cpm(RNA_fc, log = TRUE)
 
@@ -2053,6 +2755,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Counts, fill = Timepoint)) +
     fill = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Counts_graph-1">
+Past versions of RNASeq_Counts_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Counts_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Total_Counts)) +
   
   # Boxplot for each species
@@ -2080,6 +2819,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Counts, fill = Timepoint)) +
     fill = &quot;Species&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Counts_graph-2">
+Past versions of RNASeq_Counts_graph-2.png
+</button>
+</p>
+<div id="fig-RNASeq_Counts_graph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-2.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Total_Counts)) +
   
   # Boxplot per day
@@ -2111,6 +2887,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Counts, fill = Timepoint)) +
     fill = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Counts_graph-3">
+Past versions of RNASeq_Counts_graph-3.png
+</button>
+</p>
+<div id="fig-RNASeq_Counts_graph-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-3.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Plot
 ggplot(total_reads_df, aes(x = Individual, y = Total_Counts)) +
   
@@ -2142,6 +2955,43 @@ ggplot(total_reads_df, aes(x = Individual, y = Total_Counts)) +
     color = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Counts_graph-4">
+Past versions of RNASeq_Counts_graph-4.png
+</button>
+</p>
+<div id="fig-RNASeq_Counts_graph-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Counts_graph-4.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>library(tidyverse)
 
 total_reads_df &lt;- RNA_fc %&gt;%
@@ -2209,6 +3059,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads.x, fill = Timepoint)) +
     fill = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_TotalReads_graph-1">
+Past versions of RNASeq_TotalReads_graph-1.png
+</button>
+</p>
+<div id="fig-RNASeq_TotalReads_graph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Species, y = Total_Reads.x)) +
   
   # Boxplot for each species
@@ -2236,6 +3123,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads.x, fill = Timepoint)) +
     fill = &quot;Species&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-2.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_TotalReads_graph-2">
+Past versions of RNASeq_TotalReads_graph-2.png
+</button>
+</p>
+<div id="fig-RNASeq_TotalReads_graph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-2.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads.x)) +
   
   # Boxplot per day
@@ -2267,6 +3191,43 @@ ggplot(total_reads_df, aes(x = Sample, y = Total_Reads.x, fill = Timepoint)) +
     fill = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-3.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_TotalReads_graph-3">
+Past versions of RNASeq_TotalReads_graph-3.png
+</button>
+</p>
+<div id="fig-RNASeq_TotalReads_graph-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-3.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Plot
 ggplot(total_reads_df, aes(x = Individual, y = Total_Reads.x)) +
   
@@ -2298,6 +3259,43 @@ ggplot(total_reads_df, aes(x = Individual, y = Total_Reads.x)) +
     color = &quot;Timepoint&quot;
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-4.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_TotalReads_graph-4">
+Past versions of RNASeq_TotalReads_graph-4.png
+</button>
+</p>
+<div id="fig-RNASeq_TotalReads_graph-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_TotalReads_graph-4.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm &lt;- cor(Filt_RMG0_RNA_log2cpm, method = &quot;spearman&quot;)
 individual &lt;- RNA_Metadata$Individual
@@ -2382,6 +3380,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_HeatMap_RMG0-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/09582017855914f998d7df7b161a4a8314fdb1e5/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_HeatMap_RMG0-1.png" target="_blank">0958201</a>
@@ -2500,6 +3509,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/09582017855914f998d7df7b161a4a8314fdb1e5/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No4-1.png" target="_blank">0958201</a>
 </td>
 <td>
@@ -2592,6 +3612,43 @@ ann_colors_No5$timepoint_cor &lt;- ann_colors$timepoint_cor[
          main = &quot;Sample-Sample Correlation (Spearman) \n (log2CPM-RowMeans&gt;0-NoDay5)&quot;)
 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No5-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-rRNASeq_FeatureCounts_HeatMap_RMG0_No5-1">
+Past versions of rRNASeq_FeatureCounts_HeatMap_RMG0_No5-1.png
+</button>
+</p>
+<div id="fig-rRNASeq_FeatureCounts_HeatMap_RMG0_No5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/rRNASeq_FeatureCounts_HeatMap_RMG0_No5-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>markers &lt;- marker_genes$Ensembl.ID
 
 log2cpm_long &lt;- RNA_log2cpm %&gt;%
@@ -2712,6 +3769,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/9d3ae043895c7c0df5244d9758ed50e60fa6279e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph-1.png" target="_blank">9d3ae04</a>
 </td>
 <td>
@@ -2790,6 +3858,44 @@ ggplot(log2cpm_long_NoR, aes(
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated-1">
+Past versions of RNASeq_MarkerGenes_graph_species_separated-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pluri_genes &lt;- log2cpm_long_NoR %&gt;%
   filter(Stage == &quot;Pluripotency&quot;)
 
@@ -2842,6 +3948,44 @@ ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_pluri-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated_pluri-1">
+Past versions of RNASeq_MarkerGenes_graph_species_separated_pluri-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated_pluri-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_pluri-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>meso_genes &lt;- log2cpm_long_NoR %&gt;%
   filter(Stage == &quot;Mesoderm&quot;)
 
@@ -2894,6 +4038,44 @@ ggplot(meso_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_meso-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated_meso-1">
+Past versions of RNASeq_MarkerGenes_graph_species_separated_meso-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated_meso-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_meso-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>cardmeso_genes &lt;- log2cpm_long_NoR %&gt;%
   filter(Stage == &quot;CardiacMesoderm&quot;)
 
@@ -2946,6 +4128,45 @@ ggplot(cardmeso_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardmeso-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated_cardmeso-1">
+Past versions of
+RNASeq_MarkerGenes_graph_species_separated_cardmeso-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated_cardmeso-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardmeso-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>cardprog_genes &lt;- log2cpm_long_NoR %&gt;%
   filter(Stage == &quot;CardiacProgenitors&quot;)
 
@@ -2998,6 +4219,45 @@ ggplot(cardprog_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardprog-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated_cardprog-1">
+Past versions of
+RNASeq_MarkerGenes_graph_species_separated_cardprog-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated_cardprog-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardprog-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>cardearly_genes &lt;- log2cpm_long_NoR %&gt;%
   filter(Stage == &quot;EarlyCardiomyocytes&quot;)
 
@@ -3051,6 +4311,45 @@ ggplot(cardearly_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardearly-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated_cardearly-1">
+Past versions of
+RNASeq_MarkerGenes_graph_species_separated_cardearly-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated_cardearly-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardearly-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>cardlate_genes &lt;- log2cpm_long_NoR %&gt;%
   filter(Stage == &quot;MatureCardiomyocytes&quot;)
 
@@ -3103,6 +4402,45 @@ ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardlate-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_MarkerGenes_graph_species_separated_cardlate-1">
+Past versions of
+RNASeq_MarkerGenes_graph_species_separated_cardlate-1.png
+</button>
+</p>
+<div id="fig-RNASeq_MarkerGenes_graph_species_separated_cardlate-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/0c9c163c97731969fd775772d1493c9c61875bc7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph_species_separated_cardlate-1.png" target="_blank">0c9c163</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>counts_table_genes &lt;- unique(counts_table$Geneid)
 Expressed_Genes &lt;- unique(TopTable_RNA_All$Gene)
 marker_genes_ortho &lt;- marker_genes %&gt;% 

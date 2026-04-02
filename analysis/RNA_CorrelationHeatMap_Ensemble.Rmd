@@ -68,6 +68,8 @@ RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.
 Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
 Cor_Filt_RMG0_RNA_log2cpm_NoD5 <-readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")
+
+TopTable_RNA_All <- readRDS("data/DGE/Species/concat/TopTable_RNA_All.RDS")
 ```
 
 

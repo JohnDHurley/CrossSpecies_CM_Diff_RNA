@@ -1555,6 +1555,111 @@ ggplot(log2cpm_long_NoR, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_means, fig.height=6,fig.width=6}
+mean_df$Stage <- factor(
+  mean_df$Stage,
+  levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
+)
+
+levels(mean_df$Stage)
+mean_df$Stage
+
+ggplot(mean_df, aes(
+  x = Timepoint,
+  y = Stage,
+  fill = mean_log2CPM
+)) +
+  geom_tile(color = "white") +
+
+  facet_wrap(~ Species) +
+
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0
+  ) +
+
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_data, fig.height=6,fig.width=6}
+library(dplyr)
+library(tidyr)
+library(tibble)
+
+mat <- log2cpm_long_NoR %>%
+  dplyr::group_by(Gene, Sample) %>%
+  dplyr::summarise(log2CPM = mean(log2CPM, na.rm = TRUE), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = Sample, values_from = log2CPM) %>%
+  tibble::column_to_rownames("Gene") %>%
+  as.matrix()
+
+stage_order <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
+
+gene_annot <- log2cpm_long_NoR %>%
+  dplyr::select(Gene, Stage) %>%
+  distinct() %>%
+  dplyr::mutate(Stage = factor(Stage, levels = stage_order)) %>%
+  dplyr::arrange(Stage)
+
+mat <- mat[gene_annot$Gene, ]
+
+gene_annot <- data.frame(Stage = gene_annot$Stage)
+rownames(gene_annot) <- gene_annot$Gene
+
+tp_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+sample_annot <- log2cpm_long_NoR %>%
+  distinct(Sample, Timepoint, Species, Individual) %>%
+  mutate(Timepoint = trimws(Timepoint)) %>%
+  column_to_rownames("Sample")
+
+sample_annot <- sample_annot[colnames(mat), ]
+
+rownames(sample_annot) <- sample_annot$Sample
+sample_annot <- sample_annot[, c("Timepoint", "Species", "Individual")]
+
+annotation_colors = list(
+  Timepoint  = ann_colors$timepoint_cor,
+  Species    = ann_colors$species_cor,
+  Individual = ann_colors$individual_cor,
+
+  Stage = c(
+    Pluripotency = "#1f77b4",
+    Mesoderm = "#ff7f0e",
+    CardiacMesoderm = "yellow",
+    CardiacProgenitors = "#2ca02c",
+    EarlyCardiomyocytes = "#d62728",
+    MatureCardiomyocytes = "#9467bd"
+  )
+)
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph, fig.height=10,fig.width=10}
+pheatmap(
+  mat,
+  annotation_col = sample_annot,
+  annotation_row = gene_annot,
+  annotation_colors = annotation_colors,
+  cluster_rows = FALSE,
+  clustering_distance_cols = "correlation",
+  color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100)
+)
+```
+
+
 ```{r RNASeq_MarkerGenes_graph_species_separated_pluri, fig.height=12,fig.width=12}
 pluri_genes <- log2cpm_long_NoR %>%
   filter(Stage == "Pluripotency")
@@ -1879,6 +1984,8 @@ ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+
 
 ```{r RNASeq_MarkerGenes_graph_species_separated_checks, fig.height=12,fig.width=12}
 counts_table_genes <- unique(counts_table$Geneid)

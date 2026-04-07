@@ -59,14 +59,20 @@ Cor_metadata_No4 <- readRDS("data/QC/concat/Cor_metadata_No4.RDS")
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 
-# ann_colors_No4 <- readRDS("data/QC/concat/ann_colors_no4.RDS")
-# 
-# prcomp_RNA <- readRDS("data/QC/concat/prcomp_RNA.RDS")
-# prcomp_RNA_meta <- readRDS("data/QC/concat/prcomp_RNA_meta.RDS")
-# prcomp_Filt_RMG0_RNA <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA.RDS")
-# prcomp_Filt_RMG0_RNA_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_meta.RDS")
-# prcomp_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-# prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
+Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+
+Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
+Cor_Filt_RMG0_RNA_log2cpm_NoD5 <-readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")
+
+prcomp_RNA <- readRDS("data/QC/concat/prcomp_RNA.RDS")
+prcomp_RNA_meta <- readRDS("data/QC/concat/prcomp_RNA_meta.RDS")
+prcomp_Filt_RMG0_RNA <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA.RDS")
+prcomp_Filt_RMG0_RNA_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_meta.RDS")
+prcomp_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
 
 ```
 
@@ -180,6 +186,60 @@ Row Means > 0")
 
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+
+```
+```{r RNA_NoD4_RMG0_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta$Timepoint <- factor(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD4 ,
+                  data = prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+No Day 4
+Row Means > 0")
+
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+
+```
+
+```{r RNA_NoD5_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_RNA_log2cpm_NoD5 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD5), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta <- prcomp_Filt_RMG0_RNA_log2cpm_NoD5$x %>% cbind(., RNA_Metadata_No4)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta$Timepoint <- factor(prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_RNA_log2cpm_NoD5 ,
+                  data = prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+No Day 4
+Row Means > 0")
+
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD5,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+# saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta.RDS")
 
 ```
 

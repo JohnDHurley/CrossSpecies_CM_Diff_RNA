@@ -49,31 +49,31 @@ marker_genes <- readRDS("data/Raw_Data/concat/marker_genes.RDS")
 RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 RNA_log2cpm <- readRDS("data/QC/concat/RNA_log2cpm.RDS")
 
-Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
-Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm_RMG0.RDS")
-
-Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
-Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
+# Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+# Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm_RMG0.RDS")
+# 
+# Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+# Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
 ann_colors <- readRDS("data/QC/concat/ann_colors.RDS")
-
+# 
 RNA_Metadata_No4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
-Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
-
+# Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+# Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# 
 Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
-Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
+# Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.RDS")
 
 RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
-Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
-Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+# Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+# Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 
 Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
-Cor_Filt_RMG0_RNA_log2cpm_NoD5 <-readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+# Cor_Filt_RMG0_RNA_log2cpm_NoD5 <-readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")
 
-TopTable_RNA_All <- readRDS("data/DGE/Species/concat/TopTable_RNA_All.RDS")
+# TopTable_RNA_All <- readRDS("data/DGE/Species/concat/TopTable_RNA_All.RDS")
 ```
 
 
@@ -790,7 +790,6 @@ summary_df_No5 <- df_long_No5 %>%
     .groups = "drop"
   )
 
-t.test()
 ```
 
 ```{r RNASeq_Purities_graph_No5_graph, fig.height=6,fig.width=12}
@@ -899,16 +898,65 @@ axis(1,
 # saveRDS(RNA_log2cpm,"data/QC/concat/RNA_log2cpm.RDS")
 ```
 
-
+####PerDay-RowMeans####
 
 ```{r RNASeq_FeatureCounts_RMG0, fig.height=6,fig.width=12}
-#####RowMu>0####
-row_means <- rowMeans(RNA_log2cpm)
-Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
+RNA_log2cpm_df <- as.data.frame(RNA_log2cpm)
+RNA_log2cpm_Day0 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day0"))
 
+row_means <- rowMeans(RNA_log2cpm_Day0)
+Filt_RMG0_RNA_log2cpm_Day0 <- RNA_log2cpm_Day0[row_means >0,]
+
+RNA_log2cpm_Day2 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day2"))
+
+row_means <- rowMeans(RNA_log2cpm_Day2)
+Filt_RMG0_RNA_log2cpm_Day2 <- RNA_log2cpm_Day2[row_means >0,]
+
+RNA_log2cpm_Day4 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day4"))
+
+row_means <- rowMeans(RNA_log2cpm_Day4)
+Filt_RMG0_RNA_log2cpm_Day4 <- RNA_log2cpm_Day4[row_means >0,]
+
+RNA_log2cpm_Day5 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day5"))
+
+row_means <- rowMeans(RNA_log2cpm_Day5)
+Filt_RMG0_RNA_log2cpm_Day5 <- RNA_log2cpm_Day5[row_means >0,]
+
+RNA_log2cpm_Day15 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day15"))
+
+row_means <- rowMeans(RNA_log2cpm_Day15)
+Filt_RMG0_RNA_log2cpm_Day15 <- RNA_log2cpm_Day15[row_means >0,]
+
+RNA_log2cpm_Day30 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day30"))
+
+row_means <- rowMeans(RNA_log2cpm_Day30)
+Filt_RMG0_RNA_log2cpm_Day30 <- RNA_log2cpm_Day30[row_means >0,]
+
+g0   <- rownames(Filt_RMG0_RNA_log2cpm_Day0)
+g2   <- rownames(Filt_RMG0_RNA_log2cpm_Day2)
+g4   <- rownames(Filt_RMG0_RNA_log2cpm_Day4)
+g5   <- rownames(Filt_RMG0_RNA_log2cpm_Day5)
+g15  <- rownames(Filt_RMG0_RNA_log2cpm_Day15)
+g30  <- rownames(Filt_RMG0_RNA_log2cpm_Day30)
+
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+Filt_RMG0_RNA_fc_PerDay <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+  
 # saveRDS(Filt_RMG0_RNA_fc,"data/QC/concat/Filt_RMG0_RNA_fc.RDS")
 
-Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
+Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc_PerDay,log=TRUE)
 
 # saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 
@@ -916,6 +964,8 @@ hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans 
      xlab =expression("Log"[2]*" counts-per-million"), col =5 )
 
 ```
+
+
 
 ```{r RNASeq_FeatureCounts_Box_RMG0, fig.height=6,fig.width=12}
 boxplot(Filt_RMG0_RNA_log2cpm, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
@@ -1303,24 +1353,25 @@ print(
          annotation_colors = ann_colors,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation \n(Spearman-log2CPM-RowMeans>0)")
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM-RowMeans>0 Row PerDay)")
 )
 ```
 
 ```{r RNASeq_FeatureCounts_RMG0_No4}
 
 ####Subset####
-RNA_Metadata_No4 <- RNA_Metadata %>% 
- filter(Timepoint != "Day4")
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
 
-RNA_fc_NoD4 <- RNA_fc %>% 
-  dplyr::select(-ends_with("_Day4"))
+RNA_fc_No4 <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
 
-RNA_log2cpm_NoD4 <- cpm(RNA_fc_NoD4,log=TRUE)
-dim(RNA_log2cpm_NoD4)
-dim(RNA_fc)
-row_means_NoD4 <- rowMeans(RNA_log2cpm_NoD4)
-Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_NoD4[row_means_NoD4 >0,]
+Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_No4 %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids_No4) %>% 
+  column_to_rownames("Ensembl.ID")
+
 dim(Filt_RMG0_RNA_fc_NoD4)
 Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
 
@@ -1357,7 +1408,7 @@ print(
          annotation_colors = ann_colors_No4,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation (Spearman) \n (log2CPM-RowMeans>0-NoDay4)")
+         main = "Sample-Sample Correlation (Spearman) \n (log2CPM-RowMeans>0 PerDay-NoDay4)")
 )
 ```
 ```{r RNASeq_FeatureCounts_RMG0_No5}
@@ -1366,14 +1417,18 @@ print(
 RNA_Metadata_No5 <- RNA_Metadata %>% 
  filter(Timepoint != "Day5")
 
-RNA_fc_NoD5 <- RNA_fc %>% 
-  dplyr::select(-ends_with("_Day5"))
+RNA_fc_No5 <- RNA_fc %>% 
+  dplyr::select(-contains("Day5"))
 
-RNA_log2cpm_NoD5 <- cpm(RNA_fc_NoD5,log=TRUE)
-dim(RNA_log2cpm_NoD5)
-dim(RNA_fc)
-row_means_NoD5 <- rowMeans(RNA_log2cpm_NoD5)
-Filt_RMG0_RNA_fc_NoD5 <- RNA_fc_NoD5[row_means_NoD5 >0,]
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+Filt_RMG0_RNA_fc_NoD5 <- RNA_fc_No5 %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids_No5) %>% 
+  column_to_rownames("Ensembl.ID")
+
 dim(Filt_RMG0_RNA_fc_NoD5)
 Filt_RMG0_RNA_log2cpm_NoD5 <- cpm(Filt_RMG0_RNA_fc_NoD5,log=TRUE)
 
@@ -1584,7 +1639,7 @@ ggplot(log2cpm_long_NoR, aes(
 ```
 ```{r RNASeq_MarkerGenes_graph_species_separated_expressed, fig.height=12,fig.width=12}
 library(ggplot2)
-expressed_genes <- TopTable_RNA_All$Gene
+expressed_genes <- exp_ensembl_ids
 
 log2cpm_long_NoR_expressed <- log2cpm_long_NoR %>% 
   filter(Ensembl.ID %in% expressed_genes)
@@ -1923,6 +1978,8 @@ ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+
 ```{r RNASeq_MarkerGenes_graph_species_separated_meso, fig.height=12,fig.width=12}
 meso_genes <- log2cpm_long_NoR %>%
   filter(Stage == "Mesoderm")
@@ -2195,15 +2252,2000 @@ ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+####Half Species log2cpm >1.5 (Blake EndoPaper)####
+
+```{r RNASeq_FeatureCounts_log2cpm_G1.5_half, fig.height=6,fig.width=12}
+RNA_log2cpm_df <- as.data.frame(RNA_log2cpm)
+
+# log2cpm = your matrix/data frame (rows = genes, cols = samples)
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(RNA_log2cpm_df))
+C_samples <- grep("^C", colnames(RNA_log2cpm_df))
+
+# Number needed to pass (half of each group)
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(RNA_log2cpm_df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- RNA_log2cpm_df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+  
+# saveRDS(Filt_RMG0_RNA_fc,"data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+
+Filt_RMG0_RNA_log2cpm_BlakeEndo <- cpm(Filt_RMG0_RNA_fc_BlakeEndo,log=TRUE)
+
+# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
+
+hist(Filt_RMG0_RNA_log2cpm_BlakeEndo, main = "Histogram of filtered counts using Half of Human or Chimp have log2cpm>1.5 (Blake-Endo Paper)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+####PerDay-Species log2cpm >1.5 half samples####
+
+```{r RNASeq_FeatureCounts_RMG0, fig.height=6,fig.width=12}
+RNA_log2cpm_df <- as.data.frame(RNA_log2cpm)
+RNA_log2cpm_Day0 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day0"))
+
+
+#Day0
+df <- RNA_log2cpm_Day0
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(df))
+C_samples <- grep("^C", colnames(df))
+
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_Day0_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day0
+df <- RNA_log2cpm_Day2
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(df))
+C_samples <- grep("^C", colnames(df))
+
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_Day2_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day4
+df <- RNA_log2cpm_Day4
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(df))
+C_samples <- grep("^C", colnames(df))
+
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_Day4_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day5
+df <- RNA_log2cpm_Day5
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(df))
+C_samples <- grep("^C", colnames(df))
+
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_Day5_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day15
+df <- RNA_log2cpm_Day15
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(df))
+C_samples <- grep("^C", colnames(df))
+
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_Day15_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day30
+df <- RNA_log2cpm_Day30
+
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(df))
+C_samples <- grep("^C", colnames(df))
+
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_Day30_BlakeEndo <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+
+g0   <- rownames(Filt_RMG0_RNA_fc_Day0_BlakeEndo)
+g2   <- rownames(Filt_RMG0_RNA_fc_Day2_BlakeEndo)
+g4   <- rownames(Filt_RMG0_RNA_fc_Day4_BlakeEndo)
+g5   <- rownames(Filt_RMG0_RNA_fc_Day5_BlakeEndo)
+g15  <- rownames(Filt_RMG0_RNA_fc_Day15_BlakeEndo)
+g30  <- rownames(Filt_RMG0_RNA_fc_Day30_BlakeEndo)
+
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+Filt_RMG0_RNA_fc_BlakeEndo_PerDay <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay <- cpm(Filt_RMG0_RNA_fc_BlakeEndo_PerDay,log=TRUE)
+
+# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
+
+hist(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay, main = "Histogram of filtered counts using log2cpm >1.5 in half of a days samples regardless of species",
+     xlab =expression("Log"[2]*" counts-per-million PerDay-BlakeEndo"), col =5 )
+
+```
+
+
+```{r RNASeq_FeatureCounts_Box_RMG0, fig.height=6,fig.width=12}
+boxplot(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_names),  # positions (one per sample)
+     labels = col_names,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+```
+
+
+
+
+```{r RNASeq_FeatureCounts_Cor_RMG0}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay <- cor(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay, method = "spearman")
+individual <- RNA_Metadata$Individual
+species <- RNA_Metadata$Species
+timepoint <- RNA_Metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+ann_colors <- list(
+  timepoint_cor = c(
+    "Day0" = "#883268",   # Purple
+    "Day2" = "#3E7274",  # blue
+    "Day4" = "#5AAA464D",  # light green
+    "Day5" = "#94C47D",  # Green
+    "Day15" = "#C03830",  # red
+    "Day30" = "#830C05"  # dark red
+  ),
+  species_cor = c(
+    "H" = "black",  # black
+    "C" = "white"   # white
+  ),
+  individual_cor = c(
+    H1 = "#091638", #Blue-Green Darkest
+    H2 = "#11185B",
+    H3 = "#0F2C71",
+    H4 = "#0D568F",
+    H4R = "#0D568F",
+    H5 = "#1D8296",
+    H6 = "#46A389",
+    H7 = "#9DD484", #Blue-Green Lightest
+    C1 = "#340702", #Brown-Orange darkest
+    C2 = "#5D0B02",
+    C3 = "#951302",
+    C4 = "#D32804",
+    C5 = "#F74019",
+    C6 = "#FA7A38",
+    C7 = "#FCC598"
+    
+  )
+)
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay.RDS")
+# saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
+# saveRDS(ann_colors,"data/QC/concat/ann_colors.RDS")
+
+```
+
+```{r RNASeq_FeatureCounts_HeatMap_RMG0,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(log2cpm >1.5 half individuals per species per day)")
+)
+```
+
+```{r RNASeq_FeatureCounts_RMG0_No4}
+
+####Subset####
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+RNA_fc_No4 <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
+
+Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_No4 %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids_No4) %>% 
+  column_to_rownames("Ensembl.ID")
+
+dim(Filt_RMG0_RNA_fc_NoD4)
+Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
+
+# saveRDS(RNA_Metadata_No4,"data/QC/concat/RNA_Metatdata_No4.RDS")
+# saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4, "data/QC/concat/Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
+
+```
+
+```{r rRNASeq_FeatureCounts_Cor_RMG0_No4}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4, method = "spearman")
+
+Cor_metadata_No4 <- Cor_metadata %>% 
+  dplyr::filter(timepoint_cor !="Day4")
+
+ann_colors_No4 <- ann_colors
+ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
+  names(ann_colors$timepoint_cor) != "Day4"
+]
+
+# saveRDS(Cor_metadata_No4, "data/QC/concat/Cor_metadata_No4.RDS")
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
+# saveRDS(ann_colors_No4,"data/QC/concat/ann_colors_no4.RDS")
+```
+
+
+```{r rRNASeq_FeatureCounts_HeatMap_RMG0_No4,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD4,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata_No4[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors_No4,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Spearman) \n (log2cpm >1.5 half individuals per species per day-NoDay4)")
+)
+```
+```{r RNASeq_FeatureCounts_RMG0_No5}
+
+####Subset####
+RNA_Metadata_No5 <- RNA_Metadata %>% 
+ filter(Timepoint != "Day5")
+
+RNA_fc_No5 <- RNA_fc %>% 
+  dplyr::select(-contains("Day5"))
+
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+Filt_RMG0_RNA_fc_NoD5 <- RNA_fc_No5 %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids_No5) %>% 
+  column_to_rownames("Ensembl.ID")
+
+dim(Filt_RMG0_RNA_fc_NoD5)
+Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <- cpm(Filt_RMG0_RNA_fc_NoD5,log=TRUE)
+
+# saveRDS(RNA_Metadata_No5,"data/QC/concat/RNA_Metatdata_No5.RDS")
+# saveRDS(Filt_RMG0_RNA_fc_NoD5,"data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5, "data/QC/concat/Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5.RDS")
+
+```
+
+```{r rRNASeq_FeatureCounts_Cor_RMG0_No5}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <- cor(Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5, method = "spearman")
+
+Cor_metadata_No5 <- Cor_metadata %>% 
+  dplyr::filter(timepoint_cor !="Day5")
+
+ann_colors_No5 <- ann_colors
+ann_colors_No5$timepoint_cor <- ann_colors$timepoint_cor[
+  names(ann_colors$timepoint_cor) != "Day5"
+]
+
+# saveRDS(Cor_metadata_No5, "data/QC/concat/Cor_metadata_No5.RDS")
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5.RDS")
+# saveRDS(ann_colors_No5,"data/QC/concat/ann_colors_no5.RDS")
+```
+
+
+```{r rRNASeq_FeatureCounts_HeatMap_RMG0_No5,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_BlakeEndo_PerDay_NoD5,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata_No5[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors_No5,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Spearman) \n (log2cpm >1.5 half individuals per species per day-NoDay5)")
+)
+```
+
+
+```{r RNASeq_MarkerGenes_dataset, fig.height=6,fig.width=12}
+markers <- marker_genes$Ensembl.ID
+
+log2cpm_long <- RNA_log2cpm %>%
+  as.data.frame() %>%
+  rownames_to_column("Ensembl.ID") %>%
+  filter(Ensembl.ID %in% markers) %>% 
+  pivot_longer(
+    cols = -Ensembl.ID,
+    names_to = "Sample",
+    values_to = "log2CPM"
+  )
+
+log2cpm_long <- log2cpm_long %>%
+  left_join(RNA_Metadata, by = c("Sample" = "SampleName"))
+
+log2cpm_long <- log2cpm_long %>%
+  left_join(marker_genes, by = "Ensembl.ID")
+
+log2cpm_long$Timepoint <- factor(
+  log2cpm_long$Timepoint,
+  levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+)
+
+log2cpm_long_NoR <- log2cpm_long %>% 
+  filter(Individual != "H4R")
+
+library(dplyr)
+
+mean_df <- log2cpm_long_NoR %>%
+  group_by(Stage, Timepoint, Species) %>%
+  summarise(
+    mean_log2CPM = mean(log2CPM),
+    .groups = "drop"
+  )
+
+log2cpm_long_NoR$Stage <- factor(
+  log2cpm_long_NoR$Stage,
+  levels = c(
+    "Pluripotency",
+    "Mesoderm",
+    "CardiacMesoderm",
+    "CardiacProgenitors",
+    "EarlyCardiomyocytes",
+    "MatureCardiomyocytes"
+  )
+)
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_expressed, fig.height=12,fig.width=12}
+library(ggplot2)
+expressed_genes <- exp_ensembl_ids
+
+log2cpm_long_NoR_expressed <- log2cpm_long_NoR %>% 
+  filter(Ensembl.ID %in% expressed_genes)
+
+
+mean_df_expressed <- log2cpm_long_NoR_expressed %>%
+  group_by(Stage, Timepoint, Species) %>%
+  summarise(
+    mean_log2CPM = mean(log2CPM),
+    .groups = "drop"
+  )
+ 
+ggplot(log2cpm_long_NoR_expressed, aes(
+  x = Timepoint,
+  y = log2CPM
+)) +
+
+  geom_boxplot(
+  aes(fill = Species, group = interaction(Timepoint, Species)),
+  alpha = 0.3,
+  outlier.shape = NA,
+  position = position_dodge(width = 0.8)
+  ) +
+  
+    scale_fill_manual(values = ann_colors$species_cor) +
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    data = mean_df_expressed,
+    aes(
+      x = Timepoint,
+      y = mean_log2CPM,
+      group = interaction(Stage, Species),
+      linetype = Species
+    ),
+    color = "black",
+    linewidth = 1.2
+  ) +
+
+  geom_point(
+    data = mean_df,
+    aes(
+      x = Timepoint,
+      y = mean_log2CPM,
+      shape = Species
+    ),
+    color = "black",
+    size = 2
+  ) +
+
+  scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  scale_shape_manual(values = c(
+    C = 16,
+    H = 17
+  )) +
+
+  facet_wrap(~ factor(Stage, levels = levels(log2cpm_long_NoR_expressed$Stage))) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_means_expressed, fig.height=6,fig.width=6}
+mean_df_expressed <- log2cpm_long_NoR_expressed %>%
+  group_by(Stage, Timepoint, Species) %>%
+  summarise(
+    mean_log2CPM = mean(log2CPM),
+    .groups = "drop"
+  )
+
+mean_df_expressed$Stage <- factor(
+  mean_df_expressed$Stage,
+  levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
+)
+
+levels(mean_df_expressed$Stage)
+mean_df_expressed$Stage
+
+ggplot(mean_df_expressed, aes(
+  x = Timepoint,
+  y = Stage,
+  fill = mean_log2CPM
+)) +
+  geom_tile(color = "white") +
+
+  facet_wrap(~ Species) +
+
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0
+  ) +
+
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_data_expressed, fig.height=6,fig.width=6}
+library(dplyr)
+library(tidyr)
+library(tibble)
+
+mat_expressed <- log2cpm_long_NoR_expressed %>%
+  dplyr::group_by(Gene, Sample) %>%
+  dplyr::summarise(log2CPM = mean(log2CPM, na.rm = TRUE), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = Sample, values_from = log2CPM) %>%
+  tibble::column_to_rownames("Gene") %>%
+  as.matrix()
+
+stage_order <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
+
+gene_annot_expressed <- log2cpm_long_NoR_expressed %>%
+  dplyr::select(Gene, Stage) %>%
+  distinct() %>%
+  dplyr::mutate(Stage = factor(Stage, levels = stage_order)) %>%
+  dplyr::arrange(Stage)
+
+mat_expressed <- mat_expressed[gene_annot_expressed$Gene, ]
+
+gene_annot_expressed <- data.frame(Stage = gene_annot_expressed$Stage)
+rownames(gene_annot_expressed) <- gene_annot_expressed$Gene
+
+tp_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+sample_annot_expressed <- log2cpm_long_NoR_expressed %>%
+  distinct(Sample, Timepoint, Species, Individual) %>%
+  mutate(Timepoint = trimws(Timepoint)) %>%
+  column_to_rownames("Sample")
+
+sample_annot_expressed <- sample_annot_expressed[colnames(mat_expressed), ]
+
+rownames(sample_annot_expressed) <- sample_annot_expressed$Sample
+sample_annot_expressed <- sample_annot_expressed[, c("Timepoint", "Species", "Individual")]
+
+annotation_colors = list(
+  Timepoint  = ann_colors$timepoint_cor,
+  Species    = ann_colors$species_cor,
+  Individual = ann_colors$individual_cor,
+
+  Stage = c(
+    Pluripotency = "#1f77b4",
+    Mesoderm = "#ff7f0e",
+    CardiacMesoderm = "yellow",
+    CardiacProgenitors = "#2ca02c",
+    EarlyCardiomyocytes = "#d62728",
+    MatureCardiomyocytes = "#9467bd"
+  )
+)
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph, fig.height=10,fig.width=10}
+pheatmap(
+  mat_expressed,
+  annotation_col = sample_annot_expressed,
+  annotation_row = gene_annot_expressed,
+  annotation_colors = annotation_colors,
+  cluster_rows = FALSE,
+  clustering_distance_cols = "correlation",
+  color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100)
+)
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_separated_pluri, fig.height=12,fig.width=12}
+pluri_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "Pluripotency")
+
+ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+     geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 3,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_separated_meso, fig.height=12,fig.width=12}
+meso_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "Mesoderm")
+
+ggplot(meso_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+  
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardmeso, fig.height=12,fig.width=12}
+cardmeso_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "CardiacMesoderm")
+
+ggplot(cardmeso_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardprog, fig.height=12,fig.width=12}
+cardprog_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "CardiacProgenitors")
+
+ggplot(cardprog_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardearly, fig.height=12,fig.width=12}
+cardearly_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "EarlyCardiomyocytes")
+
+ggplot(cardearly_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardlate, fig.height=12,fig.width=12}
+cardlate_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "MatureCardiomyocytes")
+
+ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+
+  scale_fill_manual(values = ann_colors$species_cor) +
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+  
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+####Half All log2cpm >1.5 (Blake TissuePaper)####
+
+```{r RNASeq_FeatureCounts_log2cpm_G1.5_half, fig.height=6,fig.width=12}
+RNA_log2cpm_df <- as.data.frame(RNA_log2cpm)
+
+# log2cpm = your matrix/data frame (rows = genes, cols = samples)
+
+samples = colnames(RNA_log2cpm_df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(RNA_log2cpm_df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- RNA_log2cpm_df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_BlakeTissue <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+  
+# saveRDS(Filt_RMG0_RNA_fc,"data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+
+Filt_RMG0_RNA_log2cpm_BlakeTissue <- cpm(Filt_RMG0_RNA_fc_BlakeTissue,log=TRUE)
+
+# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
+
+hist(Filt_RMG0_RNA_log2cpm_BlakeTissue, main = "Histogram of filtered counts using Half of all samples have log2cpm>1.5   (Blake-Tissue Paper)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+####PerDay log2cpm >1.5 half samples####
+
+```{r RNASeq_FeatureCounts_RMG0, fig.height=6,fig.width=12}
+RNA_log2cpm_df <- as.data.frame(RNA_log2cpm)
+RNA_log2cpm_Day0 <- RNA_log2cpm_df %>% 
+  dplyr::select(contains("Day0"))
+
+
+#Day0
+df <- RNA_log2cpm_Day0
+
+samples = colnames(df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_BlakeTissue_Day0 <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day2
+df <- RNA_log2cpm_Day2
+
+samples = colnames(df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_BlakeTissue_Day2 <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day4
+df <- RNA_log2cpm_Day4
+
+samples = colnames(df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_BlakeTissue_Day4 <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day5
+df <- RNA_log2cpm_Day5
+
+samples = colnames(df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_RMG0_RNA_fc_BlakeTissue_Day5 <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day15
+df <- RNA_log2cpm_Day15
+
+samples = colnames(df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+
+Filt_RMG0_RNA_fc_BlakeTissue_Day15 <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+#Day30
+df <- RNA_log2cpm_Day30
+
+samples = colnames(df)
+
+min = length(samples)/2
+
+# Apply filtering
+keep <- apply(df, 1, function(x) {
+  sum(x[samples] > 1.5) >= min
+})
+
+# Subset data
+filtered_ids <- df[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+
+Filt_RMG0_RNA_fc_BlakeTissue_Day30 <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+
+g0   <- rownames(Filt_RMG0_RNA_fc_BlakeTissue_Day0)
+g2   <- rownames(Filt_RMG0_RNA_fc_BlakeTissue_Day2)
+g4   <- rownames(Filt_RMG0_RNA_fc_BlakeTissue_Day4)
+g5   <- rownames(Filt_RMG0_RNA_fc_BlakeTissue_Day5)
+g15  <- rownames(Filt_RMG0_RNA_fc_BlakeTissue_Day15)
+g30  <- rownames(Filt_RMG0_RNA_fc_BlakeTissue_Day30)
+
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+Filt_RMG0_RNA_fc_BlakeTissue_PerDay <- RNA_fc %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids) %>% 
+  column_to_rownames("Ensembl.ID")
+
+Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay <- cpm(Filt_RMG0_RNA_fc_BlakeTissue_PerDay,log=TRUE)
+
+# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
+
+hist(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay, main = "Histogram of filtered counts using log2cpm >1.5 in half of a days samples regardless of species",
+     xlab =expression("Log"[2]*" counts-per-million PerDay-BlakeTissue"), col =5 )
+
+```
 
 
 ```{r RNASeq_MarkerGenes_graph_species_separated_checks, fig.height=12,fig.width=12}
 counts_table_genes <- unique(counts_table$Geneid)
-Expressed_Genes <- unique(TopTable_RNA_All$Gene)
+Expressed_Genes <- unique(exp_ensembl_ids)
 marker_genes_ortho <- marker_genes %>% 
   filter(Ensembl.ID %in% counts_table_genes)
 marker_genes_ortho_expressed <- marker_genes_ortho %>% 
   filter(Ensembl.ID %in% Expressed_Genes)
+```
+
+```{r RNASeq_FeatureCounts_Box_RMG0, fig.height=6,fig.width=12}
+boxplot(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_names),  # positions (one per sample)
+     labels = col_names,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+```
+
+
+
+
+```{r RNASeq_FeatureCounts_Cor_RMG0}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay <- cor(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay, method = "spearman")
+individual <- RNA_Metadata$Individual
+species <- RNA_Metadata$Species
+timepoint <- RNA_Metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+ann_colors <- list(
+  timepoint_cor = c(
+    "Day0" = "#883268",   # Purple
+    "Day2" = "#3E7274",  # blue
+    "Day4" = "#5AAA464D",  # light green
+    "Day5" = "#94C47D",  # Green
+    "Day15" = "#C03830",  # red
+    "Day30" = "#830C05"  # dark red
+  ),
+  species_cor = c(
+    "H" = "black",  # black
+    "C" = "white"   # white
+  ),
+  individual_cor = c(
+    H1 = "#091638", #Blue-Green Darkest
+    H2 = "#11185B",
+    H3 = "#0F2C71",
+    H4 = "#0D568F",
+    H4R = "#0D568F",
+    H5 = "#1D8296",
+    H6 = "#46A389",
+    H7 = "#9DD484", #Blue-Green Lightest
+    C1 = "#340702", #Brown-Orange darkest
+    C2 = "#5D0B02",
+    C3 = "#951302",
+    C4 = "#D32804",
+    C5 = "#F74019",
+    C6 = "#FA7A38",
+    C7 = "#FCC598"
+    
+  )
+)
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay.RDS")
+# saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
+# saveRDS(ann_colors,"data/QC/concat/ann_colors.RDS")
+
+```
+
+```{r RNASeq_FeatureCounts_HeatMap_RMG0,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(log2cpm >1.5 half individuals per species per day)")
+)
+```
+
+```{r RNASeq_FeatureCounts_RMG0_No4}
+
+####Subset####
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+RNA_fc_No4 <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
+
+Filt_RMG0_RNA_fc_NoD4 <- RNA_fc_No4 %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids_No4) %>% 
+  column_to_rownames("Ensembl.ID")
+
+dim(Filt_RMG0_RNA_fc_NoD4)
+Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
+
+# saveRDS(RNA_Metadata_No4,"data/QC/concat/RNA_Metatdata_No4.RDS")
+# saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4, "data/QC/concat/Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4.RDS")
+
+```
+
+```{r rRNASeq_FeatureCounts_Cor_RMG0_No4}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4, method = "spearman")
+
+Cor_metadata_No4 <- Cor_metadata %>% 
+  dplyr::filter(timepoint_cor !="Day4")
+
+ann_colors_No4 <- ann_colors
+ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
+  names(ann_colors$timepoint_cor) != "Day4"
+]
+
+# saveRDS(Cor_metadata_No4, "data/QC/concat/Cor_metadata_No4.RDS")
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4.RDS")
+# saveRDS(ann_colors_No4,"data/QC/concat/ann_colors_no4.RDS")
+```
+
+
+```{r rRNASeq_FeatureCounts_HeatMap_RMG0_No4,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD4,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata_No4[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors_No4,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Spearman) \n (log2cpm >1.5 half individuals per species per day-NoDay4)")
+)
+```
+```{r RNASeq_FeatureCounts_RMG0_No5}
+
+####Subset####
+RNA_Metadata_No5 <- RNA_Metadata %>% 
+ filter(Timepoint != "Day5")
+
+RNA_fc_No5 <- RNA_fc %>% 
+  dplyr::select(-contains("Day5"))
+
+exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
+exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
+exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+
+Filt_RMG0_RNA_fc_NoD5 <- RNA_fc_No5 %>% 
+  rownames_to_column("Ensembl.ID") %>% 
+  filter(Ensembl.ID %in% exp_ensembl_ids_No5) %>% 
+  column_to_rownames("Ensembl.ID")
+
+dim(Filt_RMG0_RNA_fc_NoD5)
+Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5 <- cpm(Filt_RMG0_RNA_fc_NoD5,log=TRUE)
+
+# saveRDS(RNA_Metadata_No5,"data/QC/concat/RNA_Metatdata_No5.RDS")
+# saveRDS(Filt_RMG0_RNA_fc_NoD5,"data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+# saveRDS(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5, "data/QC/concat/Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5.RDS")
+
+```
+
+```{r rRNASeq_FeatureCounts_Cor_RMG0_No5}
+######Cor_HeatMap####
+Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5 <- cor(Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5, method = "spearman")
+
+Cor_metadata_No5 <- Cor_metadata %>% 
+  dplyr::filter(timepoint_cor !="Day5")
+
+ann_colors_No5 <- ann_colors
+ann_colors_No5$timepoint_cor <- ann_colors$timepoint_cor[
+  names(ann_colors$timepoint_cor) != "Day5"
+]
+
+# saveRDS(Cor_metadata_No5, "data/QC/concat/Cor_metadata_No5.RDS")
+# saveRDS(Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5.RDS")
+# saveRDS(ann_colors_No5,"data/QC/concat/ann_colors_no5.RDS")
+```
+
+
+```{r rRNASeq_FeatureCounts_HeatMap_RMG0_No5,fig.height=10,fig.width=10}
+print(
+  pheatmap(Cor_Filt_RMG0_RNA_log2cpm_BlakeTissue_PerDay_NoD5,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata_No5[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors_No5,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation (Spearman) \n (log2cpm >1.5 half individuals per species per day-NoDay5)")
+)
+```
+
+
+```{r RNASeq_MarkerGenes_dataset, fig.height=6,fig.width=12}
+markers <- marker_genes$Ensembl.ID
+
+log2cpm_long <- RNA_log2cpm %>%
+  as.data.frame() %>%
+  rownames_to_column("Ensembl.ID") %>%
+  filter(Ensembl.ID %in% markers) %>% 
+  pivot_longer(
+    cols = -Ensembl.ID,
+    names_to = "Sample",
+    values_to = "log2CPM"
+  )
+
+log2cpm_long <- log2cpm_long %>%
+  left_join(RNA_Metadata, by = c("Sample" = "SampleName"))
+
+log2cpm_long <- log2cpm_long %>%
+  left_join(marker_genes, by = "Ensembl.ID")
+
+log2cpm_long$Timepoint <- factor(
+  log2cpm_long$Timepoint,
+  levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+)
+
+log2cpm_long_NoR <- log2cpm_long %>% 
+  filter(Individual != "H4R")
+
+library(dplyr)
+
+mean_df <- log2cpm_long_NoR %>%
+  group_by(Stage, Timepoint, Species) %>%
+  summarise(
+    mean_log2CPM = mean(log2CPM),
+    .groups = "drop"
+  )
+
+log2cpm_long_NoR$Stage <- factor(
+  log2cpm_long_NoR$Stage,
+  levels = c(
+    "Pluripotency",
+    "Mesoderm",
+    "CardiacMesoderm",
+    "CardiacProgenitors",
+    "EarlyCardiomyocytes",
+    "MatureCardiomyocytes"
+  )
+)
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_expressed, fig.height=12,fig.width=12}
+library(ggplot2)
+expressed_genes <- exp_ensembl_ids
+
+log2cpm_long_NoR_expressed <- log2cpm_long_NoR %>% 
+  filter(Ensembl.ID %in% expressed_genes)
+
+
+mean_df_expressed <- log2cpm_long_NoR_expressed %>%
+  group_by(Stage, Timepoint, Species) %>%
+  summarise(
+    mean_log2CPM = mean(log2CPM),
+    .groups = "drop"
+  )
+ 
+ggplot(log2cpm_long_NoR_expressed, aes(
+  x = Timepoint,
+  y = log2CPM
+)) +
+
+  geom_boxplot(
+  aes(fill = Species, group = interaction(Timepoint, Species)),
+  alpha = 0.3,
+  outlier.shape = NA,
+  position = position_dodge(width = 0.8)
+  ) +
+  
+    scale_fill_manual(values = ann_colors$species_cor) +
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    data = mean_df_expressed,
+    aes(
+      x = Timepoint,
+      y = mean_log2CPM,
+      group = interaction(Stage, Species),
+      linetype = Species
+    ),
+    color = "black",
+    linewidth = 1.2
+  ) +
+
+  geom_point(
+    data = mean_df,
+    aes(
+      x = Timepoint,
+      y = mean_log2CPM,
+      shape = Species
+    ),
+    color = "black",
+    size = 2
+  ) +
+
+  scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  scale_shape_manual(values = c(
+    C = 16,
+    H = 17
+  )) +
+
+  facet_wrap(~ factor(Stage, levels = levels(log2cpm_long_NoR_expressed$Stage))) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_means_expressed, fig.height=6,fig.width=6}
+mean_df_expressed <- log2cpm_long_NoR_expressed %>%
+  group_by(Stage, Timepoint, Species) %>%
+  summarise(
+    mean_log2CPM = mean(log2CPM),
+    .groups = "drop"
+  )
+
+mean_df_expressed$Stage <- factor(
+  mean_df_expressed$Stage,
+  levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
+)
+
+levels(mean_df_expressed$Stage)
+mean_df_expressed$Stage
+
+ggplot(mean_df_expressed, aes(
+  x = Timepoint,
+  y = Stage,
+  fill = mean_log2CPM
+)) +
+  geom_tile(color = "white") +
+
+  facet_wrap(~ Species) +
+
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0
+  ) +
+
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_data_expressed, fig.height=6,fig.width=6}
+library(dplyr)
+library(tidyr)
+library(tibble)
+
+mat_expressed <- log2cpm_long_NoR_expressed %>%
+  dplyr::group_by(Gene, Sample) %>%
+  dplyr::summarise(log2CPM = mean(log2CPM, na.rm = TRUE), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = Sample, values_from = log2CPM) %>%
+  tibble::column_to_rownames("Gene") %>%
+  as.matrix()
+
+stage_order <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
+
+gene_annot_expressed <- log2cpm_long_NoR_expressed %>%
+  dplyr::select(Gene, Stage) %>%
+  distinct() %>%
+  dplyr::mutate(Stage = factor(Stage, levels = stage_order)) %>%
+  dplyr::arrange(Stage)
+
+mat_expressed <- mat_expressed[gene_annot_expressed$Gene, ]
+
+gene_annot_expressed <- data.frame(Stage = gene_annot_expressed$Stage)
+rownames(gene_annot_expressed) <- gene_annot_expressed$Gene
+
+tp_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+sample_annot_expressed <- log2cpm_long_NoR_expressed %>%
+  distinct(Sample, Timepoint, Species, Individual) %>%
+  mutate(Timepoint = trimws(Timepoint)) %>%
+  column_to_rownames("Sample")
+
+sample_annot_expressed <- sample_annot_expressed[colnames(mat_expressed), ]
+
+rownames(sample_annot_expressed) <- sample_annot_expressed$Sample
+sample_annot_expressed <- sample_annot_expressed[, c("Timepoint", "Species", "Individual")]
+
+annotation_colors = list(
+  Timepoint  = ann_colors$timepoint_cor,
+  Species    = ann_colors$species_cor,
+  Individual = ann_colors$individual_cor,
+
+  Stage = c(
+    Pluripotency = "#1f77b4",
+    Mesoderm = "#ff7f0e",
+    CardiacMesoderm = "yellow",
+    CardiacProgenitors = "#2ca02c",
+    EarlyCardiomyocytes = "#d62728",
+    MatureCardiomyocytes = "#9467bd"
+  )
+)
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph, fig.height=10,fig.width=10}
+pheatmap(
+  mat_expressed,
+  annotation_col = sample_annot_expressed,
+  annotation_row = gene_annot_expressed,
+  annotation_colors = annotation_colors,
+  cluster_rows = FALSE,
+  clustering_distance_cols = "correlation",
+  color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100)
+)
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_separated_pluri, fig.height=12,fig.width=12}
+pluri_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "Pluripotency")
+
+ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+     geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 3,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_separated_meso, fig.height=12,fig.width=12}
+meso_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "Mesoderm")
+
+ggplot(meso_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+  
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardmeso, fig.height=12,fig.width=12}
+cardmeso_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "CardiacMesoderm")
+
+ggplot(cardmeso_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardprog, fig.height=12,fig.width=12}
+cardprog_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "CardiacProgenitors")
+
+ggplot(cardprog_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardearly, fig.height=12,fig.width=12}
+cardearly_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "EarlyCardiomyocytes")
+
+ggplot(cardearly_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+  
+      scale_fill_manual(values = ann_colors$species_cor) +
+  
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r RNASeq_MarkerGenes_graph_species_separated_cardlate, fig.height=12,fig.width=12}
+cardlate_genes <- log2cpm_long_NoR_expressed %>%
+  filter(Stage == "MatureCardiomyocytes")
+
+ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
+
+  geom_boxplot(
+    aes(fill = Species, group = interaction(Timepoint, Species)),
+    position = position_dodge(width = 0.8),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+
+  scale_fill_manual(values = ann_colors$species_cor) +
+  
+    geom_jitter(
+  aes(color = Individual),
+  position = position_jitterdodge(
+    jitter.width = 0.15,
+    dodge.width = 0.8
+  ),
+  size = 1,
+  alpha = 0.6
+) +
+  
+  scale_color_manual(values = ann_colors$individual_cor)+
+  
+  geom_line(
+    stat = "summary",
+    fun = mean,
+    aes(group = Species, linetype = Species),
+    position = position_dodge(width = 0.8),
+    linewidth = 1
+  ) +
+  
+    scale_linetype_manual(values = c(
+    C = "dotted",
+    H = "solid"
+  )) +
+
+  geom_point(
+    stat = "summary",
+    fun = mean,
+    aes(shape = Species),
+    position = position_dodge(width = 0.8),
+    size = 2
+  ) +
+
+  facet_wrap(~ Gene, scales = "free_y") +
+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ```{r Updating Website, eval = FALSE}

@@ -3233,8 +3233,6 @@ ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-
-
 ####Half All log2cpm >1.5 (Blake TissuePaper)
 
 ```{r RNASeq_FeatureCounts_log2cpm_HalfSamples, fig.height=6,fig.width=12}
@@ -4219,7 +4217,7 @@ ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
 
 # git -> commit all changes
 # git -> push
-wflow_publish("analysis/RNA_CorrelationHeatMap_Ensemble.Rmd")
+wflow_publish("RNA_CorrelationHeatMap_ExpressedInOneTissue.Rmd")
 
 ```
 

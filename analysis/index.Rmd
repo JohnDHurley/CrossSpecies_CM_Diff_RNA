@@ -16,7 +16,11 @@ Welcome to my research website.
 
 [RNA PCA Plots](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_PCA_Ensemble.html)
 
-[RNA DGE Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Comp_Species_Ensemble.html)
+[RNA Differentail Analysis RowMeans >0](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Interactions_RMG0.html)
+
+[RNA Differentail Analysis Log2cpm >1.5](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Interactions_lcpm.html)
+
+
 
 [RNA CHDGene Overlaps Species DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Species.html)
 

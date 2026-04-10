@@ -36,12 +36,37 @@ library("ggplot2")
 library("tidyr")
 
 
-
-
 #Loading R Objects Other WorkflowR
-Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
+Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
+
 RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 RNA_Metadata_NoD4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
+RNA_Metadata_NoD5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4<- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5")
+
+Filt_lcpm_RNA_fc_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue")
+
+Filt_lcpm_RNA_fc_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue_PerDay.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay.RDS")
+
+Filt_lcpm_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD4.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4.RDS")
+
+Filt_lcpm_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD5.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5.RDS")
 
 #Loading R Objects from this WorflowR
 dge <- readRDS("data/DGE/Species/concat/RNA_dge_matrix.RDS")

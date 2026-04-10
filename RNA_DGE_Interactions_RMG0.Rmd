@@ -42,6 +42,8 @@ library("tidyr")
 Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 RNA_Metadata_NoD4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
+RNA_Metadata_NoD5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
+
 
 #Loading R Objects from this WorflowR
 dge <- readRDS("data/DGE/Species/concat/RNA_dge_matrix.RDS")
@@ -2138,3 +2140,10 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
   )
 ```
 
+```{r Updating Website, eval = FALSE}
+
+# git -> commit all changes
+# git -> push
+# wflow_publish("analysis/RNA_DGE_Interactions_RMG0.Rmd")
+
+```

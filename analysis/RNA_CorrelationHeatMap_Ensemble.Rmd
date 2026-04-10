@@ -1782,7 +1782,7 @@ annotation_colors = list(
 ```
 
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph, fig.height=10,fig.width=10}
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph_OrthoGenes, fig.height=10,fig.width=10}
 pheatmap(
   mat,
   annotation_col = sample_annot,
@@ -1855,7 +1855,7 @@ annotation_colors = list(
 ```
 
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph, fig.height=10,fig.width=10}
+```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph_OrthoExpressed, fig.height=10,fig.width=10}
 pheatmap(
   mat_expressed,
   annotation_col = sample_annot_expressed,

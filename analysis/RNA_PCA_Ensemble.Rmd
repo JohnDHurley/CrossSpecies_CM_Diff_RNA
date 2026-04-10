@@ -62,7 +62,7 @@ Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")
 
 Filt_RMG0_RNA_fc_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_PerDay.RDS")
-Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+Filt_RMG0_RNA_log2cpm_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_PerDay.RDS")
 
 Filt_RMG0_RNA_fc_NoD4_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4_PerDay.RDS")
 Filt_RMG0_RNA_log2cpm_NoD4_PerDay<- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4_PerDay.RDS")

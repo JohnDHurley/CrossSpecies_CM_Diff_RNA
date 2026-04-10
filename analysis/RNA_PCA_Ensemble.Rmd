@@ -47,25 +47,52 @@ RNA_log2cpm <- readRDS("data/QC/concat/RNA_log2cpm.RDS")
 Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
 Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 
-Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
-Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
 ann_colors <- readRDS("data/QC/concat/ann_colors.RDS")
 
 RNA_Metadata_No4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
 Filt_RMG0_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
 Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 
-Cor_metadata_No4 <- readRDS("data/QC/concat/Cor_metadata_No4.RDS")
-Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
 
 RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
 Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
 Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 
-Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
-Cor_Filt_RMG0_RNA_log2cpm_NoD5 <-readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")
+
+Filt_RMG0_RNA_fc_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_PerDay.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+
+Filt_RMG0_RNA_fc_NoD4_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD4_PerDay.RDS")
+Filt_RMG0_RNA_log2cpm_NoD4_PerDay<- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD4_PerDay.RDS")
+
+Filt_RMG0_RNA_fc_NoD5_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5_PerDay.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5_PerDay.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4<- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
+
+Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5")
+
+Filt_lcpm_RNA_fc_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue")
+
+Filt_lcpm_RNA_fc_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue_PerDay.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay.RDS")
+
+Filt_lcpm_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD4.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4.RDS")
+
+Filt_lcpm_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD5.RDS")
+Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5.RDS")
 
 prcomp_RNA <- readRDS("data/QC/concat/prcomp_RNA.RDS")
 prcomp_RNA_meta <- readRDS("data/QC/concat/prcomp_RNA_meta.RDS")
@@ -73,6 +100,20 @@ prcomp_Filt_RMG0_RNA <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA.RDS")
 prcomp_Filt_RMG0_RNA_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_meta.RDS")
 prcomp_Filt_RMG0_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4.RDS")
 prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD4_meta.RDS")
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm <- readRDS("data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm.RDS")
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta.RDS")
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4 <- readRDS("data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm.RDS")
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta <-readRDS("data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta.RDS")
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5.RDS")
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta <- readRDS("data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta.RDS")
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo <-readRDS("data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta <-readRDS("data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta.RDS")
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- readRDS("data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta <- readRDS("data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta.RDS")
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue <- readRDS("data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue.RDS")
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta <- readRDS("data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta.RDS")
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue <- readRDS("data/QC/concat/prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue.RDS")
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta <- readRDS("data/QC/concat/prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta.RDS")
 
 ```
 
@@ -103,7 +144,6 @@ Unfiltered RNA-Seq Log2CPM")
 
 ```
 
-
 ```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
 Filt_RMG0_RNA_log2cpm <-data.frame(Filt_RMG0_RNA_log2cpm)
 prcomp_Filt_RMG0_RNA <- prcomp(t(Filt_RMG0_RNA_log2cpm), scale=FALSE, center = TRUE)
@@ -132,7 +172,6 @@ Row Means > 0")
 # saveRDS(prcomp_Filt_RMG0_RNA_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_meta.RDS")
 
 ```
-
 
 ```{r RNA_NoD4_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
@@ -189,8 +228,10 @@ Row Means > 0")
 
 ```
 
-
 ```{r RNA_NoD5_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
 
 prcomp_Filt_RMG0_RNA_log2cpm_NoD5 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD5), scale=FALSE, center = TRUE)
 prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta <- prcomp_Filt_RMG0_RNA_log2cpm_NoD5$x %>% cbind(., RNA_Metadata_No5)
@@ -219,6 +260,7 @@ Row Means > 0")
 # saveRDS(prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta,"data/QC/concat/prcomp_Filt_RMG0_RNA_log2cpm_NoD5_meta.RDS")
 
 ```
+
 ```{r RNA_NoD5_RMG0_PCA_PC3_PC4, fig.height=6,fig.width=8}
 
 prcomp_Filt_RMG0_RNA_log2cpm_NoD5 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD5), scale=FALSE, center = TRUE)
@@ -245,6 +287,398 @@ No Day 4
 Row Means > 0")
 
 ```
+
+```{r RNA_RMG0_PerDay_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm <- prcomp(t(Filt_RMG0_RNA_log2cpm_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta <- prcomp_Filt_RMG0_PerDay_RNA_log2cpm$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta$Timepoint <- factor(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_PerDay_RNA_log2cpm ,
+                  data = prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+Row Means > 0 Half Samples Per Day")
+
+saveRDS(prcomp_Filt_RMG0_PerDay_RNA_log2cpm,"data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm.RDS")
+saveRDS(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta,"data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta.RDS")
+
+```
+
+```{r RNA_RMG0_PerDay_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm <- prcomp(t(Filt_RMG0_RNA_log2cpm_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta <- prcomp_Filt_RMG0_PerDay_RNA_log2cpm$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta$Timepoint <- factor(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_PerDay_RNA_log2cpm ,
+                  data = prcomp_Filt_RMG0_PerDay_RNA_log2cpm_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+Row Means > 0 Half Samples Per Day")
+
+
+```
+
+```{r RNA_RMG0_PerDay_NoD4_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta <- prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4$x %>% cbind(., RNA_Metadata_No4)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta$Timepoint <- factor(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4 ,
+                  data = prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+Row Means > 0 Half Samples Per Day No Day 4")
+
+# saveRDS(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4,"data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4.RDS")
+# saveRDS(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta,"data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta.RDS")
+
+```
+
+```{r RNA_RMG0_PerDay_NoD4_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD4_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta <- prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4$x %>% cbind(., RNA_Metadata_No4)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta$Timepoint <- factor(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4 ,
+                  data = prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD4_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors_No4$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No4$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+Row Means > 0 Half Samples Per Day No Day 4")
+
+```
+
+```{r RNA_RMG0_PerDay_NoD5_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD5_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta <- prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5$x %>% cbind(., RNA_Metadata_No5)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta$Timepoint <- factor(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta$Timepoint, levels = c("Day0","Day2","Day4","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5 ,
+                  data = prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors_No5$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No5$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+Row Means > 0 Half Samples Per Day No Day 5")
+
+# saveRDS(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5,"data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5.RDS")
+# saveRDS(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta,"data/QC/concat/prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta.RDS")
+
+```
+
+```{r RNA_RMG0_PerDay_NoD5_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5 <- prcomp(t(Filt_RMG0_RNA_log2cpm_NoD5_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta <- prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5$x %>% cbind(., RNA_Metadata_No5)
+#PCA checks
+#k=1
+
+prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta$Timepoint <- factor(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta$Timepoint, levels = c("Day0","Day2","Day4","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5 ,
+                  data = prcomp_Filt_RMG0_PerDay_RNA_log2cpm_NoD5_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=2) +
+  scale_color_manual(values=ann_colors_No5$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata_No5$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+Row Means > 0 Half Samples Per Day No Day 5")
+
+
+```
+
+```{r RNA_lcpm_PerSpecies_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeEndo), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta <- prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta$Timepoint <- factor(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo ,
+                  data = prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Samples Per Species")
+
+# saveRDS(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo,"data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
+# saveRDS(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta,"data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta.RDS")
+
+```
+
+```{r RNA_lcpm_PerSpecies_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeEndo), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta <- prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta$Timepoint <- factor(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo ,
+                  data = prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Samples Per Species")
+
+
+
+```
+
+```{r RNA_lcpm_PerSpeciesDay_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta <- prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta$Timepoint <- factor(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay ,
+                  data = prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Samples Per Day Species")
+
+# saveRDS(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay,"data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
+# saveRDS(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta,"data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta.RDS")
+
+```
+
+```{r RNA_lcpm_PerSpeciesDay_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta <- prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta$Timepoint <- factor(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay ,
+                  data = prcomp_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Samples Per Day Species")
+
+
+```
+
+```{r RNA_lcpm_Half_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeTissue), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta <- prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta$Timepoint <- factor(prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue ,
+                  data = prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Sampless")
+
+# saveRDS(prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue,"data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue.RDS")
+# saveRDS(prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta,"data/QC/concat/prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta.RDS")
+
+```
+
+```{r RNA_lcpm_Half_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeTissue), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta <- prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta$Timepoint <- factor(prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue ,
+                  data = prcomp_Filt_lcpm_RNA_log2cpm_BlakeTissue_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Sampless")
+
+```
+
+
+```{r RNA_lcpm_Half_Timepoint_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta <- prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta$Timepoint <- factor(prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue ,
+                  data = prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Samples Timepoint")
+
+# saveRDS(prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue,"data/QC/concat/prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue.RDS")
+# saveRDS(prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta,"data/QC/concat/prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta.RDS")
+
+```
+
+```{r RNA_lcpm_Half_Timepoint_PCA_PC3_PC4, fig.height=6,fig.width=8}
+
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue <- prcomp(t(Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay), scale=FALSE, center = TRUE)
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta <- prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta$Timepoint <- factor(prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue ,
+                  data = prcomp_Filt_lcpm_PerDay_RNA_log2cpm_BlakeTissue_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2
+Filtered RNA-Seq Log2CPM 
+log2cpm > 1.5 Half Samples Timepoint")
+
+```
+
 ```{r Updating Website, eval = FALSE}
 
 # git -> commit all changes

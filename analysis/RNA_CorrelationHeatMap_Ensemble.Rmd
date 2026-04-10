@@ -789,8 +789,6 @@ summary_df_No5 <- df_long_No5 %>%
     SEM = SD / sqrt(N),
     .groups = "drop"
   )
-
-t.test()
 ```
 
 ```{r RNASeq_Purities_graph_No5_graph, fig.height=6,fig.width=12}

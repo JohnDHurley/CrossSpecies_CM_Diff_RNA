@@ -1004,7 +1004,7 @@ hist(Filt_RMG0_RNA_log2cpm_PerDay, main = "Histogram of filtered counts using ro
 ```
 
 ```{r RNASeq_FeatureCounts_Box_RMG0, fig.height=6,fig.width=12}
-boxplot(Filt_RMG0_PerDay_RNA_log2cpm_PerDay, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
+boxplot(Filt_RMG0_RNA_log2cpm_PerDay, main = "Boxplots of log cpm per sample (RowMeans>0)",xaxt = "n", xlab= "")
 axis(1,
      at = 1:length(col_labels),  # positions (one per sample)
      labels = col_labels,        # your labels vector

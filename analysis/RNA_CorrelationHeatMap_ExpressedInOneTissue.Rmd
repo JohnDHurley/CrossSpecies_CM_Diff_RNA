@@ -4217,7 +4217,7 @@ ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
 
 # git -> commit all changes
 # git -> push
-wflow_publish("RNA_CorrelationHeatMap_ExpressedInOneTissue.Rmd")
+wflow_publish("analysis/RNA_CorrelationHeatMap_ExpressedInOneTissue.Rmd")
 
 ```
 

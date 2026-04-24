@@ -1,0 +1,298 @@
+---
+title: "RNA_GO_Comp_Species"
+output: html_document
+date: "2026-02-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{r RNA_GO_SettingEnviroment}
+#Loading Libraries
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(ggrepel)
+library(biomaRt)
+library(tidyverse)
+library(readxl)
+library(readr)
+library(reshape2)
+library(circlize)
+library(grid)
+library(stringr)
+library(org.Hs.eg.db)
+library(GO.db)
+library(AnnotationDbi)
+library(gprofiler2)
+library(purrr)
+# install.packages("GO.db")
+# BiocManager::install("GO.db")
+
+#Loading R Objects
+# quadrant_gene_lists <- readRDS("data/DGE/quadrant_gene_lists_DayBefore.RDS")
+gene_to_go <- readRDS("data/GO/gene_to_go.RDS")
+all_genes <- readRDS("data/DGE/Species/ExpressedGenes.RDS")
+deg_genes <- readRDS("data/DGE/Species/DEG_AtLeastOne.RDS")
+RNA_sets <- readRDS("data/DGE/Species/RNA_DEG_Non_DEG_sets_05.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Species/TopTable_RNA_all.RDS")
+ensembl_to_hgnc <- readRDS("data/DGE/Species/Ensembl_to_HGNC_mapping.RDS")
+```
+
+```{r}
+gene_to_go <- select(org.Hs.eg.db, 
+                     keys = keys(org.Hs.eg.db, keytype="SYMBOL"), 
+                     columns = c("SYMBOL", "GO", "ONTOLOGY"), 
+                     keytype = "SYMBOL")
+
+gene_to_go$TERM <- Term(gene_to_go$GO)
+
+go_heart_dev <- gene_to_go %>%
+  filter(str_detect(TERM, regex("heart development", ignore_case = TRUE)))
+
+go_heart_dev <- gene_to_go %>%
+  separate_rows(TERM, sep = ";") %>%   # split multiple terms into separate rows
+  filter(str_detect(TERM, regex("heart development", ignore_case = TRUE)))
+
+# saveRDS(gene_to_go, "data/GO/gene_to_go.RDS")
+
+```
+
+```{r}
+# Loop through my data sets to overlap
+known_genes <- go_heart_dev$SYMBOL
+
+overlap_results <- list()
+
+for (day in names(RNA_sets)) {
+
+  message("Processing ", day)
+
+  DEG_Set <- unique(RNA_sets[[day]]$DEGs$Gene)
+  Non_DEG_Set <- unique(RNA_sets[[day]]$NonDEGs$Gene)
+
+  # ---- DEG overlaps ----
+  DEG_Overlaps_symbols <- ensembl_to_hgnc$ensembl_gene_id[
+    ensembl_to_hgnc$ensembl_gene_id %in% DEG_Set &
+    ensembl_to_hgnc$hgnc_symbol %in% known_genes 
+  ]
+
+  # ---- Non-DEG overlaps ----
+  Non_DEG_Overlaps_symbols <- ensembl_to_hgnc$ensembl_gene_id[
+    ensembl_to_hgnc$ensembl_gene_id %in% Non_DEG_Set &
+    ensembl_to_hgnc$hgnc_symbol %in% known_genes
+  ]
+
+  overlap_results[[day]] <- list(
+    DEG_Genes = unique(DEG_Overlaps_symbols),
+    NonDEG_Genes = unique(Non_DEG_Overlaps_symbols)
+  )
+
+  saveRDS(
+    unique(DEG_Overlaps_symbols),
+    paste0("data/DGE/Species/", day, "_DEG_GO_HeartDev.RDS")
+  )
+
+  saveRDS(
+    unique(Non_DEG_Overlaps_symbols),
+    paste0("data/DGE/Species/", day, "_NonDEG_GO_HeartDev.RDS")
+  )
+}
+
+```
+
+```{r RNA_CHDGene_Species_DataSets_Significance}
+
+# Create the table
+Day0_DEGs_ChiSq  <- matrix(c(64,(6569-64),127,(8269-127)), nrow = 2, byrow = TRUE)
+rownames(Day0_DEGs_ChiSq) <- c("Day0 DEGs", "Day0 NonDEGs")
+colnames(Day0_DEGs_ChiSq) <- c("HeartDev", "Non-HeartDev")
+
+# Run chi-square test
+chisq.test(Day0_DEGs_ChiSq)
+
+# Create the table
+Day2_DEGs_ChiSq  <- matrix(c(36,(4094-36),155,(10744-155)), nrow = 2, byrow = TRUE)
+rownames(Day2_DEGs_ChiSq) <- c("Day2 DEGs", "Day2 NonDEGs")
+colnames(Day2_DEGs_ChiSq) <- c("HeartDev", "Non-HeartDev")
+
+# Run chi-square test
+chisq.test(Day2_DEGs_ChiSq)
+
+# Create the table
+Day5_DEGs_ChiSq <- matrix(c(37,(4154-37),154,(10648-154)), nrow = 2, byrow = TRUE)
+rownames(Day5_DEGs_ChiSq) <- c("Day5 DEGs", "Day5 NonDEGs")
+colnames(Day5_DEGs_ChiSq) <- c("HeartDev", "Non-HeartDev")
+
+# Run chi-square test
+chisq.test(Day5_DEGs_ChiSq)
+
+# Create the table
+Day15_DEGs_ChiSq  <- matrix(c(61,(5070-61),130,(9768-130)), nrow = 2, byrow = TRUE)
+rownames(Day15_DEGs_ChiSq) <- c("Day15 DEGs", "Day15 NonDEGs")
+colnames(Day15_DEGs_ChiSq) <- c("HeartDev", "Non-HeartDev")
+
+# Run chi-square test
+chisq.test(Day15_DEGs_ChiSq)
+
+# Create the table
+Day30_DEGs_ChiSq  <- matrix(c(74,(5990-74),117,(8848-117)), nrow = 2, byrow = TRUE)
+rownames(Day30_DEGs_ChiSq) <- c("Day30 DEGs", "Day30 NonDEGs")
+colnames(Day30_DEGs_ChiSq) <- c("HeartDev", "Non-HeartDev")
+
+# Run chi-square test
+chisq.test(Day30_DEGs_ChiSq)
+```
+
+```{r RNA_CHDGene_Species_Barplot}
+df <- data.frame(
+  Day = c("Day0","Day0","Day2","Day2","Day5","Day5","Day15","Day15","Day30","Day30"),
+  Status = c("DEG","NonDEG","DEG","NonDEG","DEG","NonDEG","DEG","NonDEG","DEG","NonDEG"),
+  Cond = c("Day0_DEG","Day0_NonDEG","Day2_DEG","Day2_NonDEG","Day5_DEG","Day5_NonDEG","Day15_DEG","Day15_NonDEG","Day30_DEG","Day30_NonDEG"),
+  HeartDev = c(64,127,36,155,37,154,61,130,74,117),
+  Non_HeartDev = c(6505,8142,4058,10589,4117,10494,5009,9638,5919,8731)
+)
+
+# Convert to long format for ggplot
+df_long <- df %>%
+  pivot_longer(cols = c(HeartDev, Non_HeartDev),
+               names_to = "Type",
+               values_to = "Count") %>%
+  group_by(Cond) %>%
+  mutate(Proportion = Count / sum(Count))  # calculate proportions
+
+df_long$Cond <- factor(df_long$Cond, levels = c("Day0_DEG","Day0_NonDEG","Day2_DEG","Day2_NonDEG","Day5_DEG","Day5_NonDEG","Day15_DEG","Day15_NonDEG","Day30_DEG","Day30_NonDEG"), ordered = TRUE)
+
+ggplot(df_long, aes(x = Cond, y = Proportion, fill = Type)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent_format()) +  # show % on y-axis
+  scale_fill_manual(values = c("DEGs" = "#E41A1C", "HeartDev" = "#377EB8")) + # custom colors
+  labs(y = "Proportion", x = "Cond", fill = "") +
+  theme_minimal(base_size = 14)
+```
+
+
+```{r RNA_CHDGene_Species_LogFoldChange}
+median_all_df <- TopTable_RNA_All %>%
+  group_by(Comparisons) %>%
+  summarise(
+    median_logFC = median(logFC, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+gene_set <- go_heart_dev$SYMBOL
+
+gene_vector <- ensembl_to_hgnc %>% 
+  dplyr::filter(hgnc_symbol %in% gene_set) %>% 
+  dplyr::pull(ensembl_gene_id)
+
+TopTable_Filt <- TopTable_RNA_All %>% 
+  dplyr::filter(Gene %in% gene_vector) %>% 
+  dplyr::mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = c("HC_D0", "HC_D2", "HC_D5", "HC_D15", "HC_D30")
+    )
+  )
+
+TopTable_Filt <- TopTable_Filt %>%
+  rowwise() %>%
+  mutate(
+    isDEG = Gene %in% RNA_sets[[Comparisons]]$DEGs$Gene
+  ) %>%
+  ungroup()
+
+
+# Determine bottom-left coordinates
+x_min <- min(as.numeric(TopTable_Filt$Comparisons))  # first comparison
+y_min <- min(TopTable_Filt$logFC, na.rm = TRUE) - 0.5     # lowest logFC among CHD genes
+
+ggplot(TopTable_Filt, aes(x = Comparisons, y = logFC, group = Gene)) +
+  geom_line(alpha = 0.25) +
+  geom_point(aes(color = isDEG), size = 2, alpha = 0.8) +
+  scale_color_manual(values = c("FALSE" = "grey70", "TRUE" = "dodgerblue")) +
+
+  # Median line (all genes)
+  geom_line(
+    data = median_all_df,
+    aes(x = Comparisons, y = median_logFC, group = 1),
+    inherit.aes = FALSE,
+    linewidth = 1.6,
+    color = "firebrick"
+  ) +
+  geom_point(
+    data = TopTable_Filt %>% filter(!isDEG),
+    aes(x = Comparisons, y = logFC),
+    color = "grey70",
+    size = 2,
+    alpha = 0.8
+  ) +
+
+  # DEG points on top (blue)
+  geom_point(
+    data = TopTable_Filt %>% filter(isDEG),
+    aes(x = Comparisons, y = logFC),
+    color = "dodgerblue",
+    size = 2,
+    alpha = 0.8
+  ) +
+  # Median label bottom-left
+  geom_text(
+    data = data.frame(
+      x = 1,
+      y = min(TopTable_Filt$logFC, na.rm = TRUE) - 0.5
+    ),
+    aes(x = x, y = y, label = "Median (all genes)"),
+    inherit.aes = FALSE,
+    color = "firebrick",
+    size = 4
+  ) +
+
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Comparison",
+    y = "log2 Fold Change",
+    color = "DEG",
+    title = "GO Heart Development gene trajectories with DEGs highlighted"
+  )
+
+```
+
+```{r}
+
+gene_categories <- TopTable_Filt %>%
+  group_by(Gene) %>%
+  summarize(
+    n_comparisons = n(),
+    n_DEG = sum(isDEG),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    category = case_when(
+      n_DEG == n_comparisons ~ "DEG in all comparisons",
+      n_DEG == 0            ~ "Non-DEG in all comparisons",
+      TRUE                   ~ "Other"
+    )
+  )
+
+TopTable_Filt <- TopTable_Filt %>%
+  left_join(gene_categories %>% 
+  dplyr::select(Gene, category), by = "Gene")
+
+TopTable_Filt %>%
+  group_by(category) %>%
+  summarize(n_genes = n_distinct(Gene)) %>%
+  arrange(desc(n_genes))
+
+
+```
+

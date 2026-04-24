@@ -78,25 +78,6 @@ Filt_FilterByExpression_RNA_log2cpm_No5<- readRDS("data/QC/concat/Filt_FilterByE
 Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
 Filt_FilterByExpression_RNA_log2cpm_No4<- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No4.RDS")
 
-# Filt_lcpm_RNA_fc_BlakeEndo <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeEndo <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
-# 
-# Filt_lcpm_RNA_fc_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
-# Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4<- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
-# Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5")
-# 
-# Filt_lcpm_RNA_fc_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue")
-# 
-# Filt_lcpm_RNA_fc_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue_PerDay.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay.RDS")
-# Filt_lcpm_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD4.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4.RDS")
-# Filt_lcpm_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD5.RDS")
-# Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5.RDS")
 
 #Loading R Objects from this WorflowR
 dge_lcpm1_4SpTp <- readRDS("data/DGE/Species/concat/RowMeans_PerDay/dge_lcpm1_4SpTp.RDS")

@@ -1,7 +1,7 @@
 ---
-title: "RNA_DGE_Interactions"
+title: "RNA_DGE_Interactions_NoD5"
 output: html_document
-date: "2026-03-03"
+date: "2026-04-07"
 ---
 
 ```{r setup, include=FALSE}
@@ -35,49 +35,21 @@ library("purrr")
 library("ggplot2")
 library("tidyr")
 
-
-#Loading R Objects Other WorkflowR
-Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
-Filt_RMG0_RNA_log2cpm <-readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
-
-RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
-RNA_Metadata_NoD4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
 RNA_Metadata_NoD5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
-
-Filt_lcpm_RNA_fc_BlakeEndo <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeEndo <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
-
-Filt_lcpm_RNA_fc_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
-
-Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4<- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
-
-Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5")
-
-Filt_lcpm_RNA_fc_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeTissue <-readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue")
-
-Filt_lcpm_RNA_fc_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_BlakeTissue_PerDay.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay.RDS")
-
-Filt_lcpm_RNA_fc_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD4.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD4.RDS")
-
-Filt_lcpm_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_fc_NoD5.RDS")
-Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5 <- readRDS("data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeTissue_PerDay_NoD5.RDS")
+Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_NoD5.RDS")
+chdgene_table <- readRDS("data/DGE/chdgene_table.RDS")
 
 #Loading R Objects from this WorflowR
-dge <- readRDS("data/DGE/Species/concat/RNA_dge_matrix.RDS")
-design_int <- readRDS("data/DGE/Species/concat/design_int.RDS")
-fit <- readRDS("data/DGE/Species/concat/fit.RDS")
-fit2 <- readRDS("data/DGE/Species/concat/fit2.RDS")
-TopTable_RNA_All <- readRDS("data/DGE/Species/concat/TopTable_RNA_All.RDS")
-Comparison_names <- readRDS("data/DGE/Species/concat/Comparison_names.RDS")
-RNA_sets <- readRDS("data/DGE/Species/concat/RNA_sets.RDS")
-# RNA_sets0.1 <- readRDS("data/DGE/Trajectory/RNA_DEG_Non_DEG_sets_0.1.RDS")
-# all_genes <- readRDS("data/DGE/Trajectory/all_genes.RDS")
+dge <- readRDS("data/DGE/Species/concat/NoD5/RNA_dge_matrix.RDS")
+design_int <- readRDS("data/DGE/Species/concat/NoD5/design_int.RDS")
+fit <- readRDS("data/DGE/Species/concat/NoD5/fit.RDS")
+fit2 <- readRDS("data/DGE/Species/concat/NoD5/fit2.RDS")
+TopTable_RNA_All <- readRDS("data/DGE/Species/concat/NoD5/TopTable_RNA_All.RDS")
+Comparison_names <- readRDS("data/DGE/Species/concat/NoD5/Comparison_names.RDS")
+RNA_sets <- readRDS("data/DGE/Species/concat/NoD5/RNA_sets.RDS")
+# # RNA_sets0.1 <- readRDS("data/DGE/Trajectory/NoD5/RNA_DEG_Non_DEG_sets_0.1.RDS")
+# # all_genes <- readRDS("data/DGE/Trajectory/NoD5/all_genes.RDS")
 
 ```
 
@@ -151,7 +123,7 @@ plot_cluster_fc <- function(gene_vector, cluster_name, top_table) {
   # Filter TopTable for the genes in this cluster
   df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
     mutate(Comparisons = factor(Comparisons, levels =c(
-      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15","All_Genes","All_DEGs"
+      "H2_H0","H4_H2","H15_H4","H30_H15","C2_C0","C4_C2","C15_C4","C30_C15","All_Genes","All_DEGs"
     )))
   
   # Optional: print dimensions and unique genes
@@ -183,7 +155,7 @@ plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
   df <- top_table %>%
     dplyr::filter(Gene %in% gene_vector) %>%
     mutate(Comparisons = factor(Comparisons, levels = c(
-      "H_Day02","H_Day25","H_Day515","H_Day1530","C_Day02","C_Day25","C_Day515","C_Day1530"
+      "H_Day02","H_Day24","H_Day415","H_Day1530","C_Day02","C_Day24","C_Day415","C_Day1530"
     )))
 
   cat(cluster_name, ":", nrow(df), "rows,",
@@ -224,13 +196,14 @@ plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
 }
 ```
 
+
 ```{r AbsFC_Plot_Function, include = FALSE}
 plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
   
   # Filter TopTable for the genes in this cluster
   df <- top_table %>% dplyr::filter(Gene %in% gene_vector) %>%
     mutate(Comparisons = factor(Comparisons, levels = c(
-      "H2_H0","H5_H2","H15_H5","H30_H15","C2_C0","C5_C2","C15_C5","C30_C15","All_Genes","All_DEGs"
+      "H2_H0","H4_H2","H15_H4","H30_H15","C2_C0","C4_C2","C15_C4","C30_C15","All_Genes","All_DEGs"
     )))
   
   # Optional: print dimensions and unique genes
@@ -262,7 +235,7 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
   df <- top_table %>%
     dplyr::filter(Gene %in% gene_vector) %>%
     mutate(Comparisons = factor(Comparisons, levels = c(
-      "H_Day02","H_Day25","H_Day515","H_Day1530","C_Day02","C_Day25","C_Day515","C_Day1530"
+      "H_Day02","H_Day24","H_Day415","H_Day1530","C_Day02","C_Day24","C_Day415","C_Day1530"
     )))
 
   cat(cluster_name, ":", nrow(df), "rows,",
@@ -303,71 +276,74 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 }
 ```
 
+
 ```{r RNASeq_DGE_Trajectory_Data}
-RNA_Metadata_NoD4_NoRep <- RNA_Metadata_NoD4 %>%
+RNA_Metadata_NoD5_NoRep <- RNA_Metadata_NoD5 %>%
   filter(!grepl("R$",Individual))
 
-Filt_RMG0_RNA_fc_NoD4_NoRep <- Filt_RMG0_RNA_fc_NoD4 %>%
+Filt_RMG0_RNA_fc_NoD5_NoRep <- Filt_RMG0_RNA_fc_NoD5 %>%
   dplyr::select(-(contains("R")))
 
-RNA_Metadata_NoD4_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+RNA_Metadata_NoD5_NoRep$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day15","Chimp_Day30"),7))
 
 #create DGEList object
-dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD4_NoRep)
-dge$samples$group <- factor(RNA_Metadata_NoD4_NoRep$dgelist)
+dge <- DGEList(counts = Filt_RMG0_RNA_fc_NoD5_NoRep)
+dge$samples$group <- factor(RNA_Metadata_NoD5_NoRep$dgelist)
 dge <- calcNormFactors(dge, method = "TMM")
 dge$samples
 
-# dim(dge)
-# saveRDS(dge, "data/DGE/Species/concat/RNA_dge_matrix.RDS")
-# dge$samples
+dim(dge)
+# saveRDS(dge, "data/DGE/Species/concat/NoD5/RNA_dge_matrix.RDS")
+dge$samples
 
 ```
 
 ```{r RNASeq_DGE_Trajectory_Data_Model}
-RNA_Metadata_NoD4_NoRep$Species <- factor(
-  RNA_Metadata_NoD4_NoRep$Species,
+RNA_Metadata_NoD5_NoRep$Species <- factor(
+  RNA_Metadata_NoD5_NoRep$Species,
   levels = c("C", "H")   # Chimp baseline
 )
 
-RNA_Metadata_NoD4_NoRep$Timepoint <- factor(
-  RNA_Metadata_NoD4_NoRep$Timepoint,
-  levels = c("Day0","Day2","Day5","Day15","Day30")
+RNA_Metadata_NoD5_NoRep$Timepoint <- factor(
+  RNA_Metadata_NoD5_NoRep$Timepoint,
+  levels = c("Day0","Day2","Day4","Day15","Day30")
 )
 
 design_int <- model.matrix(~ Species * Timepoint,
-                           data = RNA_Metadata_NoD4_NoRep)
+                           data = RNA_Metadata_NoD5_NoRep)
 
 colnames(design_int)
 colnames(design_int) <- make.names(colnames(design_int))
 
-# saveRDS(design_int, "data/DGE/Species/concat/design_int.RDS")
+# saveRDS(design_int, "data/DGE/Species/concat/NoD5/design_int.RDS")
 ```
+
 
 ```{r RNASeq_DGE_Trajectory_Data_Model}
 # Step 1: voom first
 v1 <- voom(dge, design_int, plot = TRUE)
 
 # Step 2: estimate duplicate correlation on voom-transformed data
-corfit <- duplicateCorrelation(v1, design_int, block = RNA_Metadata_NoD4_NoRep$Individual)
+corfit <- duplicateCorrelation(v1, design_int, block = RNA_Metadata_NoD5_NoRep$Individual)
 corfit.correlation <- corfit$consensus.correlation
 
 # Step 3: voom again including correlation
 v2 <- voom(dge, design_int, plot = TRUE,
-           block = RNA_Metadata_NoD4_NoRep$Individual,
+           block = RNA_Metadata_NoD5_NoRep$Individual,
            correlation = corfit.correlation)
 
 # Step 4: fit linear model
-fit <- lmFit(v2, design_int, block = RNA_Metadata_NoD4_NoRep$Individual, correlation = corfit.correlation)
+fit <- lmFit(v2, design_int, block = RNA_Metadata_NoD5_NoRep$Individual, correlation = corfit.correlation)
 fit <- eBayes(fit)
 
-pal <- rainbow(length(unique(RNA_Metadata_NoD4_NoRep$Timepoint)))
-day <- RNA_Metadata_NoD4_NoRep$Timepoint
+pal <- rainbow(length(unique(RNA_Metadata_NoD5_NoRep$Timepoint)))
+day <- RNA_Metadata_NoD5_NoRep$Timepoint
 
 plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
 
-# saveRDS(fit, "data/DGE/Species/concat/fit.RDS")
+# saveRDS(fit, "data/DGE/Species/concat/NoD5/fit.RDS")
 ```
+
 
 ```{r RNASeq_DGE_Trajectory_Data_Model}
 contrast_matrix <- makeContrasts(
@@ -375,24 +351,24 @@ contrast_matrix <- makeContrasts(
   # Species differences
   HvC_Day0  = SpeciesH,
   HvC_Day2  = SpeciesH + SpeciesH.TimepointDay2,
-  HvC_Day5  = SpeciesH + SpeciesH.TimepointDay5,
+  HvC_Day4  = SpeciesH + SpeciesH.TimepointDay4,
   HvC_Day15 = SpeciesH + SpeciesH.TimepointDay15,
   HvC_Day30 = SpeciesH + SpeciesH.TimepointDay30,
   
   #Trajectory differences
   H_Day02 = TimepointDay2 + SpeciesH.TimepointDay2,
-  H_Day25 = TimepointDay5 + SpeciesH.TimepointDay5 - TimepointDay2 - SpeciesH.TimepointDay2,
-  H_Day515 = TimepointDay15 + SpeciesH.TimepointDay15 - TimepointDay5 - SpeciesH.TimepointDay5,
+  H_Day24 = TimepointDay4 + SpeciesH.TimepointDay4 - TimepointDay2 - SpeciesH.TimepointDay2,
+  H_Day415 = TimepointDay15 + SpeciesH.TimepointDay15 - TimepointDay4 - SpeciesH.TimepointDay4,
   H_Day1530 = TimepointDay30 + SpeciesH.TimepointDay30 - TimepointDay15 - SpeciesH.TimepointDay15,
   C_Day02 = TimepointDay2,
-  C_Day25 = TimepointDay5 - TimepointDay2,
-  C_Day515 = TimepointDay15 - TimepointDay5,
+  C_Day24 = TimepointDay4 - TimepointDay2,
+  C_Day415 = TimepointDay15 - TimepointDay4,
   C_Day1530 = TimepointDay30 - TimepointDay15,
   
   # True interaction tests trajectory
   Sig_Sp_inter_Traj02 = SpeciesH.TimepointDay2,
-  Sig_Sp_inter_Traj25 = SpeciesH.TimepointDay5 - SpeciesH.TimepointDay2,
-  Sig_Sp_inter_Traj515 = SpeciesH.TimepointDay15 - SpeciesH.TimepointDay5,
+  Sig_Sp_inter_Traj24 = SpeciesH.TimepointDay4 - SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj415 = SpeciesH.TimepointDay15 - SpeciesH.TimepointDay4,
   Sig_Sp_inter_Traj1530 = SpeciesH.TimepointDay30 - SpeciesH.TimepointDay15,
   
   levels = design_int
@@ -408,8 +384,9 @@ results_summary <- decideTests(fit2,
                                p.value = 0.05)
 summary(results_summary)
 
-# saveRDS(fit2, "data/DGE/Species/concat/fit2.RDS")
+# saveRDS(fit2, "data/DGE/Species/concat/NoD5/fit2.RDS")
 ```
+
 
 ```{r RNASeq_DGE_Trajectory_TopTable}
 #Create Human TopTable. using listapply, then you can pull specific comp using the $
@@ -438,12 +415,11 @@ TopTable_RNA_All <- do.call(
 
 Comparison_names <- unique(TopTable_RNA_All$Comparisons)
 
-# saveRDS(TopTable_RNA_All, "data/DGE/Species/concat/TopTable_RNA_All.RDS")
-# saveRDS(Comparison_names, "data/DGE/Species/concat/Comparison_names.RDS")
+# saveRDS(TopTable_RNA_All, "data/DGE/Species/concat/NoD5/TopTable_RNA_All.RDS")
+# saveRDS(Comparison_names, "data/DGE/Species/concat/NoD5/Comparison_names.RDS")
 
 head(TopTable_RNA_All)
 ```
-
 
 
 ```{r RNASeq_DGE_Trajectory_TopTable_VolcancoPlots}
@@ -485,26 +461,23 @@ RNA_sets <- map(
 
 names(RNA_sets) <- paste0(Comparison_names)
 
-# saveRDS(RNA_sets, "data/DGE/Species/concat/RNA_sets.RDS")
+# saveRDS(RNA_sets, "data/DGE/Species/concat/NoD5/RNA_sets.RDS")
 ```
 
 ```{r}
 
 TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
+  filter(Comparisons == c("H_Day02","H_Day24","H_Day415","H_Day1530","C_Day02","C_Day24","C_Day415","C_Day1530"))
 
 Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
-Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
-Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_24_genes <- unique(RNA_sets$Sig_Sp_inter_Traj24$DEGs$Gene)
+Inter_415_genes <- unique(RNA_sets$Sig_Sp_inter_Traj415$DEGs$Gene)
 Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
 
 cluster_lists <- list(
   Inter_02_genes  = Inter_02_genes,
-  Inter_25_genes  = Inter_25_genes,
-  Inter_515_genes  = Inter_515_genes,
+  Inter_24_genes  = Inter_24_genes,
+  Inter_415_genes  = Inter_415_genes,
   Inter_1530_genes  = Inter_1530_genes
 )
 
@@ -521,20 +494,17 @@ for (p in cluster_plots) print(p)
 TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
 
 TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
+  filter(Comparisons == c("H_Day02","H_Day24","H_Day415","H_Day1530","C_Day02","C_Day24","C_Day415","C_Day1530"))
 
 Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
-Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
-Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_24_genes <- unique(RNA_sets$Sig_Sp_inter_Traj24$DEGs$Gene)
+Inter_415_genes <- unique(RNA_sets$Sig_Sp_inter_Traj415$DEGs$Gene)
 Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
 
 cluster_lists <- list(
   Inter_02_genes  = Inter_02_genes,
-  Inter_25_genes  = Inter_25_genes,
-  Inter_515_genes  = Inter_515_genes,
+  Inter_24_genes  = Inter_24_genes,
+  Inter_415_genes  = Inter_415_genes,
   Inter_1530_genes  = Inter_1530_genes
 )
 
@@ -545,465 +515,6 @@ names(cluster_plots) <- names(cluster_lists)
 
 for (p in cluster_plots) print(p)
 
-```
-
-```{r RNASeq_DGE_Interactions_Day2, fig.width = 20, fig.height= 30}
-int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02",number=Inf)
-top_int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02", number=200)
-top_genes <- rownames(top_int_Traj2)
-
-int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02",number=Inf)
-sig_int_Traj2 <- top_int_Traj2[int_Traj2$adj.P.Val < 0.05, ]
-sig_genes <- rownames(sig_int_Traj2)
-
-library(dplyr)
-library(tidyr)
-
-expr_mat <- v2$E[top_genes, ]  # expression for top genes
-
-plot_df <- as.data.frame(t(expr_mat))
-plot_df$Sample <- rownames(plot_df)
-
-plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
-
-# Make time numeric for ordering
-plot_df$Time <- factor(plot_df$Cond,
-                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
-                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
-
-library(ggplot2)
-
-gene_to_plot <- top_genes[1]
-
-ggplot(plot_df,
-       aes(x=Cond,
-           y=.data[[gene_to_plot]],
-           color=Species,
-           group=Species)) +
-  stat_summary(fun=mean, geom="line", size=1.2) +
-  stat_summary(fun=mean, geom="point", size=3) +
-  theme_classic() +
-  labs(title=paste("Trajectory:", gene_to_plot),
-       y="log2 CPM")
-
-plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
-plot_df$TimeOnly <- factor(plot_df$TimeOnly,
-                           levels=c("Day0","Day2","Day5","Day15","Day30"))
-
-ggplot(plot_df,
-       aes(x=TimeOnly,
-           y=.data[[gene_to_plot]],
-           color=Species,
-           group=Species)) +
-  stat_summary(fun=mean, geom="line", size=1.2) +
-  stat_summary(fun=mean, geom="point", size=3) +
-  theme_classic() +
-  labs(title=paste("Interaction trajectory:", gene_to_plot),
-       x="Time",
-       y="log2 CPM")
-
-plot_long <- plot_df %>%
-  pivot_longer(cols=all_of(top_genes),
-               names_to="Gene",
-               values_to="Expression")
-
-ggplot(plot_long,
-       aes(x=TimeOnly,
-           y=Expression,
-           color=Species,
-           group=Species)) +
-  stat_summary(fun=mean, geom="line") +
-  stat_summary(fun=mean, geom="point") +
-  facet_wrap(~Gene, scales="free_y") +
-  theme_classic()
-
-print(rownames(top_int_Traj2))
-
-
-```
-
-```{r}
-int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02", number=Inf)
-
-sig_int_Traj2 <- int_Traj2 %>%
-  dplyr::filter(adj.P.Val < 0.05)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-df_dir_02 <- TopTable_RNA_All_TrajectoryFC %>%
-  
-  filter(Comparisons %in% c("H_Day02", "C_Day02")) %>%
-  
-  mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
-  
-  group_by(Gene, Species) %>%
-  summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
-  
-  pivot_wider(names_from = Species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C)) %>%
-  
-  filter(H * C < 0)
-
-sig_int_Traj2$Gene <- rownames(sig_int_Traj2)
-
-
-df_dir_02_combo <- df_dir_02 %>%
-  inner_join(sig_int_Traj2, by = "Gene") %>%
-  mutate(
-    direction = case_when(
-      H > C ~ "Human_increasing",
-      C > H ~ "Chimp_increasing",
-      TRUE ~ NA_character_
-    )
-  )
-
-df_dir_02_human <- df_dir_02_combo %>%
-  filter(direction == "Human_increasing")
-
-df_dir_02_chimp <- df_dir_02_combo %>%
-  filter(direction == "Chimp_increasing")
-```
-
-```{r}
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
-df_dir_02_combo_genes <- unique(df_dir_02_combo$Gene)
-df_dir_02_human_genes <- unique(df_dir_02_human$Gene)
-df_dir_02_chimp_genes <- unique(df_dir_02_chimp$Gene)
-
-cluster_lists <- list(
-  Inter_02_genes  = Inter_02_genes,
-  df_dir_02_combo_genes  = df_dir_02_combo_genes,
-  df_dir_02_human_genes  = df_dir_02_human_genes,
-  df_dir_02_chimp_genes  = df_dir_02_chimp_genes
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All_TrajectoryFC)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-
-```
-
-
-```{r}
-int_Traj5 <- topTable(fit2, coef="Sig_Sp_inter_Traj25", number=Inf)
-
-sig_int_Traj5 <- int_Traj5 %>%
-  dplyr::filter(adj.P.Val < 0.05)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-df_dir_25 <- TopTable_RNA_All_TrajectoryFC %>%
-  
-  filter(Comparisons %in% c("H_Day25", "C_Day25")) %>%
-  
-  mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
-  
-  group_by(Gene, Species) %>%
-  summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
-  
-  pivot_wider(names_from = Species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C)) %>%
-  
-  filter(H * C < 0)
-
-sig_int_Traj5$Gene <- rownames(sig_int_Traj5)
-
-
-df_dir_25_combo <- df_dir_25 %>%
-  inner_join(sig_int_Traj5, by = "Gene") %>%
-  mutate(
-    direction = case_when(
-      H > C ~ "Human_increasing",
-      C > H ~ "Chimp_increasing",
-      TRUE ~ NA_character_
-    )
-  )
-
-df_dir_25_human <- df_dir_25_combo %>%
-  filter(direction == "Human_increasing")
-
-df_dir_25_chimp <- df_dir_25_combo %>%
-  filter(direction == "Chimp_increasing")
-```
-
-
-```{r}
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
-df_dir_25_combo_genes <- unique(df_dir_25_combo$Gene)
-df_dir_25_human_genes <- unique(df_dir_25_human$Gene)
-df_dir_25_chimp_genes <- unique(df_dir_25_chimp$Gene)
-
-cluster_lists <- list(
-  Inter_25_genes  = Inter_25_genes,
-  df_dir_25_combo_genes  = df_dir_25_combo_genes,
-  df_dir_25_human_genes  = df_dir_25_human_genes,
-  df_dir_25_chimp_genes  = df_dir_25_chimp_genes
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All_TrajectoryFC)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-
-```
-
-```{r}
-int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02", number=Inf)
-
-sig_int_Traj2 <- int_Traj2 %>%
-  dplyr::filter(adj.P.Val < 0.05)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-df_dir_02 <- TopTable_RNA_All_TrajectoryFC %>%
-  
-  filter(Comparisons %in% c("H_Day02", "C_Day02")) %>%
-  
-  mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
-  
-  group_by(Gene, Species) %>%
-  summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
-  
-  pivot_wider(names_from = Species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C)) %>%
-  
-  filter(H * C < 0)
-
-sig_int_Traj2$Gene <- rownames(sig_int_Traj2)
-
-
-df_dir_02_combo <- df_dir_02 %>%
-  inner_join(sig_int_Traj2, by = "Gene") %>%
-  mutate(
-    direction = case_when(
-      H > C ~ "Human_increasing",
-      C > H ~ "Chimp_increasing",
-      TRUE ~ NA_character_
-    )
-  )
-
-df_dir_02_human <- df_dir_02_combo %>%
-  filter(direction == "Human_increasing")
-
-df_dir_02_chimp <- df_dir_02_combo %>%
-  filter(direction == "Chimp_increasing")
-```
-
-```{r}
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
-df_dir_25_combo_genes <- unique(df_dir_25_combo$Gene)
-df_dir_25_human_genes <- unique(df_dir_25_human$Gene)
-df_dir_25_chimp_genes <- unique(df_dir_25_chimp$Gene)
-
-cluster_lists <- list(
-  Inter_25_genes  = Inter_25_genes,
-  df_dir_25_combo_genes  = df_dir_25_combo_genes,
-  df_dir_25_human_genes  = df_dir_25_human_genes,
-  df_dir_25_chimp_genes  = df_dir_25_chimp_genes
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All_TrajectoryFC)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-```
-
-```{r}
-int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj515", number=Inf)
-
-sig_int_Traj15 <- int_Traj15 %>%
-  dplyr::filter(adj.P.Val < 0.05)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-df_dir_515 <- TopTable_RNA_All_TrajectoryFC %>%
-  
-  filter(Comparisons %in% c("H_Day515", "C_Day515")) %>%
-  
-  mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
-  
-  group_by(Gene, Species) %>%
-  summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
-  
-  pivot_wider(names_from = Species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C)) %>%
-  
-  filter(H * C < 0)
-
-sig_int_Traj15$Gene <- rownames(sig_int_Traj15)
-
-
-df_dir_515_combo <- df_dir_515 %>%
-  inner_join(sig_int_Traj15, by = "Gene") %>%
-  mutate(
-    direction = case_when(
-      H > C ~ "Human_increasing",
-      C > H ~ "Chimp_increasing",
-      TRUE ~ NA_character_
-    )
-  )
-
-df_dir_515_human <- df_dir_515_combo %>%
-  filter(direction == "Human_increasing")
-
-df_dir_515_chimp <- df_dir_515_combo %>%
-  filter(direction == "Chimp_increasing")
-```
-
-```{r}
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
-df_dir_515_combo_genes <- unique(df_dir_515_combo$Gene)
-df_dir_515_human_genes <- unique(df_dir_515_human$Gene)
-df_dir_515_chimp_genes <- unique(df_dir_515_chimp$Gene)
-
-cluster_lists <- list(
-  Inter_515_genes  = Inter_515_genes,
-  df_dir_515_combo_genes  = df_dir_515_combo_genes,
-  df_dir_515_human_genes  = df_dir_515_human_genes,
-  df_dir_515_chimp_genes  = df_dir_515_chimp_genes
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All_TrajectoryFC)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-```
-
-```{r}
-int_Traj30 <- topTable(fit2, coef="Sig_Sp_inter_Traj1530", number=Inf)
-
-sig_int_Traj30 <- int_Traj30 %>%
-  dplyr::filter(adj.P.Val < 0.05)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-df_dir_1530 <- TopTable_RNA_All_TrajectoryFC %>%
-  
-  filter(Comparisons %in% c("H_Day1530", "C_Day1530")) %>%
-  
-  mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
-  
-  group_by(Gene, Species) %>%
-  summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
-  
-  pivot_wider(names_from = Species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C)) %>%
-  
-  filter(H * C < 0)
-
-sig_int_Traj30$Gene <- rownames(sig_int_Traj30)
-
-
-df_dir_1530_combo <- df_dir_1530 %>%
-  inner_join(sig_int_Traj30, by = "Gene") %>%
-  mutate(
-    direction = case_when(
-      H > C ~ "Human_increasing",
-      C > H ~ "Chimp_increasing",
-      TRUE ~ NA_character_
-    )
-  )
-
-df_dir_1530_human <- df_dir_1530_combo %>%
-  filter(direction == "Human_increasing")
-
-df_dir_1530_chimp <- df_dir_1530_combo %>%
-  filter(direction == "Chimp_increasing")
-```
-
-```{r}
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-
-TopTable_RNA_All_TrajectoryFC <- TopTable_RNA_All %>% 
-  filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
-  ))
-
-Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
-df_dir_1530_combo_genes <- unique(df_dir_1530_combo$Gene)
-df_dir_1530_human_genes <- unique(df_dir_1530_human$Gene)
-df_dir_1530_chimp_genes <- unique(df_dir_1530_chimp$Gene)
-
-cluster_lists <- list(
-  Inter_1530_genes  = Inter_1530_genes,
-  df_dir_1530_combo_genes  = df_dir_1530_combo_genes,
-  df_dir_1530_human_genes  = df_dir_1530_human_genes,
-  df_dir_1530_chimp_genes  = df_dir_1530_chimp_genes
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All_TrajectoryFC)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
 ```
 
 
@@ -1066,21 +577,30 @@ make_cardiac_table <- function(fit, coef_name) {
   readable = FALSE
 )
 
-ego_df <- as.data.frame(ego)
+  go_table <- ego@result
 
-heart_regex <- paste(
-  "heart|cardiac|cardiovascular|myocard|sarcomere|myofibril|contraction|conduction|circulation|ventricular|atrial|septum|valve|calcium",
-  sep = ""
-)
+  # -----------------------------
+  # 5. Handle empty GO results safely
+  # -----------------------------
+  if (is.null(go_table) || nrow(go_table) == 0) {
 
-cardiac_go <- ego_df %>%
-  filter(grepl(heart_regex, Description, ignore.case = TRUE))
+    cardiac_go <- go_table
+    cardiac_genes <- character(0)
 
-cardiac_genes <- cardiac_go %>%
-  tidyr::separate_rows(geneID, sep = "/") %>%
-  mutate(geneID = sub("\\..*", "", geneID)) %>%
-  distinct(geneID) %>%
-  pull(geneID)
+  } else {
+
+    cardiac_go <- go_table %>%
+      filter(grepl(
+        "heart|cardiac|cardiac muscle|cardiac chamber|cardiac septum|cardiovascular",
+        Description,
+        ignore.case = TRUE
+      ))
+
+    cardiac_genes <- unique(
+      sub("\\..*", "",
+          unlist(strsplit(cardiac_go$geneID, "/")))
+    )
+  }
 
   # -----------------------------
   # 6. Score genes
@@ -1133,7 +653,7 @@ final_table <- de %>%
   # -----------------------------
   qc <- list(
     n_sig_genes = length(sig_genes),
-    n_go_terms = nrow(ego_df),
+    n_go_terms = nrow(go_table),
     n_cardiac_terms = nrow(cardiac_go),
     n_cardiac_genes = length(cardiac_genes)
   )
@@ -1143,7 +663,7 @@ final_table <- de %>%
   # -----------------------------
   return(list(
     table = final_table,
-    go = ego_df,
+    go = go_table,
     cardiac_go = cardiac_go,
     cardiac_genes = cardiac_genes,
     ego = ego,
@@ -1168,45 +688,45 @@ cardiac_termsH02 <- cardiac_goH02
 final_tableH02_StrongCardiac <- final_tableH02 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableH02_StrongCardiac, "data/DGE/final_tableH02_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableH02_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableH02_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-resH25 <- make_cardiac_table(fit2, "H_Day25")
+resH24 <- make_cardiac_table(fit2, "H_Day24")
 
-final_tableH25 <- resH25$table
-go_tableH25 <- resH25$go
-cardiac_goH25 <- resH25$cardiac_go
+final_tableH24 <- resH24$table
+go_tableH24 <- resH24$go
+cardiac_goH24 <- resH24$cardiac_go
 
-enriched_termsH25 <- go_tableH25 %>%
+enriched_termsH24 <- go_tableH24 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_termsH25 <- cardiac_goH25
+cardiac_termsH24 <- cardiac_goH24
 
-final_tableH25_StrongCardiac <- final_tableH25 %>% 
+final_tableH24_StrongCardiac <- final_tableH24 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableH25_StrongCardiac, "data/DGE/final_tableH25_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableH24_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableH24_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-resH515 <- make_cardiac_table(fit2, "H_Day515")
+resH415 <- make_cardiac_table(fit2, "H_Day415")
 
-final_tableH515 <- resH515$table
-go_tableH515 <- resH515$go
-cardiac_goH515 <- resH515$cardiac_go
+final_tableH415 <- resH415$table
+go_tableH415 <- resH415$go
+cardiac_goH415 <- resH415$cardiac_go
 
-enriched_termsH515 <- go_tableH515 %>%
+enriched_termsH415 <- go_tableH415 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_termsH515 <- cardiac_goH515
+cardiac_termsH415 <- cardiac_goH415
 
-final_tableH515_StrongCardiac <- final_tableH515 %>% 
+final_tableH415_StrongCardiac <- final_tableH415 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableH515_StrongCardiac, "data/DGE/final_tableH515_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableH415_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableH415_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1225,7 +745,7 @@ cardiac_termsH1530 <- cardiac_goH1530
 final_tableH1530_StrongCardiac <- final_tableH1530 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableH1530_StrongCardiac, "data/DGE/final_tableH1530_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableH1530_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableH1530_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1244,45 +764,45 @@ cardiac_termsC02 <- cardiac_goC02
 final_tableC02_StrongCardiac <- final_tableC02 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableC02_StrongCardiac, "data/DGE/final_tableC02_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableC02_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableC02_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-resC25 <- make_cardiac_table(fit2, "C_Day25")
+resC24 <- make_cardiac_table(fit2, "C_Day24")
 
-final_tableC25 <- resC25$table
-go_tableC25 <- resC25$go
-cardiac_goC25 <- resC25$cardiac_go
+final_tableC24 <- resC24$table
+go_tableC24 <- resC24$go
+cardiac_goC24 <- resC24$cardiac_go
 
-enriched_termsC25 <- go_tableC25 %>%
+enriched_termsC24 <- go_tableC24 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_termsC25 <- cardiac_goC25
+cardiac_termsC24 <- cardiac_goC24
 
-final_tableC25_StrongCardiac <- final_tableC25 %>% 
+final_tableC24_StrongCardiac <- final_tableC24 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableC25_StrongCardiac, "data/DGE/final_tableC25_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableC24_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableC24_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-resC515 <- make_cardiac_table(fit2, "C_Day515")
+resC415 <- make_cardiac_table(fit2, "C_Day415")
 
-final_tableC515 <- resC515$table
-go_tableC515 <- resC515$go
-cardiac_goC515 <- resC515$cardiac_go
+final_tableC415 <- resC415$table
+go_tableC415 <- resC415$go
+cardiac_goC415 <- resC415$cardiac_go
 
-enriched_termsC515 <- go_tableC515 %>%
+enriched_termsC415 <- go_tableC415 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_termsC515 <- cardiac_goC515
+cardiac_termsC415 <- cardiac_goC415
 
-final_tableC515_StrongCardiac <- final_tableC515 %>% 
+final_tableC415_StrongCardiac <- final_tableC415 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableC515_StrongCardiac, "data/DGE/final_tableC515_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableC415_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableC415_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1301,7 +821,7 @@ cardiac_termsC1530 <- cardiac_goC1530
 final_tableC1530_StrongCardiac <- final_tableC1530 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableC1530_StrongCardiac, "data/DGE/final_tableC1530_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableC1530_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableC1530_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1320,7 +840,7 @@ cardiac_termsHvC0 <- cardiac_goHvC0
 final_tableHvC0_StrongCardiac <- final_tableHvC0 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableHvC0_StrongCardiac, "data/DGE/final_tableHvC0_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableHvC0_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableHvC0_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1339,26 +859,26 @@ cardiac_termsHvC2 <- cardiac_goHvC2
 final_tableHvC2_StrongCardiac <- final_tableHvC2 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableHvC2_StrongCardiac, "data/DGE/final_tableHvC2_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableHvC2_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableHvC2_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-resHvC5 <- make_cardiac_table(fit2, "HvC_Day5")
+resHvC4 <- make_cardiac_table(fit2, "HvC_Day4")
 
-final_tableHvC5 <- resHvC5$table
-go_tableHvC5 <- resHvC5$go
-cardiac_goHvC5 <- resHvC5$cardiac_go
+final_tableHvC4 <- resHvC4$table
+go_tableHvC4 <- resHvC4$go
+cardiac_goHvC4 <- resHvC4$cardiac_go
 
-enriched_termsHvC5 <- go_tableHvC5 %>%
+enriched_termsHvC4 <- go_tableHvC4 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_termsHvC5 <- cardiac_goHvC5
+cardiac_termsHvC4 <- cardiac_goHvC4
 
-final_tableHvC5_StrongCardiac <- final_tableHvC5 %>% 
+final_tableHvC4_StrongCardiac <- final_tableHvC4 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableHvC5_StrongCardiac, "data/DGE/final_tableHvC5_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableHvC4_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableHvC4_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1377,7 +897,7 @@ cardiac_termsHvC15 <- cardiac_goHvC15
 final_tableHvC15_StrongCardiac <- final_tableHvC15 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableHvC15_StrongCardiac, "data/DGE/final_tableHvC15_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableHvC15_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableHvC15_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1396,7 +916,7 @@ cardiac_termsHvC30 <- cardiac_goHvC30
 final_tableHvC30_StrongCardiac <- final_tableHvC30 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_tableHvC30_StrongCardiac, "data/DGE/final_tableHvC30_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_tableHvC30_StrongCardiac, "data/DGE/Species/concat/NoD5/final_tableHvC30_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1415,45 +935,45 @@ cardiac_terms02 <- cardiac_go02
 final_table02_StrongCardiac <- final_table02 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_table02_StrongCardiac, "data/DGE/final_table02_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_table02_StrongCardiac, "data/DGE/Species/concat/NoD5/final_table02_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-res25 <- make_cardiac_table(fit2, "Sig_Sp_inter_Traj25")
+res24 <- make_cardiac_table(fit2, "Sig_Sp_inter_Traj24")
 
-final_table25 <- res25$table
-go_table25 <- res25$go
-cardiac_go25 <- res25$cardiac_go
+final_table24 <- res24$table
+go_table24 <- res24$go
+cardiac_go24 <- res24$cardiac_go
 
-enriched_terms25 <- go_table25 %>%
+enriched_terms24 <- go_table24 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_terms25 <- cardiac_go25
+cardiac_terms24 <- cardiac_go24
 
-final_table25_StrongCardiac <- final_table25 %>% 
+final_table24_StrongCardiac <- final_table24 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_table25_StrongCardiac, "data/DGE/final_table25_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_table24_StrongCardiac, "data/DGE/Species/concat/NoD5/final_table24_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
-res515 <- make_cardiac_table(fit2, "Sig_Sp_inter_Traj515")
+res415 <- make_cardiac_table(fit2, "Sig_Sp_inter_Traj415")
 
-final_table515 <- res515$table
-go_table515 <- res515$go
-cardiac_go515 <- res515$cardiac_go
+final_table415 <- res415$table
+go_table415 <- res415$go
+cardiac_go415 <- res415$cardiac_go
 
-enriched_terms515 <- go_table515 %>%
+enriched_terms415 <- go_table415 %>%
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust)
 
-cardiac_terms515 <- cardiac_go515
+cardiac_terms415 <- cardiac_go415
 
-final_table515_StrongCardiac <- final_table515 %>% 
+final_table415_StrongCardiac <- final_table415 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_table515_StrongCardiac, "data/DGE/final_table515_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_table415_StrongCardiac, "data/DGE/Species/concat/NoD5/final_table415_StrongCardiac.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -1472,156 +992,13 @@ cardiac_terms1530 <- cardiac_go1530
 final_table1530_StrongCardiac <- final_table1530 %>% 
   filter(category == 'Strong cardiac')
 
-write.csv(final_table1530_StrongCardiac, "data/DGE/final_table1530_StrongCardiac.csv", row.names = FALSE)
+write.csv(final_table1530_StrongCardiac, "data/DGE/Species/concat/NoD5/final_table1530_StrongCardiac.csv", row.names = FALSE)
 ```
 
-```{r}
-Sig_sp_int_15_30_Table <- make_cardiac_table(
-  fit = fit2,
-  coef_name = "Sig_Sp_inter_Traj1530",
-  mapping = mapping,
-  cardiac_go = cardiac_go
-)
-
-Sig_sp_int_15_30_Table_StrongCardiac <- Sig_sp_int_15_30_Table %>% 
-  filter(category == 'Strong cardiac')
-```
-
-```{r}
-background_genes <- unique(TopTable_RNA_All$Gene)
-sig_genes <- df_dir_02_human$Gene  
-
-  ego <- enrichGO(
-  gene     = sig_genes,
-  universe = background_genes,
-  OrgDb    = org.Hs.eg.db,
-  keyType  = "ENSEMBL",
-  ont      = "BP",
-  readable = FALSE
-)
-
-go_table_Int02_HumanUp <- as.data.frame(ego)
-```
-
-```{r}
-background_genes <- unique(TopTable_RNA_All$Gene)
-sig_genes <- df_dir_02_chimp$Gene  
-
-  ego <- enrichGO(
-  gene     = sig_genes,
-  universe = background_genes,
-  OrgDb    = org.Hs.eg.db,
-  keyType  = "ENSEMBL",
-  ont      = "BP",
-  readable = FALSE
-)
-
-go_table_Int02_ChimpUp <- as.data.frame(ego)
-```
-
-
-```{r}
-# # BiocManager::install("biomaRt", update = TRUE, ask = FALSE)
-# library(biomaRt)
-# 
-# base <- sig_int_Traj2 %>%
-#   rownames_to_column("ENSEMBL")
-# 
-# mart <- useEnsembl(
-#   biomart = "genes",
-#   dataset = "hsapiens_gene_ensembl",
-#   mirror = "useast"
-# )
-# 
-# mapping <- getBM(
-#   attributes = c("ensembl_gene_id", "hgnc_symbol"),
-#   filters = "ensembl_gene_id",
-#   values = base,
-#   mart = mart
-# )
-# 
-# mapping <- mapping %>%
-#   filter(hgnc_symbol != "") %>%
-#   distinct(ensembl_gene_id, .keep_all = TRUE)
-# 
-# results_annot <- merge(sig_int_Traj2, mapping,
-#                        by.x = "row.names",
-#                        by.y = "ensembl_gene_id",
-#                        all.x = TRUE)
-# 
-# colnames(results_annot)[1] <- "ENSEMBL"
-# 
-# library(clusterProfiler)
-# library(org.Hs.eg.db)
-# 
-# ego <- enrichGO(
-#   gene          = mapping$ensembl_gene_id,
-#   OrgDb         = org.Hs.eg.db,
-#   keyType       = "ENSEMBL",
-#   ont           = "BP",
-#   readable      = TRUE
-# )
-# 
-# go_table <- ego@result
-# 
-# cardiac_go <- go_table[
-#   grepl("heart|cardiac|cardiovascular|circulatory", 
-#         go_table$Description, ignore.case = TRUE),
-# ]
-# 
-# cardiac_genes <- unique(unlist(strsplit(cardiac_go$geneID, "/")))
-# 
-# results_annot$cardiac_category <- ifelse(
-#   results_annot$hgnc_symbol %in% cardiac_genes,
-#   "Cardiac-related",
-#   "None"
-# )
-# 
-# results_annot$score <- ifelse(results_annot$hgnc_symbol %in% cardiac_genes, 1, 0)
-# 
-# results_annot$category <- case_when(
-#   
-#   !is.na(results_annot$adj.P.Val) &
-#   !is.na(results_annot$logFC) &
-#   results_annot$score == 1 &
-#   results_annot$adj.P.Val < 0.05 &
-#   abs(results_annot$logFC) > 1 ~ "Strong cardiac",
-#   
-#   results_annot$score == 1 &
-#   (results_annot$adj.P.Val < 0.05 |
-#    abs(results_annot$logFC) > 0.5) ~ "Moderate cardiac",
-#   
-#   results_annot$score == 1 ~ "Weak cardiac",
-#   
-#   TRUE ~ "None"
-# )
-# 
-# mapping <- mapping %>%
-#   dplyr::rename(ENSEMBL = ensembl_gene_id)
-# 
-# final_table <- sig_int_Traj2 %>%
-#   tibble::rownames_to_column("ENSEMBL") %>%
-#   
-#   # join gene symbols
-#   left_join(mapping, by = "ENSEMBL") %>%
-#   
-#   # join limma-based annotations (your category lives here)
-#   left_join(results_annot %>% 
-#               dplyr::select(ENSEMBL, category),
-#             by = "ENSEMBL") %>%
-#   
-#   dplyr::select(ENSEMBL, hgnc_symbol, logFC, adj.P.Val, category)
-# 
-# results_annot %>%
-#   filter(category == "Strong cardiac") %>%
-#   pull(ENSEMBL)
-
-```
-
-```{r RNASeq_DGE_Interactions_Day5, fig.width = 15, fig.height= 10}
-int_Traj5 <- topTable(fit2, coef="Sig_Sp_inter_Traj25")
-top_int_Traj5 <- topTable(fit2, coef="Sig_Sp_inter_Traj25", number=20)
-top_genes <- rownames(top_int_Traj5)
+```{r RNASeq_DGE_Interactions_Day02, fig.width = 25, fig.height= 30}
+int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02",number=Inf)
+top_int_Traj2 <- topTable(fit2, coef="Sig_Sp_inter_Traj02", number=200)
+top_genes <- rownames(top_int_Traj2)
 
 library(dplyr)
 library(tidyr)
@@ -1631,12 +1008,12 @@ expr_mat <- v2$E[top_genes, ]  # expression for top genes
 plot_df <- as.data.frame(t(expr_mat))
 plot_df$Sample <- rownames(plot_df)
 
-plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+plot_df <- cbind(plot_df, RNA_Metadata_NoD5_NoRep)
 
 # Make time numeric for ordering
 plot_df$Time <- factor(plot_df$Cond,
-                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
-                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+                       levels=c("H_Day0","H_Day2","H_Day4","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day4","C_Day15","C_Day30"))
 
 library(ggplot2)
 
@@ -1655,7 +1032,76 @@ ggplot(plot_df,
 
 plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
 plot_df$TimeOnly <- factor(plot_df$TimeOnly,
-                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+                           levels=c("Day0","Day2","Day4","Day15","Day30"))
+
+ggplot(plot_df,
+       aes(x=TimeOnly,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Interaction trajectory:", gene_to_plot),
+       x="Time",
+       y="log2 CPM")
+
+plot_long <- plot_df %>%
+  pivot_longer(cols=all_of(top_genes),
+               names_to="Gene",
+               values_to="Expression")
+
+ggplot(plot_long,
+       aes(x=TimeOnly,
+           y=Expression,
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line") +
+  stat_summary(fun=mean, geom="point") +
+  facet_wrap(~Gene, scales="free_y") +
+  theme_classic()
+
+print(rownames(top_int_Traj2))
+```
+
+```{r RNASeq_DGE_Interactions_Day24, fig.width = 25, fig.height= 30}
+int_Traj4 <- topTable(fit2, coef="Sig_Sp_inter_Traj24")
+top_int_Traj4 <- topTable(fit2, coef="Sig_Sp_inter_Traj24", number=200)
+top_genes <- rownames(top_int_Traj4)
+
+library(dplyr)
+library(tidyr)
+
+expr_mat <- v2$E[top_genes, ]  # expression for top genes
+
+plot_df <- as.data.frame(t(expr_mat))
+plot_df$Sample <- rownames(plot_df)
+
+plot_df <- cbind(plot_df, RNA_Metadata_NoD5_NoRep)
+
+# Make time numeric for ordering
+plot_df$Time <- factor(plot_df$Cond,
+                       levels=c("H_Day0","H_Day2","H_Day4","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day4","C_Day15","C_Day30"))
+
+library(ggplot2)
+
+gene_to_plot <- top_genes[1]
+
+ggplot(plot_df,
+       aes(x=Cond,
+           y=.data[[gene_to_plot]],
+           color=Species,
+           group=Species)) +
+  stat_summary(fun=mean, geom="line", size=1.2) +
+  stat_summary(fun=mean, geom="point", size=3) +
+  theme_classic() +
+  labs(title=paste("Trajectory:", gene_to_plot),
+       y="log2 CPM")
+
+plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
+plot_df$TimeOnly <- factor(plot_df$TimeOnly,
+                           levels=c("Day0","Day2","Day4","Day15","Day30"))
 
 ggplot(plot_df,
        aes(x=TimeOnly,
@@ -1685,9 +1131,9 @@ ggplot(plot_long,
   theme_classic()
 ```
 
-```{r RNASeq_DGE_Interactions_Day15, fig.width = 15, fig.height= 10}
-int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj515")
-top_int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj515", number=20)
+```{r RNASeq_DGE_Interactions_Day15, fig.width = 25, fig.height= 30}
+int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj415")
+top_int_Traj15 <- topTable(fit2, coef="Sig_Sp_inter_Traj415", number=200)
 top_genes <- rownames(top_int_Traj15)
 
 library(dplyr)
@@ -1698,12 +1144,12 @@ expr_mat <- v2$E[top_genes, ]  # expression for top genes
 plot_df <- as.data.frame(t(expr_mat))
 plot_df$Sample <- rownames(plot_df)
 
-plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+plot_df <- cbind(plot_df, RNA_Metadata_NoD5_NoRep)
 
 # Make time numeric for ordering
 plot_df$Time <- factor(plot_df$Cond,
-                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
-                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+                       levels=c("H_Day0","H_Day2","H_Day4","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day4","C_Day15","C_Day30"))
 
 library(ggplot2)
 
@@ -1722,7 +1168,7 @@ ggplot(plot_df,
 
 plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
 plot_df$TimeOnly <- factor(plot_df$TimeOnly,
-                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+                           levels=c("Day0","Day2","Day4","Day15","Day30"))
 
 ggplot(plot_df,
        aes(x=TimeOnly,
@@ -1752,9 +1198,9 @@ ggplot(plot_long,
   theme_classic()
 ```
 
-```{r RNASeq_DGE_Interactions_Day30, fig.width = 15, fig.height= 10}
+```{r RNASeq_DGE_Interactions_Day30, fig.width = 25, fig.height= 30}
 int_Traj30 <- topTable(fit2, coef="Sig_Sp_inter_Traj1530")
-top_int_Traj30 <- topTable(fit2, coef="Sig_Sp_inter_Traj1530", number=20)
+top_int_Traj30 <- topTable(fit2, coef="Sig_Sp_inter_Traj1530", number=200)
 top_genes <- rownames(top_int_Traj30)
 
 library(dplyr)
@@ -1765,12 +1211,12 @@ expr_mat <- v2$E[top_genes, ]  # expression for top genes
 plot_df <- as.data.frame(t(expr_mat))
 plot_df$Sample <- rownames(plot_df)
 
-plot_df <- cbind(plot_df, RNA_Metadata_NoD4_NoRep)
+plot_df <- cbind(plot_df, RNA_Metadata_NoD5_NoRep)
 
 # Make time numeric for ordering
 plot_df$Time <- factor(plot_df$Cond,
-                       levels=c("H_Day0","H_Day2","H_Day5","H_Day15","H_Day30",
-                                "C_Day0","C_Day2","C_Day5","C_Day15","C_Day30"))
+                       levels=c("H_Day0","H_Day2","H_Day4","H_Day15","H_Day30",
+                                "C_Day0","C_Day2","C_Day4","C_Day15","C_Day30"))
 
 library(ggplot2)
 
@@ -1789,7 +1235,7 @@ ggplot(plot_df,
 
 plot_df$TimeOnly <- gsub("H_|C_", "", plot_df$Cond)
 plot_df$TimeOnly <- factor(plot_df$TimeOnly,
-                           levels=c("Day0","Day2","Day5","Day15","Day30"))
+                           levels=c("Day0","Day2","Day4","Day15","Day30"))
 
 ggplot(plot_df,
        aes(x=TimeOnly,
@@ -1960,8 +1406,8 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 ```
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
-H_comp <- "H_Day25"
-C_comp <- "C_Day25"
+H_comp <- "H_Day24"
+C_comp <- "C_Day24"
 
 df_wide <- TopTable_RNA_All %>%
   filter(Comparisons %in% c(H_comp, C_comp)) %>%
@@ -2028,8 +1474,8 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]])) +
 
 
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
-H_comp <- "H_Day515"
-C_comp <- "C_Day515"
+H_comp <- "H_Day415"
+C_comp <- "C_Day415"
 
 df_wide <- TopTable_RNA_All %>%
   filter(Comparisons %in% c(H_comp, C_comp)) %>%

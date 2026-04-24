@@ -94,7 +94,7 @@ Unfiltered RNA-Seq Log2CPM")
 
 ####lcpm_G1_SpTp
 #####All
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata <- RNA_Metadata
@@ -155,7 +155,7 @@ l0g2cpm >1 in 3 or more SpTp")
 ```
 
 #####No4
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4
 metadata <- RNA_Metadata_No4
@@ -216,7 +216,7 @@ l0g2cpm >1 in 3 or more SpTp")
 ```
 
 #####No5
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No5
 metadata <- RNA_Metadata_No5
@@ -277,7 +277,7 @@ l0g2cpm >1 in 3 or more SpTp")
 ####FilterByExp
 #####All
 
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_FilterByExpression_RNA_log2cpm
 metadata <- RNA_Metadata
@@ -337,7 +337,7 @@ EdgeR FilterByExpression")
 
 ```
 #####No4
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA_No4, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_FilterByExpression_RNA_log2cpm_No4
 metadata <- RNA_Metadata_No4
@@ -399,7 +399,7 @@ EdgeR FilterByExpression - Day 5 CMeso")
 
 
 #####No5
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA_No5, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_FilterByExpression_RNA_log2cpm_No5
 metadata <- RNA_Metadata_No5
@@ -462,7 +462,7 @@ EdgeR FilterByExpression - Day 4 CMeso")
 ####RMG0
 #####All
 
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_RowMean_G0_PCA, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_RMG0_RNA_log2cpm
 metadata <- RNA_Metadata
@@ -523,7 +523,7 @@ RMG0")
 ```
 
 #####No4
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_RowMean_G0_PCA_No4, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_RMG0_RNA_log2cpm_No4
 metadata <- RNA_Metadata_No4
@@ -585,7 +585,7 @@ RMG0 - Day 5 CMeso")
 
 
 #####No5
-```{r RNA_RMG0_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_RowMean_G0_PCA_No5, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_RMG0_RNA_log2cpm_NoD5
 metadata <- RNA_Metadata_No5
@@ -652,6 +652,6 @@ RMG0 - Day 4 CMeso")
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/RNA_PCA_Ensemble.Rmd")
+wflow_publish("analysis/RNA_PCA_Ensemble.Rmd")
 
 ```

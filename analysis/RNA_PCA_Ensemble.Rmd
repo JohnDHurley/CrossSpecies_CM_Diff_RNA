@@ -585,11 +585,8 @@ RMG0 - Day 5 CMeso")
 
 
 #####No5
-<<<<<<< HEAD
+
 ```{r RNA_RowMean_G0_PCA_No5, fig.height=6,fig.width=8}
-=======
-```{r RNA_RowMean_G0_PCA_No4, fig.height=6,fig.width=8}
->>>>>>> 64e527221b2e1cb94e12af4abb2d5c2bae407c9e
 
 log2cpm <- Filt_RMG0_RNA_log2cpm_NoD5
 metadata <- RNA_Metadata_No5

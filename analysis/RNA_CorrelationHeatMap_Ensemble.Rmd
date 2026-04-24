@@ -98,13 +98,69 @@ Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpre
 
 ```
 
+```{r Making_Plotting_Function}
+plot_stage <- function(stage_name, data, ann_colors) {
+  
+  df <- data %>%
+    filter(Stage == stage_name)
+  
+  ggplot(df, aes(x = Timepoint, y = log2CPM)) +
+    
+    geom_boxplot(
+      aes(fill = Species, group = interaction(Timepoint, Species)),
+      position = position_dodge(width = 0.8),
+      alpha = 0.3,
+      outlier.shape = NA
+    ) +
+    
+    scale_fill_manual(values = ann_colors$species_cor) +
+    
+    geom_jitter(
+      aes(color = Individual),
+      position = position_jitterdodge(
+        jitter.width = 0.15,
+        dodge.width = 0.8
+      ),
+      size = 1,
+      alpha = 0.6
+    ) +
+    
+    scale_color_manual(values = ann_colors$individual_cor) +
+    
+    geom_line(
+      stat = "summary",
+      fun = mean,
+      aes(group = Species, linetype = Species),
+      position = position_dodge(width = 0.8),
+      linewidth = 1
+    ) +
+    
+    scale_linetype_manual(values = c(C = "dotted", H = "solid")) +
+    
+    geom_point(
+      stat = "summary",
+      fun = mean,
+      aes(shape = Species),
+      position = position_dodge(width = 0.8),
+      size = 2
+    ) +
+    
+    facet_wrap(~ Gene, scales = "free_y") +
+    
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    
+    ggtitle(stage_name)
+}
+```
+
 ####Data Upload and Stats
 
 ```{r Setting_Up_Data, results="hide"}
 
-# RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
-# counts_table <- read.delim("~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt")
-# marker_genes <- read.delim("~/diff_timeline_tes/RNA/CM_Diff_PurityPanel.txt")
+RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
+counts_table <- read.delim("~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt")
+marker_genes <- read.delim("~/diff_timeline_tes/RNA/CM_Diff_PurityPanel.txt")
 
 RNA_fc <- counts_table %>%
   filter(Geneid != "#") %>%
@@ -967,7 +1023,6 @@ axis(1,
 
 
 ####Unfiltered
-
 #####Boxplot_Histograms
 ```{r RNASeq_FeatureCounts_Unfiltered, fig.height=6,fig.width=12}
 
@@ -1422,7 +1477,7 @@ ggplot(log2cpm_long_NoR, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_separated, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_FullMarkerPanel_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 
 ggplot(log2cpm_long_NoR, aes(
@@ -1488,7 +1543,8 @@ ggplot(log2cpm_long_NoR, aes(
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_data, fig.height=10,fig.width=10}
+
+```{r RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap, fig.height=10,fig.width=10}
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -1557,7 +1613,8 @@ pheatmap(
   color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100)
 )
 ```
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_means, fig.height=6,fig.width=6}
+
+```{r RNASeq_FeatureCounts_FullMarkerPanel_SummaryHeatMap, fig.height=6,fig.width=6}
 mean_df$Stage <- factor(
   mean_df$Stage,
   levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
@@ -1589,334 +1646,22 @@ ggplot(mean_df, aes(
 ```
 
 ######ByStage-All
-```{r RNASeq_MarkerGenes_graph_species_separated_pluri, fig.height=12,fig.width=12}
-pluri_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "Pluripotency")
+```{r RNASeq_FeatureCounts_FullMarkerPanel_ByGene, fig.height=12,fig.width=12}
+stages <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
 
-ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
+plots <- lapply(stages, function(s) {
+  plot_stage(s, log2cpm_long_NoR, ann_colors)
+})
 
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-     geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 3,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(plots)
 ```
-```{r RNASeq_MarkerGenes_graph_species_separated_meso, fig.height=12,fig.width=12}
-meso_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "Mesoderm")
-
-ggplot(meso_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardmeso, fig.height=12,fig.width=12}
-cardmeso_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "CardiacMesoderm")
-
-ggplot(cardmeso_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardprog, fig.height=12,fig.width=12}
-cardprog_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "CardiacProgenitors")
-
-ggplot(cardprog_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardearly, fig.height=12,fig.width=12}
-cardearly_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "EarlyCardiomyocytes")
-
-ggplot(cardearly_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardlate, fig.height=12,fig.width=12}
-cardlate_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "MatureCardiomyocytes")
-
-ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-
-  scale_fill_manual(values = ann_colors$species_cor) +
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-
-
-
 
 
 ####logCPM >1 in 4 or more samples within at least one species in a timepoint
@@ -1957,7 +1702,7 @@ axis(1,
 
 ######Cor_HeatMap
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correation,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata <- RNA_Metadata
@@ -1992,9 +1737,9 @@ print(
 
 ```
 
-######Marker Genes
+######Exp Marker Genes
 
-```{r RNASeq_MarkerGenes_graph_species_separated_expressed_PerDay, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 expressed_genes <- rownames(Filt_logcpm_G1_SpTp_RNA_log2cpm)
 
@@ -2065,7 +1810,7 @@ ggplot(log2cpm_long_NoR_expressed, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_means_expressed_PerDay, fig.height=6,fig.width=6}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_SummaryHeatMap, fig.height=6,fig.width=6}
 mean_df_expressed <- log2cpm_long_NoR_expressed %>%
   group_by(Stage, Timepoint, Species) %>%
   summarise(
@@ -2103,7 +1848,7 @@ ggplot(mean_df_expressed, aes(
   )
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_data_expressed_PerDay, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_FullHeatMap, fig.height=10,fig.width=10}
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -2173,6 +1918,23 @@ pheatmap(
 )
 ```
 
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene, fig.height=12,fig.width=12}
+stages <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
+
+plots <- lapply(stages, function(s) {
+  plot_stage(s, log2cpm_long_NoR_expressed, ann_colors)
+})
+
+print(plots)
+```
+
 #####No4
 ######Boxplot_Histograms
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.height=6,fig.width=12}
@@ -2212,7 +1974,7 @@ axis(1,
 
 #######Cor_HeatMap
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correation,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata <- RNA_Metadata_No4
 log2cpm <- cpm(counts, log=TRUE) 
@@ -2248,9 +2010,10 @@ print(
 ```
 
 
-#####NoD5
+
+#####No5
 ######Boxplot_Histograms
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5, fig.height=6,fig.width=12}
 counts <- RNA_fc_No5
 metadata <- RNA_Metadata_No5
 log2cpm <- cpm(counts, log=TRUE)
@@ -2287,7 +2050,7 @@ axis(1,
 
 #######Cor_HeatMap
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correation,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5,fig.height=10,fig.width=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
 metadata <- RNA_Metadata_No5
 log2cpm <- cpm(counts, log=TRUE) 
@@ -2320,6 +2083,8 @@ print(
 )
 
 ```
+
+
 
 
 
@@ -2360,7 +2125,7 @@ axis(1,
 ```
 
 #######Cor_HeatMap
-```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_FilterByExpression_Correlation, fig.height=10,fig.width=10}
 
 ######Cor_HeatMap####
 Cor_Filt_FilterByExpression_RNA_log2cpm <- cor(Filt_FilterByExpression_RNA_log2cpm, method = "spearman")
@@ -2391,7 +2156,7 @@ print(
 ```
 
 ######Marker Genes
-```{r RNASeq_MarkerGenes_graph_species_separated_expressed_PerDay, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_FilterByExpression_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 expressed_genes <- rownames(Filt_FilterByExpression_RNA_fc)
 
@@ -2462,7 +2227,7 @@ ggplot(log2cpm_long_NoR_expressed, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_means_PerDay, fig.height=6,fig.width=6}
+```{r RNASeq_FeatureCounts_FilterByExpression_ExpressedMarkers_SummaryHeatMap, fig.height=6,fig.width=6}
 mean_df$Stage <- factor(
   mean_df$Stage,
   levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
@@ -2493,117 +2258,7 @@ ggplot(mean_df, aes(
   )
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_means_expressed_PerDay, fig.height=6,fig.width=6}
-mean_df_expressed <- log2cpm_long_NoR_expressed %>%
-  group_by(Stage, Timepoint, Species) %>%
-  summarise(
-    mean_log2CPM = mean(log2CPM),
-    .groups = "drop"
-  )
-
-mean_df_expressed$Stage <- factor(
-  mean_df_expressed$Stage,
-  levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
-)
-
-levels(mean_df_expressed$Stage)
-mean_df_expressed$Stage
-
-ggplot(mean_df_expressed, aes(
-  x = Timepoint,
-  y = Stage,
-  fill = mean_log2CPM
-)) +
-  geom_tile(color = "white") +
-
-  facet_wrap(~ Species) +
-
-  scale_fill_gradient2(
-    low = "blue",
-    mid = "white",
-    high = "red",
-    midpoint = 0
-  ) +
-
-  theme_classic() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-```
-
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_data, fig.height=6,fig.width=6}
-library(dplyr)
-library(tidyr)
-library(tibble)
-
-mat <- log2cpm_long_NoR %>%
-  dplyr::group_by(Gene, Sample) %>%
-  dplyr::summarise(log2CPM = mean(log2CPM, na.rm = TRUE), .groups = "drop") %>%
-  tidyr::pivot_wider(names_from = Sample, values_from = log2CPM) %>%
-  tibble::column_to_rownames("Gene") %>%
-  as.matrix()
-
-stage_order <- c(
-  "Pluripotency",
-  "Mesoderm",
-  "CardiacMesoderm",
-  "CardiacProgenitors",
-  "EarlyCardiomyocytes",
-  "MatureCardiomyocytes"
-)
-
-gene_annot <- log2cpm_long_NoR %>%
-  dplyr::select(Gene, Stage) %>%
-  distinct() %>%
-  dplyr::mutate(Stage = factor(Stage, levels = stage_order)) %>%
-  dplyr::arrange(Stage)
-
-mat <- mat[gene_annot$Gene, ]
-
-gene_annot <- data.frame(Stage = gene_annot$Stage)
-rownames(gene_annot) <- gene_annot$Gene
-
-tp_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
-
-sample_annot <- log2cpm_long_NoR %>%
-  distinct(Sample, Timepoint, Species, Individual) %>%
-  mutate(Timepoint = trimws(Timepoint)) %>%
-  column_to_rownames("Sample")
-
-sample_annot <- sample_annot[colnames(mat), ]
-
-rownames(sample_annot) <- sample_annot$Sample
-sample_annot <- sample_annot[, c("Timepoint", "Species", "Individual")]
-
-annotation_colors = list(
-  Timepoint  = ann_colors$timepoint_cor,
-  Species    = ann_colors$species_cor,
-  Individual = ann_colors$individual_cor,
-
-  Stage = c(
-    Pluripotency = "#1f77b4",
-    Mesoderm = "#ff7f0e",
-    CardiacMesoderm = "yellow",
-    CardiacProgenitors = "#2ca02c",
-    EarlyCardiomyocytes = "#d62728",
-    MatureCardiomyocytes = "#9467bd"
-  )
-)
-```
-
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph, fig.height=10,fig.width=10}
-pheatmap(
-  mat,
-  annotation_col = sample_annot,
-  annotation_row = gene_annot,
-  annotation_colors = annotation_colors,
-  cluster_rows = FALSE,
-  clustering_distance_cols = "correlation",
-  color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100)
-)
-```
-
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_data_expressed_PerDay, fig.height=6,fig.width=6}
+```{r RNASeq_FeatureCounts_FilterByExpression_ExpressedMarkers_FullHeatMap, fig.height=12,fig.width=12}
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -2661,9 +2316,7 @@ annotation_colors = list(
     MatureCardiomyocytes = "#9467bd"
   )
 )
-```
 
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_graph_expressed_PerDay, fig.height=10,fig.width=10}
 pheatmap(
   mat_expressed,
   annotation_col = sample_annot_expressed,
@@ -2675,334 +2328,28 @@ pheatmap(
 )
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_separated_pluri_PerDay, fig.height=12,fig.width=12}
-pluri_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "Pluripotency")
 
-ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
+```{r RNASeq_FeatureCounts_FilterByExpression_ExpressedMarkers_ByGene, fig.height=12,fig.width=12}
+stages <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
 
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-     geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 3,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
+plots <- lapply(stages, function(s) {
+  plot_stage(s, log2cpm_long_NoR_expressed, ann_colors)
+})
 
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(plots)
 ```
 
-```{r RNASeq_MarkerGenes_graph_species_separated_meso_PerDay, fig.height=12,fig.width=12}
-meso_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "Mesoderm")
-
-ggplot(meso_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardmeso_PerDay, fig.height=12,fig.width=12}
-cardmeso_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "CardiacMesoderm")
-
-ggplot(cardmeso_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardprog_PerDay, fig.height=12,fig.width=12}
-cardprog_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "CardiacProgenitors")
-
-ggplot(cardprog_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardearly_PerDay, fig.height=12,fig.width=12}
-cardearly_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "EarlyCardiomyocytes")
-
-ggplot(cardearly_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardlate_PerDay, fig.height=12,fig.width=12}
-cardlate_genes <- log2cpm_long_NoR %>%
-  filter(Stage == "MatureCardiomyocytes")
-
-ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-
-  scale_fill_manual(values = ann_colors$species_cor) +
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
 
 #####No4
 ######Boxplot_Histograms
-```{r RNASeq_FeatureCounts_FilterByExpression, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_FilterByExpression_No4, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No4)
 
@@ -3036,7 +2383,7 @@ axis(1,
 ```
 
 #######Cor_HeatMap
-```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_FilterByExpression_Correlation_No4, fig.height=10,fig.width=10}
 Cor_Filt_FilterByExpression_RNA_log2cpm_No4 <- cor(Filt_FilterByExpression_RNA_log2cpm_No4, method = "spearman")
 individual <- RNA_Metadata_No4$Individual
 species <- RNA_Metadata_No4$Species
@@ -3066,7 +2413,7 @@ print(
 
 #####No5
 ######Boxplot_Histograms
-```{r RNASeq_FeatureCounts_FilterByExpression, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_FilterByExpression_No5, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No5)
 
@@ -3100,7 +2447,7 @@ axis(1,
 ```
 
 #######Cor_HeatMap
-```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_FilterByExpression_Correlation_No5, fig.height=10,fig.width=10}
 
 Cor_Filt_FilterByExpression_RNA_log2cpm_No5 <- cor(Filt_FilterByExpression_RNA_log2cpm_No5, method = "spearman")
 individual <- RNA_Metadata_No5$Individual
@@ -3160,156 +2507,8 @@ axis(1,
 # saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 ```
 
-
-######Filt Counts stats
-```{r RNASeq_Counts_graph, fig.height=6,fig.width=12}
-
-# Define ordered day factor
-day_levels <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
-
-total_reads_df <- total_reads_df %>%
-  mutate(
-    # Order Timepoint for bars
-    Timepoint = factor(Timepoint, levels = day_levels, ordered = TRUE),
-    
-    # Individual text color
-    Individual_Color = ann_colors$individual_cor[Individual]
-  ) %>%
-  # Order Sample for x-axis: first by Individual, then by Day
-  arrange(Individual, Timepoint) %>%
-  mutate(Sample = factor(Sample, levels = Sample))  # preserve order in ggplot
-
-# Plot
-ggplot(total_reads_df, aes(x = Sample, y = Total_Counts, fill = Timepoint)) +
-  
-  # Bars colored by Timepoint
-  geom_col() +
-
-  # Annotate Individual names under bars, colored by individual
-  geom_text(
-    aes(label = Individual, color = Individual_Color),
-    y = 0, angle = 90, hjust = 1, vjust = 0.5, size = 3
-  ) +
-
-  # Manual Timepoint colors
-  scale_fill_manual(values = ann_colors$timepoint_cor) +
-
-  # Use exact color for individual labels
-  scale_color_identity() +
-
-  # Facet by Species if desired
-  facet_grid(~Species, scales = "free_x", space = "free_x") +
-
-  # Theme
-  theme_minimal(base_size = 14) +
-  theme(
-    axis.text.x = element_blank(),  # hide default X labels
-    axis.ticks.x = element_blank(),
-    legend.position = "top"
-  ) +
-
-  labs(
-    title = "Counts per Sample",
-    x = "Individual (bars grouped by individual, ordered by day)",
-    y = "Total Counts",
-    fill = "Timepoint"
-  )
-
-ggplot(total_reads_df, aes(x = Species, y = Total_Counts)) +
-  
-  # Boxplot for each species
-  geom_boxplot(aes(fill = Species), alpha = 0.3, outlier.shape = NA) + 
-  
-  # Overlay individual points colored by individual
-  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
-
-  # Use individual colors
-  scale_color_manual(values = ann_colors$individual_cor) +
-
-  # Optional: species fill colors (light grey / black)
-  scale_fill_manual(values = c("H" = "#17171717", "C" = "#17171717")) +
-
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "top"
-  ) +
-
-  labs(
-    title = "Counts per Species",
-    x = "Species",
-    y = "Total Counts",
-    color = "Individual",
-    fill = "Species"
-  )
-
-
-ggplot(total_reads_df, aes(x = Timepoint, y = Total_Counts)) +
-  
-  # Boxplot per day
-  geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-
-  # Overlay individual points colored by individual
-  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
-
-  # Use individual colors
-  scale_color_manual(values = ann_colors$individual_cor) +
-
-  # Use timepoint colors for boxplots
-  scale_fill_manual(values = ann_colors$timepoint_cor) +
-
-  # Separate x-axis by species
-  facet_wrap(~Species, scales = "free_x") +
-
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "top",
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-
-  labs(
-    title = "Counts per Day by Species",
-    x = "Day",
-    y = "Total Counts",
-    color = "Individual",
-    fill = "Timepoint"
-  )
-
-
-# Plot
-ggplot(total_reads_df, aes(x = Individual, y = Total_Counts)) +
-  
-  # Boxplots colored by individual
-  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-
-  # Overlay points colored by Timepoint
-  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
-
-  # Use manual colors
-  scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
-
-  # Facet by species
-  facet_wrap(~Species, scales = "free_x", nrow = 1) +
-
-  # Theme
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "top",
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-
-  labs(
-    title = "Counts per Individual by Species",
-    x = "Individual",
-    y = "Total Counts",
-    fill = "Individual",
-    color = "Timepoint"
-  )
-```
-
-
 ######Cor Heat Map
-```{r RNASeq_FeatureCounts_Cor_RMG0,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_RMG0_Correlation,fig.height=10,fig.width=10}
 ######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "spearman")
 individual <- RNA_Metadata$Individual
@@ -3340,11 +2539,9 @@ print(
 # saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
 ```
 
+######Marker Genes
 
-#####Markers
-
-######Othologous-RMG0
-```{r RNASeq_MarkerGenes_graph_species_separated_expressed, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_RMG0_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 expressed_genes <- rownames(Filt_RMG0_RNA_log2cpm)
 
@@ -3415,8 +2612,7 @@ ggplot(log2cpm_long_NoR_expressed, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_means_expressed, fig.height=6,fig.width=6}
+```{r RNASeq_FeatureCounts_RMG0_ExpressedMarkers_SummaryHeatMap, fig.height=6,fig.width=6}
 mean_df_expressed <- log2cpm_long_NoR_expressed %>%
   group_by(Stage, Timepoint, Species) %>%
   summarise(
@@ -3454,8 +2650,7 @@ ggplot(mean_df_expressed, aes(
   )
 ```
 
-
-```{r RNASeq_MarkerGenes_graph_species_Heatmap_data_expressed, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_RMG0_ExpressedMarkers_FullHeatMap, fig.height=10,fig.width=10}
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -3525,333 +2720,22 @@ pheatmap(
 )
 ```
 
+```{r RNASeq_FeatureCountss_RMG0_ExpressedMarkers_ByGene, fig.height=12,fig.width=12}
+stages <- c(
+  "Pluripotency",
+  "Mesoderm",
+  "CardiacMesoderm",
+  "CardiacProgenitors",
+  "EarlyCardiomyocytes",
+  "MatureCardiomyocytes"
+)
 
-######ByStage-All
-```{r RNASeq_MarkerGenes_graph_species_separated_pluri, fig.height=12,fig.width=12}
-pluri_genes <- log2cpm_long_NoR_expressed %>%
-  filter(Stage == "Pluripotency")
+plots <- lapply(stages, function(s) {
+  plot_stage(s, log2cpm_long_NoR_expressed, ann_colors)
+})
 
-ggplot(pluri_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-     geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 3,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(plots)
 ```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_meso, fig.height=12,fig.width=12}
-meso_genes <- log2cpm_long_NoR_expressed %>%
-  filter(Stage == "Mesoderm")
-
-ggplot(meso_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardmeso, fig.height=12,fig.width=12}
-cardmeso_genes <- log2cpm_long_NoR_expressed %>%
-  filter(Stage == "CardiacMesoderm")
-
-ggplot(cardmeso_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardprog, fig.height=12,fig.width=12}
-cardprog_genes <- log2cpm_long_NoR_expressed %>%
-  filter(Stage == "CardiacProgenitors")
-
-ggplot(cardprog_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardearly, fig.height=12,fig.width=12}
-cardearly_genes <- log2cpm_long_NoR_expressed %>%
-  filter(Stage == "EarlyCardiomyocytes")
-
-ggplot(cardearly_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-  
-      scale_fill_manual(values = ann_colors$species_cor) +
-  
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r RNASeq_MarkerGenes_graph_species_separated_cardlate, fig.height=12,fig.width=12}
-cardlate_genes <- log2cpm_long_NoR_expressed %>%
-  filter(Stage == "MatureCardiomyocytes")
-
-ggplot(cardlate_genes, aes(x = Timepoint, y = log2CPM)) +
-
-  geom_boxplot(
-    aes(fill = Species, group = interaction(Timepoint, Species)),
-    position = position_dodge(width = 0.8),
-    alpha = 0.3,
-    outlier.shape = NA
-  ) +
-
-  scale_fill_manual(values = ann_colors$species_cor) +
-  
-    geom_jitter(
-  aes(color = Individual),
-  position = position_jitterdodge(
-    jitter.width = 0.15,
-    dodge.width = 0.8
-  ),
-  size = 1,
-  alpha = 0.6
-) +
-  
-  scale_color_manual(values = ann_colors$individual_cor)+
-  
-  geom_line(
-    stat = "summary",
-    fun = mean,
-    aes(group = Species, linetype = Species),
-    position = position_dodge(width = 0.8),
-    linewidth = 1
-  ) +
-  
-    scale_linetype_manual(values = c(
-    C = "dotted",
-    H = "solid"
-  )) +
-
-  geom_point(
-    stat = "summary",
-    fun = mean,
-    aes(shape = Species),
-    position = position_dodge(width = 0.8),
-    size = 2
-  ) +
-
-  facet_wrap(~ Gene, scales = "free_y") +
-
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
 
 #####No4
 ```{r RNASeq_FeatureCounts_RMG0_No4}
@@ -3878,7 +2762,7 @@ Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
 ```
 
 ######Cor Heat Map
-```{r rRNASeq_FeatureCounts_Cor_RMG0_No4,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_RMG0_Correlation_No4,fig.height=10,fig.width=10}
 ######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = "spearman")
 
@@ -3932,7 +2816,7 @@ Filt_RMG0_RNA_log2cpm_NoD5 <- cpm(Filt_RMG0_RNA_fc_NoD5,log=TRUE)
 ```
 
 ######Cor_HeatMap
-```{r rRNASeq_FeatureCounts_Cor_RMG0_No5,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_RMG0_Correlation_No5,fig.height=10,fig.width=10}
 Cor_Filt_RMG0_RNA_log2cpm_NoD5 <- cor(Filt_RMG0_RNA_log2cpm_NoD5, method = "spearman")
 
 Cor_metadata_No5 <- Cor_metadata %>% 

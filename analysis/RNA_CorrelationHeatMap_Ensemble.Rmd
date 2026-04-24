@@ -41,10 +41,12 @@ library("ggplot2")
 # BiocManager::install("SummarizedExperiment")
 
 #Loading objects used in this workbook
+total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 RNA_fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 marker_genes <- readRDS("data/Raw_Data/concat/marker_genes.RDS")
+counts_table <-readRDS("data/Raw_Data/concat/counts_table.RDS")
 
 ann_colors <- readRDS("data/Raw_Data/concat/ann_colors.RDS")
 
@@ -95,7 +97,6 @@ Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpre
 
 Filt_FilterByExpression_RNA_log2cpm_No5 <-readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No5.RDS")
 Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
-
 ```
 
 ```{r Making_Plotting_Function}
@@ -210,6 +211,7 @@ rownames(RNA_fc) <- rn
 # saveRDS(RNA_fc_df,"data/Raw_Data/concat/RNA_fc_df.RDS")
 # saveRDS(RNA_Metadata,"data/Raw_Data/concat/RNA_Metadata.RDS")
 # saveRDS(marker_genes,"data/Raw_Data/concat/marker_genes.RDS")
+# saveRDS(counts_table,"data/Raw_Data/concat/counts_table.RDS")
 ```
 
 
@@ -274,6 +276,38 @@ ann_colors <- list(
 ```
 
 #####Total Read Stats
+
+```{r RNASeq_Statistics_data}
+
+total_reads_df <- RNA_fc %>%
+  as.data.frame() %>%
+  mutate(Gene = rownames(.)) %>%
+  dplyr::select(-Gene) %>%
+  summarise(across(everything(), \(x) sum(x, na.rm = TRUE))) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "Sample",
+    values_to = "Total_Counts"
+  ) %>%
+  left_join(RNA_Metadata, by = c("Sample" = "SampleName"))
+
+day_levels <- c("Day0","Day2","Day4","Day5","Day15","Day30")
+
+total_reads_df <- total_reads_df %>%
+  mutate(
+    Timepoint = factor(Timepoint, levels = day_levels, ordered = TRUE),
+
+    # force species order: chimp first, human second
+    Species = factor(Species, levels = c("C", "H")),
+
+    Individual_Color = ann_colors$individual_cor[Individual]
+  ) %>%
+  arrange(Species, Individual, Timepoint) %>%
+  mutate(Sample = factor(Sample, levels = Sample))
+
+# saveRDS(total_reads_df,"data/Raw_Data/concat/total_reads_df.RDS")
+
+```
 
 ```{r RNASeq_perSample_graph, fig.height=6,fig.width=12}
 library(ggplot2)

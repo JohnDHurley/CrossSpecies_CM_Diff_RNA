@@ -35,7 +35,7 @@ library("readxl")
 library("ggfortify")
 library("ComplexHeatmap")
 
-# BiocManager::install("SummarizedExperiment")
+# BiocManager::install("VennDiagram")
 
 
 #Loading objects used in this workbook

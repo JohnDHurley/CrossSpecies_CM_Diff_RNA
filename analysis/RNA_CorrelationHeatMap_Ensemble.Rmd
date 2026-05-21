@@ -42,7 +42,6 @@ library("ggplot2")
 
 #Loading objects used in this workbook
 total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
-RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 RNA_fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 marker_genes <- readRDS("data/Raw_Data/concat/marker_genes.RDS")
@@ -50,18 +49,22 @@ counts_table <-readRDS("data/Raw_Data/concat/counts_table.RDS")
 
 ann_colors <- readRDS("data/Raw_Data/concat/ann_colors.RDS")
 
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm.RDS")
 RNA_fc_No5 <-readRDS("data/QC/concat/RNA_fc_No5.RDS")
 RNA_log2cpm_No5 <-readRDS("data/QC/concat/RNA_log2cpm_No5.RDS")
 RNA_fc_No4 <-readRDS("data/QC/concat/RNA_fc_No4.RDS")
 RNA_log2cpm_No4 <-readRDS("data/QC/concat/RNA_log2cpm_No4.RDS")
 
+
+RNA_Metadata_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
 RNA_Metadata_No4_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4.RDS")
 RNA_Metadata_No5_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No5.RDS")
 
 Cor_RNA_log2cpm <-readRDS("data/QC/concat/Cor_RNA_log2cpm.RDS")
 Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
 
-RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm.RDS")
+Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
 Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
 
@@ -662,6 +665,8 @@ results <- df_long_all %>%
       ),
     by = c("Day", "Marker")
   )
+
+# saveRDS(RNA_Metadata_NoRep,"data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
 ```
 
 ```{r RNASeq_Purities_graph, fig.height=6,fig.width=12}
@@ -2521,12 +2526,7 @@ print(
 #####RowMu>0####
 row_means <- rowMeans(RNA_log2cpm)
 Filt_RMG0_RNA_fc <- RNA_fc[row_means >0,]
-
-# saveRDS(Filt_RMG0_RNA_fc,"data/QC/concat/Filt_RMG0_RNA_fc.RDS")
-
 Filt_RMG0_RNA_log2cpm <- cpm(Filt_RMG0_RNA_fc,log=TRUE)
-
-# saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 
 hist(Filt_RMG0_RNA_log2cpm, main = "Histogram of filtered counts using rowMeans > 0 method",
      xlab =expression("Log"[2]*" counts-per-million"), col =5 )
@@ -2538,6 +2538,7 @@ axis(1,
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.6)        # shrink label size
 
+# saveRDS(Filt_RMG0_RNA_fc,"data/QC/concat/Filt_RMG0_RNA_fc.RDS")
 # saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 ```
 

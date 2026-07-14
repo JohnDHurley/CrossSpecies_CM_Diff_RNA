@@ -739,7 +739,7 @@ write.csv(gost_export,
 ```
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=3, fig.width=7}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
 
 
 top_terms <- gost_combined %>%
@@ -813,7 +813,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=5, fig.width=6}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2,fig.height=5, fig.width=6}
 
 
 top_terms <- gost_combined %>%
@@ -852,7 +852,7 @@ for (clust_name in names(cluster_list)) {
 
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=12, fig.width=12}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=12, fig.width=12}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -894,7 +894,7 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=12, fig.width=12}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs4,fig.height=12, fig.width=12}
 library(dplyr)
 library(tidyr)
 library(pheatmap)
@@ -921,7 +921,7 @@ pheatmap(
 )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=20, fig.width=12}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs5,fig.height=20, fig.width=12}
 heatmap_long <- heatmap_long %>%
   group_by(term_name) %>%
   mutate(min_logp = min(logp, na.rm = TRUE)) %>%
@@ -1346,7 +1346,7 @@ write.csv(gost_export,
 ```
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs,fig.height=3, fig.width=7}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs6,fig.height=3, fig.width=7}
 
 top_terms <- gost_combined %>%
   filter(source == "GO:BP") %>%        # keep only BP terms

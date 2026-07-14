@@ -1026,7 +1026,7 @@ legend(
 
 ```{r RNA-Seq_No4_CorMotif_Species_Modeling_TACC,fig.height=8,fig.width=15}
 
-motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_species_k1_k20_No4_seed8_TACC.RDS")
+motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
 plotIC(motif.fitted)
 plotMotif(motif.fitted)
 cols <- gray(seq(1, 0, length.out = 6))

@@ -2880,9 +2880,6 @@ print(
 
 
 
-
-
-
 ```{r Updating Website, eval = FALSE}
 
 # git -> commit all changes

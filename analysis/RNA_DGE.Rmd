@@ -34,7 +34,8 @@ library("dplyr")
 library("purrr")
 library("ggplot2")
 library("tidyr")
-# BiocManager::install("VennDiagram")
+# install.packages(c("knitr", "BiocManager"))
+# BiocManager::install("org.Hs.eg.db")
 
 
 
@@ -984,6 +985,55 @@ get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
   )
 }
 ```
+
+```{r get_directional_genes_HvC, include = FALSE}
+
+get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
+                                 top_table_all, fit_obj, p_cutoff = 0.05) {
+
+  # ---------------------------
+  # DE genes
+  # ---------------------------
+  tt <- topTable(fit_obj, coef = coef_name, number = Inf)
+
+  sig_tt <- tt %>%
+    dplyr::filter(adj.P.Val < p_cutoff) %>%
+    tibble::rownames_to_column("Gene") %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # Interaction FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(Comparisons == comparison_label) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # classify direction
+  # ---------------------------
+  df_combo <- df_fc %>%
+  dplyr::inner_join(sig_tt, by = "Gene") %>%
+  dplyr::mutate(
+    direction = dplyr::case_when(
+      logFC.x > 0 ~ "Human_higher",
+      logFC.x < 0 ~ "Chimp_higher",
+      TRUE ~ "No_difference"
+    ),
+    magnitude = abs(logFC.x)
+  )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    Human_higher = dplyr::filter(df_combo, direction == "Human_higher"),
+    Chimp_higher = dplyr::filter(df_combo, direction == "Chimp_higher"),
+    n_sig = nrow(sig_tt)
+  )
+}
+```
+
 
 ```{r go_enrichment}
 Enrich_Go_sets <- function(gene_sets, v) {
@@ -3250,17 +3300,20 @@ Traj02_genes <- intersect(RNA_sets$H_Day02$DEGs$Gene,RNA_sets$C_Day02$DEGs$Gene)
 Traj25_genes <- intersect(RNA_sets$H_Day25$DEGs$Gene,RNA_sets$C_Day25$DEGs$Gene)
 Traj515_genes <- intersect(RNA_sets$H_Day515$DEGs$Gene,RNA_sets$C_Day515$DEGs$Gene)
 Traj1530_genes <- intersect(RNA_sets$H_Day1530$DEGs$Gene,RNA_sets$C_Day1530$DEGs$Gene)
+all_genes <- unique(TopTable$Gene)
 
 length(Traj02_genes)
 length(Traj25_genes)
 length(Traj515_genes)
 length(Traj1530_genes)
+length(all_genes)
 
 cluster_lists <- list(
  Traj02_genes  = Traj02_genes,
   Traj25_genes  = Traj25_genes,
   Traj515_genes  = Traj515_genes,
-  Traj1530_genes  = Traj1530_genes
+  Traj1530_genes  = Traj1530_genes,
+  all_genes = all_genes
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
@@ -3283,12 +3336,11 @@ for (p in cluster_plots) print(p)
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
-
 traj_info <- list(
   Traj02_genes = list(coef = "H_Day02", comp = "Day02"),
   Traj25_genes = list(coef = "H_Day25", comp = "Day25"),
   Traj515_genes = list(coef ="H_Day515", comp = "Day515"),
- Traj1530_genes = list(coef = "H_Day1530", comp = "Day1530")
+Traj1530_genes = list(coef = "H_Day1530", comp = "Day1530")
 )
 
 direction_results <- setNames(
@@ -5337,8 +5389,114 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
   )
 ```
 
+```{r}
+library(dplyr)
+library(purrr)
+library(stringr)
 
+days <- c("Day02", "Day25", "Day515", "Day1530")
+
+prop_df <- map_dfr(days, function(day) {
+  
+  h <- RNA_sets[[paste0("H_", day)]]
+  c <- RNA_sets[[paste0("C_", day)]]
+  
+  tibble(
+    trajectory = day,
+    
+    H_DEG = length(h$DEGs$Gene),
+    H_NonDEG = length(h$NonDEGs$Gene),
+    
+    C_DEG = length(c$DEGs$Gene),
+    C_NonDEG = length(c$NonDEGs$Gene)
+  )
+})
+
+library(tidyr)
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = c("species", "type"),
+    names_sep = "_",
+    values_to = "count"
+  ) %>%
+  group_by(species, trajectory) %>%
+  mutate(prop = count / sum(count)) %>%
+  ungroup()
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("Day02", "Day25", "Day515", "Day1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+library(ggplot2)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  facet_wrap(~ species) +
+  theme_bw() +
+  labs(
+    x = "Time window",
+    y = "Proportion of genes",
+    fill = ""
+  )
+```
 #####Interactions
+
+```{r}
+library(dplyr)
+library(purrr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+days <- c("02", "25", "515", "1530")
+
+prop_df <- map_dfr(days, function(day) {
+
+  x <- RNA_sets[[paste0("Sig_Sp_inter_Traj", day)]]
+
+  tibble(
+    trajectory = day,
+
+    INTER_DEG = length(x$DEGs$Gene),
+    INTER_NonDEG = length(x$NonDEGs$Gene)
+  )
+})
+
+# IMPORTANT: use TRUE universe (same logic as trajectory plot)
+total_genes <- prop_df$INTER_DEG + prop_df$INTER_NonDEG
+
+prop_df <- prop_df %>%
+  mutate(
+    INTER_DEG = INTER_DEG / total_genes,
+    INTER_NonDEG = INTER_NonDEG / total_genes
+  )
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = "type",
+    values_to = "prop"
+  )
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("02", "25", "515", "1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time window",
+    y = "Proportion of genes",
+    fill = ""
+  )
+```
 
 ```{r RNASeq_DGE_Interaction_FC}
 
@@ -5375,23 +5533,21 @@ for (p in cluster_plots) print(p)
 ```
 
 ```{r RNASeq_DGE_Interaction_Directionality}
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 traj_info <- list(
   InterTraj02 = list(coef = "Sig_Sp_inter_Traj02", comp = "Day02"),
-  InterTraj24 = list(coef = "Sig_Sp_inter_Traj24", comp = "Day24"),
-  InterTraj45 = list(coef = "Sig_Sp_inter_Traj45", comp = "Day45"),
+  InterTraj25 = list(coef = "Sig_Sp_inter_Traj25", comp = "Day25"),
   InterTraj515 = list(coef = "Sig_Sp_inter_Traj515", comp = "Day515"),
   InterTraj1530 = list(coef = "Sig_Sp_inter_Traj1530", comp = "Day1530")
 )
 
 cluster_lists <- list(
   InterTraj02  = Inter_02_genes,
-  InterTraj24  = Inter_24_genes,
-  InterTraj45  = Inter_45_genes,
+  InterTraj25  = Inter_25_genes,
   InterTraj515 = Inter_515_genes,
   InterTraj1530 = Inter_1530_genes
 )
@@ -5414,21 +5570,21 @@ direction_results <- setNames(
   names(traj_info)
 )
 
-# saveRDS(direction_results, "data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+saveRDS(direction_results, "data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
 ```{r RNASeq_DGE_Interaction_Directionality_FC}
 
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-RNA_sets <- Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- readRDS("data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 TopTable$absfc <- abs(TopTable$logFC)
 
 TopTable_RNA_Traj <- TopTable %>% 
   filter(Comparisons %in% c(
-    "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530",
-    "C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+    "H_Day02","H_Day25","H_Day515","H_Day1530",
+    "C_Day02","C_Day25","C_Day515","C_Day1530"
   ))
 
 aa <- unique(RNA_sets$InterTraj02$all$Gene)
@@ -5446,14 +5602,6 @@ bd <- unique(RNA_sets$InterTraj24$Both_pos$Gene)
 be <- unique(RNA_sets$InterTraj24$Both_neg$Gene)
 bf <- unique(RNA_sets$InterTraj24$Same_direction$Gene)
 bg <- unique(RNA_sets$InterTraj24$Opposite_direction$Gene)
-
-ca <- unique(RNA_sets$InterTraj45$all$Gene)
-cb <- unique(RNA_sets$InterTraj45$H_pos_C_neg$Gene)
-cc <- unique(RNA_sets$InterTraj45$H_neg_C_pos$Gene)
-cd <- unique(RNA_sets$InterTraj45$Both_pos$Gene)
-ce <- unique(RNA_sets$InterTraj45$Both_neg$Gene)
-cf <- unique(RNA_sets$InterTraj45$Same_direction$Gene)
-cg <- unique(RNA_sets$InterTraj45$Opposite_direction$Gene)
 
 da <- unique(RNA_sets$InterTraj515$all$Gene)
 db <- unique(RNA_sets$InterTraj515$H_pos_C_neg$Gene)
@@ -5480,21 +5628,13 @@ cluster_lists <- list(
   Inter02_Same_direction = af,
   Inter02_Opposite_direction = ag,
   
-  Inter24_All = ba,
-  Inter24_HumanPos = bb,
-  Inter24_ChimpPos = bc,
-  Inter24_Both_pos = bd,
-  Inter24_Both_neg = be,
-  Inter24_Same_direction = bf,
-  Inter24_Opposite_direction = bg,
-  
-  Inter45_All = ca,
-  Inter45_HumanPos = cb,
-  Inter45_ChimpPos = cc,
-  Inter45_Both_pos = cd,
-  Inter45_Both_neg = ce,
-  Inter45_Same_direction = cf,
-  Inter45_Opposite_direction = cg,
+  Inter25_All = ba,
+  Inter25_HumanPos = bb,
+  Inter25_ChimpPos = bc,
+  Inter25_Both_pos = bd,
+  Inter25_Both_neg = be,
+  Inter25_Same_direction = bf,
+  Inter25_Opposite_direction = bg,
   
   Inter515_All = da,
   Inter515_HumanPos = db,
@@ -5517,7 +5657,7 @@ cluster_lists <- list(
 
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig_interaction(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+  plot_cluster_fc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
 })
 names(cluster_plots) <- names(cluster_lists)
 
@@ -5526,9 +5666,119 @@ for (p in cluster_plots) print(p)
 
 ```
 
+```{r}
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(ggplot2)
+
+days <- c("02", "25", "515", "1530")
+
+prop_df <- map_dfr(days, function(day) {
+
+  x <- RNA_sets[[paste0("InterTraj", day)]]
+
+  same_n <- length(x$Same_direction$Gene)
+  opp_n  <- length(x$Opposite_direction$Gene)
+
+  tibble(
+    trajectory = day,
+    Same_direction = same_n,
+    Opposite_direction = opp_n
+  )
+})
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = "type",
+    values_to = "count"
+  ) %>%
+  group_by(trajectory) %>%
+  mutate(prop = count / sum(count)) %>%
+  ungroup()
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("02", "25", "515", "1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  theme_bw() +
+  scale_fill_manual(
+  values = c(
+    "Same_direction" = "#2c7bb6",
+    "Opposite_direction" = "#d7191c"
+  )
+) +
+  labs(
+    x = "Time window",
+    y = "Proportion of interaction DEGs",
+    fill = ""
+  )
+
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(ggplot2)
+
+days <- c("02", "25", "515", "1530")
+
+prop_df <- map_dfr(days, function(day) {
+
+  x <- RNA_sets[[paste0("InterTraj", day)]]
+
+  tibble(
+    trajectory = day,
+
+    Same_direction = length(x$Same_direction$Gene),
+
+    Human_higher = length(x$H_pos_C_neg$Gene),
+    Chimp_higher = length(x$H_neg_C_pos$Gene)
+  )
+})
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = "type",
+    values_to = "count"
+  ) %>%
+  group_by(trajectory) %>%
+  mutate(prop = count / sum(count)) %>%
+  ungroup()
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("02", "25", "515", "1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col(color = "black", linewidth = 0.3) +
+  theme_bw() +
+  labs(
+    x = "Time window",
+    y = "Proportion of interaction DEGs",
+    fill = ""
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Same_direction" = "grey70",
+      "Human_higher"   = "black",
+      "Chimp_higher"   = "white"
+    )
+  ) +
+  theme(
+    panel.grid = element_blank()
+  )
+```
+
 ```{r RNASeq_DGE_Interaction_EnrichGo}
-fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 all_go_results <- lapply(names(direction_results), function(traj) {
 
@@ -5552,7 +5802,7 @@ all_go_results <- lapply(names(direction_results), function(traj) {
 names(all_go_results) <- names(direction_results)
 
 
-# saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+# saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 ```
 

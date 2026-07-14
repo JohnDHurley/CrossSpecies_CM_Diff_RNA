@@ -404,7 +404,7 @@ legend(
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_Assigning}
+```{r RNA-Seq_CorMotif_Species_Assigning1}
 motif.fit <- readRDS("data/Cormotif/concat/CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
 log2cpm <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep.RDS")
 
@@ -1042,7 +1042,7 @@ legend(
 ```
 
 
-```{r RNA-Seq_CorMotif_Species_Assigning}
+```{r RNA-Seq_CorMotif_Species_Assigning2}
 motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
 
 motif.fit <- motif.fitted

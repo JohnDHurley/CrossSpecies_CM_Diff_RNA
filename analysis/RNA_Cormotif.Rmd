@@ -142,7 +142,7 @@ plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
 }
 ```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+```{r FC_Plot_Function_sig_species, include = FALSE}
 plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%
@@ -265,7 +265,7 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 }
 ```
 
-```{r AbsFC_Plot_Function_sig, include = FALSE}
+```{r AbsFC_Plot_Function_sig_species, include = FALSE}
 plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%

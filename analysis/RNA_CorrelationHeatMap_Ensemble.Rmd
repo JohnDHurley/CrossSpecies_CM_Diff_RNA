@@ -162,53 +162,53 @@ plot_stage <- function(stage_name, data, ann_colors) {
 
 ```{r Setting_Up_Data, results="hide"}
 
-RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
-counts_table <- read.delim("~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt")
-marker_genes <- read.delim("~/diff_timeline_tes/RNA/CM_Diff_PurityPanel.txt")
-
-RNA_fc <- counts_table %>%
-  filter(Geneid != "#") %>%
-  filter(Geneid != "Geneid") %>%
-  column_to_rownames("Geneid")
-
-# #Rename column Names to More Useful Info
-col_names <- RNA_Metadata$SampleName
-colnames(RNA_fc) <- col_names
-dim(RNA_fc)
-
-ensembl_ids_unfilt <- rownames(RNA_fc)
-entrez_ids_unfilt <- mapIds(org.Hs.eg.db,
-                            keys = ensembl_ids_unfilt,
-                            column = "ENTREZID",
-                            keytype = "ENSEMBL",
-                            multiVals = "first")
-symbol_ids_unfilt <- mapIds(org.Hs.eg.db,
-                            keys = ensembl_ids_unfilt,
-                            column = "SYMBOL",
-                            keytype = "ENSEMBL",
-                            multiVals = "first")
-
-RNA_fc_df <- as.data.frame(RNA_fc)
-RNA_fc_df <- RNA_fc_df %>%
-  rownames_to_column(var = "Ensemble") %>%
-  dplyr::mutate(
-    Entrez_ID = entrez_ids_unfilt,
-    Symbol    = symbol_ids_unfilt
-  ) %>%
-  dplyr::select(
-    Ensemble,        # 1st column
-    Entrez_ID,       # 2nd column
-    Symbol,          # 3rd column
-    everything()     # rest unchanged
-  )
-
-rn <- rownames(RNA_fc)
-
-RNA_fc <- as.data.frame(
-  lapply(RNA_fc, function(x) as.numeric(as.character(x)))
-)
-
-rownames(RNA_fc) <- rn
+# RNA_Metadata <- read_excel("~/diff_timeline_tes/RNA/RNA_Metadata.xlsx")
+# counts_table <- read.delim("~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt")
+# marker_genes <- read.delim("~/diff_timeline_tes/RNA/CM_Diff_PurityPanel.txt")
+# 
+# RNA_fc <- counts_table %>%
+#   filter(Geneid != "#") %>%
+#   filter(Geneid != "Geneid") %>%
+#   column_to_rownames("Geneid")
+# 
+# # #Rename column Names to More Useful Info
+# col_names <- RNA_Metadata$SampleName
+# colnames(RNA_fc) <- col_names
+# dim(RNA_fc)
+# 
+# ensembl_ids_unfilt <- rownames(RNA_fc)
+# entrez_ids_unfilt <- mapIds(org.Hs.eg.db,
+#                             keys = ensembl_ids_unfilt,
+#                             column = "ENTREZID",
+#                             keytype = "ENSEMBL",
+#                             multiVals = "first")
+# symbol_ids_unfilt <- mapIds(org.Hs.eg.db,
+#                             keys = ensembl_ids_unfilt,
+#                             column = "SYMBOL",
+#                             keytype = "ENSEMBL",
+#                             multiVals = "first")
+# 
+# RNA_fc_df <- as.data.frame(RNA_fc)
+# RNA_fc_df <- RNA_fc_df %>%
+#   rownames_to_column(var = "Ensemble") %>%
+#   dplyr::mutate(
+#     Entrez_ID = entrez_ids_unfilt,
+#     Symbol    = symbol_ids_unfilt
+#   ) %>%
+#   dplyr::select(
+#     Ensemble,        # 1st column
+#     Entrez_ID,       # 2nd column
+#     Symbol,          # 3rd column
+#     everything()     # rest unchanged
+#   )
+# 
+# rn <- rownames(RNA_fc)
+# 
+# RNA_fc <- as.data.frame(
+#   lapply(RNA_fc, function(x) as.numeric(as.character(x)))
+# )
+# 
+# rownames(RNA_fc) <- rn
 
 # saveRDS(RNA_fc,"data/QC/concat/RNA_fc.RDS")
 # saveRDS(RNA_fc_df,"data/Raw_Data/concat/RNA_fc_df.RDS")

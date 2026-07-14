@@ -30,6 +30,7 @@ library("ComplexHeatmap")
 library("clusterProfiler")
 library("enrichplot")
 library("gprofiler2")
+library("Cormotif")
 
 # BiocManager::install("SummarizedExperiment")
 

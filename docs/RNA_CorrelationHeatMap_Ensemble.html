@@ -388,7 +388,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-05-21
+<strong>Last updated:</strong> 2026-07-14
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreedc41c1db498e6f4eca8835e8b428d9175950d674targetblankdc41c1da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreee5ca73433f0be3e7a664328ef5ce92e133e847c0targetblanke5ca734a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/dc41c1db498e6f4eca8835e8b428d9175950d674" target="_blank">dc41c1d</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/e5ca73433f0be3e7a664328ef5ce92e133e847c0" target="_blank">e5ca734</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreedc41c1db498e6f4eca8835e8b428d9175950d674targetblankdc41c1da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreee5ca73433f0be3e7a664328ef5ce92e133e847c0targetblanke5ca734a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/dc41c1db498e6f4eca8835e8b428d9175950d674" target="_blank">dc41c1d</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/e5ca73433f0be3e7a664328ef5ce92e133e847c0" target="_blank">e5ca734</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,6 +556,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/RNA_GO_Comp_Species.html
+    Ignored:    analysis/figure/
     Ignored:    data/
 
 </code></pre>
@@ -602,6 +603,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/e5ca73433f0be3e7a664328ef5ce92e133e847c0/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">e5ca734</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-07-14
+</td>
+<td>
+wflow_publish("analysis/RNA_CorrelationHeatMap_Ensemble.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/c77c8c5c6bceb031e6c5bf0515b456f946f3fe50/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">c77c8c5</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-07-14
+</td>
+<td>
+RNA-Seq Commit 2 7/14/2026
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/743bc14b10370bc8c9a2ac16fbd40a976a53d085/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">743bc14</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-07-14
+</td>
+<td>
+RNA-Seq Commit 1 7/14/2026
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/bce22e4be5ae95784ea371b6c4d34dac339b63ed/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">bce22e4</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-05-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1258,53 +1327,53 @@ Finalizing CorHeatMap
     ggtitle(stage_name)
 }</code></pre>
 <p>####Data Upload and Stats</p>
-<pre class="r"><code>RNA_Metadata &lt;- read_excel(&quot;~/diff_timeline_tes/RNA/RNA_Metadata.xlsx&quot;)
-counts_table &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt&quot;)
-marker_genes &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/CM_Diff_PurityPanel.txt&quot;)
-
-RNA_fc &lt;- counts_table %&gt;%
-  filter(Geneid != &quot;#&quot;) %&gt;%
-  filter(Geneid != &quot;Geneid&quot;) %&gt;%
-  column_to_rownames(&quot;Geneid&quot;)
-
-# #Rename column Names to More Useful Info
+<pre class="r"><code># RNA_Metadata &lt;- read_excel(&quot;~/diff_timeline_tes/RNA/RNA_Metadata.xlsx&quot;)
+# counts_table &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/rna_concat/featureCounts/all_counts.txt&quot;)
+# marker_genes &lt;- read.delim(&quot;~/diff_timeline_tes/RNA/CM_Diff_PurityPanel.txt&quot;)
+# 
+# RNA_fc &lt;- counts_table %&gt;%
+#   filter(Geneid != &quot;#&quot;) %&gt;%
+#   filter(Geneid != &quot;Geneid&quot;) %&gt;%
+#   column_to_rownames(&quot;Geneid&quot;)
+# 
+# # #Rename column Names to More Useful Info
 col_names &lt;- RNA_Metadata$SampleName
-colnames(RNA_fc) &lt;- col_names
-dim(RNA_fc)
-
-ensembl_ids_unfilt &lt;- rownames(RNA_fc)
-entrez_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
-                            keys = ensembl_ids_unfilt,
-                            column = &quot;ENTREZID&quot;,
-                            keytype = &quot;ENSEMBL&quot;,
-                            multiVals = &quot;first&quot;)
-symbol_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
-                            keys = ensembl_ids_unfilt,
-                            column = &quot;SYMBOL&quot;,
-                            keytype = &quot;ENSEMBL&quot;,
-                            multiVals = &quot;first&quot;)
-
-RNA_fc_df &lt;- as.data.frame(RNA_fc)
-RNA_fc_df &lt;- RNA_fc_df %&gt;%
-  rownames_to_column(var = &quot;Ensemble&quot;) %&gt;%
-  dplyr::mutate(
-    Entrez_ID = entrez_ids_unfilt,
-    Symbol    = symbol_ids_unfilt
-  ) %&gt;%
-  dplyr::select(
-    Ensemble,        # 1st column
-    Entrez_ID,       # 2nd column
-    Symbol,          # 3rd column
-    everything()     # rest unchanged
-  )
-
-rn &lt;- rownames(RNA_fc)
-
-RNA_fc &lt;- as.data.frame(
-  lapply(RNA_fc, function(x) as.numeric(as.character(x)))
-)
-
-rownames(RNA_fc) &lt;- rn
+# colnames(RNA_fc) &lt;- col_names
+# dim(RNA_fc)
+# 
+# ensembl_ids_unfilt &lt;- rownames(RNA_fc)
+# entrez_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
+#                             keys = ensembl_ids_unfilt,
+#                             column = &quot;ENTREZID&quot;,
+#                             keytype = &quot;ENSEMBL&quot;,
+#                             multiVals = &quot;first&quot;)
+# symbol_ids_unfilt &lt;- mapIds(org.Hs.eg.db,
+#                             keys = ensembl_ids_unfilt,
+#                             column = &quot;SYMBOL&quot;,
+#                             keytype = &quot;ENSEMBL&quot;,
+#                             multiVals = &quot;first&quot;)
+# 
+# RNA_fc_df &lt;- as.data.frame(RNA_fc)
+# RNA_fc_df &lt;- RNA_fc_df %&gt;%
+#   rownames_to_column(var = &quot;Ensemble&quot;) %&gt;%
+#   dplyr::mutate(
+#     Entrez_ID = entrez_ids_unfilt,
+#     Symbol    = symbol_ids_unfilt
+#   ) %&gt;%
+#   dplyr::select(
+#     Ensemble,        # 1st column
+#     Entrez_ID,       # 2nd column
+#     Symbol,          # 3rd column
+#     everything()     # rest unchanged
+#   )
+# 
+# rn &lt;- rownames(RNA_fc)
+# 
+# RNA_fc &lt;- as.data.frame(
+#   lapply(RNA_fc, function(x) as.numeric(as.character(x)))
+# )
+# 
+# rownames(RNA_fc) &lt;- rn
 
 # saveRDS(RNA_fc,&quot;data/QC/concat/RNA_fc.RDS&quot;)
 # saveRDS(RNA_fc_df,&quot;data/Raw_Data/concat/RNA_fc_df.RDS&quot;)
@@ -8815,7 +8884,7 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.5.3 (2026-03-11 ucrt)
+<pre><code>R version 4.6.1 (2026-06-24 ucrt)
 Platform: x86_64-w64-mingw32/x64
 Running under: Windows 11 x64 (build 26100)
 
@@ -8837,68 +8906,67 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] scales_1.4.0                ComplexHeatmap_2.24.1      
- [3] ggfortify_0.4.19            readxl_1.4.5               
- [5] RUVSeq_1.42.0               EDASeq_2.42.0              
- [7] ShortRead_1.66.0            GenomicAlignments_1.44.0   
- [9] SummarizedExperiment_1.38.1 MatrixGenerics_1.20.0      
-[11] matrixStats_1.5.0           Rsamtools_2.24.0           
-[13] GenomicRanges_1.60.0        Biostrings_2.76.0          
-[15] GenomeInfoDb_1.44.3         XVector_0.48.0             
-[17] BiocParallel_1.42.1         lubridate_1.9.5            
+ [1] scales_1.4.0                ComplexHeatmap_2.28.0      
+ [3] ggfortify_0.4.19            readxl_1.5.0               
+ [5] RUVSeq_1.46.0               EDASeq_2.46.0              
+ [7] ShortRead_1.70.0            GenomicAlignments_1.48.0   
+ [9] SummarizedExperiment_1.42.0 MatrixGenerics_1.24.0      
+[11] matrixStats_1.5.0           Rsamtools_2.28.0           
+[13] GenomicRanges_1.64.0        Biostrings_2.80.1          
+[15] Seqinfo_1.2.0               XVector_0.52.0             
+[17] BiocParallel_1.46.0         lubridate_1.9.5            
 [19] forcats_1.0.1               stringr_1.6.0              
-[21] purrr_1.2.1                 tidyr_1.3.2                
-[23] tidyverse_2.0.0             Cormotif_1.54.0            
-[25] affy_1.86.0                 pheatmap_1.0.13            
-[27] org.Hs.eg.db_3.21.0         AnnotationDbi_1.70.0       
-[29] IRanges_2.42.0              S4Vectors_0.46.0           
-[31] Biobase_2.68.0              BiocGenerics_0.54.1        
-[33] generics_0.1.4              readr_2.1.6                
-[35] ggrepel_0.9.6               dplyr_1.1.4                
-[37] tibble_3.3.1                ggplot2_4.0.2              
-[39] edgeR_4.6.3                 limma_3.64.3               
+[21] purrr_1.2.2                 tidyr_1.3.2                
+[23] tidyverse_2.0.0             Cormotif_1.58.0            
+[25] affy_1.90.0                 pheatmap_1.0.13            
+[27] org.Hs.eg.db_3.23.1         AnnotationDbi_1.74.0       
+[29] IRanges_2.46.0              S4Vectors_0.50.1           
+[31] Biobase_2.72.0              BiocGenerics_0.58.1        
+[33] generics_0.1.4              readr_2.2.0                
+[35] ggrepel_0.9.8               dplyr_1.2.1                
+[37] tibble_3.3.1                ggplot2_4.0.3              
+[39] edgeR_4.10.1                limma_3.68.4               
 [41] workflowr_1.7.2            
 
 loaded via a namespace (and not attached):
-  [1] later_1.4.5             BiocIO_1.18.0           bitops_1.0-9           
-  [4] filelock_1.0.3          R.oo_1.27.1             cellranger_1.1.0       
-  [7] preprocessCore_1.70.0   XML_3.99-0.20           lifecycle_1.0.5        
- [10] httr2_1.2.2             pwalign_1.4.0           doParallel_1.0.17      
- [13] rprojroot_2.1.1         processx_3.8.6          lattice_0.22-9         
- [16] MASS_7.3-65             magrittr_2.0.4          sass_0.4.10            
- [19] rmarkdown_2.31          jquerylib_0.1.4         yaml_2.3.12            
- [22] httpuv_1.6.16           otel_0.2.0              DBI_1.3.0              
- [25] RColorBrewer_1.1-3      abind_1.4-8             R.utils_2.13.0         
- [28] RCurl_1.98-1.18         rappdirs_0.3.4          git2r_0.36.2           
- [31] circlize_0.4.18         GenomeInfoDbData_1.2.14 codetools_0.2-20       
- [34] DelayedArray_0.34.1     xml2_1.5.2              tidyselect_1.2.1       
- [37] shape_1.4.6.1           UCSC.utils_1.4.0        farver_2.1.2           
- [40] BiocFileCache_2.16.2    jsonlite_2.0.0          GetoptLong_1.1.1       
- [43] iterators_1.0.14        foreach_1.5.2           tools_4.5.3            
- [46] progress_1.2.3          Rcpp_1.1.1              glue_1.8.0             
- [49] gridExtra_2.3           SparseArray_1.8.1       xfun_0.56              
- [52] withr_3.0.2             BiocManager_1.30.27     fastmap_1.2.0          
- [55] latticeExtra_0.6-31     callr_3.7.6             digest_0.6.39          
- [58] timechange_0.4.0        R6_2.6.1                colorspace_2.1-2       
- [61] Cairo_1.7-0             jpeg_0.1-11             biomaRt_2.64.0         
- [64] RSQLite_2.4.5           R.methodsS3_1.8.2       rtracklayer_1.68.0     
- [67] prettyunits_1.2.0       httr_1.4.8              S4Arrays_1.8.1         
- [70] whisker_0.4.1           pkgconfig_2.0.3         gtable_0.3.6           
- [73] blob_1.3.0              S7_0.2.1                hwriter_1.3.2.1        
- [76] htmltools_0.5.9         clue_0.3-68             png_0.1-8              
- [79] knitr_1.51              rstudioapi_0.18.0       tzdb_0.5.0             
- [82] rjson_0.2.23            curl_7.0.0              cachem_1.1.0           
- [85] GlobalOptions_0.1.4     parallel_4.5.3          restfulr_0.0.16        
- [88] pillar_1.11.1           vctrs_0.7.1             promises_1.5.0         
- [91] dbplyr_2.5.2            cluster_2.1.8.2         evaluate_1.0.5         
- [94] GenomicFeatures_1.60.0  cli_3.6.5               locfit_1.5-9.12        
- [97] compiler_4.5.3          rlang_1.1.7             crayon_1.5.3           
-[100] labeling_0.4.3          interp_1.1-6            aroma.light_3.38.0     
-[103] ps_1.9.1                getPass_0.2-4           fs_1.6.6               
-[106] stringi_1.8.7           deldir_2.0-4            Matrix_1.7-4           
-[109] hms_1.1.4               bit64_4.6.0-1           KEGGREST_1.48.1        
-[112] statmod_1.5.1           memoise_2.0.1           affyio_1.78.0          
-[115] bslib_0.10.0            bit_4.6.0              </code></pre>
+  [1] later_1.4.8            BiocIO_1.22.0          bitops_1.0-9          
+  [4] filelock_1.0.3         R.oo_1.27.1            cellranger_1.1.0      
+  [7] preprocessCore_1.74.0  XML_3.99-0.23          lifecycle_1.0.5       
+ [10] httr2_1.2.3            pwalign_1.8.0          doParallel_1.0.17     
+ [13] rprojroot_2.1.1        processx_3.9.0         lattice_0.22-9        
+ [16] MASS_7.3-65            magrittr_2.0.5         sass_0.4.10           
+ [19] rmarkdown_2.31         jquerylib_0.1.4        yaml_2.3.12           
+ [22] httpuv_1.6.17          otel_0.2.0             DBI_1.3.0             
+ [25] RColorBrewer_1.1-3     abind_1.4-8            R.utils_2.13.0        
+ [28] RCurl_1.98-1.19        rappdirs_0.3.4         git2r_0.36.2          
+ [31] circlize_0.4.18        codetools_0.2-20       DelayedArray_0.38.2   
+ [34] tidyselect_1.2.1       shape_1.4.6.1          farver_2.1.2          
+ [37] BiocFileCache_3.2.0    jsonlite_2.0.0         GetoptLong_1.1.1      
+ [40] iterators_1.0.14       foreach_1.5.2          tools_4.6.1           
+ [43] progress_1.2.3         Rcpp_1.1.1-1.1         glue_1.8.1            
+ [46] gridExtra_2.3.1        SparseArray_1.12.2     xfun_0.59             
+ [49] withr_3.0.3            BiocManager_1.30.27    fastmap_1.2.0         
+ [52] latticeExtra_0.6-31    callr_3.8.0            digest_0.6.39         
+ [55] timechange_0.4.0       R6_2.6.1               colorspace_2.1-2      
+ [58] Cairo_1.7-0            jpeg_0.1-11            biomaRt_2.68.0        
+ [61] RSQLite_3.53.3         cigarillo_1.2.0        R.methodsS3_1.8.2     
+ [64] rtracklayer_1.72.0     prettyunits_1.2.0      httr_1.4.8            
+ [67] S4Arrays_1.12.0        whisker_0.4.1          pkgconfig_2.0.3       
+ [70] gtable_0.3.6           blob_1.3.0             S7_0.2.2              
+ [73] hwriter_1.3.2.1        htmltools_0.5.9        clue_0.3-68           
+ [76] png_0.1-9              knitr_1.51             rstudioapi_0.19.0     
+ [79] tzdb_0.5.0             rjson_0.2.23           curl_7.1.0            
+ [82] cachem_1.1.0           GlobalOptions_0.1.4    parallel_4.6.1        
+ [85] restfulr_0.0.17        pillar_1.11.1          vctrs_0.7.3           
+ [88] promises_1.5.0         dbplyr_2.6.0           cluster_2.1.8.2       
+ [91] evaluate_1.0.5         GenomicFeatures_1.64.0 cli_3.6.6             
+ [94] locfit_1.5-9.12        compiler_4.6.1         rlang_1.2.0           
+ [97] crayon_1.5.3           labeling_0.4.3         interp_1.1-6          
+[100] aroma.light_3.42.0     getPass_0.2-4          fs_2.1.0              
+[103] stringi_1.8.7          deldir_2.0-4           Matrix_1.7-5          
+[106] hms_1.1.4              bit64_4.8.2            KEGGREST_1.52.2       
+[109] statmod_1.5.2          memoise_2.0.1          affyio_1.82.0         
+[112] bslib_0.11.0           bit_4.6.0             </code></pre>
 </div>
 </div>
 </div>

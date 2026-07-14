@@ -1113,90 +1113,96 @@ TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
 motif.fit <- motif.fitted
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
 
-#extract the cluster likelihood - which DEGs are most likely to be in this cluster
+# Extract cluster probabilities
 motif_prob <- motif.fit$bestmotif$clustlike
 rownames(motif_prob) <- rownames(gene_prob_ppost)
-saveRDS(motif_prob,"data/Cormotif/Species/RNA_motif_prob_Species.RDS")
 
-
-TopTable <- TopTable %>% 
-  filter(Comparisons %in% c(
-    "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
-  ))
-
-
-# motif.fitted$bestmotif$clustlike
-
-clust1_RNA <-
-  motif_prob %>%
-  as.data.frame() %>%
-  filter(V1 > 0.59 & V2 <  0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
-  rownames()
-print("clust1_RNA")
-length(clust1_RNA)
-
-clust2_RNA <-
-  motif_prob %>%
-  as.data.frame() %>%
-  filter(V1 < 0.59 & V2 > 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
-  rownames()
-print("clust2_RNA")
-length(clust2_RNA)
-
-clust3_RNA <-
-  motif_prob %>%
-  as.data.frame() %>%
-  filter(V1 < 0.59 & V2 < 0.5 & V3 > 0.5 & V4 < 0.5 & V5 < 0.5)  %>%
-  rownames()
-print("clust3_RNA")
-length(clust3_RNA)
-
-clust4_RNA <-
-  motif_prob %>%
-  as.data.frame() %>%
-  filter(V1 < 0.59 & V2 < 0.5 & V3 < 0.5 & V4 > 0.5 & V5 < 0.5) %>%
-  rownames()
-print("clust4_RNA")
-length(clust4_RNA)
-
-clust5_RNA <-
-  motif_prob %>%
-  as.data.frame() %>%
-  filter(V1 < 0.59 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 > 0.5) %>%
-  rownames()
-print("clust5_RNA")
-length(clust5_RNA)
-
-
-names(clust_names_list) <- paste0("clust", 1:5)
-
-print(overlap_matirx <- check_overlap(clust_names_list))
-
-TopTable$AbsFC <- abs(TopTable$logFC)
-cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA","clust5_RNA")
-
-cluster_lists <- list(
-  clust1_RNA,
-  clust2_RNA,
-  clust3_RNA,
-  clust4_RNA,
-  clust5_RNA
+saveRDS(
+  motif_prob,
+  "data/Cormotif/Species/RNA_motif_prob_Species.RDS"
 )
 
+# Keep species comparisons only
+TopTable <- TopTable %>%
+  filter(
+    Comparisons %in% c(
+      "HvC_Day0",
+      "HvC_Day2",
+      "HvC_Day5",
+      "HvC_Day15",
+      "HvC_Day30"
+    )
+  )
+
+# Define clusters
+clust1_RNA <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1 > 0.59, V2 < 0.5, V3 < 0.5, V4 < 0.5, V5 < 0.5) %>%
+  rownames()
+
+clust2_RNA <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1 < 0.59, V2 > 0.5, V3 < 0.5, V4 < 0.5, V5 < 0.5) %>%
+  rownames()
+
+clust3_RNA <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1 < 0.59, V2 < 0.5, V3 > 0.5, V4 < 0.5, V5 < 0.5) %>%
+  rownames()
+
+clust4_RNA <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1 < 0.59, V2 < 0.5, V3 < 0.5, V4 > 0.5, V5 < 0.5) %>%
+  rownames()
+
+clust5_RNA <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1 < 0.59, V2 < 0.5, V3 < 0.5, V4 < 0.5, V5 > 0.5) %>%
+  rownames()
+
+# Cluster list
+clust_names_list <- list(
+  clust1 = clust1_RNA,
+  clust2 = clust2_RNA,
+  clust3 = clust3_RNA,
+  clust4 = clust4_RNA,
+  clust5 = clust5_RNA
+)
+
+# Check sizes
+sapply(clust_names_list, length)
+
+# Overlap
+overlap_matrix <- check_overlap(clust_names_list)
+print(overlap_matrix)
+
+TopTable$AbsFC <- abs(TopTable$logFC)
+
+# FC plots
 cluster_plots <- lapply(names(clust_names_list), function(clust_name) {
-  plot_cluster_fc_sig_species(clust_names_list[[clust_name]], clust_name, TopTable)
+  plot_cluster_fc_sig_species(
+    clust_names_list[[clust_name]],
+    clust_name,
+    TopTable
+  )
 })
-names(cluster_plots) <- names(clust_names_list)
 
-for (p in cluster_plots) print(p)
+for (p in cluster_plots) {
+  if (!is.null(p)) print(p)
+}
 
-
+# AbsFC plots
 cluster_plots <- lapply(names(clust_names_list), function(clust_name) {
- plot_cluster_absfc_sig_species(clust_names_list[[clust_name]], clust_name, TopTable)
+  plot_cluster_absfc_sig_species(
+    clust_names_list[[clust_name]],
+    clust_name,
+    TopTable
+  )
 })
-names(cluster_plots) <- names(clust_names_list)
 
-for (p in cluster_plots) print(p)
+for (p in cluster_plots) {
+  if (!is.null(p)) print(p)
+}
 
 
 ```
@@ -1211,54 +1217,13 @@ clust_names_list <- list(
   clust5_RNA
 )
 
-names(clust_names_list) <- paste0("clust", 1:4)
+names(clust_names_list) <- paste0("clust", 1:5)
 
 print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
-```{r RNASeq_CoMortif_Species_DGE}
-TopTable_RNA_All$AbsFC <- abs(TopTable_RNA_All$logFC)
-cluster_names <- c("clust1_RNA","clust2_RNA","clust3_RNA","clust4_RNA","clust5_RNA")
 
 
-```
-
-```{r RNA-Seq_CorMotif_Species_ClustSets_DGE_FC}
-cluster_lists <- list(
-  clust1_RNA  = clust1_RNA,
-  clust2_RNA  = clust2_RNA,
-  clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-
-
-```
-
-```{r RNA-Seq_CorMotif_Species_ClustSets_DGE_AbsFC}
-cluster_lists <- list(
-  clust1_RNA  = clust1_RNA,
-  clust2_RNA  = clust2_RNA,
-  clust3_RNA  = clust3_RNA,
-  clust4_RNA  = clust4_RNA,
-  clust5_RNA = clust5_RNA
-)
-
-cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_absfc(cluster_lists[[clust_name]], clust_name, TopTable_RNA_All)
-})
-names(cluster_plots) <- names(cluster_lists)
-
-for (p in cluster_plots) print(p)
-
-
-```
 
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2}
 all_genes <- unique(TopTable$Gene)

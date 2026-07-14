@@ -172,7 +172,7 @@ plot_stage <- function(stage_name, data, ann_colors) {
 #   column_to_rownames("Geneid")
 # 
 # # #Rename column Names to More Useful Info
-# col_names <- RNA_Metadata$SampleName
+col_names <- RNA_Metadata$SampleName
 # colnames(RNA_fc) <- col_names
 # dim(RNA_fc)
 # 

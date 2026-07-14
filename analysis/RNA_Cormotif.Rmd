@@ -654,7 +654,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler1}
 all_genes <- unique(TopTable$Gene)
 
 
@@ -1259,7 +1259,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2}
 all_genes <- unique(TopTable$Gene)
 
 

@@ -485,7 +485,7 @@ gene_prob_ppost %>%
   ggtitle("Cormtif p.post RNA V8")
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets,fig.height=8,fig.width=15}
+```{r RNA-Seq_CorMotif_Species_ClustSets1,fig.height=8,fig.width=15}
 motif.fit <- readRDS("data/Cormotif/concat/CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
 log2cpm <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep.RDS")
 gene_prob_ppost <- readRDS("data/Cormotif/concat/RNA_gene_prob_CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
@@ -1105,7 +1105,7 @@ gene_prob_ppost %>%
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets}
+```{r RNA-Seq_CorMotif_Species_ClustSets2}
 motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 

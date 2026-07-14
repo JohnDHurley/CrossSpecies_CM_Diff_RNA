@@ -1423,6 +1423,6 @@ ggplot(top_terms,
 
 # git -> commit all changes
 # git -> push
-# wflow_publish("analysis/RNA_Cormotif_Comp_Species_Ensembl.Rmd")
+wflow_publish("analysis/RNA_Cormotif.Rmd")
 
 ```

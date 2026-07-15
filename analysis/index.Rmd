@@ -14,19 +14,18 @@ Welcome to my research website.
 
 [RNA PCA Plots](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_PCA_Ensemble.html)
 
-[RNA Cormotif Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif.html)
+[RNA DGE](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE.html)
 
 
 
+<!-- [RNA Cormotif Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif.html) -->
 
-[RNA Differentail Analysis RowMeans >0](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Interactions_RMG0.html)
+<!-- [RNA Differentail Analysis Log2cpm >1.5](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Interactions_lcpm.html) -->
 
-[RNA Differentail Analysis Log2cpm >1.5](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Interactions_lcpm.html)
+<!-- [RNA CHDGene Overlaps Species DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Species.html) -->
 
-[RNA CHDGene Overlaps Species DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Species.html)
+<!-- [RNA DGE Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Comp_Trajectory_Ensemble.html) -->
 
-[RNA DGE Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Comp_Trajectory_Ensemble.html)
+<!-- [RNA CHDGene Overlaps Trajecotory DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Trajceotry.html) -->
 
-[RNA CHDGene Overlaps Trajecotory DEGs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CHDGene_Comp_Trajceotry.html)
-
-[RNA Cormotif Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Comp_Trajectory_Ensemble.html)
+<!-- [RNA Cormotif Trajectory](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Comp_Trajectory_Ensemble.html) -->

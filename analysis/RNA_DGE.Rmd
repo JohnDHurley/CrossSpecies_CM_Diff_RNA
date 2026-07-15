@@ -1509,7 +1509,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 
 #####Species
 
-```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1555,7 +1555,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Species_Directionality_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1590,7 +1590,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1666,7 +1666,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp}
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 

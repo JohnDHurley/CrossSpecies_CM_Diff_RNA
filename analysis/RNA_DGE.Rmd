@@ -4916,60 +4916,7 @@ ggplot(df_all, aes(x = H, y = C)) +
   )
 
 ```
-```{r RNASeq_DGE_Trajectory_DEGs_RLCOMP_G1_4SpTp_No4}
-library(dplyr)
-library(purrr)
-library(stringr)
 
-days <- c("Day02", "Day25", "Day515", "Day1530")
-
-prop_df <- map_dfr(days, function(day) {
-  
-  h <- RNA_sets[[paste0("H_", day)]]
-  c <- RNA_sets[[paste0("C_", day)]]
-  
-  tibble(
-    trajectory = day,
-    
-    H_DEG = length(h$DEGs$Gene),
-    H_NonDEG = length(h$NonDEGs$Gene),
-    
-    C_DEG = length(c$DEGs$Gene),
-    C_NonDEG = length(c$NonDEGs$Gene)
-  )
-})
-
-library(tidyr)
-
-prop_long <- prop_df %>%
-  pivot_longer(
-    cols = -trajectory,
-    names_to = c("species", "type"),
-    names_sep = "_",
-    values_to = "count"
-  ) %>%
-  group_by(species, trajectory) %>%
-  mutate(prop = count / sum(count)) %>%
-  ungroup()
-
-prop_long$trajectory <- factor(
-  prop_long$trajectory,
-  levels = c("Day02", "Day25", "Day515", "Day1530"),
-  labels = c("0–2", "2–5", "5–15", "15–30")
-)
-
-library(ggplot2)
-
-ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
-  geom_col() +
-  facet_wrap(~ species) +
-  theme_bw() +
-  labs(
-    x = "Time window",
-    y = "Proportion of genes",
-    fill = ""
-  )
-```
 
 #####Interactions
 

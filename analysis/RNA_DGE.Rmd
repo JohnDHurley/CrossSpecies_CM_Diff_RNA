@@ -2651,7 +2651,7 @@ metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15"
 # dge <- calcNormFactors(dge, method = "TMM")
 # dge$samples
 
-dge < -readRDS("data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+dge <-readRDS("data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 dim(dge)
 dge$samples

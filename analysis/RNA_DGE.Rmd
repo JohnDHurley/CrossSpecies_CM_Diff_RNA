@@ -938,7 +938,7 @@ get_fc_directions <- function(traj_label, coef_name, comparison_label,
 }
 ```
 
-```{r get_directional_genes_HvC, include = FALSE}
+```{r get_directional_genes_HvC1, include = FALSE}
 
 get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
                                  top_table_all, fit_obj, p_cutoff = 0.05) {
@@ -986,7 +986,7 @@ get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
 }
 ```
 
-```{r get_directional_genes_HvC, include = FALSE}
+```{r get_directional_genes_HvC2, include = FALSE}
 
 get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
                                  top_table_all, fit_obj, p_cutoff = 0.05) {
@@ -1085,7 +1085,7 @@ Enrich_Go_sets <- function(gene_sets, v) {
 
 ####Unfiltered
 
-```{r RNASeq_DGE_Differential_Data}
+```{r RNASeq_DGE_Differential_Data_unfiltered}
 counts_table <- RNA_fc
 metadata <- RNA_Metadata_NoRep
 
@@ -1114,7 +1114,7 @@ colnames(design_int) <- make.names(colnames(design_int))
 # saveRDS(design_int, "data/DGE/design_int_RNA_fc_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_Data_Model, fig.height=6,fig.width=6}
+```{r RNASeq_DGE_Differential_Data_Model_unfiltered, fig.height=6,fig.width=6}
 dge <- dge_RNA_fc_NoRep
 design_int <- design_int_RNA_fc_NoRep
 metadata <- RNA_Metadata_NoRep
@@ -1231,7 +1231,7 @@ for (sp in species_levels) {
 
 ####RLCPM_G1_4SpTp
 
-```{r RNASeq_DGE_Differential_Data}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc
 metadata <- RNA_Metadata_NoRep
 
@@ -1377,7 +1377,7 @@ for (sp in species_levels) {
 # saveRDS(fit, "data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_Data_Model}
+```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp}
 fit <- fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 design_int <- design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1426,7 +1426,7 @@ summary(results_summary)
 # saveRDS(fit2, "data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_TopTable}
+```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
 #Create Human TopTable. using listapply, then you can pull specific comp using the $
@@ -1459,7 +1459,7 @@ ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
 head(TopTable_RNA_All)
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots}
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1484,7 +1484,7 @@ for (n in ComparisonNames) {
 }
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05}
+```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1509,7 +1509,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 
 #####Species
 
-```{r RNASeq_DGE_Trajectory_FC, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1555,7 +1555,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality}
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1590,7 +1590,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_FC}
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1666,7 +1666,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo}
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp}
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1698,7 +1698,7 @@ Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species
 
 #####Trajectory
 
-```{r RNASeq_DGE_Trajectory_FC, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1748,7 +1748,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality}
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1782,7 +1782,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR.RDS")
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_FC}
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1891,7 +1891,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo}
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1923,7 +1923,7 @@ all_go_results <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RN
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2009,7 +2009,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants_4_2}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_4_2_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2095,7 +2095,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants_5_4}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_5_4_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2180,7 +2180,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants_15_5}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_15_5_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2266,7 +2266,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r RNASeq_DGE_Clusters_FC_Quadrants_30_15}
+```{r RNASeq_DGE_Clusters_FC_Quadrants_30_15_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2352,7 +2352,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r Trajectory plotting }
+```{r Trajectory plotting_RLCOMP_G1_4SpTp }
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2413,7 +2413,7 @@ df_stats <- df_all %>%
 
 #####Interactions
 
-```{r RNASeq_DGE_Interaction_FC}
+```{r RNASeq_DGE_Interaction_FC_RLCOMP_G1_4SpTp}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2449,7 +2449,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality}
+```{r RNASeq_DGE_Interaction_Directionality_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2492,7 +2492,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality_FC}
+```{r RNASeq_DGE_Interaction_Directionality_FC_RLCOMP_G1_4SpTp}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2601,7 +2601,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo}
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -2636,7 +2636,7 @@ all_go_results <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_R
 
 ####RLCPM_G1_4SpTp No4
 
-```{r RNASeq_DGE_Differential_Data}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata <- RNA_Metadata_No4_NoRep
 
@@ -2789,7 +2789,7 @@ for (sp in species_levels) {
 # saveRDS(fit, "data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_Data_Model}
+```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp_No4}
 fit <- fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 design_int <- design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -2835,7 +2835,7 @@ summary(results_summary)
 # saveRDS(fit2, "data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_TopTable}
+```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp_No4}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 #Create Human TopTable. using listapply, then you can pull specific comp using the $
@@ -2868,7 +2868,7 @@ ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
 head(TopTable_RNA_All)
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots}
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -2893,7 +2893,7 @@ for (n in ComparisonNames) {
 }
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05}
+```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -2918,7 +2918,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 
 #####Species
 
-```{r RNASeq_DGE_Trajectory_FC, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -2964,7 +2964,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality}
+```{r RNASeq_DGE_Species_Directionality_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -2998,7 +2998,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_FC}
+```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp_No4}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3066,7 +3066,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo}
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4}
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3094,7 +3094,7 @@ Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <-readRDS("data/DGE/Spec
 
 ```
 
-```{r}
+```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(purrr)
 library(stringr)
@@ -3173,7 +3173,7 @@ ggVennDiagram(genes_list, label = "count") +
 
 ```
 
-```{r}
+```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(stringr)
 
@@ -3291,7 +3291,7 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 #####Trajectory
 
-```{r RNASeq_DGE_Trajectory_FC, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3341,7 +3341,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality}
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3373,7 +3373,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4.RDS")
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_FC}
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3465,7 +3465,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo}
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3496,7 +3496,7 @@ Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/
 
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_EnrichGo_EnrichentTerms_RLCOMP_G1_4SpTp_No4}
 all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 go_all <- imap_dfr(all_go_results, function(x, name) {
@@ -3543,7 +3543,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
 ```
 
 
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 library(dplyr)
@@ -3589,7 +3589,7 @@ ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
   )
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_Proportions_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3682,7 +3682,7 @@ ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
     pattern = ""
   )
 ```
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3761,7 +3761,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
   )
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_SpeciesDEGs_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(stringr)
 library(tidyr)
@@ -3849,7 +3849,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
   )
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_Divergence_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(stringr)
 library(dplyr)
@@ -3913,7 +3913,7 @@ ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
     title = "Species divergence across all DEGs"
   )
 ```
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_Divergence_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3980,7 +3980,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
   )
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_EffectSizes_Divergence_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(stringr)
 
@@ -4026,7 +4026,7 @@ ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
   )
 ```
 
-```{r, fig.height=10,fig.width=10}
+```{r RNASeq_DGE_Trajectory_correlationPlots_DEGs_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
 
 library(dplyr)
 library(stringr)
@@ -4141,7 +4141,7 @@ ggplot(df_all, aes(x = H, y = C)) +
 
 ```
 
-```{r, fig.height=10,fig.width=10}
+```{r RNASeq_DGE_Trajectory_correlationPlots_TrajecotrySpecific_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
 
 library(dplyr)
 library(stringr)
@@ -4254,7 +4254,7 @@ ggplot(df_all, aes(x = H, y = C)) +
   )
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_effectSizes_SpeciesSpecific_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -4363,7 +4363,7 @@ ggplot(plot_df,
   )
 ```
 
-```{r}
+```{r RNASeq_DGE_Trajectory_effectSizes_Divergence_SpeciesSpecific_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(stringr)
 library(tidyr)
@@ -4444,7 +4444,7 @@ ggplot(plot_df,
   )
 ```
 
-```{r fig.height=10,fig.width=10}
+```{r RNASeq_DGE_Trajectory_SpeciesSpecific_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
 library(dplyr)
 library(stringr)
 library(tidyr)
@@ -4630,7 +4630,7 @@ ggplot(df_all,
   )
 ```
 
-```{r fig.height=10,fig.width=10}
+```{r RNASeq_DGE_Trajectory_NonDEGs_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -4786,7 +4786,7 @@ ggplot(df_all, aes(x = H, y = C)) +
 
 
 
-```{r Trajectory plotting }
+```{r RNASeq_DGE_Trajectory_PlotsCombined_RLCOMP_G1_4SpTp_No4 }
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -4844,7 +4844,7 @@ df_stats <- df_all %>%
   })
 ```
 
-```{r, fig.height=10,fig.width=10}
+```{r RNASeq_DGE_Trajectory_AllExpressedGenes_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
 library(dplyr)
 
 df_all <- df_all %>%
@@ -4916,7 +4916,7 @@ ggplot(df_all, aes(x = H, y = C)) +
   )
 
 ```
-```{r}
+```{r RNASeq_DGE_Trajectory_DEGs_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(purrr)
 library(stringr)
@@ -4971,63 +4971,9 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
   )
 ```
 
-```{r}
-library(dplyr)
-library(purrr)
-library(stringr)
-
-days <- c("Day02", "Day25", "Day515", "Day1530")
-
-prop_df <- map_dfr(days, function(day) {
-  
-  h <- RNA_sets[[paste0("H_", day)]]
-  c <- RNA_sets[[paste0("C_", day)]]
-  
-  tibble(
-    trajectory = day,
-    
-    H_DEG = length(h$DEGs$Gene),
-    H_NonDEG = length(h$NonDEGs$Gene),
-    
-    C_DEG = length(c$DEGs$Gene),
-    C_NonDEG = length(c$NonDEGs$Gene)
-  )
-})
-
-library(tidyr)
-
-prop_long <- prop_df %>%
-  pivot_longer(
-    cols = -trajectory,
-    names_to = c("species", "type"),
-    names_sep = "_",
-    values_to = "count"
-  ) %>%
-  group_by(species, trajectory) %>%
-  mutate(prop = count / sum(count)) %>%
-  ungroup()
-
-prop_long$trajectory <- factor(
-  prop_long$trajectory,
-  levels = c("Day02", "Day25", "Day515", "Day1530"),
-  labels = c("0–2", "2–5", "5–15", "15–30")
-)
-
-library(ggplot2)
-
-ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
-  geom_col() +
-  facet_wrap(~ species) +
-  theme_bw() +
-  labs(
-    x = "Time window",
-    y = "Proportion of genes",
-    fill = ""
-  )
-```
 #####Interactions
 
-```{r}
+```{r RNASeq_DGE_Interactions_DEGs_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(purrr)
 library(stringr)
@@ -5248,7 +5194,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r}
+```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(purrr)
 library(tidyr)
@@ -5388,7 +5334,7 @@ all_go_results <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_R
 
 ```
 
-```{r , fig.height=6, fig.width=6}
+```{r RNASeq_DGE_CorrelationValues_Combined_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=6}
 r2_df <- data.frame(
   Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
   R2 = c(0.538, 0.673, 0.562, 0.428)

@@ -157,7 +157,7 @@ generate_volcano_plot <- function(toptable, title) {
 
 ```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+```{r FC_Plot_Function_sig_Species, include = FALSE}
 
 plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
@@ -217,7 +217,7 @@ plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
 ```
 
-```{r FC_Plot_Function_sig_No4, include = FALSE}
+```{r FC_Plot_Function_sig_Species_No4, include = FALSE}
 
 plot_cluster_fc_sig_species_No4 <- function(gene_vector, cluster_name, top_table) {
   
@@ -287,7 +287,7 @@ plot_cluster_fc_sig_species_No4 <- function(gene_vector, cluster_name, top_table
 
 ```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+```{r FC_Plot_Function_sig_trajecgory, include = FALSE}
 
 plot_cluster_fc_sig_trajectory <- function(gene_vector, cluster_name, top_table) {
 
@@ -347,7 +347,7 @@ plot_cluster_fc_sig_trajectory <- function(gene_vector, cluster_name, top_table)
 
 ```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+```{r FC_Plot_Function_sig_trajectory_No4, include = FALSE}
 
 plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
 
@@ -407,7 +407,7 @@ plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_ta
 
 ```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+```{r FC_Plot_Function_sig_Interaction, include = FALSE}
 
 plot_cluster_fc_sig_interaction <- function(gene_vector, cluster_name, top_table) {
 
@@ -467,7 +467,7 @@ plot_cluster_fc_sig_interaction <- function(gene_vector, cluster_name, top_table
 
 ```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+```{r FC_Plot_Function_sig_Interaction_No4, include = FALSE}
 
 plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_table) {
 
@@ -527,7 +527,7 @@ plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_t
 
 ```
 
-```{r AbsFC_Plot_Function_sig, include = FALSE}
+```{r AbsFC_Plot_Function_sig_Speices, include = FALSE}
 
 plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
@@ -586,7 +586,7 @@ plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table)
 }
 ```
 
-```{r AbsFC_Plot_Function_sig, include = FALSE}
+```{r AbsFC_Plot_Function_sig_Species_No4, include = FALSE}
 
 plot_cluster_absfc_sig_species_No4 <- function(gene_vector, cluster_name, top_table) {
 
@@ -655,7 +655,7 @@ plot_cluster_absfc_sig_species_No4 <- function(gene_vector, cluster_name, top_ta
 }
 ```
 
-```{r AbsFC_Plot_Function_sig, include = FALSE}
+```{r AbsFC_Plot_Function_sig_Trajectory, include = FALSE}
 
 plot_cluster_absfc_sig_trajectory <- function(gene_vector, cluster_name, top_table) {
 
@@ -714,7 +714,7 @@ plot_cluster_absfc_sig_trajectory <- function(gene_vector, cluster_name, top_tab
 }
 ```
 
-```{r AbsFC_Plot_Function_sig, include = FALSE}
+```{r AbsFC_Plot_Function_sig_Trajectory_No4, include = FALSE}
 
 plot_cluster_absfc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
 

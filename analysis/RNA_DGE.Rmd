@@ -3714,7 +3714,7 @@ df <- TopTable %>%
 # 3. Collapse to gene-level (keep all DEGs in either species)
 # ----------------------------
 df_wide <- df %>%
-  select(Gene, Species, Stage, logFC, DEG) %>%
+  dplyr::select(Gene, Species, Stage, logFC, DEG) %>%
   pivot_wider(
     names_from = Species,
     values_from = c(logFC, DEG)
@@ -3731,7 +3731,7 @@ plot_df <- df_deg %>%
     logFC_H = abs(logFC_Human),
     logFC_C = abs(logFC_Chimp)
   ) %>%
-  select(Gene, Stage, logFC_H, logFC_C) %>%
+  dplyr::select(Gene, Stage, logFC_H, logFC_C) %>%
   pivot_longer(
     cols = c(logFC_H, logFC_C),
     names_to = "Species",
@@ -3790,7 +3790,7 @@ df <- TopTable %>%
 # 3. Collapse to gene-level
 # ----------------------------
 df_wide <- df %>%
-  select(Gene, Species, Stage, logFC, DEG) %>%
+  dplyr::select(Gene, Species, Stage, logFC, DEG) %>%
   pivot_wider(
     names_from = Species,
     values_from = c(logFC, DEG)
@@ -3804,7 +3804,7 @@ plot_df <- df_wide %>%
     use_H = DEG_Human,   # Human uses its DEGs (shared + human-only)
     use_C = DEG_Chimp    # Chimp uses its DEGs (shared + chimp-only)
   ) %>%
-  select(Gene, Stage,
+  dplyr::select(Gene, Stage,
          logFC_Human, logFC_Chimp,
          use_H, use_C) %>%
   
@@ -3878,7 +3878,7 @@ df <- TopTable %>%
 # 3. Pair Human and Chimp values
 # ----------------------------
 df_wide <- df %>%
-  select(Gene, Species, Stage, logFC, DEG) %>%
+  dplyr::select(Gene, Species, Stage, logFC, DEG) %>%
   pivot_wider(
     names_from = Species,
     values_from = c(logFC, DEG)
@@ -3933,11 +3933,11 @@ df <- TopTable %>%
 
 human_deg <- df %>%
   filter(Species == "Human", DEG) %>%
-  select(Gene, Stage, logFC)
+  dplyr::select(Gene, Stage, logFC)
 
 chimp_deg <- df %>%
   filter(Species == "Chimp", DEG) %>%
-  select(Gene, Stage, logFC)
+  dplyr::select(Gene, Stage, logFC)
 
 shared_deg <- inner_join(
   human_deg,
@@ -3951,7 +3951,7 @@ plot_df <- shared_deg %>%
     logFC_H = abs(logFC_H),
     logFC_C = abs(logFC_C)
   ) %>%
-  select(Gene, Stage, logFC_H, logFC_C) %>%
+  dplyr::select(Gene, Stage, logFC_H, logFC_C) %>%
   tidyr::pivot_longer(
     cols = c(logFC_H, logFC_C),
     names_to = "Species",
@@ -3996,11 +3996,11 @@ df <- TopTable %>%
   )
 h <- df %>%
   filter(Species == "Human", DEG) %>%
-  select(Gene, Stage, logFC)
+  dplyr::select(Gene, Stage, logFC)
 
 c <- df %>%
   filter(Species == "Chimp", DEG) %>%
-  select(Gene, Stage, logFC)
+  dplyr::select(Gene, Stage, logFC)
 
 shared <- inner_join(
   h, c,
@@ -4043,7 +4043,7 @@ df <- TopTable %>%
   )
 
 df_all <- df %>%
-  select(Gene, Species, trajectory, logFC, DEG) %>%
+  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
   tidyr::pivot_wider(
     names_from = Species,
     values_from = c(logFC, DEG)

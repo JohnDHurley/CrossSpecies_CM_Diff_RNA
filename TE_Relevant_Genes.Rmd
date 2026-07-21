@@ -1,0 +1,408 @@
+---
+title: "TE_Relevant_Genes"
+output: html_document
+date: "2026-07-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r Enviroment Set Up, }
+#loading libraries
+library("tidyverse")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+
+BiocManager::install("ggalluvial")
+
+```
+
+```{r TopTable_Symbols}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+# Extract Ensembl IDs for every row
+ens_ids <- sub("\\..*$", "", TopTable$Gene)
+
+# Make a lookup table
+symbol_map <- mapIds(
+    org.Hs.eg.db,
+    keys = unique(ens_ids),
+    column = "SYMBOL",
+    keytype = "ENSEMBL",
+    multiVals = "first"
+)
+
+TopTable$Symbol <- unname(symbol_map[ens_ids])
+
+saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+```{r KZFPs}
+KZFPs <- read_excel("data/TEs/KZFPs_list.xlsx")
+
+# saveRDS(KZFPs,"data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+# saveRDS(KZFPs_list,"data/TEs/KZFPs_list.RDS")
+
+```
+
+
+```{r KZFP_enrichment_function}
+
+KZFP_enrichment <- function(comparisons, TopTable, KZFPs_list) {
+  
+  results <- lapply(comparisons, function(group) {
+    
+    test_genes <- TopTable %>%
+      filter(Comparisons == group) %>%
+      distinct(Symbol)
+    
+    deg_genes <- TopTable %>%
+      filter(Comparisons == group,
+             adj.P.Val < 0.05) %>%
+      distinct(Symbol)
+    
+    not_deg_genes <- setdiff(test_genes$Symbol, deg_genes$Symbol)
+    
+    tab <- matrix(
+      c(
+        sum(deg_genes$Symbol %in% KZFPs_list),
+        sum(deg_genes$Symbol %notin% KZFPs_list),
+        sum(not_deg_genes %in% KZFPs_list),
+        sum(not_deg_genes %notin% KZFPs_list)
+      ),
+      nrow = 2,
+      byrow = TRUE
+    )
+    
+    fisher <- fisher.test(tab)
+    
+    data.frame(
+      Comparison = group,
+      KZFP_DEG = tab[1,1],
+      NonKZFP_DEG = tab[1,2],
+      KZFP_not_DEG = tab[2,1],
+      NonKZFP_not_DEG = tab[2,2],
+      Odds_Ratio = fisher$estimate,
+      Fisher_p = fisher$p.value
+    )
+  })
+  
+  do.call(rbind, results)
+}
+
+```
+
+```{r FischerTest_OddsRation_plotting}
+
+plot_OR <- function(results, group_to_plot) {
+  
+  plot_data <- results %>%
+    filter(Comparison_Group %in% group_to_plot) %>%
+    mutate(
+      label = ifelse(FDR < 0.05, "*", ""),
+      log2_OR = log2(Odds_Ratio)
+    )
+  
+  ggplot(plot_data, aes(Comparison, log2_OR)) +
+    geom_point(size = 3) +
+    geom_text(
+      aes(label = label),
+      vjust = -1
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+}
+```
+
+```{r KZFP,fig.height=4, fig.width=7}
+
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+comparisons <- unique(TopTable$Comparisons)
+
+KZFP_results <- KZFP_enrichment(
+  comparisons,
+  TopTable,
+  KZFPs_list
+)
+
+KZFP_results$FDR <- p.adjust(KZFP_results$Fisher_p, method = "BH")
+
+KZFP_results
+
+comparison_order <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30",
+  "H_Day02",
+  "H_Day25",
+  "H_Day515",
+  "H_Day1530",
+  "C_Day02",
+  "C_Day25",
+  "C_Day515",
+  "C_Day1530",
+  "Sig_Sp_inter_Traj02",
+  "Sig_Sp_inter_Traj25",
+  "Sig_Sp_inter_Traj515",
+  "Sig_Sp_inter_Traj1530"
+)
+
+KZFP_results <- KZFP_results %>%
+  mutate(
+    Comparison = factor(Comparison, levels = comparison_order)
+  )
+
+KZFP_results <- KZFP_results %>%
+  mutate(
+    Comparison_Group = case_when(
+      grepl("^HvC", Comparison) ~ "Species",
+      grepl("inter", Comparison) ~ "Interaction",
+      grepl("^[HC]_Day", Comparison) ~ "Trajectory",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  mutate(Significant = FDR < 0.05)
+
+plot_OR(KZFP_results, "Species")
+
+plot_OR(KZFP_results, "Interaction")
+
+plot_OR(KZFP_results, "Trajectory")
+```
+
+```{r KZFP_FC}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+comparisons <- unique(TopTable$Comparisons)
+
+comparison_order <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30",
+  "H_Day02",
+  "H_Day25",
+  "H_Day515",
+  "H_Day1530",
+  "C_Day02",
+  "C_Day25",
+  "C_Day515",
+  "C_Day1530",
+  "Sig_Sp_inter_Traj02",
+  "Sig_Sp_inter_Traj25",
+  "Sig_Sp_inter_Traj515",
+  "Sig_Sp_inter_Traj1530"
+)
+
+KZFP_all <- TopTable %>%
+  filter(
+    Comparisons %in% comparison_order,
+    Symbol %in% KZFPs_list
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  )
+
+ggplot(KZFP_all, aes(Comparisons, logFC)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+KZFP_FC <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in% KZFPs_list
+  ) %>%
+  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
+
+KZFP_DEG <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in% KZFPs_list,
+    adj.P.Val < 0.05
+  ) %>%
+  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
+
+KZFP_DEG %>%
+  filter(grepl("^HvC", Comparisons)) %>%
+  arrange(Comparisons, desc(logFC))
+
+KZFP_DEG_direction <- KZFP_DEG %>%
+  mutate(
+    Direction = case_when(
+      
+      # Species contrasts
+      grepl("^HvC", Comparisons) & logFC > 0 ~ "Higher in Human",
+      grepl("^HvC", Comparisons) & logFC < 0 ~ "Higher in Chimp",
+      
+      # Human trajectory contrasts
+      grepl("^H_Day", Comparisons) & logFC > 0 ~ "Human increased",
+      grepl("^H_Day", Comparisons) & logFC < 0 ~ "Human decreased",
+      
+      # Chimp trajectory contrasts
+      grepl("^C_Day", Comparisons) & logFC > 0 ~ "Chimp increased",
+      grepl("^C_Day", Comparisons) & logFC < 0 ~ "Chimp decreased",
+      
+      # Species x trajectory interactions
+      grepl("^Sig_Sp_inter", Comparisons) & logFC > 0 ~ "Human-Chimp difference increased",
+      grepl("^Sig_Sp_inter", Comparisons) & logFC < 0 ~ "Human-Chimp difference decreased",
+      
+      TRUE ~ "Unknown"
+    )
+  ) %>%
+  count(Comparisons, Direction)
+```
+
+
+```{r KZFP_alluvial}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+comparisons <- unique(TopTable$Comparisons)
+
+comparison_order <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30",
+  "H_Day02",
+  "H_Day25",
+  "H_Day515",
+  "H_Day1530",
+  "C_Day02",
+  "C_Day25",
+  "C_Day515",
+  "C_Day1530",
+  "Sig_Sp_inter_Traj02",
+  "Sig_Sp_inter_Traj25",
+  "Sig_Sp_inter_Traj515",
+  "Sig_Sp_inter_Traj1530"
+)
+
+
+KZFP_alluvial <- TopTable %>%
+  filter(
+    Symbol %in% KZFPs_list,
+    Comparisons %in% comparison_order
+  ) %>%
+  mutate(
+    Direction = case_when(
+      adj.P.Val < 0.05 & logFC > 0 ~ "Up",
+      adj.P.Val < 0.05 & logFC < 0 ~ "Down",
+      TRUE ~ "Not significant"
+    ),
+    Comparison_Group = case_when(
+      grepl("^HvC", Comparisons) ~ "Species",
+      grepl("^H_Day", Comparisons) ~ "Human",
+      grepl("^C_Day", Comparisons) ~ "Chimp",
+      grepl("^Sig_Sp_inter", Comparisons) ~ "Interaction",
+      TRUE ~ "Other"
+    ),
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  )
+
+plot_KZFP_alluvial <- function(data, group_to_plot) {
+  
+  plot_data <- data %>%
+    filter(Comparison_Group == group_to_plot)
+  
+  ggplot(
+    plot_data,
+    aes(
+      x = Comparisons,
+      stratum = Direction,
+      alluvium = Symbol,
+      y = 1,
+      fill = Direction
+    )
+  ) +
+    geom_alluvium(alpha = 0.5) +
+    geom_stratum() +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    ) +
+    labs(
+      x = NULL,
+      y = "Number of KZFPs",
+      title = group_to_plot
+    )
+}
+
+
+
+Species_plot <- plot_KZFP_alluvial(
+  KZFP_alluvial,
+  "Species"
+)
+
+Human_plot <- plot_KZFP_alluvial(
+  KZFP_alluvial,
+  "Human"
+)
+
+Chimp_plot <- plot_KZFP_alluvial(
+  KZFP_alluvial,
+  "Chimp"
+)
+
+Interaction_plot <- plot_KZFP_alluvial(
+  KZFP_alluvial,
+  "Interaction"
+)
+
+Species_plot
+Human_plot
+Chimp_plot
+Interaction_plot
+
+
+
+```
+

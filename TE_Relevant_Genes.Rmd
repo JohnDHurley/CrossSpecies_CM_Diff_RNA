@@ -17,6 +17,7 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r Enviroment Set Up, }
 #loading libraries
 library("tidyverse")
+library("rmarkdown")
 library("readxl")
 library("readr")
 library("ggrepel")
@@ -406,3 +407,10 @@ Interaction_plot
 
 ```
 
+```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/TE_Relevant_Genes.Rmd")
+
+```

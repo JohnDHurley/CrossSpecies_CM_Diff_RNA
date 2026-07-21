@@ -37,8 +37,9 @@ library("ggplot2")
 library("tidyr")
 library("AnnotationDbi")
 library("org.Hs.eg.db")
+library("ggalluvial")
 
-BiocManager::install("ggalluvial")
+# BiocManager::install("ggalluvial")
 
 ```
 

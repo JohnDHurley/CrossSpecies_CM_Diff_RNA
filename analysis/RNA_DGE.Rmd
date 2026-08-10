@@ -527,6 +527,66 @@ plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_t
 
 ```
 
+```{r AbsFC_Plot_Function_sig_Interaction_No4, include = FALSE}
+
+plot_cluster_absfc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absfc)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("absFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Interaction DEGs absFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+```
+
 ```{r AbsFC_Plot_Function_sig_Speices, include = FALSE}
 
 plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table) {
@@ -3094,6 +3154,151 @@ Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <-readRDS("data/DGE/Spec
 
 ```
 
+
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "HvC_Day0",
+    "HvC_Day2",
+    "HvC_Day5",
+    "HvC_Day15",
+    "HvC_Day30"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
+
+```{r RNASeq_DGE_Trajectory_DEGs_RLCOMP_G1_4SpTp_No4}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+library(dplyr)
+
+species <- c(
+  "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
+)
+
+# 1. Filter + define DEG status
+df <- TopTable %>%
+  filter(Comparisons %in% species) %>%
+  mutate(DEG_status = ifelse(adj.P.Val < 0.05, "DEG", "Non-DEG"))
+
+# 2. Summarise proportions per comparison
+prop_df <- df %>%
+  group_by(Comparisons, DEG_status) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Comparisons) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup()
+
+# 3. Order comparisons properly
+prop_df$Comparisons <- factor(
+  prop_df$Comparisons,
+  levels = c(
+    "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
+  )
+)
+
+# 4. Plot
+library(ggplot2)
+
+ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Proportion of genes",
+    fill = "",
+    title = "DEG vs NonDEG composition"
+  )
+```
+
 ```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4}
 library(dplyr)
 library(purrr)
@@ -3173,10 +3378,16 @@ ggVennDiagram(genes_list, label = "count") +
 
 ```
 
-```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
 library(dplyr)
 library(stringr)
+library(tidyr)
+library(ggplot2)
 
+# Extract HvC DEGs
 df <- TopTable %>%
   filter(str_detect(Comparisons, "^HvC_Day")) %>%
   mutate(
@@ -3185,6 +3396,8 @@ df <- TopTable %>%
   ) %>%
   filter(DEG)
 
+
+# Create DEG gene lists by developmental day
 genes <- list(
   Day0  = df %>% filter(Stage == "Day0")  %>% pull(Gene) %>% unique(),
   Day2  = df %>% filter(Stage == "Day2")  %>% pull(Gene) %>% unique(),
@@ -3195,9 +3408,15 @@ genes <- list(
 
 days <- names(genes)
 
+# Genes DE at every developmental stage
 shared_all <- Reduce(intersect, genes)
 
-get_fate <- function(day) {
+
+############################################################
+# Determine DEG fate categories and save gene identities
+############################################################
+
+fate_list <- lapply(names(genes), function(day) {
 
   g <- genes[[day]]
 
@@ -3211,16 +3430,69 @@ get_fate <- function(day) {
   )
 
   data.frame(
+    Gene = c(
+      specific,
+      shared_partial,
+      shared_all_day
+    ),
     Day = day,
-    Specific = length(specific),
-    Shared_partial = length(shared_partial),
-    Shared_all = length(shared_all_day)
+    Fate = c(
+      rep("Specific", length(specific)),
+      rep("Shared_partial", length(shared_partial)),
+      rep("Shared_all", length(shared_all_day))
+    )
   )
-}
 
-plot_df <- do.call(rbind, lapply(names(genes), get_fate))
+})
 
-library(tidyr)
+fate_df <- bind_rows(fate_list)
+
+
+############################################################
+# Extract actual TopTable rows for each fate category
+############################################################
+
+TopTable_HvC_DEG_Fate <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Day = str_extract(Comparisons, "Day[0-9]+")
+  ) %>%
+  left_join(
+    fate_df,
+    by = c("Gene", "Day")
+  ) %>%
+  filter(!is.na(Fate))
+
+
+# Split into separate TopTables
+TopTable_Specific <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Specific")
+
+TopTable_Shared_partial <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Shared_partial")
+
+TopTable_Shared_all <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Shared_all")
+
+
+# Optional save
+# saveRDS(
+#   TopTable_HvC_DEG_Fate,
+#   "data/DGE/TopTable_HvC_DEG_Fate.RDS"
+# )
+
+
+############################################################
+# Plot counts
+############################################################
+
+plot_df <- fate_df %>%
+  count(Day, Fate, name = "Count") %>%
+  pivot_wider(
+    names_from = Fate,
+    values_from = Count,
+    values_fill = 0
+  )
 
 plot_long <- plot_df %>%
   pivot_longer(
@@ -3234,10 +3506,14 @@ plot_long$Day <- factor(
   levels = c("Day0","Day2","Day5","Day15","Day30")
 )
 
-library(ggplot2)
 
 ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
   geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
   theme_bw() +
   labs(
     x = "Developmental stage",
@@ -3246,36 +3522,26 @@ ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
     title = "Fate of HvC DEGs across development"
   )
 
-library(dplyr)
-library(tidyr)
 
-plot_long_prop <- plot_df %>%
-  pivot_longer(
-    cols = c(Specific, Shared_partial, Shared_all),
-    names_to = "Category",
-    values_to = "Count"
-  ) %>%
+############################################################
+# Plot proportions
+############################################################
+
+plot_long_prop <- plot_long %>%
   group_by(Day) %>%
   mutate(
     Prop = Count / sum(Count)
   ) %>%
   ungroup()
 
-plot_long_prop$Day <- factor(
-  plot_long_prop$Day,
-  levels = c("Day0","Day2","Day5","Day15","Day30")
-)
-library(ggplot2)
 
 ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   geom_col() +
-  
   scale_fill_manual(values = c(
     "Specific" = "#D55E00",
     "Shared_partial" = "#0072B2",
     "Shared_all" = "#009E73"
   )) +
-  
   theme_bw() +
   labs(
     x = "Developmental stage",
@@ -3283,7 +3549,6 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
     fill = "",
     title = "Fate of HvC DEGs across development (normalized)"
   )
-
 
 ```
 
@@ -3496,6 +3761,74 @@ Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/
 
 ```
 
+```{r, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day02","Day25","Day515","Day1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^H_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+```{r, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day02","Day25","Day515","Day1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^C_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
 ```{r RNASeq_DGE_Trajectory_EnrichGo_EnrichentTerms_RLCOMP_G1_4SpTp_No4}
 all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3589,9 +3922,9 @@ ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_DEGs_Proportions_RLCOMP_G1_4SpTp_No4}
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+```{r RNASeq_DGE_Trajectory_DEGs_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
                  "C_Day02","C_Day25","C_Day515","C_Day1530")
@@ -3678,6 +4011,37 @@ ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
   labs(
     x = "Developmental Stage",
     y = "Proportion of DEGs",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of DEGs",
     fill = "",
     pattern = ""
   )
@@ -4975,15 +5339,18 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
 
 ```{r RNASeq_DGE_Interaction_FC}
 
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
-TopTable_RNA_Traj <- TopTable %>% 
+all_genes <- unique(TopTable$Gene)
+
+TopTable_RNA_Inter <- TopTable %>% 
   filter(Comparisons %in% c(
-    "H_Day02","H_Day25","H_Day515","H_Day1530",
-    "C_Day02","C_Day25","C_Day515","C_Day1530"
+    "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
   ))
+
+TopTable_RNA_Inter$absfc <- abs(TopTable_RNA_Inter$logFC)
 
 Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
 Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
@@ -4994,11 +5361,12 @@ cluster_lists <- list(
   Inter_02_genes  = Inter_02_genes,
   Inter_25_genes  = Inter_25_genes,
   Inter_515_genes  = Inter_515_genes,
-  Inter_1530_genes  = Inter_1530_genes
+  Inter_1530_genes  = Inter_1530_genes,
+  all_genes = all_genes
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+  plot_cluster_absfc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Inter)
 })
 names(cluster_plots) <- names(cluster_lists)
 
@@ -5138,6 +5506,41 @@ names(cluster_plots) <- names(cluster_lists)
 
 for (p in cluster_plots) print(p)
 
+
+```
+
+```{r, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Traj02","Traj25","Traj515","Traj1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^Sig_Sp_inter_")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Traj[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Traj02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Traj25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Traj515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Traj1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
 
 ```
 

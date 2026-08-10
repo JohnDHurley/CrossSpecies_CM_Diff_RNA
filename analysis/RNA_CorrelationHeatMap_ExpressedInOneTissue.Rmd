@@ -49,8 +49,8 @@ total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 RNA_log2cpm <- readRDS("data/QC/concat/RNA_log2cpm.RDS")
 ann_colors <- readRDS("data/QC/concat/ann_colors.RDS")
-RNA_fc_No4.RDS <- readRDS("data/QC/concat/RNA_fc_No4.RDS")
-RNA_log2cpm_No4.RDS <- readRDS("data/QC/concat/RNA_log2cpm_No4.RDS")
+RNA_fc_No4 <- readRDS("data/QC/concat/RNA_fc_No4.RDS")
+RNA_log2cpm_No4 <- readRDS("data/QC/concat/RNA_log2cpm_No4.RDS")
 RNA_fc_No5<- readRDS("data/QC/concat/RNA_fc_No5.RDS")
 RNA_log2cpm_No5 <- readRDS("data/QC/concat/RNA_log2cpm_No5.RDS")
 
@@ -62,10 +62,10 @@ Filt_logcpm_G1_SpTp_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RN
 Filt_logcpm_G1_SpTp_RNA_log2cpm_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No5.RDS")
 
 RNA_Metadata_No4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
-Cor_metadata_No4 <- readRDS("data/QC/Cor_metadata_No4.RDS")
 
-ann_colors_No4 <- readRDS("data/QC/ann_colors_no4.RDS")
-RNA_Metadata_NoD4_NoRep <- readRDS("data/DGE/Trajectory/RNA_Metadata_NoD4_NoRep.RDS")
+Cor_metadata_No4 <-readRDS("data/QC/concat/Cor_metadata_No4.RDS")
+
+ann_colors_No4 <-readRDS("data/QC/concat/ann_colors_no4.RDS")
 
 RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
 
@@ -73,12 +73,12 @@ Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
 
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_no5.RDS")
 
-# Filt_FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
-# Filt_FilterByExpression_RNA_log2cpm <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm.RDS")
-# Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
-# Filt_FilterByExpression_RNA_log2cpm_No5<- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No5.RDS")
-# Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
-# Filt_FilterByExpression_RNA_log2cpm_No4<- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No4.RDS")
+Filt_FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
+Filt_FilterByExpression_RNA_log2cpm <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm.RDS")
+Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
+Filt_FilterByExpression_RNA_log2cpm_No5<- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No5.RDS")
+Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
+Filt_FilterByExpression_RNA_log2cpm_No4<- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No4.RDS")
 
 # Filt_RMG0_RNA_fc_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_PerDay.RDS")
 # Filt_RMG0_RNA_log2cpm_PerDay <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_PerDay.RDS")
@@ -4776,7 +4776,7 @@ hist(Filt_lcpm_RNA_log2cpm_BlakeEndo, main = "Histogram of filtered counts using
 
 ```
 ```{r RNASeq_FeatureCounts_Box_log2cpm_HalfSamplesPerSpeciesPerDay, fig.height=6,fig.width=12}
-boxplot(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay, main = "Boxplots of log cpm per sample (Log2cpm > 1.5 in half of the samples in a species-timepoint)",xaxt = "n", xlab= "")
+boxplot(Filt_lcpm_RNA_log2cpm_BlakeEndo, main = "Boxplots of log cpm per sample (Log2cpm > 1.5 in half of the samples in a species)",xaxt = "n", xlab= "")
 axis(1,
      at = 1:length(col_labels),  # positions (one per sample)
      labels = col_labels,        # your labels vector
@@ -4787,13 +4787,13 @@ axis(1,
 
 ```{r RNASeq_FeatureCounts_Cor_log2cpm_HalfSamplesPerSpeciesPerDay}
 ######Cor_HeatMap####
-Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay <- cor(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay, method = "spearman")
+Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo <- cor(Filt_lcpm_RNA_log2cpm_BlakeEndo, method = "spearman")
 individual <- RNA_Metadata$Individual
 species <- RNA_Metadata$Species
 timepoint <- RNA_Metadata$Timepoint
 timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
 Cor_metadata <- data.frame(
-  sample_cor = colnames(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay),
+  sample_cor = colnames(Filt_lcpm_RNA_log2cpm_BlakeEndo),
   species_cor = species,
   timepoint_cor = timepoint,
   individual_cor = individual
@@ -4834,7 +4834,7 @@ ann_colors <- list(
 )
 rownames(Cor_metadata) <- Cor_metadata$sample_cor
 
-saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay, "data/QC/concat/Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay.RDS")
+saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo, "data/QC/concat/Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
 # saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
 # saveRDS(ann_colors,"data/QC/concat/ann_colors.RDS")
 
@@ -4842,7 +4842,7 @@ saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay, "data/QC/concat/Cor_Filt_lcp
 
 ```{r RNASeq_FeatureCounts_HeatMap_log2cpm_HalfSamplesPerSpeciesPerDay,fig.height=10,fig.width=10}
 print(
-  pheatmap(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay,
+  pheatmap(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo,
          fontsize_row = 5,
          fontsize_col = 5,
          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
@@ -4855,34 +4855,54 @@ print(
 
 ```{r RNASeq_FeatureCounts_log2cpm_HalfSamplesPerSpeciesPerDay_No4}
 
-####Subset####
-exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
-exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
-exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
+RNA_log2cpm_df_No4 <- as.data.frame(RNA_log2cpm_No4 %>% 
+                                      dplyr::select())
 
-RNA_fc_No4 <- RNA_fc %>% 
-  dplyr::select(-contains("Day4"))
+# log2cpm = your matrix/data frame (rows = genes, cols = samples)
 
-Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4 <- RNA_fc_No4 %>% 
+# Define sample groups (edit based on your column names)
+H_samples <- grep("^H", colnames(RNA_log2cpm_df_No4))
+C_samples <- grep("^C", colnames(RNA_log2cpm_df_No4))
+
+# Number needed to pass (half of each group)
+H_min <- ceiling(length(H_samples) / 2)
+C_min <- ceiling(length(C_samples) / 2)
+
+# Apply filtering
+keep <- apply(RNA_log2cpm_df_No4, 1, function(x) {
+  sum(x[H_samples] > 1.5) >= H_min ||
+  sum(x[C_samples] > 1.5) >= C_min
+})
+
+# Subset data
+filtered_id_Nos <- RNA_log2cpm_df_No4[keep, ] %>% 
+  rownames_to_column("Ensembl.ID") %>%  
+  pull(Ensembl.ID) %>% 
+  unique()
+  
+
+Filt_lcpm_RNA_fc_BlakeEndo_No4 <- RNA_fc %>% 
   rownames_to_column("Ensembl.ID") %>% 
-  filter(Ensembl.ID %in% exp_ensembl_ids_No4) %>% 
+  filter(Ensembl.ID %in% filtered_ids) %>% 
   column_to_rownames("Ensembl.ID")
+  
+# saveRDS(Filt_lcpm_RNA_fc_BlakeEndo,"data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo.RDS")
 
-dim(Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4)
+Filt_lcpm_RNA_log2cpm_BlakeEndo_No4 <- cpm(Filt_lcpm_RNA_fc_BlakeEndo_No4,log=TRUE)
 
-# saveRDS(Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4, "data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4.RDS")
+# saveRDS(Filt_lcpm_RNA_log2cpm_BlakeEndo,"data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo.RDS")
 
-Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4 <- cpm(Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD4,log=TRUE)
-
-# saveRDS(RNA_Metadata_No4,"data/QC/concat/RNA_Metatdata_No4.RDS")
-# saveRDS(Filt_RMG0_RNA_fc_NoD4,"data/QC/concat/Filt_RMG0_RNA_fc_NoD4.RDS")
-# saveRDS(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4, "data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
+hist(Filt_lcpm_RNA_log2cpm_BlakeEndo_No4, main = 
+       "Histogram of filtered counts using Half of Human or Chimp have 
+     log2cpm>1.5 No4 (Blake-Endo Paper)",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
 
 ```
 
 ```{r rRNASeq_FeatureCounts_Cor_log2cpm_HalfSamplesPerSpeciesPerDay_No4}
+
 ######Cor_HeatMap####
-Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4 <- cor(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4, method = "spearman")
+Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD4 <- cor(Filt_lcpm_RNA_log2cpm_BlakeEndo_No4, method = "spearman")
 
 Cor_metadata_No4 <- Cor_metadata %>% 
   dplyr::filter(timepoint_cor !="Day4")
@@ -4893,20 +4913,20 @@ ann_colors_No4$timepoint_cor <- ann_colors$timepoint_cor[
 ]
 
 # saveRDS(Cor_metadata_No4, "data/QC/concat/Cor_metadata_No4.RDS")
-# saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4, "data/QC/concat/Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4.RDS")
+# saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD4, "data/QC/concat/Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD4.RDS")
 # saveRDS(ann_colors_No4,"data/QC/concat/ann_colors_no4.RDS")
 ```
 
 ```{r rRNASeq_FeatureCounts_HeatMap_log2cpm_HalfSamplesPerSpeciesPerDay_No4,fig.height=10,fig.width=10}
 print(
-  pheatmap(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD4,
+  pheatmap(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD4,
          fontsize_row = 5,
          fontsize_col = 5,
          annotation_col = Cor_metadata_No4[, c("species_cor", "timepoint_cor","individual_cor")],
          annotation_colors = ann_colors_No4,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation (Spearman) \n (log2cpm >1.5 in half individuals per species per day-NoDay4)")
+         main = "Sample-Sample Correlation (Spearman) \n (log2cpm >1.5 in half individuals per species-NoDay4)")
 )
 ```
 
@@ -4923,26 +4943,26 @@ exp_ensembl_ids <- unique(c(g0, g2, g4, g5, g15, g30))
 exp_ensembl_ids_No4 <- unique(c(g0, g2, g5, g15, g30))
 exp_ensembl_ids_No5 <- unique(c(g0, g2, g4, g15, g30))
 
-Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5 <- RNA_fc_No5 %>% 
+Filt_lcpm_RNA_fc_BlakeEndo_NoD5 <- RNA_fc_No5 %>% 
   rownames_to_column("Ensembl.ID") %>% 
   filter(Ensembl.ID %in% exp_ensembl_ids_No5) %>% 
   column_to_rownames("Ensembl.ID")
 
-dim(Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5)
+dim(Filt_lcpm_RNA_fc_BlakeEndo_NoD5)
 
-# saveRDS(Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5, "data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5.RDS")
+# saveRDS(Filt_lcpm_RNA_fc_BlakeEndo_NoD5, "data/QC/concat/Filt_lcpm_RNA_fc_BlakeEndo_NoD5.RDS")
 
-Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <- cpm(Filt_lcpm_RNA_fc_BlakeEndo_PerDay_NoD5,log=TRUE)
+Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5 <- cpm(Filt_lcpm_RNA_fc_BlakeEndo_NoD5,log=TRUE)
 
 # saveRDS(RNA_Metadata_No5,"data/QC/concat/RNA_Metatdata_No5.RDS")
 # saveRDS(Filt_RMG0_RNA_fc_NoD5,"data/QC/concat/Filt_RMG0_RNA_fc_NoD5.RDS")
-# saveRDS(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5, "data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5")
+# saveRDS(Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5, "data/QC/concat/Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5")
 
 ```
 
 ```{r rRNASeq_FeatureCounts_Cor_log2cpm_HalfSamplesPerSpeciesPerDay_No5}
 ######Cor_HeatMap####
-Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5 <- cor(Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5, method = "spearman")
+Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5 <- cor(Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5, method = "spearman")
 
 Cor_metadata_No5 <- Cor_metadata %>% 
   dplyr::filter(timepoint_cor !="Day5")
@@ -4953,13 +4973,13 @@ ann_colors_No5$timepoint_cor <- ann_colors$timepoint_cor[
 ]
 
 # saveRDS(Cor_metadata_No5, "data/QC/concat/Cor_metadata_No5.RDS")
-# saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5, "data/QC/concat/Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5.RDS")
+# saveRDS(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5, "data/QC/concat/Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5.RDS")
 # saveRDS(ann_colors_No5,"data/QC/concat/ann_colors_no5.RDS")
 ```
 
 ```{r rRNASeq_FeatureCounts_HeatMap_log2cpm_HalfSamplesPerSpeciesPerDay_No5,fig.height=10,fig.width=10}
 print(
-  pheatmap(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_PerDay_NoD5,
+  pheatmap(Cor_Filt_lcpm_RNA_log2cpm_BlakeEndo_NoD5,
          fontsize_row = 5,
          fontsize_col = 5,
          annotation_col = Cor_metadata_No5[, c("species_cor", "timepoint_cor","individual_cor")],

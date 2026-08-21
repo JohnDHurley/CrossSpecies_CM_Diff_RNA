@@ -2965,6 +2965,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 
 ### Species DEGs
 
+#### Absolute fold change
 ```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3045,6 +3046,8 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
+#### Fold change
+
 ```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp_No4}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3113,135 +3116,8 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4}
-v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
-
-# all_go_results <- lapply(names(direction_results), function(traj) {
-# 
-#   res <- direction_results[[traj]]
-# 
-#   gene_sets <- list(
-#     All = res$all,
-#     Human_higher = res$Human_higher,
-#     Chimp_higher    = res$Chimp_higher
-#   )
-# 
-#   go <- Enrich_Go_sets(gene_sets, v)
-# 
-#   return(go)
-# })
-# 
-# names(all_go_results) <- names(direction_results)
-
-
-Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <-readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-
-```
-
-
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
-library(dplyr)
-library(purrr)
-
-
-top10_terms <- imap_dfr(
-  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
-  function(comp_list, comparison) {
-
-    imap_dfr(
-      comp_list,
-      function(go_df, gene_set) {
-
-        if (is.null(go_df) || nrow(go_df) == 0)
-          return(NULL)
-
-        go_df %>%
-          filter(p.adjust < 0.05) %>%
-          arrange(p.adjust) %>%
-          slice_head(n = 10) %>%
-          dplyr::select(ID, Description) %>%
-          mutate(
-            Comparison = comparison,
-            GeneSet = gene_set
-          )
-      }
-    )
-  }
-)
-
-GO_terms_to_plot <- top10_terms %>%
-  distinct(GeneSet, Description)
-
-GO_plot_data <- imap_dfr(
-  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
-  function(comp_list, comparison) {
-
-    imap_dfr(
-      comp_list,
-      function(go_df, gene_set) {
-
-        if (is.null(go_df) || nrow(go_df) == 0)
-          return(NULL)
-
-        go_df %>%
-          filter(
-            Description %in% GO_terms_to_plot$Description[
-              GO_terms_to_plot$GeneSet == gene_set
-            ]
-          ) %>%
-          mutate(
-            Comparison = comparison,
-            GeneSet = gene_set
-          )
-      }
-    )
-  }
-)
-
-
-GO_plot_data$Comparison <- factor(
-  GO_plot_data$Comparison,
-  levels = c(
-    "HvC_Day0",
-    "HvC_Day2",
-    "HvC_Day5",
-    "HvC_Day15",
-    "HvC_Day30"
-  )
-)
-
-GO_plot_data$Description <- factor(
-  GO_plot_data$Description,
-  levels = rev(unique(top10_terms$Description))
-)
-
-library(ggplot2)
-
-ggplot(GO_plot_data,
-       aes(x = Comparison,
-           y = Description,
-           size = Count,
-           color = -log10(p.adjust))) +
-  geom_point() +
-  facet_wrap(~GeneSet, scales = "free_y") +
-  theme_bw() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    axis.text.y = element_text(size = 8)
-  ) +
-  labs(
-    x = NULL,
-    y = "GO Biological Process",
-    size = "Gene Count",
-    color = "-log10(FDR)"
-  )
-
-
-```
-
+#### Proportions
 ```{r RNASeq_DGE_species_DEGs_RLCOMP_G1_4SpTp_No4}
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -3328,41 +3204,6 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
     fill = "",
     title = "HvC comparisons: DEG vs NonDEG composition"
   )
-```
-```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-
-
-library(dplyr)
-library(stringr)
-
-timepoints <- c("Day0","Day2","Day5","Day15","Day30")
-
-df <- TopTable %>%
-  filter(str_detect(Comparisons, "^HvC_Day")) %>%
-  mutate(
-    Time = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  ) %>%
-  filter(DEG)
-
-genes_list <- list(
-  Day0  = df %>% filter(Time == "Day0")  %>% pull(Gene) %>% unique(),
-  Day2  = df %>% filter(Time == "Day2")  %>% pull(Gene) %>% unique(),
-  Day5  = df %>% filter(Time == "Day5")  %>% pull(Gene) %>% unique(),
-  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
-  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
-)
-
-ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "steelblue") +
-  theme(
-    panel.grid = element_blank(),
-    panel.background = element_blank(),
-    axis.text = element_text(size = 10),
-    plot.title = element_text(face = "bold")
-  )
-
 ```
 
 ```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2, fig.height=7,fig.width=7}
@@ -3538,9 +3379,176 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   )
 
 ```
+#### Venn
+
+```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0")  %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2")  %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5")  %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+#### GoEnrichment
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4}
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     All = res$all,
+#     Human_higher = res$Human_higher,
+#     Chimp_higher    = res$Chimp_higher
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+
+
+Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <-readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+```
+
+
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "HvC_Day0",
+    "HvC_Day2",
+    "HvC_Day5",
+    "HvC_Day15",
+    "HvC_Day30"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
 ### Trajectory DEGs
 
-#### FC plots
+#### Absolute fold change
 ```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3591,7 +3599,9 @@ for (p in cluster_plots) print(p)
 
 ```
 
+
 ```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp_No4}
+
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -3623,6 +3633,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4.RDS")
 ```
 
+#### Fold change
 ```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3716,75 +3727,6 @@ for (p in cluster_plots) print(p)
 ```
 
 #### Proportions
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
-TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-
-library(dplyr)
-library(stringr)
-
-timepoints <- c("Day02","Day25","Day515","Day1530")
-
-df <- TopTable %>%
-  filter(str_detect(Comparisons, "^H_Day")) %>%
-  mutate(
-    Time = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  ) %>%
-  filter(DEG)
-
-genes_list <- list(
-  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
-  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
-  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
-  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
-)
-
-ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "steelblue") +
-  theme(
-    panel.grid = element_blank(),
-    panel.background = element_blank(),
-    axis.text = element_text(size = 10),
-    plot.title = element_text(face = "bold")
-  )
-
-```
-
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_2, fig.height=7,fig.width=7}
-TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-
-library(dplyr)
-library(stringr)
-
-timepoints <- c("Day02","Day25","Day515","Day1530")
-
-df <- TopTable %>%
-  filter(str_detect(Comparisons, "^C_Day")) %>%
-  mutate(
-    Time = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  ) %>%
-  filter(DEG)
-
-genes_list <- list(
-  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
-  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
-  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
-  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
-)
-
-ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "steelblue") +
-  theme(
-    panel.grid = element_blank(),
-    panel.background = element_blank(),
-    axis.text = element_text(size = 10),
-    plot.title = element_text(face = "bold")
-  )
-
-```
 
 ```{r  RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_3}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3956,7 +3898,7 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
     pattern = ""
   )
 ```
-
+#### Effect Sizes
 ```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -5339,7 +5281,43 @@ p <- ggplot(
 p
 ```
 
-#### EnrichGo
+#### Venn
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day02","Day25","Day515","Day1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^H_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+#### GoEnrichemnt
 ```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -5371,7 +5349,210 @@ Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_EnrichentTerms_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "Traj02_genes",
+    "Traj25_genes",
+    "Traj515_genes",
+    "Traj1530_genes"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Traj02_genes"   = "Day02",
+      "Traj25_genes"   = "Day25",
+      "Traj515_genes"  = "Day515",
+      "Traj1530_genes" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion developmental GO terms",
+    title = "GO enrichment of DEGs (All DEGs at a transition)"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Traj02_genes"   = "Day02",
+      "Traj25_genes"   = "Day25",
+      "Traj515_genes"  = "Day515",
+      "Traj1530_genes" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("heart|cardiac", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion cardiac/heart GO terms",
+    title = "GO enrichment of DEGs (All DEGs at a transition)"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4}
 all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 go_all <- imap_dfr(all_go_results, function(x, name) {
@@ -5384,13 +5565,19 @@ go_all <- imap_dfr(all_go_results, function(x, name) {
 })
 
 go_all <- go_all %>%
-  mutate(trajectory = recode(
-    trajectory,
-    "Traj02_genes"   = "Day02",
-    "Traj25_genes"   = "Day25",
-    "Traj515_genes"  = "Day5-15",
-    "Traj1530_genes" = "Day15-30"
-  ))
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Traj02_genes"   = "Day02",
+      "Traj25_genes"   = "Day25",
+      "Traj515_genes"  = "Day5-15",
+      "Traj1530_genes" = "Day15-30"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day5-15", "Day15-30")
+    )
+  )
 
 is_dev <- function(x) {
   grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
@@ -5417,7 +5604,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
-### Interaction DEGs
+## Interaction DEGs
 
 #### FC plot
 ```{r RNASeq_DGE_Interaction_FC_No4}
@@ -5521,13 +5708,13 @@ ae <- unique(RNA_sets$InterTraj02$Both_neg$Gene)
 af <- unique(RNA_sets$InterTraj02$Same_direction$Gene)
 ag <- unique(RNA_sets$InterTraj02$Opposite_direction$Gene)
 
-ba <- unique(RNA_sets$InterTraj24$all$Gene)
-bb <- unique(RNA_sets$InterTraj24$H_pos_C_neg$Gene)
-bc <- unique(RNA_sets$InterTraj24$H_neg_C_pos$Gene)
-bd <- unique(RNA_sets$InterTraj24$Both_pos$Gene)
-be <- unique(RNA_sets$InterTraj24$Both_neg$Gene)
-bf <- unique(RNA_sets$InterTraj24$Same_direction$Gene)
-bg <- unique(RNA_sets$InterTraj24$Opposite_direction$Gene)
+ba <- unique(RNA_sets$InterTraj25$all$Gene)
+bb <- unique(RNA_sets$InterTraj25$H_pos_C_neg$Gene)
+bc <- unique(RNA_sets$InterTraj25$H_neg_C_pos$Gene)
+bd <- unique(RNA_sets$InterTraj25$Both_pos$Gene)
+be <- unique(RNA_sets$InterTraj25$Both_neg$Gene)
+bf <- unique(RNA_sets$InterTraj25$Same_direction$Gene)
+bg <- unique(RNA_sets$InterTraj25$Opposite_direction$Gene)
 
 da <- unique(RNA_sets$InterTraj515$all$Gene)
 db <- unique(RNA_sets$InterTraj515$H_pos_C_neg$Gene)
@@ -5686,57 +5873,8 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
 ```
 
 ```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
-library(dplyr)
-library(purrr)
-library(tidyr)
-library(ggplot2)
-
-days <- c("02", "25", "515", "1530")
-
-prop_df <- map_dfr(days, function(day) {
-
-  x <- RNA_sets[[paste0("InterTraj", day)]]
-
-  same_n <- length(x$Same_direction$Gene)
-  opp_n  <- length(x$Opposite_direction$Gene)
-
-  tibble(
-    trajectory = day,
-    Same_direction = same_n,
-    Opposite_direction = opp_n
-  )
-})
-
-prop_long <- prop_df %>%
-  pivot_longer(
-    cols = -trajectory,
-    names_to = "type",
-    values_to = "count"
-  ) %>%
-  group_by(trajectory) %>%
-  mutate(prop = count / sum(count)) %>%
-  ungroup()
-
-prop_long$trajectory <- factor(
-  prop_long$trajectory,
-  levels = c("02", "25", "515", "1530"),
-  labels = c("0–2", "2–5", "5–15", "15–30")
-)
-
-ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
-  geom_col() +
-  theme_bw() +
-  scale_fill_manual(
-  values = c(
-    "Same_direction" = "#2c7bb6",
-    "Opposite_direction" = "#d7191c"
-  )
-) +
-  labs(
-    x = "Time window",
-    y = "Proportion of interaction DEGs",
-    fill = ""
-  )
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- readRDS("data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 library(dplyr)
 library(purrr)
@@ -5755,6 +5893,7 @@ prop_df <- map_dfr(days, function(day) {
     Same_direction = length(x$Same_direction$Gene),
 
     Human_higher = length(x$H_pos_C_neg$Gene),
+
     Chimp_higher = length(x$H_neg_C_pos$Gene)
   )
 })
@@ -5766,7 +5905,9 @@ prop_long <- prop_df %>%
     values_to = "count"
   ) %>%
   group_by(trajectory) %>%
-  mutate(prop = count / sum(count)) %>%
+  mutate(
+    prop = count / sum(count)
+  ) %>%
   ungroup()
 
 prop_long$trajectory <- factor(
@@ -5775,8 +5916,14 @@ prop_long$trajectory <- factor(
   labels = c("0–2", "2–5", "5–15", "15–30")
 )
 
-ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
-  geom_col(color = "black", linewidth = 0.3) +
+ggplot(
+  prop_long,
+  aes(x = trajectory, y = prop, fill = type)
+) +
+  geom_col(
+    color = "black",
+    linewidth = 0.3
+  ) +
   theme_bw() +
   labs(
     x = "Time window",
@@ -5795,7 +5942,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
   )
 ```
 
-#### EnrichGo
+#### GoEnrichemnt
 ```{r RNASeq_DGE_Interaction_EnrichGo}
 fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -5822,8 +5969,211 @@ v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 # names(all_go_results) <- names(direction_results)
 # saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
-all_go_results <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
+```
+
+```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "InterTraj02",
+    "InterTraj25",
+    "InterTraj515",
+    "InterTraj1530"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
+
+```{r RNASeq_DGE_ Interaction_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "InterTraj02"   = "Day02",
+      "InterTraj25"   = "Day25",
+      "InterTraj515"  = "Day515",
+      "InterTraj1530" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion GO terms",
+    title = "Proportion Go terms that are development|morphogenesis|differentiation"
+  )
+```
+
+```{r RNASeq_DGE_ Interaction_EnrichGoHeartTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "InterTraj02"   = "Day02",
+      "InterTraj25"   = "Day25",
+      "InterTraj515"  = "Day515",
+      "InterTraj1530" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("heart|cardiac", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion of GO terms",
+    title = "Proportion Go terms that are heart|cardiac"
+  )
 ```
 
 

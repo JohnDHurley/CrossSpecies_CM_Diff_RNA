@@ -2864,7 +2864,7 @@ print(
 ```
 
 
-```{r Updating Website, warning = FALSE, message=FALSE}
+```{r Updating Website, eval = FALSE}
 
 # git -> commit all changes
 # git -> push

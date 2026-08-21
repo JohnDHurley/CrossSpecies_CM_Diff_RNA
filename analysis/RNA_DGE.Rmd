@@ -5973,7 +5973,7 @@ Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE
 
 ```
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
 library(dplyr)
 library(purrr)
 

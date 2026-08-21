@@ -1,0 +1,3219 @@
+---
+title: "TETranscript"
+output: html_document
+date: "2026-08-18"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r Enviroment Set Up, }
+#loading libraries
+library("tidyverse")
+library("rmarkdown")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+library("ggalluvial")
+library("tibble")
+library("pheatmap")
+library("Cormotif")
+library("workflowr")
+library("ComplexHeatmap")
+
+# BiocManager::install("ggalluvial")
+
+```
+
+```{r FischerTest_OddsRation_plotting}
+plot_OR <- function(results, group_to_plot, ylim = c(-2, 2)) {
+
+  plot_data <- results %>%
+    filter(Comparison_Group %in% group_to_plot) %>%
+    mutate(
+      label = ifelse(FDR < 0.05, "*", ""),
+      log2_OR = log2(Odds_Ratio)
+    )
+
+  ggplot(plot_data, aes(Comparison, Odds_Ratio)) +
+    geom_point(size = 3) +
+    geom_text(
+      aes(label = label),
+      vjust = -1
+    ) +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    coord_cartesian(ylim = ylim) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+}
+
+#FischerTest_fate_OddsRation_plotting
+
+plot_Fate_OR <- function(results, ylim = c(0, 2)) {
+
+  plot_data <- results %>%
+    mutate(
+      label = ifelse(FDR < 0.05, "*", ""),
+      log2_OR = log2(Odds_Ratio)
+    )
+
+  ggplot(plot_data, aes(x = Comparison, y = Odds_Ratio)) +
+    geom_point(size = 3) +
+    geom_text(
+      aes(label = label),
+      vjust = -1
+    ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed"
+    ) +
+    facet_wrap(~Fate) +
+    coord_cartesian(ylim = ylim) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    ) +
+    labs(
+      x = "HvC developmental comparison",
+      y = "Odds Ratio",
+      title = "KZFP enrichment by HvC DEG fate"
+    )
+}
+
+#Volcano_Plot_Function
+
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+
+#FC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+
+#absFC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_absfc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(absFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("absFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG absFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+
+#get_directional_genes
+
+get_fc_directions <- function(traj_label, coef_name, comparison_label,
+                              top_table_all, fit_obj, p_cutoff = 0.05, gene_set = NULL) {
+
+  # ---------------------------
+  # trajectory FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(
+      Comparisons %in% c(
+        paste0("H_", comparison_label),
+        paste0("C_", comparison_label)
+      )
+    )
+
+  df_dir <- df_fc %>%
+    dplyr::mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
+    dplyr::group_by(Gene, Species) %>%
+    dplyr::summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
+    tidyr::pivot_wider(names_from = Species, values_from = logFC) %>%
+    dplyr::filter(!is.na(H), !is.na(C)) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # KEY FILTER: DEGs in BOTH species
+  # ---------------------------
+  if (!is.null(gene_set)) {
+    df_dir <- df_dir %>%
+      dplyr::filter(Gene %in% gene_set)
+  }
+
+  # ---------------------------
+  # direction classification
+  # ---------------------------
+  df_combo <- df_dir %>%
+    dplyr::mutate(
+      direction = dplyr::case_when(
+        H > 0 & C < 0 ~ "H_pos_C_neg",
+        H < 0 & C > 0 ~ "H_neg_C_pos",
+        H > 0 & C > 0 ~ "Both_pos",
+        H < 0 & C < 0 ~ "Both_neg",
+        TRUE ~ "Other"
+      ),
+      direction_group = dplyr::case_when(
+        H * C > 0 ~ "Same_direction",
+        H * C < 0 ~ "Opposite_direction",
+        TRUE ~ "Other"
+      )
+    )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    H_pos_C_neg = dplyr::filter(df_combo, direction == "H_pos_C_neg"),
+    H_neg_C_pos = dplyr::filter(df_combo, direction == "H_neg_C_pos"),
+    Both_pos = dplyr::filter(df_combo, direction == "Both_pos"),
+    Both_neg = dplyr::filter(df_combo, direction == "Both_neg"),
+
+    Same_direction = dplyr::filter(df_combo, direction_group == "Same_direction"),
+    Opposite_direction = dplyr::filter(df_combo, direction_group == "Opposite_direction"),
+
+    Other = dplyr::filter(df_combo, direction == "Other"),
+
+    n_sig = length(gene_set)
+  )
+}
+
+#get_directional_genes_HvC1
+
+get_fc_directions <- function(traj_label, coef_name, comparison_label,
+                                 top_table_all, fit_obj, p_cutoff = 0.05) {
+
+  # ---------------------------
+  # DE genes
+  # ---------------------------
+  tt <- topTable(fit_obj, coef = coef_name, number = Inf)
+
+  sig_tt <- tt %>%
+    dplyr::filter(adj.P.Val < p_cutoff) %>%
+    tibble::rownames_to_column("Gene") %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # HvC FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(Comparisons == comparison_label) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # classify direction
+  # ---------------------------
+  df_combo <- df_fc %>%
+  dplyr::inner_join(sig_tt, by = "Gene") %>%
+  dplyr::mutate(
+    direction = dplyr::case_when(
+      logFC.x > 0 ~ "Increased",
+      logFC.x < 0 ~ "Decreased",
+      TRUE ~ "No_difference"
+    ),
+    magnitude = abs(logFC.x)
+  )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    Increased = dplyr::filter(df_combo, direction == "Increased"),
+    Decreased = dplyr::filter(df_combo, direction == "Decreased"),
+    n_sig = nrow(sig_tt)
+  )
+}
+```
+
+# Data Upload
+```{r TopTable_Symbols}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+# Extract Ensembl IDs for every row
+ens_ids <- sub("\\..*$", "", TopTable$Gene)
+
+# Make a lookup table
+symbol_map <- mapIds(
+    org.Hs.eg.db,
+    keys = unique(ens_ids),
+    column = "SYMBOL",
+    keytype = "ENSEMBL",
+    multiVals = "first"
+)
+
+TopTable$Symbol <- unname(symbol_map[ens_ids])
+
+# saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+#TECount_Default
+###Trajectory
+####Chimp
+```{r TE_Expression_Data_Upload}
+
+sample_names <- readLines("data/TEs/TE_Expression/chimp_samples.txt")
+
+count_tables <- lapply(sample_names, function(sample) {
+  counts <- read.table(
+    paste0("data/TEs/TE_Expression/", sample, ".cntTable"),
+    header = TRUE,
+    row.names = 1
+  )
+
+  colnames(counts) <- sample
+
+  counts
+})
+
+combined_counts <- Reduce(
+  function(x, y) {
+    x <- data.frame(Feature = rownames(x), x, check.names = FALSE)
+    y <- data.frame(Feature = rownames(y), y, check.names = FALSE)
+
+    merged <- merge(x, y, by = "Feature", all = TRUE)
+
+    rownames(merged) <- merged$Feature
+    merged$Feature <- NULL
+
+    merged
+  },
+  count_tables
+)
+
+saveRDS(combined_counts,"data/TEs/TE_Expression/chimp_TECount_fc.RDS")
+```
+
+```{r Chimp_TE_Filtering}
+
+combined_counts <- readRDS("data/TEs/TE_Expression/chimp_TECount_fc.RDS")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+RNA_fc_repeats <- combined_counts %>% 
+   filter(grepl(":", rownames(combined_counts)))
+
+RNA_fc_TEs <- RNA_fc_repeats %>% 
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", rownames(RNA_fc_repeats)))
+
+RNA_log2cpm <- cpm(RNA_fc_TEs,log=TRUE)
+
+chimp_samples <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+group <- chimp_samples$Cond
+
+keep <- apply(RNA_log2cpm, 1, function(gene_expr) {
+  any(
+    tapply(gene_expr > 1, group, function(x) sum(x) >= 4)
+  )
+})
+
+  
+RNA_fc_TEs_filtered <- RNA_fc_TEs[keep, ]
+
+saveRDS(RNA_fc_TEs,"data/TEs/TE_Expression/chimp_RNA_fc_TEs.RDS")
+saveRDS(RNA_fc_TEs_filtered,"data/TEs/TE_Expression/chimp_RNA_fc_TEs_filtered.RDS")
+```
+
+
+```{r Chimp_TE_Filtering_3}
+RNA_fc <- readRDS("data/TEs/TE_Expression/chimp_RNA_fc_TEs.RDS")
+RNA_cpm <- cpm(RNA_fc,log=FALSE)
+RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
+
+col_labels <- RNA_Metadata$SampleName
+
+boxplot(RNA_fc, main = "Boxplots of Chimp count of TE Subfamilies",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(RNA_cpm, main = "Boxplots of Chimp cpm of TE Subfamilies",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(RNA_log2cpm, main = "Boxplots of Chimp Log2cpm of TE Subfamilies",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(RNA_log2cpm, main = "Histogram of Chimp log2cpm",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+filtered_RNA_fc <- readRDS("data/TEs/TE_Expression/chimp_RNA_fc_TEs_filtered.RDS")
+filtered_cpm <- cpm(filtered_RNA_fc,log=FALSE)
+filtered_log2cpm <- cpm(filtered_RNA_fc,log=TRUE)
+
+saveRDS(filtered_log2cpm,"data/TEs/TE_Expression/chimp_RNA_log2cpm_TEs_filtered.RDS")
+
+
+boxplot(filtered_RNA_fc, main = "Boxplots of counts per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(filtered_cpm, main = "Boxplots of cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(filtered_log2cpm, main = "Boxplots of log cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(filtered_log2cpm, main = "Histogram of log2cpm using lcpm >1 in 4/7 species-timepoints",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+###Cor_HeatMap
+```{r H3K27acSeq_FeatureCounts_Reproducible2_Cor, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_fc_TEs_filtered.RDS")
+ RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0.9, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TEs Sample-Sample Correlation"
+)
+
+```
+
+```{r H3K27acSeq_FeatureCounts_Reproducible2_Cor, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_fc_TEs_filtered.RDS")
+ RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+metadata <- RNA_Metadata %>%
+  filter(Timepoint!="Day4") 
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0.9, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TEs Sample-Sample Correlation"
+)
+
+```
+
+#####PCA
+```{r Chimp_TEs_PCA_PC1_PC2, fig.height=6,fig.width=8}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_log2cpm_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2 \n Log2cpm > 1 in 4/7 individuals \n in at least 1 species-timepoints"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+```{r Chimp_TEs_PCA_PC1_PC2, fig.height=6,fig.width=8}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_log2cpm_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+metadata <- RNA_Metadata %>%
+  filter(Timepoint!="Day4") 
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2 \n no Day4 \n Log2cpm > 1 in 4/7 individuals \n in at least 1 species-timepoints"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+#####DGE
+```{r Chimp_TE_DGE_Differential_Data}
+counts <- readRDS("data/TEs/TE_Expression/Filt_chimp_fc.RDS")
+metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts_norep <- counts %>%
+  dplyr::select(-(contains("R"))) %>% 
+  dplyr::select(-(contains("Day4")))
+
+metadata <- metadata %>% 
+  filter(Species == "C") %>% 
+  filter(Timepoint != "Day4") %>% 
+  filter(Individual != "H4R")
+  
+
+metadata$dgelist <- c(rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts_norep)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+saveRDS(dge,"data/TEs/TE_Expression/chimp_dge.RDS")
+# dge <- readRDS("data/TEs/TE_Expression/chimp_dge.RDS")
+
+dim(dge)
+dge$samples
+
+metadata$Timepoint <- factor(
+  metadata$Timepoint,
+  levels = c("Day0", "Day2", "Day5", "Day15", "Day30")
+)
+
+design_int <- model.matrix(
+  ~ Timepoint,
+  data = metadata
+)
+
+colnames(design_int)
+colnames(design_int) <- make.names(colnames(design_int))
+
+saveRDS(design_int,"data/TEs/TE_Expression/chimp_design.RDS")
+design_int <- readRDS("data/TEs/TE_Expression/chimp_design.RDS")
+
+# Step 1: voom first
+v1 <- voom(dge, design_int, plot = TRUE)
+
+saveRDS(v1,"data/TEs/TE_Expression/chimp_v1.RDS")
+# v1 <- readRDS("data/TEs/TE_Expression/chimp_v1.RDS")
+
+# Step 2: estimate duplicate correlation on voom-transformed data
+corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
+corfit.correlation <- corfit$consensus.correlation
+
+# Step 3: voom again including correlation
+v2 <- voom(dge, design_int, plot = TRUE,
+           block = metadata$Individual,
+           correlation = corfit.correlation)
+
+# v2 <- readRDS("data/TEs/TE_Expression/chimp_v2.RDS")
+
+# Step 4: fit linear model
+fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
+fit <- eBayes(fit)
+
+saveRDS(fit,"data/TEs/TE_Expression/chimp_fit.RDS")
+# fit <- readRDS("data/TEs/TE_Expression/chimp_fit.RDS")
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+day <- metadata$Timepoint
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+
+chimp_idx <- metadata$Species == "C"
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+
+
+# Chimp
+plotDensities(
+  v2[, chimp_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[chimp_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Chimp")
+  legend(
+      "right",
+      legend = metadata$Individual[chimp_idx],  # or Timepoint, etc.
+      col = rainbow(sum(chimp_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+species_levels <- unique(metadata$Species)
+day_levels <- unique(metadata$Timepoint)
+
+for (sp in species_levels) {
+  for (day in day_levels) {
+
+    idx <- metadata$Species == sp &
+           metadata$Timepoint == day
+
+    if (sum(idx) > 0) {
+
+      cols <- rainbow(sum(idx))
+
+      plotDensities(
+        v2[, idx],
+        col = cols,
+        main = paste(sp, day),
+        legend = FALSE,
+        axes = FALSE
+      )
+
+      axis(1)
+      axis(2)
+      mtext("log2 CPM", side = 1, line = 2)
+
+      legend(
+        "right",
+        legend = metadata$Individual[idx],
+        col = cols,
+        lty = 1,
+        cex = 0.7
+      )
+    }
+  }
+}
+
+
+```
+
+```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp_No4}
+fit <- readRDS("data/TEs/TE_Expression/chimp_fit.RDS")
+design_int <- readRDS("data/TEs/TE_Expression/chimp_design.RDS")
+
+
+contrast_matrix <- makeContrasts(
+  Day2_vs_Day0 = TimepointDay2,
+  Day5_vs_Day2 = TimepointDay5 - TimepointDay2,
+  Day15_vs_Day5 = TimepointDay15 - TimepointDay5,
+  Day30_vs_Day15 = TimepointDay30 - TimepointDay15,
+  levels = design_int
+)
+
+fit2 <- contrasts.fit(fit, contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+
+saveRDS(fit2,"data/TEs/TE_Expression/chimp_fit2.RDS")
+```
+
+```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp_No4}
+fit2 <- readRDS("data/TEs/TE_Expression/chimp_fit2.RDS")
+
+TopTables_RNA_names <- colnames(fit2$coefficients) 
+
+TopTable_RNA_All <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
+
+saveRDS(TopTable_RNA_All,"data/TEs/TE_Expression/chimp_TopTable.RDS")
+saveRDS(ComparisonNames,"data/TEs/TE_Expression/chimp_ComparisonNames.RDS")
+
+head(TopTable_RNA_All)
+```
+
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- readRDS("data/TEs/TE_Expression/chimp_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/chimp_ComparisonNames.RDS")
+
+# Calculate global axis limits
+x_limits <- range(TopTable$logFC, na.rm = TRUE)
+y_limits <- range(-log10(TopTable$P.Value), na.rm = TRUE)
+
+plot <- list()
+
+for (n in ComparisonNames) {
+  data_n <- TopTable %>% 
+    dplyr::filter(Comparisons == n)
+  
+  plot[[n]] <- generate_volcano_plot(data_n, n) +
+    ggplot2::xlim(x_limits) +
+    ggplot2::ylim(y_limits)
+}
+
+# Print plots
+for (n in ComparisonNames) {
+  print(plot[[n]])
+}
+```
+
+```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp_No4}
+TopTable <- readRDS("data/TEs/TE_Expression/chimp_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/chimp_ComparisonNames.RDS")
+
+RNA_sets <- map(
+  ComparisonNames,
+  ~ {
+    df <- TopTable %>%
+      filter(Comparisons == paste0(.x))
+
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.05),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+    )
+  }
+)
+
+
+names(RNA_sets) <- paste0(ComparisonNames)
+
+saveRDS(RNA_sets, "data/TEs/TE_Expression/chimp_RNA_sets.RDS")
+```
+
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
+
+TopTable <- readRDS("data/TEs/TE_Expression/chimp_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/chimp_ComparisonNames.RDS")
+RNA_sets <- readRDS("data/TEs/TE_Expression/chimp_RNA_sets.RDS")
+
+TopTable$absFC <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+  ))
+
+Traj02_genes <- RNA_sets$Day2_vs_Day0$DEGs$Gene
+Traj25_genes <- RNA_sets$Day5_vs_Day2$DEGs$Gene
+Traj515_genes <- RNA_sets$Day15_vs_Day5$DEGs$Gene
+Traj1530_genes <- RNA_sets$Day30_vs_Day15$DEGs$Gene
+all_exp_TEs <- unique(TopTable$Gene)
+
+length(Traj02_genes)
+length(Traj25_genes)
+length(Traj515_genes)
+length(Traj1530_genes)
+length(all_exp_TEs)
+
+cluster_lists <- list(
+ Traj02_genes  = Traj02_genes,
+  Traj25_genes  = Traj25_genes,
+  Traj515_genes  = Traj515_genes,
+  Traj1530_genes  = Traj1530_genes,
+  all_exp_TEs = all_exp_TEs
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp_No4}
+TopTable <- readRDS("data/TEs/TE_Expression/chimp_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/chimp_ComparisonNames.RDS")
+RNA_sets <- readRDS("data/TEs/TE_Expression/chimp_RNA_sets.RDS")
+fit2 <- readRDS("data/TEs/TE_Expression/chimp_fit2.RDS")
+
+traj_info <- list(
+  Traj02_genes = list(coef = "Day2_vs_Day0", comp = "Day2_vs_Day0"),
+  Traj25_genes = list(coef = "Day5_vs_Day2", comp = "Day5_vs_Day2"),
+  Traj515_genes = list(coef ="Day15_vs_Day5", comp = "Day15_vs_Day5"),
+Traj1530_genes = list(coef = "Day30_vs_Day15", comp = "Day30_vs_Day15")
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2
+    )
+
+  }),
+  names(traj_info)
+)
+
+saveRDS(direction_results, "data/TEs/TE_Expression/chimp_direction_results.RDS")
+
+```
+
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- readRDS("data/TEs/TE_Expression/chimp_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/chimp_ComparisonNames.RDS")
+direction_results <- readRDS("data/TEs/TE_Expression/chimp_direction_results.RDS")
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+  ))
+
+aa <- unique(direction_results$Traj02_genes$all$Gene)
+ab <- unique(direction_results$Traj02_genes$Increased$Gene)
+ac <- unique(direction_results$Traj02_genes$Decreased$Gene)
+
+
+ba <- unique(direction_results$Traj25_genes$all$Gene)
+bb <- unique(direction_results$Traj25_genes$Increased$Gene)
+bc <- unique(direction_results$Traj25_genes$Decreased$Gene)
+
+
+
+da <- unique(direction_results$Traj515_genes$all$Gene)
+db <- unique(direction_results$Traj515_genes$Increased$Gene)
+dc <- unique(direction_results$Traj515_genes$Decreased$Gene)
+
+
+
+ea <- unique(direction_results$Traj1530_genes$all$Gene)
+eb <- unique(direction_results$Traj1530_genes$Increased$Gene)
+ec <- unique(direction_results$Traj1530_genes$Decreased$Gene)
+
+
+cluster_lists <- list(
+  Traj02_All = aa,
+  Traj02_Increased = ab,
+  Traj02_Decrease = ac,
+
+  
+  Traj25_All = ba,
+  Traj25_Increased = bb,
+  Traj25_Decrease = bc,
+
+ 
+  Traj515_All = da,
+  Traj515_HumanPos = db,
+  Traj515_Decrease = dc,
+
+ 
+  Traj1530_All = ea,
+  Traj1530_Increased = eb,
+  Traj1530_Decrease = ec
+
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r}
+
+direction_results <- readRDS("data/TEs/TE_Expression/chimp_direction_results.RDS")
+
+direction_results <- lapply(direction_results, function(x) {
+  
+  x[c("all", "Increased", "Decreased")] <- lapply(
+    x[c("all", "Increased", "Decreased")],
+    function(df) {
+      tidyr::separate(
+        df,
+        Gene,
+        into = c("TE_Name", "TE_Family", "TE_Class"),
+        sep = ":",
+        remove = FALSE
+      )
+    }
+  )
+  
+  x
+})
+
+
+
+```
+
+```{r}
+
+direction_all <- lapply(direction_results, `[[`, "all")
+
+direction_all <- dplyr::bind_rows(
+  direction_all,
+  .id = "Trajectory"
+)
+
+class_proportions <- direction_all %>%
+  filter(direction == "Increased") %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj25_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of Increased TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+
+
+class_proportions <- direction_all %>%
+  filter(direction == "Decreased") %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj25_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of Decreased TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+```
+
+
+####Human
+```{r TE_Expression_Data_Upload}
+
+sample_names <- readLines("data/TEs/TE_Expression/human_samples.txt")
+
+count_tables <- lapply(sample_names, function(sample) {
+  counts <- read.table(
+    paste0("data/TEs/TE_Expression/", sample, ".cntTable"),
+    header = TRUE,
+    row.names = 1
+  )
+
+  colnames(counts) <- sample
+
+  counts
+})
+
+combined_counts <- Reduce(
+  function(x, y) {
+    x <- data.frame(Feature = rownames(x), x, check.names = FALSE)
+    y <- data.frame(Feature = rownames(y), y, check.names = FALSE)
+
+    merged <- merge(x, y, by = "Feature", all = TRUE)
+
+    rownames(merged) <- merged$Feature
+    merged$Feature <- NULL
+
+    merged
+  },
+  count_tables
+)
+
+# saveRDS(combined_counts,"data/TEs/TE_Expression/human_TECount_fc.RDS")
+```
+
+
+```{r Human_TE_Filtering}
+
+combined_counts <- readRDS("data/TEs/TE_Expression/human_TECount_fc.RDS")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+RNA_fc_repeats <- combined_counts %>% 
+   filter(grepl(":", rownames(combined_counts)))
+
+RNA_fc_TEs <- RNA_fc_repeats %>% 
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", rownames(RNA_fc_repeats)))
+
+RNA_log2cpm <- cpm(RNA_fc_TEs,log=TRUE)
+
+chimp_samples <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+group <- chimp_samples$Cond
+
+keep <- apply(RNA_log2cpm, 1, function(gene_expr) {
+  any(
+    tapply(gene_expr > 1, group, function(x) sum(x) >= 4)
+  )
+})
+
+  
+RNA_fc_TEs_filtered <- RNA_fc_TEs[keep, ]
+
+# saveRDS(RNA_fc_TEs,"data/TEs/TE_Expression/human_RNA_fc_TEs.RDS")
+# saveRDS(RNA_fc_TEs_filtered,"data/TEs/TE_Expression/human_RNA_fc_TEs_filtered.RDS")
+```
+
+```{r Human_TE_Filtering_3}
+RNA_fc <- readRDS("data/TEs/TE_Expression/human_RNA_fc_TEs.RDS")
+RNA_cpm <- cpm(RNA_fc,log=FALSE)
+RNA_log2cpm <- cpm(filtered_RNA_fc,log=TRUE)
+
+col_labels <- RNA_Metadata$SampleName
+
+boxplot(RNA_fc, main = "Boxplots of human count of TE Subfamilies",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(RNA_cpm, main = "Boxplots of human cpm of TE Subfamilies",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(RNA_log2cpm, main = "Boxplots of human Log2cpm of TE Subfamilies",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(RNA_log2cpm, main = "Histogram of human log2cpm",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+filtered_RNA_fc <- readRDS("data/TEs/TE_Expression/human_RNA_fc_TEs_filtered.RDS")
+filtered_cpm <- cpm(filtered_RNA_fc,log=FALSE)
+filtered_log2cpm <- cpm(filtered_RNA_fc,log=TRUE)
+
+saveRDS(filtered_log2cpm,"data/TEs/TE_Expression/human_RNA_log2cpm_TEs_filtered.RDS")
+
+
+boxplot(filtered_RNA_fc, main = "Boxplots of human counts per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(filtered_cpm, main = "Boxplots of human cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(filtered_log2cpm, main = "Boxplots of human log cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(filtered_log2cpm, main = "Histogram of human log2cpm using lcpm >1 in 4/7 species-timepoints",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+###Cor_HeatMap
+```{r Human_TEs_HeatMap, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/human_RNA_fc_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+# Reorder metadata to match the columns of counts
+metadata <- metadata %>%
+  dplyr::slice(match(colnames(counts), SampleName))
+
+log2cpm <- cpm(counts, log=TRUE)
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0.9, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Human TEs Sample-Sample Correlation"
+)
+
+```
+
+```{r Human_TEs_HeatMap, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/human_RNA_fc_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+metadata <- RNA_Metadata %>%
+  filter(Timepoint!="Day4") 
+
+# Reorder metadata to match the columns of counts
+metadata <- metadata %>%
+  dplyr::slice(match(colnames(counts), SampleName))
+
+log2cpm <- cpm(counts, log=TRUE)
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0.9, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Human TEs Sample-Sample Correlation"
+)
+
+```
+
+```{r Human_TEs_HeatMap_No4, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_fc_TEs_filtered.RDS")
+ RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+metadata <- RNA_Metadata %>%
+  filter(Timepoint!="Day4") 
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0.9, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TEs Sample-Sample Correlation"
+)
+
+```
+
+#####PCA
+```{r Chimp_TEs_PCA_PC1_PC2, fig.height=6,fig.width=8}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/human_RNA_log2cpm_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Human TE Expression PC1–PC2 \n Log2cpm > 1 in 4/7 individuals \n in at least 1 species-timepoints"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+```{r Chimp_TEs_PCA_PC1_PC2, fig.height=6,fig.width=8}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/human_RNA_log2cpm_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+metadata <- RNA_Metadata %>%
+  filter(Timepoint!="Day4") 
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Human TE Expression PC1–PC2 \n no Day4 \n Log2cpm > 1 in 4/7 individuals \n in at least 1 species-timepoints"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+
+#####DGE
+```{r Human_TE_DGE_Differential_Data}
+counts <- readRDS("data/TEs/TE_Expression/Filt_human_fc.RDS")
+metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts_norep <- counts %>%
+  dplyr::select(-(contains("R"))) %>% 
+  dplyr::select(-(contains("Day4")))
+
+metadata <- metadata %>% 
+  filter(Species == "H") %>% 
+  filter(Timepoint != "Day4") %>% 
+  filter(Individual != "H4R")
+  
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts_norep)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+saveRDS(dge,"data/TEs/TE_Expression/human_dge.RDS")
+# dge <- readRDS("data/TEs/TE_Expression/human_dge.RDS")
+
+dim(dge)
+dge$samples
+
+metadata$Timepoint <- factor(
+  metadata$Timepoint,
+  levels = c("Day0", "Day2", "Day5", "Day15", "Day30")
+)
+
+design_int <- model.matrix(
+  ~ Timepoint,
+  data = metadata
+)
+
+colnames(design_int)
+colnames(design_int) <- make.names(colnames(design_int))
+
+saveRDS(design_int,"data/TEs/TE_Expression/human_design.RDS")
+design_int <- readRDS("data/TEs/TE_Expression/human_design.RDS")
+
+# Step 1: voom first
+v1 <- voom(dge, design_int, plot = TRUE)
+
+saveRDS(v1,"data/TEs/TE_Expression/human_v1.RDS")
+# v1 <- readRDS("data/TEs/TE_Expression/human_v1.RDS")
+
+# Step 2: estimate duplicate correlation on voom-transformed data
+corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
+corfit.correlation <- corfit$consensus.correlation
+
+# Step 3: voom again including correlation
+v2 <- voom(dge, design_int, plot = TRUE,
+           block = metadata$Individual,
+           correlation = corfit.correlation)
+
+saveRDS(v2,"data/TEs/TE_Expression/human_v2.RDS")
+# v2 <- readRDS("data/TEs/TE_Expression/human_v2.RDS")
+
+# Step 4: fit linear model
+fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
+fit <- eBayes(fit)
+
+saveRDS(fit,"data/TEs/TE_Expression/human_fit.RDS")
+# fit <- readRDS("data/TEs/TE_Expression/human_fit.RDS")
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+day <- metadata$Timepoint
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+
+human_idx <- metadata$Species == "H"
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+
+
+# Human
+plotDensities(
+  v2[, human_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Human")
+  legend(
+      "right",
+      legend = metadata$Individual[human_idx],  # or Timepoint, etc.
+      col = rainbow(sum(human_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+species_levels <- unique(metadata$Species)
+day_levels <- unique(metadata$Timepoint)
+
+for (sp in species_levels) {
+  for (day in day_levels) {
+
+    idx <- metadata$Species == sp &
+           metadata$Timepoint == day
+
+    if (sum(idx) > 0) {
+
+      cols <- rainbow(sum(idx))
+
+      plotDensities(
+        v2[, idx],
+        col = cols,
+        main = paste(sp, day),
+        legend = FALSE,
+        axes = FALSE
+      )
+
+      axis(1)
+      axis(2)
+      mtext("log2 CPM", side = 1, line = 2)
+
+      legend(
+        "right",
+        legend = metadata$Individual[idx],
+        col = cols,
+        lty = 1,
+        cex = 0.7
+      )
+    }
+  }
+}
+
+
+```
+
+
+```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp_No4}
+fit <- readRDS("data/TEs/TE_Expression/human_fit.RDS")
+design_int <- readRDS("data/TEs/TE_Expression/human_design.RDS")
+
+
+contrast_matrix <- makeContrasts(
+  Day2_vs_Day0 = TimepointDay2,
+  Day5_vs_Day2 = TimepointDay5 - TimepointDay2,
+  Day15_vs_Day5 = TimepointDay15 - TimepointDay5,
+  Day30_vs_Day15 = TimepointDay30 - TimepointDay15,
+  levels = design_int
+)
+
+fit2 <- contrasts.fit(fit, contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+
+saveRDS(fit2,"data/TEs/TE_Expression/human_fit2.RDS")
+```
+
+```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp_No4}
+fit2 <- readRDS("data/TEs/TE_Expression/human_fit2.RDS")
+
+TopTables_RNA_names <- colnames(fit2$coefficients) 
+
+TopTable_RNA_All <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
+
+saveRDS(TopTable_RNA_All,"data/TEs/TE_Expression/human_TopTable.RDS")
+saveRDS(ComparisonNames,"data/TEs/TE_Expression/human_ComparisonNames.RDS")
+
+head(TopTable_RNA_All)
+```
+
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- readRDS("data/TEs/TE_Expression/human_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/human_ComparisonNames.RDS")
+
+# Calculate global axis limits
+x_limits <- range(TopTable$logFC, na.rm = TRUE)
+y_limits <- range(-log10(TopTable$P.Value), na.rm = TRUE)
+
+plot <- list()
+
+for (n in ComparisonNames) {
+  data_n <- TopTable %>% 
+    dplyr::filter(Comparisons == n)
+  
+  plot[[n]] <- generate_volcano_plot(data_n, n) +
+    ggplot2::xlim(x_limits) +
+    ggplot2::ylim(y_limits)
+}
+
+# Print plots
+for (n in ComparisonNames) {
+  print(plot[[n]])
+}
+```
+
+```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp_No4}
+TopTable <- readRDS("data/TEs/TE_Expression/human_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/human_ComparisonNames.RDS")
+
+RNA_sets <- map(
+  ComparisonNames,
+  ~ {
+    df <- TopTable %>%
+      filter(Comparisons == paste0(.x))
+
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.05),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+    )
+  }
+)
+
+
+names(RNA_sets) <- paste0(ComparisonNames)
+
+saveRDS(RNA_sets, "data/TEs/TE_Expression/human_RNA_sets.RDS")
+```
+
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
+
+TopTable <- readRDS("data/TEs/TE_Expression/human_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/human_ComparisonNames.RDS")
+RNA_sets <- readRDS("data/TEs/TE_Expression/human_RNA_sets.RDS")
+
+TopTable$absFC <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+  ))
+
+Traj02_genes <- RNA_sets$Day2_vs_Day0$DEGs$Gene
+Traj25_genes <- RNA_sets$Day5_vs_Day2$DEGs$Gene
+Traj515_genes <- RNA_sets$Day15_vs_Day5$DEGs$Gene
+Traj1530_genes <- RNA_sets$Day30_vs_Day15$DEGs$Gene
+all_exp_TEs <- unique(TopTable$Gene)
+
+length(Traj02_genes)
+length(Traj25_genes)
+length(Traj515_genes)
+length(Traj1530_genes)
+length(all_exp_TEs)
+
+cluster_lists <- list(
+ Traj02_genes  = Traj02_genes,
+  Traj25_genes  = Traj25_genes,
+  Traj515_genes  = Traj515_genes,
+  Traj1530_genes  = Traj1530_genes,
+  all_exp_TEs = all_exp_TEs
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp_No4}
+TopTable <- readRDS("data/TEs/TE_Expression/human_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/human_ComparisonNames.RDS")
+RNA_sets <- readRDS("data/TEs/TE_Expression/human_RNA_sets.RDS")
+fit2 <- readRDS("data/TEs/TE_Expression/human_fit2.RDS")
+
+traj_info <- list(
+  Traj02_genes = list(coef = "Day2_vs_Day0", comp = "Day2_vs_Day0"),
+  Traj25_genes = list(coef = "Day5_vs_Day2", comp = "Day5_vs_Day2"),
+  Traj515_genes = list(coef ="Day15_vs_Day5", comp = "Day15_vs_Day5"),
+Traj1530_genes = list(coef = "Day30_vs_Day15", comp = "Day30_vs_Day15")
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2
+    )
+
+  }),
+  names(traj_info)
+)
+
+saveRDS(direction_results, "data/TEs/TE_Expression/human_direction_results.RDS")
+
+```
+
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- readRDS("data/TEs/TE_Expression/human_TopTable.RDS")
+ComparisonNames <- readRDS("data/TEs/TE_Expression/human_ComparisonNames.RDS")
+direction_results <- readRDS("data/TEs/TE_Expression/human_direction_results.RDS")
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+  ))
+
+aa <- unique(direction_results$Traj02_genes$all$Gene)
+ab <- unique(direction_results$Traj02_genes$Increased$Gene)
+ac <- unique(direction_results$Traj02_genes$Decreased$Gene)
+
+
+ba <- unique(direction_results$Traj25_genes$all$Gene)
+bb <- unique(direction_results$Traj25_genes$Increased$Gene)
+bc <- unique(direction_results$Traj25_genes$Decreased$Gene)
+
+
+
+da <- unique(direction_results$Traj515_genes$all$Gene)
+db <- unique(direction_results$Traj515_genes$Increased$Gene)
+dc <- unique(direction_results$Traj515_genes$Decreased$Gene)
+
+
+
+ea <- unique(direction_results$Traj1530_genes$all$Gene)
+eb <- unique(direction_results$Traj1530_genes$Increased$Gene)
+ec <- unique(direction_results$Traj1530_genes$Decreased$Gene)
+
+
+cluster_lists <- list(
+  Traj02_All = aa,
+  Traj02_Increased = ab,
+  Traj02_Decrease = ac,
+
+  
+  Traj25_All = ba,
+  Traj25_Increased = bb,
+  Traj25_Decrease = bc,
+
+ 
+  Traj515_All = da,
+  Traj515_HumanPos = db,
+  Traj515_Decrease = dc,
+
+ 
+  Traj1530_All = ea,
+  Traj1530_Increased = eb,
+  Traj1530_Decrease = ec
+
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r}
+
+direction_results <- readRDS("data/TEs/TE_Expression/human_direction_results.RDS")
+
+# direction_results <- lapply(direction_results, function(x) {
+#   
+#   x[c("all", "Increased", "Decreased")] <- lapply(
+#     x[c("all", "Increased", "Decreased")],
+#     function(df) {
+#       tidyr::separate(
+#         df,
+#         Gene,
+#         into = c("TE_Name", "TE_Family", "TE_Class"),
+#         sep = ":",
+#         remove = FALSE
+#       )
+#     }
+#   )
+#   
+#   x
+# })
+# 
+# saveRDS(direction_results ,"data/TEs/TE_Expression/human_direction_results.RDS")
+
+```
+
+```{r}
+
+direction_all <- lapply(direction_results, `[[`, "all")
+
+direction_all <- dplyr::bind_rows(
+  direction_all,
+  .id = "Trajectory"
+)
+
+class_proportions <- direction_all %>%
+  filter(direction == "Increased") %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj25_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of Increased TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+
+
+class_proportions <- direction_all %>%
+  filter(direction == "Decreased") %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj25_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of Decreased TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+```
+
+###Instances_Table
+####Chimp
+
+```{r TE_Expression_Data_Upload}
+sample_names <- readLines("data/TEs/TE_Expression/chimp_samples.txt")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+# Read all TEinstance files
+count_tables <- lapply(sample_names, function(sample) {
+  
+  counts <- read.table(
+    paste0(
+      "data/TEs/TECount_Instances/",
+      sample,
+      ".TEinstance_counts.txt"
+    ),
+    header = TRUE,
+    row.names = 1,
+    check.names = FALSE
+  )
+  
+  # Keep annotations + count
+  counts <- counts[, 1:5, drop = FALSE]
+  
+  # Rename the count column to the sample name
+  colnames(counts)[5] <- sample
+  
+  counts
+})
+
+# Start with annotations + first sample
+combined_counts_Chimp_annotated <- count_tables[[1]]
+
+# Add only the count column from each remaining sample
+for (i in 2:length(count_tables)) {
+  
+  combined_counts_Chimp_annotated <- merge(
+    combined_counts_Chimp_annotated,
+    count_tables[[i]][, 5, drop = FALSE],
+    by = "row.names",
+    all = TRUE
+  )
+  
+  rownames(combined_counts_Chimp_annotated) <- combined_counts_Chimp_annotated$Row.names
+  combined_counts_Chimp_annotated$Row.names <- NULL
+}
+
+saveRDS(combined_counts_Chimp_annotated,"data/TEs/TECount_Instances/chimp_TEInstances_fc_annotated.RDS")
+
+
+dim(combined_counts_Chimp_annotated)
+head(combined_counts_Chimp_annotated)
+colnames(combined_counts_Chimp_annotated)
+
+setequal(
+  colnames(combined_counts_Chimp_annotated)[5:ncol(combined_counts_Chimp_annotated)],
+  sample_names
+)
+
+
+```
+
+
+```{r TE_Expression_Data_Restructure}
+combined_counts <- readRDS("data/TEs/TECount_Instances/chimp_TEInstances_fc_annotated.RDS")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+RNA_fc_TEs <- combined_counts %>% 
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>% 
+  dplyr::select(-(1:4))
+
+colnames(RNA_fc_TEs) <- metadata$SampleName[
+  match(colnames(RNA_fc_TEs), metadata$Library_ID)
+]
+
+RNA_log2cpm <- cpm(RNA_fc_TEs,log=TRUE)
+
+chimp_samples <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+group <- chimp_samples$Cond
+
+keep <- apply(RNA_log2cpm, 1, function(gene_expr) {
+  any(
+    tapply(gene_expr > 1, group, function(x) sum(x) >= 4)
+  )
+})
+
+  
+RNA_fc_TEs_filtered <- RNA_fc_TEs[keep, ]
+
+saveRDS(RNA_fc_TEs,"data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances.RDS")
+saveRDS(RNA_fc_TEs_filtered,"data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances_filtered.RDS")
+
+```
+
+
+```{r Chimp_TE_Filtering_3}
+RNA_fc <- readRDS("data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances.RDS")
+RNA_cpm <- cpm(RNA_fc,log=FALSE)
+RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
+
+col_labels <- RNA_Metadata$SampleName
+
+boxplot(RNA_fc, main = "Boxplots of Chimp count of TE Instances",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(RNA_cpm, main = "Boxplots of Chimp cpm of TE Instances",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(RNA_log2cpm, main = "Boxplots of Chimp Log2cpm of TE Instances",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(RNA_log2cpm, main = "Histogram of Chimp Instances log2cpm",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+filtered_RNA_fc <- readRDS("data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances_filtered.RDS")
+filtered_cpm <- cpm(filtered_RNA_fc,log=FALSE)
+filtered_log2cpm <- cpm(filtered_RNA_fc,log=TRUE)
+
+saveRDS(filtered_log2cpm,"data/TEs/TECount_Instances/chimp_RNA_log2cpm_TEInstances_filtered.RDS")
+
+
+boxplot(filtered_RNA_fc, main = "Chimp TE Instances Boxplots of counts per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(filtered_cpm, main = "Chimp TE Instances Boxplots of cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(filtered_log2cpm, main = "Chimp TE Instances Boxplots of log cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(filtered_log2cpm, main = "Chimp TE Instances Histogram of log2cpm using lcpm >1 in 4/7 species-timepoints",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+###Cor_HeatMap
+```{r RNASeq_TEInstances_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/chimp_RNA_Cor_log2cpm_TEInstances.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/chimp_RNA_Cor_metadata_TEInstances.RDS")
+```
+
+
+```{r RNASeq_TEInstances_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/chimp_RNA_Cor_log2cpm_TEInstances.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/chimp_RNA_Cor_metadata_TEInstances.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TE Instances Sample-Sample Correlation"
+)
+
+```
+
+###Cor_HeatMap_filtered
+```{r RNASeq_Fitlered_TEInstances_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/chimp_RNA_Cor_log2cpm_TEInstances_filtered.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/chimp_RNA_Cor_metadata_TEInstances_filtered.RDS")
+```
+
+
+```{r RNASeq_Fitlered_TEInstances_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/chimp_RNA_Cor_log2cpm_TEInstances_filtered.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/chimp_RNA_Cor_metadata_TEInstances_filtered.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TE Filtered Instances Sample-Sample Correlation"
+)
+
+```
+
+###Cor_HeatMap_No4
+```{r RNASeq_TEInstances_No4_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C") %>%
+  filter(Timepoint!="Day4")
+  
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/chimp_RNA_No4_Cor_log2cpm_TEInstances.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/chimp_RNA_No4_Cor_metadata_TEInstances.RDS")
+```
+
+
+```{r RNASeq_TEInstances_No4_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/chimp_RNA_No4_Cor_log2cpm_TEInstances.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/chimp_RNA_No4_Cor_metadata_TEInstances.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TE Instances No Day 4 Sample-Sample Correlation"
+)
+
+```
+
+###Cor_HeatMap_filtered_No4
+```{r RNASeq_Fitlered_No4_TEInstances_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/chimp_RNA_fc_TEInstances_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C") %>%
+  filter(Timepoint!="Day4")
+  
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/chimp_RNA_No4_Cor_log2cpm_TEInstances_filtered.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/chimp_RNA_No4_Cor_metadata_TEInstances_filtered.RDS")
+```
+
+
+```{r RNASeq_Fitlered_TEInstances_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/chimp_RNA_No4_Cor_log2cpm_TEInstances_filtered.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/chimp_RNA_No4_Cor_metadata_TEInstances_filtered.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TE Filtered Instances No4 Sample-Sample Correlation"
+)
+
+```
+#####PCA
+```{r Chimp_TEs_PCA_PC1_PC2, fig.height=6,fig.width=8}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_log2cpm_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2 \n Log2cpm > 1 in 4/7 individuals \n in at least 1 species-timepoints"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+```{r Chimp_TEs_PCA_PC1_PC2, fig.height=6,fig.width=8}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TE_Expression/chimp_RNA_log2cpm_TEs_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "C")
+
+colnames(counts) <- metadata$SampleName[
+  match(colnames(counts), metadata$Library_ID)
+]
+
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+metadata <- RNA_Metadata %>%
+  filter(Timepoint!="Day4") 
+
+log2cpm <- cpm(counts, log=TRUE)
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(counts)) %>%
+  dplyr::slice(match(colnames(counts), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2 \n no Day4 \n Log2cpm > 1 in 4/7 individuals \n in at least 1 species-timepoints"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+####Human
+
+
+```{r Human_TE_Expression_Data_Upload}
+sample_names <- readLines("data/TEs/TE_Expression/human_samples.txt")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+# Read all TEinstance files
+count_tables <- lapply(sample_names, function(sample) {
+  
+  counts <- read.table(
+    paste0(
+      "data/TEs/TECount_Instances/",
+      sample,
+      ".TEinstance_counts.txt"
+    ),
+    header = TRUE,
+    row.names = 1,
+    check.names = FALSE
+  )
+  
+  # Keep annotations + count
+  counts <- counts[, 1:5, drop = FALSE]
+  
+  # Rename the count column to the sample name
+  colnames(counts)[5] <- sample
+  
+  counts
+})
+
+# Start with annotations + first sample
+combined_counts_human_annotated <- count_tables[[1]]
+
+# Add only the count column from each remaining sample
+for (i in 2:length(count_tables)) {
+  
+  combined_counts_human_annotated <- merge(
+    combined_counts_human_annotated,
+    count_tables[[i]][, 5, drop = FALSE],
+    by = "row.names",
+    all = TRUE
+  )
+  
+  rownames(combined_counts_human_annotated) <- combined_counts_human_annotated$Row.names
+  combined_counts_human_annotated$Row.names <- NULL
+}
+
+
+dim(combined_counts_human_annotated)
+head(combined_counts_human_annotated)
+colnames(combined_counts_human_annotated)
+
+setequal(
+  colnames(combined_counts_human_annotated)[5:ncol(combined_counts_human_annotated)],
+  sample_names
+)
+
+saveRDS(combined_counts_human_annotated,"data/TEs/TECount_Instances/human_TEInstances_fc_annotated.RDS")
+
+```
+
+
+```{r Human_TE_Expression_Data_Restructure}
+combined_counts <- readRDS("data/TEs/TECount_Instances/human_TEInstances_fc_annotated.RDS")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+RNA_fc_TEs <- combined_counts %>% 
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>% 
+  dplyr::select(-(1:4))
+
+colnames(RNA_fc_TEs) <- metadata$SampleName[
+  match(colnames(RNA_fc_TEs), metadata$Library_ID)
+]
+
+RNA_log2cpm <- cpm(RNA_fc_TEs,log=TRUE)
+
+human_samples <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+group <- human_samples$Cond
+
+keep <- apply(RNA_log2cpm, 1, function(gene_expr) {
+  any(
+    tapply(gene_expr > 1, group, function(x) sum(x) >= 4)
+  )
+})
+
+  
+RNA_fc_TEs_filtered <- RNA_fc_TEs[keep, ]
+
+saveRDS(RNA_fc_TEs,"data/TEs/TECount_Instances/human_RNA_fc_TEInstances.RDS")
+saveRDS(RNA_fc_TEs_filtered,"data/TEs/TECount_Instances/human_RNA_fc_TEInstances_filtered.RDS")
+
+```
+
+
+```{r Human_TE_Filtering_3}
+RNA_fc <- readRDS("data/TEs/TECount_Instances/human_RNA_fc_TEInstances.RDS")
+RNA_cpm <- cpm(RNA_fc,log=FALSE)
+RNA_log2cpm <- cpm(RNA_fc,log=TRUE)
+
+col_labels <- RNA_Metadata$SampleName
+
+boxplot(RNA_fc, main = "Boxplots of Human count of TE Instances",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(RNA_cpm, main = "Boxplots of Human cpm of TE Instances",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(RNA_log2cpm, main = "Boxplots of Human Log2cpm of TE Instances",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(RNA_log2cpm, main = "Histogram of Human Instances log2cpm",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+filtered_RNA_fc <- readRDS("data/TEs/TECount_Instances/human_RNA_fc_TEInstances_filtered.RDS")
+filtered_cpm <- cpm(filtered_RNA_fc,log=FALSE)
+filtered_log2cpm <- cpm(filtered_RNA_fc,log=TRUE)
+
+saveRDS(filtered_log2cpm,"data/TEs/TECount_Instances/human_RNA_log2cpm_TEInstances_filtered.RDS")
+
+
+boxplot(filtered_RNA_fc, main = "Human TE Instances Boxplots of counts per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(filtered_cpm, main = "Human TE Instances Boxplots of cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(filtered_log2cpm, main = "Human TE Instances Boxplots of log cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(filtered_log2cpm, main = "Human TE Instances Histogram of log2cpm using lcpm >1 in 4/7 species-timepoints",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+
+
+###Cor_HeatMap
+```{r Human_RNASeq_TEInstances_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/human_RNA_fc_TEInstances.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/human_RNA_Cor_log2cpm_TEInstances.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/human_RNA_Cor_metadata_TEInstances.RDS")
+```
+
+
+```{r Human_RNASeq_TEInstances_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/human_RNA_Cor_log2cpm_TEInstances.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/human_RNA_Cor_metadata_TEInstances.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Human TE Instances Sample-Sample Correlation"
+)
+
+```
+
+###Cor_HeatMap_filtered
+```{r Human_RNASeq_Fitlered_TEInstances_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/human_RNA_fc_TEInstances_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H")
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/human_RNA_Cor_log2cpm_TEInstances_filtered.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/human_RNA_Cor_metadata_TEInstances_filtered.RDS")
+```
+
+
+```{r Human_RNASeq_Fitlered_TEInstances_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/human_RNA_Cor_log2cpm_TEInstances_filtered.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/human_RNA_Cor_metadata_TEInstances_filtered.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Human TE Filtered Instances Sample-Sample Correlation"
+)
+
+```
+
+###Cor_HeatMap_No4
+```{r Human_RNASeq_TEInstances_No4_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/human_RNA_fc_TEInstances.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H") %>%
+  filter(Timepoint!="Day4")
+  
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/human_RNA_No4_Cor_log2cpm_TEInstances.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/human_RNA_No4_Cor_metadata_TEInstances.RDS")
+```
+
+
+```{r Human_RNASeq_TEInstances_No4_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/human_RNA_No4_Cor_log2cpm_TEInstances.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/human_RNA_No4_Cor_metadata_TEInstances.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Human TE Instances No Day 4 Sample-Sample Correlation"
+)
+
+```
+
+###Cor_HeatMap_filtered_No4
+```{r Human_RNASeq_Fitlered_No4_TEInstances_Correlation, fig.height=10,fig.width=10}
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+counts <- readRDS("data/TEs/TECount_Instances/human_RNA_fc_TEInstances_filtered.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- RNA_Metadata %>% 
+  filter(Species == "H") %>%
+  filter(Timepoint!="Day4")
+  
+counts <- counts[, !grepl("Day4", colnames(counts))]
+
+log2cpm <- cpm(counts, log=TRUE)
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+saveRDS(Cor_log2cpm,"data/TEs/TECount_Instances/human_RNA_No4_Cor_log2cpm_TEInstances_filtered.RDS")
+
+saveRDS(Cor_metadata,"data/TEs/TECount_Instances/human_RNA_No4_Cor_metadata_TEInstances_filtered.RDS")
+```
+
+
+```{r Human_RNASeq_Fitlered_TEInstances_Correlation_heatmap, fig.height=10,fig.width=10}
+Cor_log2cpm <- readRDS("data/TEs/TECount_Instances/human_RNA_No4_Cor_log2cpm_TEInstances_filtered.RDS")
+
+Cor_metadata <- readRDS("data/TEs/TECount_Instances/human_RNA_No4_Cor_metadata_TEInstances_filtered.RDS")
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Human TE Filtered Instances No4 Sample-Sample Correlation"
+)
+
+```
+
+```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/TETranscript.Rmd")
+
+```

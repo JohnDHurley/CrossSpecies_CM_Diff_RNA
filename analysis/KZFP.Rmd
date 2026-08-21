@@ -43,39 +43,6 @@ library("ggalluvial")
 
 ```
 
-# Data Upload
-```{r TopTable_Symbols}
-TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-# Extract Ensembl IDs for every row
-ens_ids <- sub("\\..*$", "", TopTable$Gene)
-
-# Make a lookup table
-symbol_map <- mapIds(
-    org.Hs.eg.db,
-    keys = unique(ens_ids),
-    column = "SYMBOL",
-    keytype = "ENSEMBL",
-    multiVals = "first"
-)
-
-TopTable$Symbol <- unname(symbol_map[ens_ids])
-
-# saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-```
-
-
-```{r KZFPs}
-KZFPs <- read_excel("data/TEs/KZFPs_list.xlsx")
-
-# saveRDS(KZFPs,"data/TEs/KZFPs.RDS")
-
-KZFPs_list <- KZFPs$Label
-
-# saveRDS(KZFPs_list,"data/TEs/KZFPs_list.RDS")
-
-```
-
 #Defining Functions
 
 ```{r KZFP_enrichment_function}
@@ -120,10 +87,8 @@ KZFP_enrichment <- function(comparisons, TopTable, KZFPs_list) {
   
   do.call(rbind, results)
 }
-```
 
-
-```{r KZFP_enrichment_fate_function}
+#KZFP_enrichment_fate_function
 Fate_KZFP_enrichment <- function(comparisons, TopTable_Fate, KZFPs_list) {
   
   results <- lapply(comparisons, function(group) {
@@ -193,25 +158,23 @@ plot_OR <- function(results, group_to_plot, ylim = c(-2, 2)) {
       log2_OR = log2(Odds_Ratio)
     )
 
-  ggplot(plot_data, aes(Comparison, log2_OR)) +
+  ggplot(plot_data, aes(Comparison, Odds_Ratio)) +
     geom_point(size = 3) +
     geom_text(
       aes(label = label),
       vjust = -1
     ) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_hline(yintercept = 1, linetype = "dashed") +
     coord_cartesian(ylim = ylim) +
     theme_bw() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1)
     )
 }
-```
 
+#FischerTest_fate_OddsRation_plotting
 
-```{r FischerTest_fate_OddsRation_plotting}
-
-plot_Fate_OR <- function(results, ylim = c(-2, 2)) {
+plot_Fate_OR <- function(results, ylim = c(0, 2)) {
 
   plot_data <- results %>%
     mutate(
@@ -219,14 +182,14 @@ plot_Fate_OR <- function(results, ylim = c(-2, 2)) {
       log2_OR = log2(Odds_Ratio)
     )
 
-  ggplot(plot_data, aes(x = Comparison, y = log2_OR)) +
+  ggplot(plot_data, aes(x = Comparison, y = Odds_Ratio)) +
     geom_point(size = 3) +
     geom_text(
       aes(label = label),
       vjust = -1
     ) +
     geom_hline(
-      yintercept = 0,
+      yintercept = 1,
       linetype = "dashed"
     ) +
     facet_wrap(~Fate) +
@@ -237,14 +200,353 @@ plot_Fate_OR <- function(results, ylim = c(-2, 2)) {
     ) +
     labs(
       x = "HvC developmental comparison",
-      y = "log2 Odds Ratio",
+      y = "Odds Ratio",
       title = "KZFP enrichment by HvC DEG fate"
     )
 }
+
+#Volcano_Plot_Function
+
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+
+#FC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+
+#absFC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_absfc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(absFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("absFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG absFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+
+#get_directional_genes
+
+get_fc_directions <- function(traj_label, coef_name, comparison_label,
+                              top_table_all, fit_obj, p_cutoff = 0.05, gene_set = NULL) {
+
+  # ---------------------------
+  # trajectory FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(
+      Comparisons %in% c(
+        paste0("H_", comparison_label),
+        paste0("C_", comparison_label)
+      )
+    )
+
+  df_dir <- df_fc %>%
+    dplyr::mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
+    dplyr::group_by(Gene, Species) %>%
+    dplyr::summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
+    tidyr::pivot_wider(names_from = Species, values_from = logFC) %>%
+    dplyr::filter(!is.na(H), !is.na(C)) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # KEY FILTER: DEGs in BOTH species
+  # ---------------------------
+  if (!is.null(gene_set)) {
+    df_dir <- df_dir %>%
+      dplyr::filter(Gene %in% gene_set)
+  }
+
+  # ---------------------------
+  # direction classification
+  # ---------------------------
+  df_combo <- df_dir %>%
+    dplyr::mutate(
+      direction = dplyr::case_when(
+        H > 0 & C < 0 ~ "H_pos_C_neg",
+        H < 0 & C > 0 ~ "H_neg_C_pos",
+        H > 0 & C > 0 ~ "Both_pos",
+        H < 0 & C < 0 ~ "Both_neg",
+        TRUE ~ "Other"
+      ),
+      direction_group = dplyr::case_when(
+        H * C > 0 ~ "Same_direction",
+        H * C < 0 ~ "Opposite_direction",
+        TRUE ~ "Other"
+      )
+    )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    H_pos_C_neg = dplyr::filter(df_combo, direction == "H_pos_C_neg"),
+    H_neg_C_pos = dplyr::filter(df_combo, direction == "H_neg_C_pos"),
+    Both_pos = dplyr::filter(df_combo, direction == "Both_pos"),
+    Both_neg = dplyr::filter(df_combo, direction == "Both_neg"),
+
+    Same_direction = dplyr::filter(df_combo, direction_group == "Same_direction"),
+    Opposite_direction = dplyr::filter(df_combo, direction_group == "Opposite_direction"),
+
+    Other = dplyr::filter(df_combo, direction == "Other"),
+
+    n_sig = length(gene_set)
+  )
+}
+
+#get_directional_genes_HvC1
+
+get_fc_directions <- function(traj_label, coef_name, comparison_label,
+                                 top_table_all, fit_obj, p_cutoff = 0.05) {
+
+  # ---------------------------
+  # DE genes
+  # ---------------------------
+  tt <- topTable(fit_obj, coef = coef_name, number = Inf)
+
+  sig_tt <- tt %>%
+    dplyr::filter(adj.P.Val < p_cutoff) %>%
+    tibble::rownames_to_column("Gene") %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # HvC FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(Comparisons == comparison_label) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # classify direction
+  # ---------------------------
+  df_combo <- df_fc %>%
+  dplyr::inner_join(sig_tt, by = "Gene") %>%
+  dplyr::mutate(
+    direction = dplyr::case_when(
+      logFC.x > 0 ~ "Increased",
+      logFC.x < 0 ~ "Decreased",
+      TRUE ~ "No_difference"
+    ),
+    magnitude = abs(logFC.x)
+  )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    Increased = dplyr::filter(df_combo, direction == "Increased"),
+    Decreased = dplyr::filter(df_combo, direction == "Decreased"),
+    n_sig = nrow(sig_tt)
+  )
+}
 ```
 
+# Data Upload
+```{r TopTable_Symbols}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+# Extract Ensembl IDs for every row
+ens_ids <- sub("\\..*$", "", TopTable$Gene)
+
+# Make a lookup table
+symbol_map <- mapIds(
+    org.Hs.eg.db,
+    keys = unique(ens_ids),
+    column = "SYMBOL",
+    keytype = "ENSEMBL",
+    multiVals = "first"
+)
+
+TopTable$Symbol <- unname(symbol_map[ens_ids])
+
+# saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+```{r KZFPs}
+KZFPs <- read_excel("data/TEs/KZFPs_list.xlsx")
+
+# saveRDS(KZFPs,"data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+# saveRDS(KZFPs_list,"data/TEs/KZFPs_list.RDS")
+
+```
+
+```{r}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+intersect(TopTable$Symbol,KZFPs_list)
+```
+
+
 #KZFP
-```{r KZFP,fig.height=4, fig.width=7}
+```{r KZFP,fig.height=4, fig.width=4}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
@@ -296,9 +598,14 @@ KZFP_results <- KZFP_results %>%
   ) %>%
   mutate(Significant = FDR < 0.05)
 
-plot_OR(KZFP_results, "Species", ylim = c(-2, 2))
+plot_OR(KZFP_results, "Species", ylim = c(0, 2))
 plot_OR(KZFP_results, "Trajectory", ylim = c(-2, 2))
-plot_OR(KZFP_results, "Interaction", ylim = c(-2, 2))
+plot_OR(KZFP_results, "Interaction", ylim = c(0, 2))
+
+KZFP_results_HvCDay2 <- KZFP_results %>% 
+  filter(Comparison == "HvC_Day2") %>% 
+  filter(FDR< 0.05)
+
 ```
 
 
@@ -371,6 +678,57 @@ plot_Fate_OR(Fate_KZFP_results)
 
 ```
 
+
+
+```{r}
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+
+KZFP_Toptable_HvC_Day0_DEG <- KZFP_Toptable %>% 
+  filter(Comparisons == "HvC_Day0") %>% 
+  filter(adj.P.Val < 0.05)
+Day0_Sig_DEG <- KZFP_Toptable_HvC_Day0_DEG$Symbol
+
+KZFP_Toptable_HvC_Day2_DEG <- KZFP_Toptable %>% 
+  filter(Comparisons == "HvC_Day2") %>% 
+  filter(adj.P.Val < 0.05) %>% 
+  filter(logFC < 0)
+Day2_Sig_DEG <- KZFP_Toptable_HvC_Day2_DEG$Symbol
+Day2_Sig_DEG
+
+KZFP_Toptable_HvC_Day5_DEG <- KZFP_Toptable %>% 
+  filter(Comparisons == "HvC_Day5") %>% 
+  filter(adj.P.Val < 0.05) %>% 
+  filter(logFC < 0)
+Day5_Sig_DEG <- KZFP_Toptable_HvC_Day5_DEG$Symbol
+
+KZFP_Toptable_HvC_Day15_DEG <- KZFP_Toptable %>% 
+  filter(Comparisons == "HvC_Day15") %>% 
+  filter(adj.P.Val < 0.05) %>% 
+  filter(logFC < 0)
+Day15_Sig_DEG <- KZFP_Toptable_HvC_Day15_DEG$Symbol
+
+KZFP_Toptable_HvC_Day30_DEG <- KZFP_Toptable %>% 
+  filter(Comparisons == "HvC_Day30") %>% 
+  filter(adj.P.Val < 0.05) %>% 
+  filter(logFC < 0)
+Day30_Sig_DEG <- KZFP_Toptable_HvC_Day30_DEG$Symbol
+
+Day0_Sig_DEG_Unique <- setdiff(
+  Day0_Sig_DEG,
+  c(
+    Day2_Sig_DEG,
+    Day5_Sig_DEG,
+    Day15_Sig_DEG,
+    Day30_Sig_DEG
+  )
+)
+
+
+  
+```
+
+
+
 ```{r KZFP_FC}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
@@ -410,6 +768,7 @@ KZFP_all <- TopTable %>%
   )
 
 # saveRDS(KZFP_all,"data/TEs/KZFPs_Toptable.RDS")
+
 
 ggplot(KZFP_all, aes(Comparisons, logFC)) +
   geom_boxplot() +
@@ -461,7 +820,7 @@ KZFP_DEG_direction <- KZFP_DEG %>%
       TRUE ~ "Unknown"
     )
   ) %>%
-  count(Comparisons, Direction)
+  dplyr::count(Comparisons, Direction)
 ```
 
 ```{r KZFP_alluvial,fig.height=5,fig.width=5}
@@ -600,7 +959,7 @@ genes_list <- list(
 )
 
 ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "steelblue") +
+  scale_fill_gradient(low = "white", high = "darkgreen") +
   theme(
     panel.grid = element_blank(),
     panel.background = element_blank(),
@@ -731,6 +1090,49 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   )
 
 ```
+```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4}
+library(dplyr)
+library(purrr)
+library(stringr)
+
+hvcdays <- names(RNA_sets)[str_detect(names(RNA_sets), "^HvC_")]
+
+prop_df <- map_dfr(hvcdays, function(traj) {
+  
+  x <- RNA_sets[[traj]]
+  
+  tibble(
+    trajectory = traj,
+    DEG = length(x$DEGs$Gene),
+    NonDEG = length(x$NonDEGs$Gene)
+  )
+})
+library(tidyr)
+
+prop_long <- prop_df %>%
+  pivot_longer(cols = c(DEG, NonDEG),
+               names_to = "type",
+               values_to = "count") %>%
+  group_by(trajectory) %>%
+  mutate(prop = count / sum(count)) %>%
+  ungroup()
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("HvC_Day0", "HvC_Day2", "HvC_Day5", "HvC_Day15", "HvC_Day30"),
+  labels = c("0", "2", "5", "15", "30")
+)
+library(ggplot2)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Proportion of genes",
+    fill = "",
+    title = "HvC comparisons: DEG vs NonDEG composition"
+  )
+```
 
 
 
@@ -821,7 +1223,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r}
+```{r,fig.height=7,fig.width=7}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -907,7 +1309,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r}
+```{r,fig.height=7,fig.width=7}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -993,7 +1395,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r}
+```{r,fig.height=7,fig.width=7}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -1079,13 +1481,65 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-#TE Expression
-
-```{r TE_Expression_Data_Upload}
 
 
+```{r}
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
 
+KZFP_Toptable_sig <- KZFP_Toptable %>% 
+  filter(adj.P.Val < 0.05)
+
+# write.csv(KZFP_Toptable_sig, "KZFP_Toptable_sig.csv", row.names = FALSE)
+
+comparisons <- unique(KZFP_Toptable_sig$Comparisons)
+
+for (comparison in comparisons) {
+  
+  KZFP_Toptable_Higher <- KZFP_Toptable %>% 
+    filter(Comparisons == comparison) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    filter(logFC > 0)
+  
+  KZFP_Toptable_Lower <- KZFP_Toptable %>% 
+    filter(Comparisons == comparison) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    filter(logFC < 0)
+  
+  assign(
+    paste0("KZFP_Toptable_", comparison, "_Higher"),
+    KZFP_Toptable_Higher
+  )
+  
+  assign(
+    paste0("KZFP_Toptable_", comparison, "_Lower"),
+    KZFP_Toptable_Lower
+  )
+}
+
+Reduce(
+  intersect,
+  list(
+    KZFP_Toptable_HvC_Day0_Higher$Symbol,
+    KZFP_Toptable_HvC_Day2_Higher$Symbol,
+    KZFP_Toptable_HvC_Day5_Higher$Symbol,
+    KZFP_Toptable_HvC_Day15_Higher$Symbol,
+    KZFP_Toptable_HvC_Day30_Higher$Symbol
+  )
+)
+
+Reduce(
+  intersect,
+  list(
+    KZFP_Toptable_HvC_Day0_Lower$Symbol,
+    KZFP_Toptable_HvC_Day2_Lower$Symbol,
+    KZFP_Toptable_HvC_Day5_Lower$Symbol,
+    KZFP_Toptable_HvC_Day15_Lower$Symbol,
+    KZFP_Toptable_HvC_Day30_Lower$Symbol
+  )
+)
 ```
+
+
 
 
 ```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}

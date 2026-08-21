@@ -4,16 +4,44 @@ output: html_document
 date: "2026-03-03"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
 knitr::opts_chunk$set(
 	echo = TRUE,
 	message = FALSE,
 	warning = FALSE,
 	dev = c("png","pdf")
 )
+
+# ---- AUTO-SAVE PNG + PDF FOR EVERY PLOT ----
+knitr::knit_hooks$set(plot = function(x, options) {
+  outdir <- "docs"
+  dir.create(outdir, showWarnings = FALSE)
+
+  # Base filename (chunk label or auto-generated)
+  name <- options$label
+  if (is.null(name) || name == "") {
+    name <- paste0("plot-", knitr::opts_current$get("chunk.id"))
+  }
+
+  # Save PNG
+  pngfile <- file.path(outdir, paste0(name, ".png"))
+  grDevices::png(pngfile, width = 800, height = 600, res = 120)
+  print(x)
+  grDevices::dev.off()
+
+  # Save PDF
+  pdffile <- file.path(outdir, paste0(name, ".pdf"))
+  grDevices::pdf(pdffile, width = 7, height = 5)
+  print(x)
+  grDevices::dev.off()
+
+  # Return plot to appear in the knitted document
+  knitr::hook_plot_md(x, options)
+})
+
 ```
 
-```{r Setting the Enviroment}
+```{r library loading, message=FALSE, warning=FALSE}
 
 #loading libraries
 library("tidyverse")
@@ -144,6 +172,7 @@ generate_volcano_plot <- function(toptable, title) {
                        breaks = c("Upregulated",
                                   "Not Significant", 
                                   "Downregulated"))  +
+    ylim(0,20) +
     xlim(-20,20) +
     labs(title = title, 
          x = expression("log"[2]*"FC"),
@@ -2928,7 +2957,7 @@ ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
 head(TopTable_RNA_All)
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4, fig.height=3,fig.width=5}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -2944,7 +2973,7 @@ for (n in ComparisonNames) {
   
   plot[[n]] <- generate_volcano_plot(data_n, n) +
     ggplot2::xlim(x_limits) +
-    ggplot2::ylim(y_limits)
+    ggplot2::ylim(0,20)
 }
 
 # Print plots

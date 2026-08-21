@@ -1,7 +1,9 @@
 ---
 title: "RNA_CorrelationHeatMap"
 output: html_document
-date: "2026-08-2026"
+date: "2026-01-14"
+editor_options:
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE, warning = FALSE, message=FALSE}
@@ -2862,7 +2864,7 @@ print(
 ```
 
 
-```{r Updating Website, include=FALSE, warning = FALSE, message=FALSE}
+```{r Updating Website, warning = FALSE, message=FALSE}
 
 # git -> commit all changes
 # git -> push

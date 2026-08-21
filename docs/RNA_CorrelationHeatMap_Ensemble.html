@@ -388,7 +388,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-20
+<strong>Last updated:</strong> 2026-08-21
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree8064dab0b701464c9c198f4c615c7091d746977ctargetblank8064daba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree2959506b5166dd12f06d1a67e55231642f0fb195targetblank2959506a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/8064dab0b701464c9c198f4c615c7091d746977c" target="_blank">8064dab</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/2959506b5166dd12f06d1a67e55231642f0fb195" target="_blank">2959506</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree8064dab0b701464c9c198f4c615c7091d746977ctargetblank8064daba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree2959506b5166dd12f06d1a67e55231642f0fb195targetblank2959506a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/8064dab0b701464c9c198f4c615c7091d746977c" target="_blank">8064dab</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/2959506b5166dd12f06d1a67e55231642f0fb195" target="_blank">2959506</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,6 +556,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/RNA_GO_Comp_Species.html
+    Ignored:    analysis/figure/
     Ignored:    data/
 
 </code></pre>
@@ -602,6 +603,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/6588dd64352b77afd59aa99a4fc6b619fe579b37/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">6588dd6</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+8/21/2026 Commit 1
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/278ed7e5565dbd060ee67e4e2e46abca44fd8884/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">278ed7e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+8/21/2026 Commit 1
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/7480d1e8b4fc3b838c11b5b017c012409c97709c/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">7480d1e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+<td>
+Still
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/2b0542b4f6bb324a0a5f25f6490628e2ebd49627/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">2b0542b</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1529,8 +1598,7 @@ Finalizing CorHeatMap
 </div>
 <div id="rna-seq-quality-control" class="section level1">
 <h1>RNA-seq Quality Control</h1>
-<div id="setting-up-environment" class="section level2">
-<h2>Setting up Environment</h2>
+<p>##Setting enviroment</p>
 <div id="loading-libraries" class="section level3">
 <h3>Loading libraries</h3>
 </div>
@@ -1648,9 +1716,9 @@ RNA_log2cpm_No5 &lt;- cpm(RNA_fc_No5, log=TRUE)
 
 # saveRDS(ann_colors,&quot;data/Raw_Data/concat/ann_colors.RDS&quot;)</code></pre>
 </div>
-</div>
 <div id="read-statistics" class="section level2">
 <h2>Read statistics</h2>
+<p>###Data preparation</p>
 <pre class="r"><code>total_reads_df &lt;- RNA_fc %&gt;%
   as.data.frame() %&gt;%
   mutate(Gene = rownames(.)) %&gt;%
@@ -3737,10 +3805,10 @@ John D. Hurley
 </div>
 </div>
 </div>
-<div id="puritites" class="section level2">
-<h2>Puritites</h2>
-<div id="purities-all-days" class="section level3">
-<h3>Purities all days</h3>
+<div id="purity" class="section level2">
+<h2>Purity</h2>
+<div id="purity-all-days" class="section level3">
+<h3>Purity all days</h3>
 <pre class="r"><code># -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -4017,8 +4085,8 @@ John D. Hurley
 </div>
 </div>
 </div>
-<div id="purities-no-day-4" class="section level3">
-<h3>Purities No Day 4</h3>
+<div id="purity-no-day-4" class="section level3">
+<h3>Purity No Day 4</h3>
 <pre class="r"><code># -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -4259,8 +4327,8 @@ John D. Hurley
 </div>
 </div>
 </div>
-<div id="purities-no-day-5" class="section level3">
-<h3>Purities No Day 5</h3>
+<div id="purity-no-day-5" class="section level3">
+<h3>Purity No Day 5</h3>
 <pre class="r"><code># -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -8526,8 +8594,6 @@ class="section level2">
 species-time point</h2>
 <div id="all-days" class="section level3">
 <h3>All days</h3>
-<div id="boxplothistograms" class="section level4">
-<h4>Boxplot/Histograms</h4>
 <pre class="r"><code>group &lt;- RNA_Metadata$Cond
 
 keep &lt;- apply(RNA_log2cpm, 1, function(gene_expr) {
@@ -8722,9 +8788,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="correlation-heatmap" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata &lt;- RNA_Metadata
 
@@ -8839,9 +8902,6 @@ John D. Hurley
 </div>
 </div>
 <pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm.RDS&quot;)</code></pre>
-</div>
-<div id="markers" class="section level4">
-<h4>Markers</h4>
 <pre class="r"><code>library(ggplot2)
 expressed_genes &lt;- rownames(Filt_logcpm_G1_SpTp_RNA_log2cpm)
 
@@ -9829,11 +9889,8 @@ John D. Hurley
 </div>
 </div>
 </div>
-</div>
 <div id="no-day-4" class="section level3">
 <h3>No Day 4</h3>
-<div id="boxplotshistogram" class="section level4">
-<h4>Boxplots/histogram</h4>
 <pre class="r"><code>counts &lt;- RNA_fc_No4
 metadata &lt;- RNA_Metadata_No4
 log2cpm &lt;- cpm(counts, log=TRUE)
@@ -10032,9 +10089,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="correlation-heatmap-1" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata &lt;- RNA_Metadata_No4
 log2cpm &lt;- cpm(counts, log=TRUE) 
@@ -10152,11 +10206,8 @@ John D. Hurley
 </div>
 <pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS&quot;)</code></pre>
 </div>
-</div>
 <div id="no-day-5" class="section level3">
 <h3>No Day 5</h3>
-<div id="boxplothistogram" class="section level4">
-<h4>Boxplot/histogram</h4>
 <pre class="r"><code>counts &lt;- RNA_fc_No5
 metadata &lt;- RNA_Metadata_No5
 log2cpm &lt;- cpm(counts, log=TRUE)
@@ -10355,9 +10406,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="correlation-heatmap-2" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No5
 metadata &lt;- RNA_Metadata_No5
 log2cpm &lt;- cpm(counts, log=TRUE) 
@@ -10475,13 +10523,10 @@ John D. Hurley
 </div>
 </div>
 </div>
-</div>
 <div id="edger-filter-by-expression" class="section level2">
 <h2>EdgeR Filter By Expression</h2>
 <div id="all-days-1" class="section level3">
 <h3>All days</h3>
-<div id="boxplothistogram-1" class="section level4">
-<h4>Boxplot/histogram</h4>
 <pre class="r"><code>dge &lt;- DGEList(counts = RNA_fc)
 
 keep &lt;- filterByExpr(dge, group = RNA_Metadata$Cond)
@@ -10674,9 +10719,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="correlation-heatmap-3" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_FilterByExpression_RNA_log2cpm &lt;- cor(Filt_FilterByExpression_RNA_log2cpm, method = &quot;spearman&quot;)
 individual &lt;- RNA_Metadata$Individual
@@ -10786,9 +10828,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="markers-1" class="section level4">
-<h4>Markers</h4>
 <pre class="r"><code>library(ggplot2)
 expressed_genes &lt;- rownames(Filt_FilterByExpression_RNA_fc)
 
@@ -11768,12 +11807,8 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-</div>
-<div id="no-day-4-1" class="section level3">
-<h3>No Day 4</h3>
-<div id="boxplothistogram-2" class="section level4">
-<h4>Boxplot/histogram</h4>
+<div id="no-day-4-1" class="section level4">
+<h4>No Day 4</h4>
 <pre class="r"><code>dge &lt;- DGEList(counts = RNA_fc_No4)
 
 keep &lt;- filterByExpr(dge, group = RNA_Metadata_No4$Cond)
@@ -11966,9 +12001,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="correlation-heatmap-4" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>Cor_Filt_FilterByExpression_RNA_log2cpm_No4 &lt;- cor(Filt_FilterByExpression_RNA_log2cpm_No4, method = &quot;spearman&quot;)
 individual &lt;- RNA_Metadata_No4$Individual
 species &lt;- RNA_Metadata_No4$Species
@@ -12081,8 +12113,6 @@ John D. Hurley
 </div>
 <div id="no-day-5-1" class="section level3">
 <h3>No Day 5</h3>
-<div id="boxplothistogram-3" class="section level4">
-<h4>Boxplot/histogram</h4>
 <pre class="r"><code>dge &lt;- DGEList(counts = RNA_fc_No5)
 
 keep &lt;- filterByExpr(dge, group = RNA_Metadata_No5$Cond)
@@ -12275,9 +12305,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-</div>
-<div id="correlation-heatmap-5" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>Cor_Filt_FilterByExpression_RNA_log2cpm_No5 &lt;- cor(Filt_FilterByExpression_RNA_log2cpm_No5, method = &quot;spearman&quot;)
 individual &lt;- RNA_Metadata_No5$Individual
 species &lt;- RNA_Metadata_No5$Species
@@ -12388,13 +12415,10 @@ John D. Hurley
 </div>
 </div>
 </div>
-</div>
 <div id="log2cpm-row-means-greater-than-0" class="section level2">
 <h2>Log2cpm row means Greater than 0</h2>
 <div id="all-days-2" class="section level3">
 <h3>All days</h3>
-<div id="boxplothistogram-4" class="section level4">
-<h4>Boxplot/histogram</h4>
 <pre class="r"><code>#####RowMu&gt;0####
 row_means &lt;- rowMeans(RNA_log2cpm)
 Filt_RMG0_RNA_fc &lt;- RNA_fc[row_means &gt;0,]
@@ -12618,9 +12642,6 @@ John D. Hurley
 </div>
 <pre class="r"><code># saveRDS(Filt_RMG0_RNA_fc,&quot;data/QC/concat/Filt_RMG0_RNA_fc.RDS&quot;)
 # saveRDS(Filt_RMG0_RNA_log2cpm,&quot;data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS&quot;)</code></pre>
-</div>
-<div id="correlation-heatmap-6" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm &lt;- cor(Filt_RMG0_RNA_log2cpm, method = &quot;spearman&quot;)
 individual &lt;- RNA_Metadata$Individual
@@ -12730,9 +12751,6 @@ John D. Hurley
 </div>
 <pre class="r"><code># saveRDS(Cor_Filt_RMG0_RNA_log2cpm, &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;)
 # saveRDS(Cor_metadata, &quot;data/QC/concat/Cor_RNA_metadata.RDS&quot;)</code></pre>
-</div>
-<div id="markers-2" class="section level4">
-<h4>Markers</h4>
 <pre class="r"><code>library(ggplot2)
 expressed_genes &lt;- rownames(Filt_RMG0_RNA_log2cpm)
 
@@ -13712,11 +13730,8 @@ John D. Hurley
 </div>
 </div>
 </div>
-</div>
-<div id="no-day-4-rowmeans" class="section level3">
-<h3>No Day 4 RowMeans</h3>
-<div id="boxplothistogram-5" class="section level4">
-<h4>Boxplot/histogram</h4>
+<div id="no-day-4-2" class="section level3">
+<h3>No Day 4</h3>
 <pre class="r"><code>####Subset####
 RNA_Metadata_No4 &lt;- RNA_Metadata %&gt;% 
  filter(Timepoint != &quot;Day4&quot;)
@@ -13738,9 +13753,6 @@ dim(Filt_RMG0_RNA_fc_NoD4)</code></pre>
 # saveRDS(RNA_Metadata_No4,&quot;data/QC/concat/RNA_Metatdata_No4.RDS&quot;)
 # saveRDS(Filt_RMG0_RNA_fc_NoD4,&quot;data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS&quot;)
 # saveRDS(Filt_RMG0_RNA_log2cpm_NoD4, &quot;data/QC/concat/Filt_RMG0_RNA_log2cpm_No4.RDS&quot;)</code></pre>
-</div>
-<div id="correlation-heatmap-7" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 &lt;- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = &quot;spearman&quot;)
 
@@ -13849,11 +13861,8 @@ John D. Hurley
 # saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD4, &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_No4.RDS&quot;)
 # saveRDS(ann_colors_No4,&quot;data/QC/concat/ann_colors_No4.RDS&quot;)</code></pre>
 </div>
-</div>
 <div id="no-day-5-2" class="section level3">
 <h3>No Day 5</h3>
-<div id="boxplothistogram-6" class="section level4">
-<h4>Boxplot/histogram</h4>
 <pre class="r"><code>####Subset####
 RNA_Metadata_No5 &lt;- RNA_Metadata %&gt;% 
  filter(Timepoint != &quot;Day5&quot;)
@@ -13875,9 +13884,6 @@ dim(Filt_RMG0_RNA_fc_NoD5)</code></pre>
 # saveRDS(RNA_Metadata_No5,&quot;data/QC/concat/RNA_Metatdata_No5.RDS&quot;)
 # saveRDS(Filt_RMG0_RNA_fc_NoD5,&quot;data/QC/concat/Filt_RMG0_RNA_fc_No5.RDS&quot;)
 # saveRDS(Filt_RMG0_RNA_log2cpm_NoD5, &quot;data/QC/concat/Filt_RMG0_RNA_log2cpm_No5.RDS&quot;)</code></pre>
-</div>
-<div id="correlation-heatmap-8" class="section level4">
-<h4>Correlation heatmap</h4>
 <pre class="r"><code>Cor_Filt_RMG0_RNA_log2cpm_NoD5 &lt;- cor(Filt_RMG0_RNA_log2cpm_NoD5, method = &quot;spearman&quot;)
 
 Cor_metadata_No5 &lt;- Cor_metadata %&gt;% 
@@ -14079,7 +14085,6 @@ loaded via a namespace (and not attached):
 [106] bit64_4.8.2            KEGGREST_1.52.2        statmod_1.5.2         
 [109] memoise_2.0.1          affyio_1.82.0          bslib_0.11.0          
 [112] bit_4.6.0             </code></pre>
-</div>
 </div>
 </div>
 </div>

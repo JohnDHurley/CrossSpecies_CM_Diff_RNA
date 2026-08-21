@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ## RNA-seq Quality Control
-
+###Setting up Environment
 ####Loading libraries
 ```{r Setting_Up_Enviroment, include=FALSE, warning = FALSE, message=FALSE}
 library("edgeR")
@@ -315,6 +315,7 @@ total_reads_df <- total_reads_df %>%
 
 ```
 
+####By sample
 ```{r RNASeq_perSample_graph, fig.height=6,fig.width=12}
 library(ggplot2)
 
@@ -395,7 +396,7 @@ ggplot(total_reads_df, aes(x = Sample, y = Usable_Fragments, fill = Timepoint)) 
   )
 
 ```
-
+####By species
 ```{r RNASeq_perSpecies_graph, fig.height=6,fig.width=12}
 ggplot(total_reads_df, aes(x = Species, y = Total_Reads)) +
   geom_boxplot(fill = "#CCCCCC", alpha = 0.3, outlier.shape = NA) +
@@ -450,7 +451,7 @@ ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
   )
   
 ```
-
+####By day by species
 ```{r RNASeq_perDaybySpecies_graph, fig.height=6,fig.width=12}
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
@@ -521,7 +522,7 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
     color = "Individual"
   )
 ```
-
+####By individual by species
 ```{r RNASeq_perIndividualbySpecies_graph, fig.height=6,fig.width=12}
 ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
@@ -594,7 +595,7 @@ ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
 
 
 ###Puritites
-
+####Purities all days
 ```{r RNASeq_Purities,results="hide"}
 # -----------------------------
 # 1. Prepare long-format data
@@ -761,6 +762,7 @@ ggplot(summary_df,
   )
 ```
 
+####Purities No Day 4
 ```{r RNASeq_Purities_No4,results="hide"}
 # -----------------------------
 # 1. Prepare long-format data
@@ -902,6 +904,8 @@ ggplot(summary_df_No4,
     plot.caption = element_text(hjust = 0, face = "italic", size = 10)
   )
 ```
+
+####Purities No Day 5
 
 ```{r RNASeq_Purities_No5,results="hide"}
 # -----------------------------
@@ -1688,9 +1692,11 @@ print(plots)
 ```
 
 
-###logCPM >1 in 4 or more samples within at least one species in a timepoint
+###logCPM >1 in 4 or more individuals within at least one species-time point
 
-####All days cpm filtering
+####All days
+
+#####Boxplot/Histograms
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints, fig.height=6,fig.width=12}
 
 group <- RNA_Metadata$Cond
@@ -1723,6 +1729,8 @@ axis(1,
 
 ```
 
+
+#####Correlation heatmap
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm
@@ -1758,6 +1766,7 @@ print(
 
 ```
 
+#####Markers
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 expressed_genes <- rownames(Filt_logcpm_G1_SpTp_RNA_log2cpm)
@@ -1954,7 +1963,8 @@ plots <- lapply(stages, function(s) {
 print(plots)
 ```
 
-####No Day 4 cpm filtering
+####No Day 4
+#####Boxplots/histogram
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.height=6,fig.width=12}
 counts <- RNA_fc_No4
 metadata <- RNA_Metadata_No4
@@ -1990,6 +2000,7 @@ axis(1,
 
 ```
 
+#####Correlation heatmap
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata <- RNA_Metadata_No4
@@ -2026,8 +2037,8 @@ print(
 ```
 
 
-
-####No Day 5 cpm filtering
+####No Day 5
+#####Boxplot/histogram
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5, fig.height=6,fig.width=12}
 counts <- RNA_fc_No5
 metadata <- RNA_Metadata_No5
@@ -2063,6 +2074,7 @@ axis(1,
 
 ```
 
+#####Correlation heatmap
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5,fig.height=10,fig.width=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
 metadata <- RNA_Metadata_No5
@@ -2098,11 +2110,9 @@ print(
 ```
 
 
-
-
-
 ###EdgeR Filter By Expression
-####All Days filtering by expression
+####All days
+#####Boxplot/histogram
 ```{r RNASeq_FeatureCounts_FilterByExpression, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc)
@@ -2136,6 +2146,8 @@ axis(1,
 
 ```
 
+#####Correlation heatmap
+
 ```{r RNASeq_FeatureCounts_FilterByExpression_Correlation, fig.height=10,fig.width=10}
 
 ######Cor_HeatMap####
@@ -2166,6 +2178,7 @@ print(
 
 ```
 
+#####Markers
 ```{r RNASeq_FeatureCounts_FilterByExpression_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 expressed_genes <- rownames(Filt_FilterByExpression_RNA_fc)
@@ -2356,7 +2369,8 @@ print(plots)
 ```
 
 
-####No Day 4 filtering by expression
+####No Day 4
+#####Boxplot/histogram
 ```{r RNASeq_FeatureCounts_FilterByExpression_No4, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No4)
@@ -2390,6 +2404,9 @@ axis(1,
 
 ```
 
+
+#####Correlation heatmap
+
 ```{r RNASeq_FeatureCounts_FilterByExpression_Correlation_No4, fig.height=10,fig.width=10}
 Cor_Filt_FilterByExpression_RNA_log2cpm_No4 <- cor(Filt_FilterByExpression_RNA_log2cpm_No4, method = "spearman")
 individual <- RNA_Metadata_No4$Individual
@@ -2418,7 +2435,8 @@ print(
 
 ```
 
-####No Day 5 filtering by expression
+####No Day 5
+#####Boxplot/histogram 
 ```{r RNASeq_FeatureCounts_FilterByExpression_No5, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No5)
@@ -2452,6 +2470,7 @@ axis(1,
 
 ```
 
+#####Correlation heatmap 
 ```{r RNASeq_FeatureCounts_FilterByExpression_Correlation_No5, fig.height=10,fig.width=10}
 
 Cor_Filt_FilterByExpression_RNA_log2cpm_No5 <- cor(Filt_FilterByExpression_RNA_log2cpm_No5, method = "spearman")
@@ -2483,9 +2502,10 @@ print(
 
 
 
-###RowMeans G0
+###Log2cpm row means Greater than 0
 
-####All Days RowMeans
+####All days
+#####Boxplot/histogram
 ```{r RNASeq_FeatureCounts_RMG0, fig.height=6,fig.width=12}
 #####RowMu>0####
 row_means <- rowMeans(RNA_log2cpm)
@@ -2506,6 +2526,7 @@ axis(1,
 # saveRDS(Filt_RMG0_RNA_log2cpm,"data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
 ```
 
+#####Correlation heatmap
 ```{r RNASeq_FeatureCounts_RMG0_Correlation,fig.height=10,fig.width=10}
 ######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm <- cor(Filt_RMG0_RNA_log2cpm, method = "spearman")
@@ -2537,7 +2558,7 @@ print(
 # saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
 ```
 
-
+#####Markers
 ```{r RNASeq_FeatureCounts_RMG0_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
 expressed_genes <- rownames(Filt_RMG0_RNA_log2cpm)
@@ -2735,6 +2756,7 @@ print(plots)
 ```
 
 ####No Day 4 RowMeans
+#####Boxplot/histogram
 ```{r RNASeq_FeatureCounts_RMG0_No4}
 
 ####Subset####
@@ -2758,6 +2780,7 @@ Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
 
 ```
 
+#####Correlation heatmap
 ```{r RNASeq_FeatureCounts_RMG0_Correlation_No4,fig.height=10,fig.width=10}
 ######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = "spearman")
@@ -2788,6 +2811,7 @@ print(
 
 
 ####No Day 5 RowMeans
+#####Boxplot/histogram
 ```{r RNASeq_FeatureCounts_RMG0_No5}
 
 ####Subset####
@@ -2811,6 +2835,7 @@ Filt_RMG0_RNA_log2cpm_NoD5 <- cpm(Filt_RMG0_RNA_fc_NoD5,log=TRUE)
 
 ```
 
+#####Correlation heatmap
 ```{r RNASeq_FeatureCounts_RMG0_Correlation_No5,fig.height=10,fig.width=10}
 Cor_Filt_RMG0_RNA_log2cpm_NoD5 <- cor(Filt_RMG0_RNA_log2cpm_NoD5, method = "spearman")
 

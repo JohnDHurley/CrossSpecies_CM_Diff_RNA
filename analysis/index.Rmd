@@ -18,6 +18,8 @@ Welcome to my research website.
 
 [KZFP Expression](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/KZFP.html)
 
+[TE Expression](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/)
+
 <!-- [RNA Cormotif Species](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif.html) -->
 
 <!-- [RNA Differentail Analysis Log2cpm >1.5](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_DGE_Interactions_lcpm.html) -->

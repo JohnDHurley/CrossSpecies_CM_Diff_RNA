@@ -472,7 +472,7 @@ plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_t
   df <- top_table %>%
     dplyr::filter(Gene %in% gene_vector) %>%
     mutate(Comparisons = factor(Comparisons, levels = c(
-      "H_Day02","H_Day25","H_Day515","H_Day1530","C_Day02","C_Day25","C_Day515","C_Day1530"
+      "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
     )))
 
   cat(cluster_name, ":", nrow(df), "rows,",
@@ -509,7 +509,7 @@ plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_t
     ggtitle(
       paste0(
         cluster_name,
-        " Interaction DEGs FC Comparisons\nKruskal–Wallis p = ",
+        " Interaction FC Comparisons\nKruskal–Wallis p = ",
         signif(kw$p.value, 3)
       )
     ) +
@@ -567,7 +567,7 @@ plot_cluster_absfc_sig_interaction_No4 <- function(gene_vector, cluster_name, to
     ggtitle(
       paste0(
         cluster_name,
-        " Interaction DEGs absFC Comparisons\nKruskal–Wallis p = ",
+        " Interaction absFC Comparisons\nKruskal–Wallis p = ",
         signif(kw$p.value, 3)
       )
     ) +
@@ -1127,6 +1127,45 @@ Enrich_Go_sets <- function(gene_sets, v) {
   })
 
   return(results)
+}
+
+
+plot_KZFP_interaction <- function(
+    gene_set,
+    top_table
+) {
+
+  plot_data <- top_table %>%
+    filter(Gene %in% gene_set) %>%
+    mutate(
+      Transition = recode(
+        Comparisons,
+        "Sig_Sp_inter_Traj02" = "Day0-2",
+        "Sig_Sp_inter_Traj25" = "Day2-5",
+        "Sig_Sp_inter_Traj515" = "Day5-15",
+        "Sig_Sp_inter_Traj1530" = "Day15-30"
+      ),
+      Transition = factor(
+        Transition,
+        levels = c("Day0-2", "Day2-5", "Day5-15", "Day15-30")
+      )
+    )
+
+  ggplot(
+    plot_data,
+    aes(
+      x = Transition,
+      y = logFC,
+      group = Gene
+    )
+  ) +
+    geom_line(alpha = 0.5) +
+    geom_point() +
+    theme_bw() +
+    labs(
+      x = "Differentiation transition",
+      y = "Interaction logFC"
+    )
 }
 ```
 
@@ -2961,6 +3000,225 @@ RNA_sets <- map(
 names(RNA_sets) <- paste0(ComparisonNames)
 
 # saveRDS(RNA_sets, "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+```{r Genes_Species_FC_lineplot}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+library(dplyr)
+library(ggplot2)
+
+# Split the existing Genes data into the three comparison types
+Genes_HvC <-TopTable %>%
+  filter(grepl("^HvC_", Comparisons))
+
+Genes_Traj <- TopTable %>%
+  filter(grepl("^[HC]_Day", Comparisons))
+
+Genes_Inter <- TopTable %>%
+  filter(grepl("^Sig_Sp_inter_", Comparisons))
+
+Genes_HvC <- TopTable %>%
+  filter(grepl("^HvC_", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+ggplot(
+  Genes_HvC,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group = Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  theme_bw() +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkblue"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 timepoint"
+    )
+  ) +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Human vs. Chimpanzee expression of Geness"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+Genes_Human_Traj <- TopTable %>%
+  filter(grepl("^H_Day", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+Genes_Human_Traj$Comparisons <- factor(
+  Genes_Human_Traj$Comparisons,
+  levels = c(
+    "H_Day02",
+    "H_Day25",
+    "H_Day515",
+    "H_Day1530"
+  )
+)
+
+ggplot(
+  Genes_Human_Traj,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group = Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkred"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 transition"
+    )
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(-2, 2)) +
+  theme_bw() +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Human Genes trajectories"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+Genes_Chimp_Traj <- TopTable %>%
+  filter(grepl("^C_Day", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+Genes_Chimp_Traj$Comparisons <- factor(
+  Genes_Chimp_Traj$Comparisons,
+  levels = c(
+    "C_Day02",
+    "C_Day25",
+    "C_Day515",
+    "C_Day1530"
+  )
+)
+
+ggplot(
+  Genes_Chimp_Traj,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group = Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkred"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 transition"
+    )
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(-2, 2)) +
+  theme_bw() +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Chimpanzee Genes trajectories"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
+
+Genes_Inter <- TopTable %>%
+  filter(grepl("^Sig_Sp_inter_", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+Genes_Inter$Comparisons <- factor(
+  Genes_Inter$Comparisons,
+  levels = c(
+    "Sig_Sp_inter_Traj02",
+    "Sig_Sp_inter_Traj25",
+    "Sig_Sp_inter_Traj515",
+    "Sig_Sp_inter_Traj1530"
+  )
+)
+
+ggplot(
+  Genes_Inter,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group =Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkgreen"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 interaction"
+    )
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Species × trajectory interactions"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
 ### Species DEGs
@@ -5241,13 +5499,13 @@ p <- ggplot(
   ) +
 
   scale_linetype_manual(
-    values = c(
-      "All Expressed" = "solid",
-      "All DEGs" = "dashed",
-      "Shared DEGs" = "dotted",
-      "Species-Specific DEGs" = "dotdash",
-      "Non-DEGs" = "twodash"
-    )
+  values = c(
+    "All Expressed" = "solid",
+    "All DEGs" = "dashed",
+    "Shared DEGs" = "dotted",
+    "Species-Specific DEGs" = "longdash",
+    "Non-DEGs" = "dotdash"
+  )
   ) +
 
   scale_linewidth_manual(
@@ -5626,13 +5884,66 @@ Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
 Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
 Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
 Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
 
 cluster_lists <- list(
   Inter_02_genes  = Inter_02_genes,
   Inter_25_genes  = Inter_25_genes,
   Inter_515_genes  = Inter_515_genes,
   Inter_1530_genes  = Inter_1530_genes,
-  all_genes = all_genes
+  'All interaction genes' = InteractionAtLeastOne,
+  'All expressed genes' = all_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Inter)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+#### absFC plot
+```{r RNASeq_DGE_Interaction_FC_No4}
+
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+all_genes <- unique(TopTable$Gene)
+
+TopTable_RNA_Inter <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
+  ))
+
+TopTable_RNA_Inter$absfc <- abs(TopTable_RNA_Inter$logFC)
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+cluster_lists <- list(
+  Inter_02_genes  = Inter_02_genes,
+  Inter_25_genes  = Inter_25_genes,
+  Inter_515_genes  = Inter_515_genes,
+  Inter_1530_genes  = Inter_1530_genes,
+  'All interaction genes' = InteractionAtLeastOne,
+  'All expressed genes' = all_genes
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
@@ -5652,17 +5963,30 @@ RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 traj_info <- list(
-  InterTraj02 = list(coef = "Sig_Sp_inter_Traj02", comp = "Day02"),
-  InterTraj25 = list(coef = "Sig_Sp_inter_Traj25", comp = "Day25"),
-  InterTraj515 = list(coef = "Sig_Sp_inter_Traj515", comp = "Day515"),
-  InterTraj1530 = list(coef = "Sig_Sp_inter_Traj1530", comp = "Day1530")
+  InterTraj02 = list(
+    coef = "Sig_Sp_inter_Traj02",
+    comp = "Day02"
+  ),
+  InterTraj25 = list(
+    coef = "Sig_Sp_inter_Traj25",
+    comp = "Day25"
+  ),
+  InterTraj515 = list(
+    coef = "Sig_Sp_inter_Traj515",
+    comp = "Day515"
+  ),
+  InterTraj1530 = list(
+    coef = "Sig_Sp_inter_Traj1530",
+    comp = "Day1530"
+  )
 )
 
 cluster_lists <- list(
-  InterTraj02  = Inter_02_genes,
-  InterTraj25  = Inter_25_genes,
+  InterTraj02 = Inter_02_genes,
+  InterTraj25 = Inter_25_genes,
   InterTraj515 = Inter_515_genes,
-  InterTraj1530 = Inter_1530_genes
+  InterTraj1530 = Inter_1530_genes,
+  InteractionAtLeastOne = InteractionAtLeastOne
 )
 
 direction_results <- setNames(

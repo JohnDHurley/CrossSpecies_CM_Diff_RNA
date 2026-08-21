@@ -1,8 +1,7 @@
 ---
 title: "RNA_CorrelationHeatMap"
-output: html_document
-date: "2026-01-14"
 output: workflowr::wflow_html
+date: "2026-01-14"
 editor_options:
   chunk_output_type: inline
 ---

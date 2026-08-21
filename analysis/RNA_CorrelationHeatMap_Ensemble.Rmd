@@ -1047,7 +1047,7 @@ ggplot(summary_df_No5,
 
 
 ###Unfiltered
-####Boxplot_Histograms
+####Boxplot_Histograms_Unfiltered
 ```{r RNASeq_FeatureCounts_Unfiltered, fig.height=6,fig.width=12}
 
 ####All####
@@ -1367,7 +1367,7 @@ axis(1,
 ```
 
 
-####Cor_HeatMap
+####Cor_HeatMap_Unfiltered
 
 ```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.height=10,fig.width=10}
 
@@ -1403,7 +1403,7 @@ print(
 ```
 
 
-####Markers
+####Markers_Unfiltered
 ```{r RNASeq_MarkerGenes_dataset, fig.height=6,fig.width=12}
 markers <- marker_genes$Ensembl.ID
 
@@ -1691,7 +1691,7 @@ print(plots)
 
 ###logCPM >1 in 4 or more samples within at least one species in a timepoint
 
-####All days
+####All days cpm filtering
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints, fig.height=6,fig.width=12}
 
 group <- RNA_Metadata$Cond
@@ -1955,7 +1955,7 @@ plots <- lapply(stages, function(s) {
 print(plots)
 ```
 
-####No Day 4
+####No Day 4 cpm filtering
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.height=6,fig.width=12}
 counts <- RNA_fc_No4
 metadata <- RNA_Metadata_No4
@@ -2028,7 +2028,7 @@ print(
 
 
 
-####No Day 5
+####No Day 5 cpm filtering
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5, fig.height=6,fig.width=12}
 counts <- RNA_fc_No5
 metadata <- RNA_Metadata_No5
@@ -2103,7 +2103,7 @@ print(
 
 
 ###EdgeR Filter By Expression
-####All Days
+####All Days filtering by expression
 ```{r RNASeq_FeatureCounts_FilterByExpression, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc)
@@ -2357,7 +2357,7 @@ print(plots)
 ```
 
 
-####No Day 4
+####No Day 4 filtering by expression
 ```{r RNASeq_FeatureCounts_FilterByExpression_No4, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No4)
@@ -2419,7 +2419,7 @@ print(
 
 ```
 
-####No Day 5
+####No Day 5 filtering by expression
 ```{r RNASeq_FeatureCounts_FilterByExpression_No5, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No5)
@@ -2486,7 +2486,7 @@ print(
 
 ###RowMeans G0
 
-####All Days
+####All Days RowMeans
 ```{r RNASeq_FeatureCounts_RMG0, fig.height=6,fig.width=12}
 #####RowMu>0####
 row_means <- rowMeans(RNA_log2cpm)
@@ -2735,7 +2735,7 @@ plots <- lapply(stages, function(s) {
 print(plots)
 ```
 
-####No Day 4
+####No Day 4 RowMeans
 ```{r RNASeq_FeatureCounts_RMG0_No4}
 
 ####Subset####
@@ -2788,7 +2788,7 @@ print(
 ```
 
 
-####No Day 5
+####No Day 5 RowMeans
 ```{r RNASeq_FeatureCounts_RMG0_No5}
 
 ####Subset####

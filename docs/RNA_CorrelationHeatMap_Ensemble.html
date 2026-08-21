@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree2959506b5166dd12f06d1a67e55231642f0fb195targetblank2959506a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree80c6887ac2f6497377abc209af08f2ff4e19f8c1targetblank80c6887a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/2959506b5166dd12f06d1a67e55231642f0fb195" target="_blank">2959506</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/80c6887ac2f6497377abc209af08f2ff4e19f8c1" target="_blank">80c6887</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree2959506b5166dd12f06d1a67e55231642f0fb195targetblank2959506a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree80c6887ac2f6497377abc209af08f2ff4e19f8c1targetblank80c6887a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/2959506b5166dd12f06d1a67e55231642f0fb195" target="_blank">2959506</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/80c6887ac2f6497377abc209af08f2ff4e19f8c1" target="_blank">80c6887</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -555,7 +555,6 @@ Ignored files:
     Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/RNA_GO_Comp_Species.html
     Ignored:    analysis/figure/
     Ignored:    data/
 
@@ -603,6 +602,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/80c6887ac2f6497377abc209af08f2ff4e19f8c1/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">80c6887</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+08/21/2026 Commit 7
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/7a270cde2f968207458a78603f930c35b01acc89/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">7a270cd</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1598,7 +1631,8 @@ Finalizing CorHeatMap
 </div>
 <div id="rna-seq-quality-control" class="section level1">
 <h1>RNA-seq Quality Control</h1>
-<p>##Setting enviroment</p>
+<div id="setting-enviroment" class="section level2">
+<h2>Setting enviroment</h2>
 <div id="loading-libraries" class="section level3">
 <h3>Loading libraries</h3>
 </div>
@@ -1716,9 +1750,11 @@ RNA_log2cpm_No5 &lt;- cpm(RNA_fc_No5, log=TRUE)
 
 # saveRDS(ann_colors,&quot;data/Raw_Data/concat/ann_colors.RDS&quot;)</code></pre>
 </div>
+</div>
 <div id="read-statistics" class="section level2">
 <h2>Read statistics</h2>
-<p>###Data preparation</p>
+<div id="data-preparation" class="section level3">
+<h3>Data preparation</h3>
 <pre class="r"><code>total_reads_df &lt;- RNA_fc %&gt;%
   as.data.frame() %&gt;%
   mutate(Gene = rownames(.)) %&gt;%
@@ -1746,6 +1782,7 @@ total_reads_df &lt;- total_reads_df %&gt;%
   mutate(Sample = factor(Sample, levels = Sample))
 
 # saveRDS(total_reads_df,&quot;data/Raw_Data/concat/total_reads_df.RDS&quot;)</code></pre>
+</div>
 <div id="by-sample" class="section level3">
 <h3>By sample</h3>
 <pre class="r"><code>library(ggplot2)

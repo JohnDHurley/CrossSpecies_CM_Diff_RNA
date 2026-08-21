@@ -5500,7 +5500,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
 all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 go_all <- imap_dfr(all_go_results, function(x, name) {
@@ -5552,7 +5552,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4_3}
 all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 go_all <- imap_dfr(all_go_results, function(x, name) {

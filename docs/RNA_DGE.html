@@ -388,7 +388,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-07-14
+<strong>Last updated:</strong> 2026-08-21
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree225738e877f668eb29e9f2d666db52e300353841targetblank225738ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree74e560a55b4bc91b5dac6d033245788f007239adtargetblank74e560aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/225738e877f668eb29e9f2d666db52e300353841" target="_blank">225738e</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/74e560a55b4bc91b5dac6d033245788f007239ad" target="_blank">74e560a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree225738e877f668eb29e9f2d666db52e300353841targetblank225738ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree74e560a55b4bc91b5dac6d033245788f007239adtargetblank74e560aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/225738e877f668eb29e9f2d666db52e300353841" target="_blank">225738e</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/74e560a55b4bc91b5dac6d033245788f007239ad" target="_blank">74e560a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,11 +556,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/RNA_GO_Comp_Species.html
-    Ignored:    analysis/figure/
     Ignored:    data/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -605,6 +601,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/74e560a55b4bc91b5dac6d033245788f007239ad/analysis/RNA_DGE.Rmd" target="_blank">74e560a</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+8/21/2026 Commit 2
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/281b9a84fc34a3738031a9353a4831154ba4d7ac/analysis/RNA_DGE.Rmd" target="_blank">281b9a8</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+<td>
+Correcting structure for Github publish
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/8bc78b888d31a8aeb6a226b9473b111d14875018/analysis/RNA_DGE.Rmd" target="_blank">8bc78b8</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-10
+</td>
+<td>
+Updates to RNA and TE
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/9ee12d91c820b31327e5cf6fd40fbef83ed59f8e/docs/RNA_DGE.html" target="_blank">9ee12d9</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-07-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -765,128 +829,10 @@ Nomral Updates
 </div>
 </div>
 </div>
-<pre class="r"><code>#loading libraries
-library(&quot;tidyverse&quot;)
-library(&quot;readxl&quot;)
-library(&quot;readr&quot;)
-library(&quot;ggrepel&quot;)
-library(&quot;ggfortify&quot;)
-library(&quot;patchwork&quot;)
-library(&quot;eulerr&quot;)
-library(&quot;org.Hs.eg.db&quot;)
-library(&quot;AnnotationDbi&quot;)
-library(&quot;ggVennDiagram&quot;)
-library(&quot;ggrastr&quot;)
-library(&quot;edgeR&quot;)
-library(&quot;limma&quot;)
-library(&quot;ggsignif&quot;)
-library(&quot;dplyr&quot;)
-library(&quot;purrr&quot;)
-library(&quot;ggplot2&quot;)
-library(&quot;tidyr&quot;)
-# install.packages(c(&quot;knitr&quot;, &quot;BiocManager&quot;))
-# BiocManager::install(&quot;org.Hs.eg.db&quot;)
-
-
-
-#Loading R Objects Other WorkflowR
-
-RNA_fc &lt;- readRDS(&quot;data/QC/concat/RNA_fc.RDS&quot;)
-RNA_fc_No5 &lt;-readRDS(&quot;data/QC/concat/RNA_fc_No5.RDS&quot;)
-RNA_fc_No4 &lt;-readRDS(&quot;data/QC/concat/RNA_fc_No4.RDS&quot;)
-ann_colors &lt;- readRDS(&quot;data/Raw_Data/concat/ann_colors.RDS&quot;)
-RNA_Metadata_NoRep &lt;- readRDS(&quot;data/Raw_Data/concat/RNA_Metadata_NoRep.RDS&quot;)
-RNA_Metadata_No4_NoRep &lt;- readRDS(&quot;data/Raw_Data/concat/RNA_Metadata_No4.RDS&quot;)
-RNA_Metadata_No5_NoRep &lt;- readRDS(&quot;data/Raw_Data/concat/RNA_Metadata_No5.RDS&quot;)
-
-Filt_RMG0_RNA_fc &lt;- readRDS(&quot;data/QC/concat/Filt_RMG0_RNA_fc.RDS&quot;)
-Filt_RMG0_RNA_fc_No4 &lt;- readRDS(&quot;data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS&quot;)
-Filt_RMG0_RNA_fc_NoD5 &lt;- readRDS(&quot;data/QC/concat/Filt_RMG0_RNA_fc_No5.RDS&quot;)
-Filt_logcpm_G1_SpTp_RNA_fc &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS&quot;)
-Filt_logcpm_G1_SpTp_RNA_fc_No4 &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
-Filt_logcpm_G1_SpTp_RNA_fc_No5 &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS&quot;)
-Filt_FilterByExpression_RNA_fc &lt;- readRDS(&quot;data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS&quot;)
-Filt_FilterByExpression_RNA_fc_No4 &lt;- readRDS(&quot;data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS&quot;)
-Filt_FilterByExpression_RNA_fc_No5 &lt;- readRDS(&quot;data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS&quot;)
-
-#Loading R Objects This WorkflowR
-dge_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/dge_RNA_fc_NoRep.RDS&quot;)
-design_int_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/design_int_RNA_fc_NoRep.RDS&quot;)
-dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR &lt;- readRDS(&quot;data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR.RDS&quot;)
-Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
-
-dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-
-Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-
-Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4 &lt;- readRDS(&quot;data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4.RDS&quot;)
-Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)</code></pre>
-<pre class="r"><code>Enrich_Go_sets &lt;- function(gene_sets, v) {
-
-  library(clusterProfiler)
-  library(org.Hs.eg.db)
-  library(dplyr)
-
-  # -----------------------------
-  # Universe (FIXED)
-  # -----------------------------
-  background_genes &lt;- rownames(v$E) %&gt;%
-    sub(&quot;\\..*&quot;, &quot;&quot;, .)
-
-  # -----------------------------
-  # GO helper
-  # -----------------------------
-  run_go &lt;- function(genes) {
-
-    genes &lt;- unique(sub(&quot;\\..*&quot;, &quot;&quot;, genes))
-
-    if (length(genes) &lt; 10) return(NULL)
-
-    ego &lt;- enrichGO(
-      gene          = genes,
-      universe      = background_genes,
-      OrgDb         = org.Hs.eg.db,
-      keyType       = &quot;ENSEMBL&quot;,
-      ont           = &quot;BP&quot;,
-      readable      = TRUE
-    )
-
-    if (is.null(ego)) return(NULL)
-
-    as.data.frame(ego)
-  }
-
-  # -----------------------------
-  # Run for each gene set
-  # -----------------------------
-  results &lt;- lapply(gene_sets, function(df) {
-    if (is.null(df) || nrow(df) == 0) return(NULL)
-    run_go(df$Gene)
-  })
-
-  return(results)
-}</code></pre>
-<p>####Unfiltered</p>
+<p>#Differential Gene Analysis</p>
+<p>##Setting up the environment</p>
+<p>###Loading libraries</p>
+<p>###Defining funcions</p>
 <pre class="r"><code>counts_table &lt;- RNA_fc
 metadata &lt;- RNA_Metadata_NoRep
 
@@ -1088,6 +1034,8 @@ colnames(design_int)</code></pre>
 
 # saveRDS(dge, &quot;data/DGE/dge_RNA_fc_NoRep.RDS&quot;)
 # saveRDS(design_int, &quot;data/DGE/design_int_RNA_fc_NoRep.RDS&quot;)</code></pre>
+<p>##Unfiltered</p>
+<p>###DGE density plots</p>
 <pre class="r"><code>dge &lt;- dge_RNA_fc_NoRep
 design_int &lt;- design_int_RNA_fc_NoRep
 metadata &lt;- RNA_Metadata_NoRep
@@ -1199,7 +1147,7 @@ for (sp in species_levels) {
   }
 }</code></pre>
 <p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-6.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-7.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-8.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-9.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-10.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-11.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-12.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-13.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-14.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-15.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-16.png" alt="" width="576" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_Data_Model_unfiltered-17.png" alt="" width="576" style="display: block; margin: auto;" /></p>
-<p>####RLCPM_G1_4SpTp</p>
+<p>##RLCPM_G1_4SpTp ###DGE density plots</p>
 <pre class="r"><code>counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc
 metadata &lt;- RNA_Metadata_NoRep
 
@@ -1517,6 +1465,7 @@ for (sp in species_levels) {
 # saveRDS(design_int, &quot;data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
 # saveRDS(v1,&quot;data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
 # saveRDS(fit, &quot;data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)</code></pre>
+<p>###DGE</p>
 <pre class="r"><code>fit &lt;- fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 design_int &lt;- design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1622,6 +1571,7 @@ ENSG00000204256 83.58556 ENSG00000204256    HvC_Day0
 ENSG00000100207 81.92047 ENSG00000100207    HvC_Day0
 ENSG00000183309 82.18461 ENSG00000183309    HvC_Day0
 ENSG00000267575 70.39499 ENSG00000267575    HvC_Day0</code></pre>
+<p>###Volcano plots</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -1665,7 +1615,7 @@ RNA_sets &lt;- map(
 names(RNA_sets) &lt;- paste0(ComparisonNames)
 
 # saveRDS(RNA_sets, &quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)</code></pre>
-<p>#####Species</p>
+<p>###Species DEGs</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2256,7 +2206,7 @@ fit2 &lt;- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 # saveRDS(all_go_results, &quot;data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
 
 Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep &lt;- readRDS(&quot;data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)</code></pre>
-<p>#####Trajectory</p>
+<p>###Trajectory DEGs</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -3653,6 +3603,7 @@ v &lt;- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 # saveRDS(all_go_results, &quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
 
 all_go_results &lt;- readRDS(&quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)</code></pre>
+<p>####R2 scatter plots</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
@@ -4197,7 +4148,7 @@ ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
     color = &quot;Trajectory&quot;,
     title = &quot;All Trajectories Combined&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/Trajectory%20plotting_RLCOMP_G1_4SpTp-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/Trajectory%20plotting_RLCOMP_G1_4SpTp_Quadrants_combined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_stats &lt;- df_all %&gt;%
   group_by(trajectory) %&gt;%
   do({
@@ -4207,7 +4158,7 @@ ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
       p = summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
     )
   })</code></pre>
-<p>#####Interactions</p>
+<p>###Interaction DEGs</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -5323,7 +5274,8 @@ v &lt;- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 # saveRDS(all_go_results, &quot;data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
 
 all_go_results &lt;- readRDS(&quot;data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)</code></pre>
-<p>####RLCPM_G1_4SpTp No4</p>
+<p>##RLCPM_G1_4SpTp No4</p>
+<p>###DGE</p>
 <pre class="r"><code>counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata &lt;- RNA_Metadata_No4_NoRep
 
@@ -5647,6 +5599,7 @@ ENSG00000100207 ENSG00000100207    HvC_Day0
 ENSG00000183309 ENSG00000183309    HvC_Day0
 ENSG00000204256 ENSG00000204256    HvC_Day0
 ENSG00000142937 ENSG00000142937    HvC_Day0</code></pre>
+<p>###Volcano plots</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -5662,14 +5615,14 @@ for (n in ComparisonNames) {
   
   plot[[n]] &lt;- generate_volcano_plot(data_n, n) +
     ggplot2::xlim(x_limits) +
-    ggplot2::ylim(y_limits)
+    ggplot2::ylim(0,20)
 }
 
 # Print plots
 for (n in ComparisonNames) {
   print(plot[[n]])
 }</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-12.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-2.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-3.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-4.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-5.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-6.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-7.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-8.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-9.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-10.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-11.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-12.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-13.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-14.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-15.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-16.png" alt="" width="480" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4-17.png" alt="" width="480" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -5690,7 +5643,7 @@ RNA_sets &lt;- map(
 names(RNA_sets) &lt;- paste0(ComparisonNames)
 
 # saveRDS(RNA_sets, &quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)</code></pre>
-<p>#####Species</p>
+<p>###Species DEGs</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -6203,6 +6156,144 @@ fit2 &lt;- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;-readRDS(&quot;data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)</code></pre>
 <pre class="r"><code>library(dplyr)
 library(purrr)
+
+
+top10_terms &lt;- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %&gt;%
+          filter(p.adjust &lt; 0.05) %&gt;%
+          arrange(p.adjust) %&gt;%
+          slice_head(n = 10) %&gt;%
+          dplyr::select(ID, Description) %&gt;%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot &lt;- top10_terms %&gt;%
+  distinct(GeneSet, Description)
+
+GO_plot_data &lt;- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %&gt;%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %&gt;%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison &lt;- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    &quot;HvC_Day0&quot;,
+    &quot;HvC_Day2&quot;,
+    &quot;HvC_Day5&quot;,
+    &quot;HvC_Day15&quot;,
+    &quot;HvC_Day30&quot;
+  )
+)
+
+GO_plot_data$Description &lt;- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = &quot;free_y&quot;) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = &quot;GO Biological Process&quot;,
+    size = &quot;Gene Count&quot;,
+    color = &quot;-log10(FDR)&quot;
+  )</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+library(dplyr)
+
+species &lt;- c(
+  &quot;HvC_Day0&quot;,&quot;HvC_Day2&quot;,&quot;HvC_Day5&quot;,&quot;HvC_Day15&quot;,&quot;HvC_Day30&quot;
+)
+
+# 1. Filter + define DEG status
+df &lt;- TopTable %&gt;%
+  filter(Comparisons %in% species) %&gt;%
+  mutate(DEG_status = ifelse(adj.P.Val &lt; 0.05, &quot;DEG&quot;, &quot;Non-DEG&quot;))
+
+# 2. Summarise proportions per comparison
+prop_df &lt;- df %&gt;%
+  group_by(Comparisons, DEG_status) %&gt;%
+  summarise(n = n(), .groups = &quot;drop&quot;) %&gt;%
+  group_by(Comparisons) %&gt;%
+  mutate(prop = n / sum(n)) %&gt;%
+  ungroup()
+
+# 3. Order comparisons properly
+prop_df$Comparisons &lt;- factor(
+  prop_df$Comparisons,
+  levels = c(
+    &quot;HvC_Day0&quot;,&quot;HvC_Day2&quot;,&quot;HvC_Day5&quot;,&quot;HvC_Day15&quot;,&quot;HvC_Day30&quot;
+  )
+)
+
+# 4. Plot
+library(ggplot2)
+
+ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = &quot;Time&quot;,
+    y = &quot;Proportion of genes&quot;,
+    fill = &quot;&quot;,
+    title = &quot;DEG vs NonDEG composition&quot;
+  )</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_species_DEGs_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(purrr)
 library(stringr)
 
 hvcdays &lt;- names(RNA_sets)[str_detect(names(RNA_sets), &quot;^HvC_&quot;)]
@@ -6242,7 +6333,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
     fill = &quot;&quot;,
     title = &quot;HvC comparisons: DEG vs NonDEG composition&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_proportions_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 
@@ -6275,10 +6366,15 @@ ggVennDiagram(genes_list, label = &quot;count&quot;) +
     axis.text = element_text(size = 10),
     plot.title = element_text(face = &quot;bold&quot;)
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/unnamed-chunk-1-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>library(dplyr)
-library(stringr)
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# Extract HvC DEGs
 df &lt;- TopTable %&gt;%
   filter(str_detect(Comparisons, &quot;^HvC_Day&quot;)) %&gt;%
   mutate(
@@ -6287,6 +6383,8 @@ df &lt;- TopTable %&gt;%
   ) %&gt;%
   filter(DEG)
 
+
+# Create DEG gene lists by developmental day
 genes &lt;- list(
   Day0  = df %&gt;% filter(Stage == &quot;Day0&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
   Day2  = df %&gt;% filter(Stage == &quot;Day2&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
@@ -6297,9 +6395,15 @@ genes &lt;- list(
 
 days &lt;- names(genes)
 
+# Genes DE at every developmental stage
 shared_all &lt;- Reduce(intersect, genes)
 
-get_fate &lt;- function(day) {
+
+############################################################
+# Determine DEG fate categories and save gene identities
+############################################################
+
+fate_list &lt;- lapply(names(genes), function(day) {
 
   g &lt;- genes[[day]]
 
@@ -6313,16 +6417,69 @@ get_fate &lt;- function(day) {
   )
 
   data.frame(
+    Gene = c(
+      specific,
+      shared_partial,
+      shared_all_day
+    ),
     Day = day,
-    Specific = length(specific),
-    Shared_partial = length(shared_partial),
-    Shared_all = length(shared_all_day)
+    Fate = c(
+      rep(&quot;Specific&quot;, length(specific)),
+      rep(&quot;Shared_partial&quot;, length(shared_partial)),
+      rep(&quot;Shared_all&quot;, length(shared_all_day))
+    )
   )
-}
 
-plot_df &lt;- do.call(rbind, lapply(names(genes), get_fate))
+})
 
-library(tidyr)
+fate_df &lt;- bind_rows(fate_list)
+
+
+############################################################
+# Extract actual TopTable rows for each fate category
+############################################################
+
+TopTable_HvC_DEG_Fate &lt;- TopTable %&gt;%
+  filter(str_detect(Comparisons, &quot;^HvC_Day&quot;)) %&gt;%
+  mutate(
+    Day = str_extract(Comparisons, &quot;Day[0-9]+&quot;)
+  ) %&gt;%
+  left_join(
+    fate_df,
+    by = c(&quot;Gene&quot;, &quot;Day&quot;)
+  ) %&gt;%
+  filter(!is.na(Fate))
+
+
+# Split into separate TopTables
+TopTable_Specific &lt;- TopTable_HvC_DEG_Fate %&gt;%
+  filter(Fate == &quot;Specific&quot;)
+
+TopTable_Shared_partial &lt;- TopTable_HvC_DEG_Fate %&gt;%
+  filter(Fate == &quot;Shared_partial&quot;)
+
+TopTable_Shared_all &lt;- TopTable_HvC_DEG_Fate %&gt;%
+  filter(Fate == &quot;Shared_all&quot;)
+
+
+# Optional save
+# saveRDS(
+#   TopTable_HvC_DEG_Fate,
+#   &quot;data/DGE/TopTable_HvC_DEG_Fate.RDS&quot;
+# )
+
+
+############################################################
+# Plot counts
+############################################################
+
+plot_df &lt;- fate_df %&gt;%
+  dplyr::count(Day, Fate, name = &quot;Count&quot;) %&gt;%
+  pivot_wider(
+    names_from = Fate,
+    values_from = Count,
+    values_fill = 0
+  )
 
 plot_long &lt;- plot_df %&gt;%
   pivot_longer(
@@ -6336,10 +6493,14 @@ plot_long$Day &lt;- factor(
   levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
 )
 
-library(ggplot2)
 
 ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
   geom_col() +
+  scale_fill_manual(values = c(
+    &quot;Specific&quot; = &quot;#D55E00&quot;,
+    &quot;Shared_partial&quot; = &quot;#0072B2&quot;,
+    &quot;Shared_all&quot; = &quot;#009E73&quot;
+  )) +
   theme_bw() +
   labs(
     x = &quot;Developmental stage&quot;,
@@ -6347,37 +6508,26 @@ ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
     fill = &quot;&quot;,
     title = &quot;Fate of HvC DEGs across development&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>library(dplyr)
-library(tidyr)
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>############################################################
+# Plot proportions
+############################################################
 
-plot_long_prop &lt;- plot_df %&gt;%
-  pivot_longer(
-    cols = c(Specific, Shared_partial, Shared_all),
-    names_to = &quot;Category&quot;,
-    values_to = &quot;Count&quot;
-  ) %&gt;%
+plot_long_prop &lt;- plot_long %&gt;%
   group_by(Day) %&gt;%
   mutate(
     Prop = Count / sum(Count)
   ) %&gt;%
   ungroup()
 
-plot_long_prop$Day &lt;- factor(
-  plot_long_prop$Day,
-  levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
-)
-library(ggplot2)
 
 ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   geom_col() +
-  
   scale_fill_manual(values = c(
     &quot;Specific&quot; = &quot;#D55E00&quot;,
     &quot;Shared_partial&quot; = &quot;#0072B2&quot;,
     &quot;Shared_all&quot; = &quot;#009E73&quot;
   )) +
-  
   theme_bw() +
   labs(
     x = &quot;Developmental stage&quot;,
@@ -6385,8 +6535,9 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
     fill = &quot;&quot;,
     title = &quot;Fate of HvC DEGs across development (normalized)&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>#####Trajectory</p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2-2.png" alt="" width="672" style="display: block; margin: auto;" />
+###Trajectory DEGs</p>
+<p>####FC plots</p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -7160,77 +7311,71 @@ P value adjustment method: BH </code></pre>
 
 for (p in cluster_plots) print(p)</code></pre>
 <p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-12.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-21.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-22.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-23.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-24.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-25.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-26.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-27.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4-28.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit2 &lt;- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-v &lt;- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-
-# all_go_results &lt;- lapply(names(direction_results), function(traj) {
-# 
-#   res &lt;- direction_results[[traj]]
-# 
-#   gene_sets &lt;- list(
-#     H_pos_C_neg = res$H_pos_C_neg,
-#     H_neg_C_pos = res$H_neg_C_pos,
-#     Both_pos    = res$Both_pos,
-#     Both_neg    = res$Both_neg,
-#     Same_direction = res$Same_direction,
-#     Opposite_direction = res$Opposite_direction,
-#     All = res$all
-#   )
-# 
-#   go &lt;- Enrich_Go_sets(gene_sets, v)
-# 
-#   return(go)
-# })
-# 
-# names(all_go_results) &lt;- names(direction_results)
+<p>####Proportions</p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
 
-# saveRDS(all_go_results, &quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)</code></pre>
-<pre class="r"><code>all_go_results &lt;- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+library(dplyr)
+library(stringr)
 
-go_all &lt;- imap_dfr(all_go_results, function(x, name) {
+timepoints &lt;- c(&quot;Day02&quot;,&quot;Day25&quot;,&quot;Day515&quot;,&quot;Day1530&quot;)
 
-  df &lt;- x$Same_direction
-  if (is.null(df)) return(NULL)
+df &lt;- TopTable %&gt;%
+  filter(str_detect(Comparisons, &quot;^H_Day&quot;)) %&gt;%
+  mutate(
+    Time = str_extract(Comparisons, &quot;Day[0-9]+&quot;),
+    DEG = adj.P.Val &lt; 0.05
+  ) %&gt;%
+  filter(DEG)
 
-  df %&gt;%
-    mutate(trajectory = name)
-})
+genes_list &lt;- list(
+  Day02  = df %&gt;% filter(Time == &quot;Day02&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day25  = df %&gt;% filter(Time == &quot;Day25&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day515  = df %&gt;% filter(Time == &quot;Day515&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day1530 = df %&gt;% filter(Time == &quot;Day1530&quot;) %&gt;% pull(Gene) %&gt;% unique()
+)
 
-go_all &lt;- go_all %&gt;%
-  mutate(trajectory = recode(
-    trajectory,
-    &quot;Traj02_genes&quot;   = &quot;Day02&quot;,
-    &quot;Traj25_genes&quot;   = &quot;Day25&quot;,
-    &quot;Traj515_genes&quot;  = &quot;Day5-15&quot;,
-    &quot;Traj1530_genes&quot; = &quot;Day15-30&quot;
-  ))
-
-is_dev &lt;- function(x) {
-  grepl(&quot;development|morphogenesis|differentiation&quot;, x, ignore.case = TRUE)
-}
-
-go_summary &lt;- go_all %&gt;%
-  mutate(dev = is_dev(Description)) %&gt;%
-  group_by(trajectory) %&gt;%
-  summarise(
-    prop_dev = mean(dev),
-    n_terms = n(),
-    .groups = &quot;drop&quot;
-  )
-
-library(ggplot2)
-
-ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
-  geom_col(fill = &quot;black&quot;) +
-  theme_bw() +
-  labs(
-    x = &quot;Trajectory&quot;,
-    y = &quot;Proportion developmental GO terms&quot;,
-    title = &quot;GO enrichment of DEGs (All)&quot;
+ggVennDiagram(genes_list, label = &quot;count&quot;) +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;steelblue&quot;) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = &quot;bold&quot;)
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_EnrichGo_EnrichentTerms_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+
+library(dplyr)
+library(stringr)
+
+timepoints &lt;- c(&quot;Day02&quot;,&quot;Day25&quot;,&quot;Day515&quot;,&quot;Day1530&quot;)
+
+df &lt;- TopTable %&gt;%
+  filter(str_detect(Comparisons, &quot;^C_Day&quot;)) %&gt;%
+  mutate(
+    Time = str_extract(Comparisons, &quot;Day[0-9]+&quot;),
+    DEG = adj.P.Val &lt; 0.05
+  ) %&gt;%
+  filter(DEG)
+
+genes_list &lt;- list(
+  Day02  = df %&gt;% filter(Time == &quot;Day02&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day25  = df %&gt;% filter(Time == &quot;Day25&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day515  = df %&gt;% filter(Time == &quot;Day515&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day1530 = df %&gt;% filter(Time == &quot;Day1530&quot;) %&gt;% pull(Gene) %&gt;% unique()
+)
+
+ggVennDiagram(genes_list, label = &quot;count&quot;) +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;steelblue&quot;) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
 library(dplyr)
@@ -7274,9 +7419,9 @@ ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
     fill = &quot;&quot;,
     title = &quot;DEG vs NonDEG composition&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_DEGs_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_3-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
 traj_levels &lt;- c(&quot;H_Day02&quot;,&quot;H_Day25&quot;,&quot;H_Day515&quot;,&quot;H_Day1530&quot;,
                  &quot;C_Day02&quot;,&quot;C_Day25&quot;,&quot;C_Day515&quot;,&quot;C_Day1530&quot;)
@@ -7366,7 +7511,38 @@ ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
     fill = &quot;&quot;,
     pattern = &quot;&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_DEGs_Proportions_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = &quot;black&quot;,
+    pattern_colour = &quot;black&quot;,
+    pattern_fill = &quot;white&quot;,
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    &quot;Shared&quot; = &quot;grey70&quot;,
+    &quot;Human only&quot; = &quot;black&quot;,
+    &quot;Chimp only&quot; = &quot;white&quot;
+  )) +
+
+  scale_pattern_manual(values = c(
+    &quot;Shared&quot; = &quot;stripe&quot;,
+    &quot;Human only&quot; = &quot;none&quot;,
+    &quot;Chimp only&quot; = &quot;none&quot;
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = &quot;Developmental Stage&quot;,
+    y = &quot;Number of DEGs&quot;,
+    fill = &quot;&quot;,
+    pattern = &quot;&quot;
+  )</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -7529,7 +7705,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
     y = &quot;|logFC| (species-specific DEGs)&quot;,
     title = &quot;Effect sizes within each species&#39; DEG set&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_DEGs_EffectSizes_SpeciesDEGs_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4_2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>library(dplyr)
 library(stringr)
 library(dplyr)
@@ -8109,6 +8285,7 @@ ggplot(plot_df,
     title = &quot;Species divergence in species-specific DEGs&quot;
   )</code></pre>
 <p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_effectSizes_Divergence_SpeciesSpecific_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>####R2 scatter plots</p>
 <pre class="r"><code>library(dplyr)
 library(stringr)
 library(tidyr)
@@ -8569,67 +8746,237 @@ ggplot(df_all, aes(x = H, y = C)) +
     title = &quot;Trajectories (faceted)&quot;
   )</code></pre>
 <p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_AllExpressedGenes_Correlation_RLCOMP_G1_4SpTp_No4-2.png" alt="" width="960" style="display: block; margin: auto;" /></p>
-<p>#####Interactions</p>
-<pre class="r"><code>library(dplyr)
-library(purrr)
-library(stringr)
-library(tidyr)
-library(ggplot2)
-
-days &lt;- c(&quot;02&quot;, &quot;25&quot;, &quot;515&quot;, &quot;1530&quot;)
-
-prop_df &lt;- map_dfr(days, function(day) {
-
-  x &lt;- RNA_sets[[paste0(&quot;Sig_Sp_inter_Traj&quot;, day)]]
-
-  tibble(
-    trajectory = day,
-
-    INTER_DEG = length(x$DEGs$Gene),
-    INTER_NonDEG = length(x$NonDEGs$Gene)
-  )
-})
-
-# IMPORTANT: use TRUE universe (same logic as trajectory plot)
-total_genes &lt;- prop_df$INTER_DEG + prop_df$INTER_NonDEG
-
-prop_df &lt;- prop_df %&gt;%
-  mutate(
-    INTER_DEG = INTER_DEG / total_genes,
-    INTER_NonDEG = INTER_NonDEG / total_genes
-  )
-
-prop_long &lt;- prop_df %&gt;%
-  pivot_longer(
-    cols = -trajectory,
-    names_to = &quot;type&quot;,
-    values_to = &quot;prop&quot;
-  )
-
-prop_long$trajectory &lt;- factor(
-  prop_long$trajectory,
-  levels = c(&quot;02&quot;, &quot;25&quot;, &quot;515&quot;, &quot;1530&quot;),
-  labels = c(&quot;0–2&quot;, &quot;2–5&quot;, &quot;5–15&quot;, &quot;15–30&quot;)
+<pre class="r"><code>r2_df &lt;- data.frame(
+  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
+  R2 = c(0.538, 0.673, 0.562, 0.428)
 )
 
-ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
-  geom_col() +
+r2_df$Transition &lt;- factor(
+  r2_df$Transition,
+  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
+)
+
+r3_df &lt;- data.frame(
+  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
+  R2 = c(0.606, 0.708, 0.61, 0.471)
+)
+
+r3_df$Transition &lt;- factor(
+  r3_df$Transition,
+  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
+)
+
+r4_df &lt;- data.frame(
+  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
+  R2 = c(0.844, 0.868, 0.84, 0.797)
+)
+
+r4_df$Transition &lt;- factor(
+  r4_df$Transition,
+  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
+)
+
+r5_df &lt;- data.frame(
+  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
+  R2 = c(0.123, 0.204, 0.183, 0.158)
+)
+
+r5_df$Transition &lt;- factor(
+  r5_df$Transition,
+  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
+)
+
+r6_df &lt;- data.frame(
+  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
+  R2 = c(0.042,0.14,0.09,0.144)
+)
+
+r6_df$Transition &lt;- factor(
+  r6_df$Transition,
+  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
+)
+
+library(dplyr)
+library(ggplot2)
+
+# Add labels
+r2_df$Group &lt;- &quot;All Expressed&quot;
+r3_df$Group &lt;- &quot;All DEGs&quot;
+r4_df$Group &lt;- &quot;Shared DEGs&quot;
+r5_df$Group &lt;- &quot;Species-Specific DEGs&quot;
+r6_df$Group &lt;- &quot;Non-DEGs&quot;
+
+# Combine
+all_df &lt;- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df)
+
+# Factor order
+all_df$Transition &lt;- factor(
+  all_df$Transition,
+  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
+)
+
+p &lt;- ggplot(
+  all_df,
+  aes(
+    x = Transition,
+    y = R2,
+    group = Group,
+    linetype = Group
+  )
+) +
+
+  # Background highlight
+  annotate(
+    &quot;rect&quot;,
+    xmin = 1.5, xmax = 3.5,
+    ymin = -Inf, ymax = Inf,
+    alpha = 0.1,
+    fill = &quot;grey70&quot;
+  ) +
+
+  geom_line(
+    aes(linewidth = Group),
+    color = &quot;black&quot;
+  ) +
+
+  geom_point(
+    size = 3,
+    color = &quot;black&quot;
+  ) +
+
+  geom_text(
+    aes(label = round(R2, 2)),
+    vjust = -1,
+    size = 3,
+    show.legend = FALSE
+  ) +
+
+  scale_linetype_manual(
+    values = c(
+      &quot;All Expressed&quot; = &quot;solid&quot;,
+      &quot;All DEGs&quot; = &quot;dashed&quot;,
+      &quot;Shared DEGs&quot; = &quot;dotted&quot;,
+      &quot;Species-Specific DEGs&quot; = &quot;dotdash&quot;,
+      &quot;Non-DEGs&quot; = &quot;twodash&quot;
+    )
+  ) +
+
+  scale_linewidth_manual(
+    values = c(
+      &quot;All Expressed&quot; = 1.8,  # bold
+      &quot;All DEGs&quot; = 1.2,
+      &quot;Shared DEGs&quot; = 1.2,
+      &quot;Species-Specific DEGs&quot; = 1.2,
+      &quot;Non-DEGs&quot; = 1.2
+    )
+  ) +
+
+  labs(
+    title = &quot;Inter-species correlation peaks at mid-development&quot;,
+    x = &quot;Differentiation Transition&quot;,
+    y = expression(R^2),
+    linetype = &quot;Dataset&quot;,
+    linewidth = &quot;Dataset&quot;
+  ) +
+
+  ylim(0, 1) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    plot.title = element_text(face = &quot;bold&quot;)
+  )
+
+p</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_CorrelationValues_Combined_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="576" style="display: block; margin: auto;" /></p>
+<p>####EnrichGo</p>
+<pre class="r"><code>fit2 &lt;- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+v &lt;- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+# all_go_results &lt;- lapply(names(direction_results), function(traj) {
+# 
+#   res &lt;- direction_results[[traj]]
+# 
+#   gene_sets &lt;- list(
+#     H_pos_C_neg = res$H_pos_C_neg,
+#     H_neg_C_pos = res$H_neg_C_pos,
+#     Both_pos    = res$Both_pos,
+#     Both_neg    = res$Both_neg,
+#     Same_direction = res$Same_direction,
+#     Opposite_direction = res$Opposite_direction,
+#     All = res$all
+#   )
+# 
+#   go &lt;- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) &lt;- names(direction_results)
+
+
+# saveRDS(all_go_results, &quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 &lt;- readRDS(&quot;data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)</code></pre>
+<pre class="r"><code>all_go_results &lt;- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all &lt;- imap_dfr(all_go_results, function(x, name) {
+
+  df &lt;- x$Same_direction
+  if (is.null(df)) return(NULL)
+
+  df %&gt;%
+    mutate(trajectory = name)
+})
+
+go_all &lt;- go_all %&gt;%
+  mutate(trajectory = recode(
+    trajectory,
+    &quot;Traj02_genes&quot;   = &quot;Day02&quot;,
+    &quot;Traj25_genes&quot;   = &quot;Day25&quot;,
+    &quot;Traj515_genes&quot;  = &quot;Day5-15&quot;,
+    &quot;Traj1530_genes&quot; = &quot;Day15-30&quot;
+  ))
+
+is_dev &lt;- function(x) {
+  grepl(&quot;development|morphogenesis|differentiation&quot;, x, ignore.case = TRUE)
+}
+
+go_summary &lt;- go_all %&gt;%
+  mutate(dev = is_dev(Description)) %&gt;%
+  group_by(trajectory) %&gt;%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = &quot;drop&quot;
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = &quot;black&quot;) +
   theme_bw() +
   labs(
-    x = &quot;Time window&quot;,
-    y = &quot;Proportion of genes&quot;,
-    fill = &quot;&quot;
+    x = &quot;Trajectory&quot;,
+    y = &quot;Proportion developmental GO terms&quot;,
+    title = &quot;GO enrichment of DEGs (All)&quot;
   )</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interactions_DEGs_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
-RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Trajectory_EnrichGo_EnrichentTerms_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>###Interaction DEGs</p>
+<p>####FC plot</p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+ComparisonNames &lt;- readRDS(&quot;data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
-TopTable_RNA_Traj &lt;- TopTable %&gt;% 
+all_genes &lt;- unique(TopTable$Gene)
+
+TopTable_RNA_Inter &lt;- TopTable %&gt;% 
   filter(Comparisons %in% c(
-    &quot;H_Day02&quot;,&quot;H_Day25&quot;,&quot;H_Day515&quot;,&quot;H_Day1530&quot;,
-    &quot;C_Day02&quot;,&quot;C_Day25&quot;,&quot;C_Day515&quot;,&quot;C_Day1530&quot;
+    &quot;Sig_Sp_inter_Traj02&quot;,&quot;Sig_Sp_inter_Traj25&quot;,&quot;Sig_Sp_inter_Traj515&quot;,&quot;Sig_Sp_inter_Traj1530&quot;
   ))
+
+TopTable_RNA_Inter$absfc &lt;- abs(TopTable_RNA_Inter$logFC)
 
 Inter_02_genes &lt;- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
 Inter_25_genes &lt;- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
@@ -8640,80 +8987,97 @@ cluster_lists &lt;- list(
   Inter_02_genes  = Inter_02_genes,
   Inter_25_genes  = Inter_25_genes,
   Inter_515_genes  = Inter_515_genes,
-  Inter_1530_genes  = Inter_1530_genes
+  Inter_1530_genes  = Inter_1530_genes,
+  all_genes = all_genes
 )
 
 cluster_plots &lt;- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+  plot_cluster_absfc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Inter)
 })</code></pre>
-<pre><code>Inter_02_genes : 16992 rows, 2124 unique genes
+<pre><code>Inter_02_genes : 8496 rows, 2124 unique genes
 
     Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
 
 data:  df$logFC and df$Comparisons 
 
-          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
-H_Day25   0.01001 -       -        -         -       -       -       
-H_Day515  0.81731 0.01297 -        -         -       -       -       
-H_Day1530 9.2e-13 2.0e-07 5.2e-15  -         -       -       -       
-C_Day02   &lt; 2e-16 1.7e-13 &lt; 2e-16  0.00095   -       -       -       
-C_Day25   0.29936 0.00095 0.31981  &lt; 2e-16   &lt; 2e-16 -       -       
-C_Day515  0.00014 0.11513 3.9e-05  8.7e-05   1.6e-10 1.9e-07 -       
-C_Day1530 1.3e-10 9.7e-07 1.6e-13  0.76703   0.00022 &lt; 2e-16 0.00027 
+                      Sig_Sp_inter_Traj02 Sig_Sp_inter_Traj25
+Sig_Sp_inter_Traj25   &lt; 2e-16             -                  
+Sig_Sp_inter_Traj515  2.2e-11             &lt; 2e-16            
+Sig_Sp_inter_Traj1530 &lt; 2e-16             1.2e-06            
+                      Sig_Sp_inter_Traj515
+Sig_Sp_inter_Traj25   -                   
+Sig_Sp_inter_Traj515  -                   
+Sig_Sp_inter_Traj1530 3.2e-12             
 
 P value adjustment method: BH 
-Inter_25_genes : 6200 rows, 775 unique genes
+Inter_25_genes : 3100 rows, 775 unique genes
 
     Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
 
 data:  df$logFC and df$Comparisons 
 
-          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
-H_Day25   0.00012 -       -        -         -       -       -       
-H_Day515  0.74028 0.00021 -        -         -       -       -       
-H_Day1530 0.00092 0.39253 0.00259  -         -       -       -       
-C_Day02   3.5e-06 0.79362 3.5e-06  0.05124   -       -       -       
-C_Day25   0.06791 0.04077 0.08089  0.46065   0.01784 -       -       
-C_Day515  0.00038 0.51989 0.00092  0.74028   0.11764 0.27324 -       
-C_Day1530 0.00409 0.17330 0.01098  0.70862   0.02616 0.66842 0.51989 
+                      Sig_Sp_inter_Traj02 Sig_Sp_inter_Traj25
+Sig_Sp_inter_Traj25   8.8e-14             -                  
+Sig_Sp_inter_Traj515  0.15114             1.1e-13            
+Sig_Sp_inter_Traj1530 2.3e-12             0.00018            
+                      Sig_Sp_inter_Traj515
+Sig_Sp_inter_Traj25   -                   
+Sig_Sp_inter_Traj515  -                   
+Sig_Sp_inter_Traj1530 2.2e-08             
 
 P value adjustment method: BH 
-Inter_515_genes : 6992 rows, 874 unique genes
+Inter_515_genes : 3496 rows, 874 unique genes
 
     Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
 
 data:  df$logFC and df$Comparisons 
 
-          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
-H_Day25   &lt; 2e-16 -       -        -         -       -       -       
-H_Day515  0.15008 &lt; 2e-16 -        -         -       -       -       
-H_Day1530 6.0e-12 0.08160 7.5e-14  -         -       -       -       
-C_Day02   3.1e-05 2.8e-05 3.9e-07  0.00740   -       -       -       
-C_Day25   3.7e-12 0.24376 1.2e-12  0.68803   0.00260 -       -       
-C_Day515  &lt; 2e-16 0.00118 &lt; 2e-16  2.2e-07   1.1e-14 5.0e-06 -       
-C_Day1530 0.00024 6.0e-05 3.1e-05  0.01326   0.92950 0.00411 4.6e-13 
+                      Sig_Sp_inter_Traj02 Sig_Sp_inter_Traj25
+Sig_Sp_inter_Traj25   &lt;2e-16              -                  
+Sig_Sp_inter_Traj515  &lt;2e-16              &lt;2e-16             
+Sig_Sp_inter_Traj1530 &lt;2e-16              0.077              
+                      Sig_Sp_inter_Traj515
+Sig_Sp_inter_Traj25   -                   
+Sig_Sp_inter_Traj515  -                   
+Sig_Sp_inter_Traj1530 &lt;2e-16              
 
 P value adjustment method: BH 
-Inter_1530_genes : 8480 rows, 1060 unique genes
+Inter_1530_genes : 4240 rows, 1060 unique genes
 
     Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
 
 data:  df$logFC and df$Comparisons 
 
-          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
-H_Day25   &lt; 2e-16 -       -        -         -       -       -       
-H_Day515  3.3e-07 7.0e-09 -        -         -       -       -       
-H_Day1530 3.7e-13 0.00107 0.01785  -         -       -       -       
-C_Day02   2.4e-07 7.0e-10 0.90547  0.02104   -       -       -       
-C_Day25   &lt; 2e-16 0.30285 1.9e-06  0.01973   2.4e-07 -       -       
-C_Day515  &lt; 2e-16 0.56815 1.1e-07  0.00513   1.6e-08 0.66774 -       
-C_Day1530 1.2e-14 0.10493 0.00111  0.58521   0.00048 0.56815 0.28558 
+                      Sig_Sp_inter_Traj02 Sig_Sp_inter_Traj25
+Sig_Sp_inter_Traj25   &lt; 2e-16             -                  
+Sig_Sp_inter_Traj515  0.50618             &lt; 2e-16            
+Sig_Sp_inter_Traj1530 0.00163             0.18561            
+                      Sig_Sp_inter_Traj515
+Sig_Sp_inter_Traj25   -                   
+Sig_Sp_inter_Traj515  -                   
+Sig_Sp_inter_Traj1530 0.00056             
+
+P value adjustment method: BH 
+all_genes : 63260 rows, 15815 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+                      Sig_Sp_inter_Traj02 Sig_Sp_inter_Traj25
+Sig_Sp_inter_Traj25   &lt; 2e-16             -                  
+Sig_Sp_inter_Traj515  5.4e-12             &lt; 2e-16            
+Sig_Sp_inter_Traj1530 &lt; 2e-16             0.13               
+                      Sig_Sp_inter_Traj515
+Sig_Sp_inter_Traj25   -                   
+Sig_Sp_inter_Traj515  -                   
+Sig_Sp_inter_Traj1530 &lt; 2e-16             
 
 P value adjustment method: BH </code></pre>
 <pre class="r"><code>names(cluster_plots) &lt;- names(cluster_lists)
 
 for (p in cluster_plots) print(p)</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC_No4-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC_No4-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC_No4-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_FC_No4-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames &lt;- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -9182,7 +9546,7 @@ P value adjustment method: BH </code></pre>
 <pre class="r"><code>names(cluster_plots) &lt;- names(cluster_lists)
 
 for (p in cluster_plots) print(p)</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>NULL
 NULL
 NULL
@@ -9190,7 +9554,95 @@ NULL
 NULL
 NULL
 NULL</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-12.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-12.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Directionality_FC_No4-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>####VennDiagram</p>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+
+library(dplyr)
+library(stringr)
+
+timepoints &lt;- c(&quot;Traj02&quot;,&quot;Traj25&quot;,&quot;Traj515&quot;,&quot;Traj1530&quot;)
+
+df &lt;- TopTable %&gt;%
+  filter(str_detect(Comparisons, &quot;^Sig_Sp_inter_&quot;)) %&gt;%
+  mutate(
+    Time = str_extract(Comparisons, &quot;Traj[0-9]+&quot;),
+    DEG = adj.P.Val &lt; 0.05
+  ) %&gt;%
+  filter(DEG)
+
+genes_list &lt;- list(
+  Day02  = df %&gt;% filter(Time == &quot;Traj02&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day25  = df %&gt;% filter(Time == &quot;Traj25&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day515  = df %&gt;% filter(Time == &quot;Traj515&quot;)  %&gt;% pull(Gene) %&gt;% unique(),
+  Day1530 = df %&gt;% filter(Time == &quot;Traj1530&quot;) %&gt;% pull(Gene) %&gt;% unique()
+)
+
+ggVennDiagram(genes_list, label = &quot;count&quot;) +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;steelblue&quot;) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interaction_Venn_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>####Proportion</p>
+<pre class="r"><code>TopTable &lt;- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets &lt;- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+library(purrr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+days &lt;- c(&quot;02&quot;, &quot;25&quot;, &quot;515&quot;, &quot;1530&quot;)
+
+prop_df &lt;- map_dfr(days, function(day) {
+
+  x &lt;- RNA_sets[[paste0(&quot;Sig_Sp_inter_Traj&quot;, day)]]
+
+  tibble(
+    trajectory = day,
+
+    INTER_DEG = length(x$DEGs$Gene),
+    INTER_NonDEG = length(x$NonDEGs$Gene)
+  )
+})
+
+# IMPORTANT: use TRUE universe (same logic as trajectory plot)
+total_genes &lt;- prop_df$INTER_DEG + prop_df$INTER_NonDEG
+
+prop_df &lt;- prop_df %&gt;%
+  mutate(
+    INTER_DEG = INTER_DEG / total_genes,
+    INTER_NonDEG = INTER_NonDEG / total_genes
+  )
+
+prop_long &lt;- prop_df %&gt;%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = &quot;type&quot;,
+    values_to = &quot;prop&quot;
+  )
+
+prop_long$trajectory &lt;- factor(
+  prop_long$trajectory,
+  levels = c(&quot;02&quot;, &quot;25&quot;, &quot;515&quot;, &quot;1530&quot;),
+  labels = c(&quot;0–2&quot;, &quot;2–5&quot;, &quot;5–15&quot;, &quot;15–30&quot;)
+)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = &quot;Time window&quot;,
+    y = &quot;Proportion of genes&quot;,
+    fill = &quot;&quot;
+  )</code></pre>
+<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interactions_DEGs_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>library(dplyr)
 library(purrr)
 library(tidyr)
@@ -9299,6 +9751,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
     panel.grid = element_blank()
   )</code></pre>
 <p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>####EnrichGo</p>
 <pre class="r"><code>fit2 &lt;- fit2 &lt;- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v &lt;- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 
@@ -9325,151 +9778,6 @@ v &lt;- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 # saveRDS(all_go_results, &quot;data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
 all_go_results &lt;- readRDS(&quot;data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)</code></pre>
-<pre class="r"><code>r2_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.538, 0.673, 0.562, 0.428)
-)
-
-r2_df$Transition &lt;- factor(
-  r2_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r3_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.606, 0.708, 0.61, 0.471)
-)
-
-r3_df$Transition &lt;- factor(
-  r3_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r4_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.844, 0.868, 0.84, 0.797)
-)
-
-r4_df$Transition &lt;- factor(
-  r4_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r5_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.123, 0.204, 0.183, 0.158)
-)
-
-r5_df$Transition &lt;- factor(
-  r5_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r6_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.042,0.14,0.09,0.144)
-)
-
-r6_df$Transition &lt;- factor(
-  r6_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-library(dplyr)
-library(ggplot2)
-
-# Add labels
-r2_df$Group &lt;- &quot;All Expressed&quot;
-r3_df$Group &lt;- &quot;All DEGs&quot;
-r4_df$Group &lt;- &quot;Shared DEGs&quot;
-r5_df$Group &lt;- &quot;Species-Specific DEGs&quot;
-r6_df$Group &lt;- &quot;Non-DEGs&quot;
-
-# Combine
-all_df &lt;- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df)
-
-# Factor order
-all_df$Transition &lt;- factor(
-  all_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-p &lt;- ggplot(
-  all_df,
-  aes(
-    x = Transition,
-    y = R2,
-    group = Group,
-    linetype = Group
-  )
-) +
-
-  # Background highlight
-  annotate(
-    &quot;rect&quot;,
-    xmin = 1.5, xmax = 3.5,
-    ymin = -Inf, ymax = Inf,
-    alpha = 0.1,
-    fill = &quot;grey70&quot;
-  ) +
-
-  geom_line(
-    aes(linewidth = Group),
-    color = &quot;black&quot;
-  ) +
-
-  geom_point(
-    size = 3,
-    color = &quot;black&quot;
-  ) +
-
-  geom_text(
-    aes(label = round(R2, 2)),
-    vjust = -1,
-    size = 3,
-    show.legend = FALSE
-  ) +
-
-  scale_linetype_manual(
-    values = c(
-      &quot;All Expressed&quot; = &quot;solid&quot;,
-      &quot;All DEGs&quot; = &quot;dashed&quot;,
-      &quot;Shared DEGs&quot; = &quot;dotted&quot;,
-      &quot;Species-Specific DEGs&quot; = &quot;dotdash&quot;,
-      &quot;Non-DEGs&quot; = &quot;twodash&quot;
-    )
-  ) +
-
-  scale_linewidth_manual(
-    values = c(
-      &quot;All Expressed&quot; = 1.8,  # bold
-      &quot;All DEGs&quot; = 1.2,
-      &quot;Shared DEGs&quot; = 1.2,
-      &quot;Species-Specific DEGs&quot; = 1.2,
-      &quot;Non-DEGs&quot; = 1.2
-    )
-  ) +
-
-  labs(
-    title = &quot;Inter-species correlation peaks at mid-development&quot;,
-    x = &quot;Differentiation Transition&quot;,
-    y = expression(R^2),
-    linetype = &quot;Dataset&quot;,
-    linewidth = &quot;Dataset&quot;
-  ) +
-
-  ylim(0, 1) +
-
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.text.x = element_text(angle = 0, hjust = 0.5),
-    plot.title = element_text(face = &quot;bold&quot;)
-  )
-
-p</code></pre>
-<p><img src="figure/RNA_DGE.Rmd/RNASeq_DGE_CorrelationValues_Combined_RLCOMP_G1_4SpTp_No4-1.png" alt="" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
 wflow_publish(&quot;analysis/RNA_DGE.Rmd&quot;)</code></pre>
@@ -9516,7 +9824,7 @@ other attached packages:
 [28] tidyverse_2.0.0      workflowr_1.7.2     
 
 loaded via a namespace (and not attached):
- [1] DBI_1.3.0          gridExtra_2.3.1    rlang_1.2.0        magrittr_2.0.5    
+ [1] DBI_1.3.0          gridExtra_2.3.1    rlang_1.3.0        magrittr_2.0.5    
  [5] git2r_0.36.2       otel_0.2.0         e1071_1.7-17       compiler_4.6.1    
  [9] RSQLite_3.53.3     getPass_0.2-4      mgcv_1.9-4         png_0.1-9         
 [13] callr_3.8.0        vctrs_0.7.3        pkgconfig_2.0.3    crayon_1.5.3      

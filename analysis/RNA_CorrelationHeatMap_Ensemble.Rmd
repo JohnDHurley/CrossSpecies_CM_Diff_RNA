@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 # RNA-seq Quality Control
 
-##Setting enviroment
+## Setting enviroment
 
 ### Loading libraries
 ```{r Setting_Up_Enviroment, include=FALSE, warning = FALSE, message=FALSE}
@@ -287,7 +287,7 @@ ann_colors <- list(
 
 ## Read statistics
 
-###Data preparation
+### Data preparation
 ```{r RNASeq_Statistics_data}
 
 total_reads_df <- RNA_fc %>%

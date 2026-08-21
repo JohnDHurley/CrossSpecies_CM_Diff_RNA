@@ -14,41 +14,13 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	dev = c("png","pdf")
 )
-
-# ---- AUTO-SAVE PNG + PDF FOR EVERY PLOT ----
-knitr::knit_hooks$set(plot = function(x, options) {
-  outdir <- "docs"
-  dir.create(outdir, showWarnings = FALSE)
-
-  # Base filename (chunk label or auto-generated)
-  name <- options$label
-  if (is.null(name) || name == "") {
-    name <- paste0("plot-", knitr::opts_current$get("chunk.id"))
-  }
-
-  # Save PNG
-  pngfile <- file.path(outdir, paste0(name, ".png"))
-  grDevices::png(pngfile, width = 800, height = 600, res = 120)
-  print(x)
-  grDevices::dev.off()
-
-  # Save PDF
-  pdffile <- file.path(outdir, paste0(name, ".pdf"))
-  grDevices::pdf(pdffile, width = 7, height = 5)
-  print(x)
-  grDevices::dev.off()
-
-  # Return plot to appear in the knitted document
-  knitr::hook_plot_md(x, options)
-})
-
 ```
 
-#Differential Gene Analysis
+# Differential Gene Analysis
 
-##Setting up the environment
+## Setting up the environment
 
-###Loading libraries
+### Loading libraries
 ```{r library loading, include=FALSE, warning = FALSE, message=FALSE}
 
 #loading libraries
@@ -129,7 +101,7 @@ Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4 <- readRDS("data/DGE/Tr
 Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
-###Defining funcions
+### Defining funcions
 ```{r Functions, include=FALSE, warning = FALSE, message=FALSE}
 generate_volcano_plot <- function(toptable, title) {
   
@@ -1187,9 +1159,9 @@ colnames(design_int) <- make.names(colnames(design_int))
 # saveRDS(design_int, "data/DGE/design_int_RNA_fc_NoRep.RDS")
 ```
 
-##Unfiltered
+## Unfiltered
 
-###DGE density plots
+### DGE density plots
 ```{r RNASeq_DGE_Differential_Data_Model_unfiltered, fig.height=6,fig.width=6}
 dge <- dge_RNA_fc_NoRep
 design_int <- design_int_RNA_fc_NoRep
@@ -1305,8 +1277,9 @@ for (sp in species_levels) {
 ```
 
 
-##RLCPM_G1_4SpTp
-###DGE density plots
+## RLCPM_G1_4SpTp
+
+### DGE density plots
 ```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc
 metadata <- RNA_Metadata_NoRep
@@ -1453,7 +1426,7 @@ for (sp in species_levels) {
 # saveRDS(fit, "data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-###DGE
+### DGE
 ```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp}
 fit <- fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 design_int <- design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1536,7 +1509,7 @@ ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
 head(TopTable_RNA_All)
 ```
 
-###Volcano plots
+### Volcano plots
 ```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1585,8 +1558,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 # saveRDS(RNA_sets, "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 ```
 
-###Species DEGs
-
+### Species DEGs
 ```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -1773,8 +1745,7 @@ Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species
 
 ```
 
-###Trajectory DEGs
-
+### Trajectory DEGs
 ```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2000,7 +1971,7 @@ all_go_results <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RN
 
 ```
 
-####R2 scatter plots
+#### R2 scatter plots
 ```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0_RLCOMP_G1_4SpTp}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2489,8 +2460,7 @@ df_stats <- df_all %>%
 ```
 
 
-###Interaction DEGs
-
+### Interaction DEGs
 ```{r RNASeq_DGE_Interaction_FC_RLCOMP_G1_4SpTp}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
@@ -2709,9 +2679,9 @@ all_go_results <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_R
 
 ```
 
-##RLCPM_G1_4SpTp No4
+## RLCPM_G1_4SpTp No4
 
-###DGE
+### DGE
 ```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata <- RNA_Metadata_No4_NoRep
@@ -2944,7 +2914,7 @@ ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
 head(TopTable_RNA_All)
 ```
 
-###Volcano plots
+### Volcano plots
 ```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4, fig.height=3,fig.width=5}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -2993,7 +2963,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 # saveRDS(RNA_sets, "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
-###Species DEGs
+### Species DEGs
 
 ```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
 
@@ -3568,9 +3538,9 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   )
 
 ```
-###Trajectory DEGs
+### Trajectory DEGs
 
-####FC plots
+#### FC plots
 ```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
 
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -3745,7 +3715,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-####Proportions
+#### Proportions
 ```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -4750,7 +4720,7 @@ ggplot(plot_df,
   )
 ```
 
-####R2 scatter plots
+#### R2 scatter plots
 
 ```{r RNASeq_DGE_Trajectory_SpeciesSpecific_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
 library(dplyr)
@@ -5369,7 +5339,7 @@ p <- ggplot(
 p
 ```
 
-####EnrichGo
+#### EnrichGo
 ```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
 fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -5447,9 +5417,9 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
-###Interaction DEGs
+### Interaction DEGs
 
-####FC plot
+#### FC plot
 ```{r RNASeq_DGE_Interaction_FC_No4}
 
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -5622,7 +5592,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-####VennDiagram
+#### VennDiagram
 ```{r RNASeq_DGE_Interaction_Venn_No4, fig.height=7,fig.width=7}
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -5658,7 +5628,7 @@ ggVennDiagram(genes_list, label = "count") +
 
 ```
 
-####Proportion
+#### Proportion
 ```{r RNASeq_DGE_Interactions_DEGs_RLCOMP_G1_4SpTp_No4}
 TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
@@ -5825,7 +5795,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
   )
 ```
 
-####EnrichGo
+#### EnrichGo
 ```{r RNASeq_DGE_Interaction_EnrichGo}
 fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4

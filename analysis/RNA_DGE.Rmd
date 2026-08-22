@@ -5911,7 +5911,7 @@ for (p in cluster_plots) print(p)
 ```
 
 #### absFC plot
-```{r RNASeq_DGE_Interaction_FC_No4}
+```{r RNASeq_DGE_Interaction_absFC_No4}
 
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -6499,7 +6499,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 ##### Any Interaction Gene
-```{r RNASeq_DGE_Interaction_EnrichGo}
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions}
 fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")

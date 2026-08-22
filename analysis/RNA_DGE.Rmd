@@ -5985,8 +5985,7 @@ cluster_lists <- list(
   InterTraj02 = Inter_02_genes,
   InterTraj25 = Inter_25_genes,
   InterTraj515 = Inter_515_genes,
-  InterTraj1530 = Inter_1530_genes,
-  InteractionAtLeastOne = InteractionAtLeastOne
+  InterTraj1530 = Inter_1530_genes
 )
 
 direction_results <- setNames(
@@ -6497,6 +6496,159 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
     x = "Trajectory",
     y = "Proportion of GO terms",
     title = "Proportion Go terms that are heart|cardiac"
+  )
+```
+##### Any Interaction Gene
+```{r RNASeq_DGE_Interaction_EnrichGo}
+fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+InteractionAtLeastOne_df <- data.frame(
+  Gene = InteractionAtLeastOne
+)
+
+all_go_results <- lapply(names(direction_results), function(traj) {
+
+  res <- direction_results[[traj]]
+
+  gene_sets <- list(
+    H_pos_C_neg = res$H_pos_C_neg,
+    H_neg_C_pos = res$H_neg_C_pos,
+    Both_pos    = res$Both_pos,
+    Both_neg    = res$Both_neg,
+    Same_direction = res$Same_direction,
+    Opposite_direction = res$Opposite_direction,
+    All = res$all
+  )
+
+  Enrich_Go_sets(gene_sets, v)
+})
+
+names(all_go_results) <- names(direction_results)
+
+all_go_results$InteractionAtLeastOne <- Enrich_Go_sets(
+  list(
+    All = InteractionAtLeastOne_df
+  ),
+  v
+)
+
+
+saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+
+```{r RNASeq_DGE_Interaction_EnrichGo_2,fig.height=10,fig.height=10}
+
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "InterTraj02",
+    "InterTraj25",
+    "InterTraj515",
+    "InterTraj1530",
+    "InteractionAtLeastOne"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
   )
 ```
 

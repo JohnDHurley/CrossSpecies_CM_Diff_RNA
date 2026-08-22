@@ -1,13 +1,26 @@
 ---
 title: "RNA_Cormotif"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 date: "2026-01-28"
 ---
 
-```{r setup}
-knitr::opts_chunk$set(echo = TRUE,warning=FALSE,message=FALSE, dev=c("png","pdf"))
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png", "pdf")
+)
 ```
 
+# RNA Cormotif
+
+## Setting up the environment
+
+### Loading libraries
 ```{r Setting_Up_Enviroment, warning=FALSE, message=FALSE}
 
 ####Library Loading####
@@ -66,13 +79,12 @@ Filt_logcpm_G1_SpTp_RNA_log2cpm_No5_NoRep <- readRDS("data/Cormotif/concat/Filt_
 
 ```
 
+### Defining Functions
 ```{r Load_CorMotif_Function, warning=FALSE, message=FALSE}
 #Run the Function corMotifcustom.R
 
-```
+#Check_Overlap Function
 
-
-```{r Check_Overlap Function, warning=FALSE, message=FALSE}
 check_overlap <- function(list_of_lists) {
   # create empty list to store results
   overlap_results <- list()
@@ -95,9 +107,9 @@ check_overlap <- function(list_of_lists) {
   
   return(overlap_results)
 }
-```
 
-```{r FC_Plot_Function_sig, include = FALSE}
+#FC_Plot_Function_sig
+
 plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%
@@ -141,9 +153,9 @@ plot_cluster_fc_sig <- function(gene_vector, cluster_name, top_table) {
 
 
 }
-```
 
-```{r FC_Plot_Function_sig_species, include = FALSE}
+#FC_Plot_Function_sig_species
+
 plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%
@@ -186,9 +198,9 @@ plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
 
 }
-```
 
-```{r AbsFC_Plot_Function, include = FALSE}
+#AbsFC_Plot_Function
+
 plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
   
   # Filter TopTable for the genes in this cluster
@@ -218,9 +230,9 @@ plot_cluster_absfc <- function(gene_vector, cluster_name, top_table) {
   
   return(p)
 }
-```
 
-```{r AbsFC_Plot_Function_sig, include = FALSE}
+#AbsFC_Plot_Function_sig
+
 plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%
@@ -264,9 +276,9 @@ plot_cluster_absfc_sig <- function(gene_vector, cluster_name, top_table) {
 
 
 }
-```
 
-```{r AbsFC_Plot_Function_sig_species, include = FALSE}
+#AbsFC_Plot_Function_sig_species
+
 plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table) {
 
   df <- top_table %>%
@@ -311,6 +323,7 @@ plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table)
 }
 ```
 
+### Organizing Data
 ```{r RNA-Seq_CorMotif_Data}
 Filt_logcpm_G1_SpTp_RNA_log2cpm_NoRep <- Filt_logcpm_G1_SpTp_RNA_log2cpm %>%
   as.data.frame() %>%             # convert to data frame
@@ -335,7 +348,7 @@ Filt_logcpm_G1_SpTp_RNA_log2cpm_No5_NoRep <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No5
 
 ```
 
-####Trajectory
+##Trajectory
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer,fig.height=8,fig.width=15}
 
@@ -949,10 +962,10 @@ pheatmap(
 )
 ```
 
-####Species
+##Species
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
-
+###Data set up
+```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
 # --- Define Variables ---
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
 metadata <- RNA_Metadata_No4_NoRep
@@ -991,9 +1004,10 @@ colnames(compid) <- c("Human", "Chimp")
 rownames(compid) <- paste0(time_order, "_H_vs_C")
 
 compid
+```
 
 
-
+```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
 #Model Fitting
 
 # # Run model
@@ -1026,7 +1040,7 @@ legend(
 
 ```{r RNA-Seq_No4_CorMotif_Species_Modeling_TACC,fig.height=8,fig.width=15}
 
-motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
+motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
 plotIC(motif.fitted)
 plotMotif(motif.fitted)
 cols <- gray(seq(1, 0, length.out = 6))
@@ -1043,16 +1057,17 @@ legend(
 ```
 
 
-```{r RNA-Seq_CorMotif_Species_Assigning2}
-motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
+```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
+motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
 
 motif.fit <- motif.fitted
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
 #extract the posterior probability that these genes belong to motifs
 gene_prob_ppost <- motif.fit$bestmotif$p.post
 rownames(gene_prob_ppost) <- rownames(log2cpm)
-# saveRDS(gene_prob_ppost,"data/Cormotif/Species/RNA_gene_prob_ppost_Species.RDS")
+saveRDS(gene_prob_ppost,"data/Cormotif/Species/RNA_gene_prob_ppost_Species.RDS")
 
 #assign each gene to a motif with max post prob
 assigned_motifs <- apply(gene_prob_ppost, 1, which.max)
@@ -1106,8 +1121,9 @@ gene_prob_ppost %>%
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets2}
-motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
+```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
+motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
+
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 motif.fit <- motif.fitted
@@ -1207,7 +1223,7 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks}
+```{r RNA-Seq_CorMotif_Species_ClustSets_Checks_TACC}
 
 clust_names_list <- list(
   clust1_RNA,
@@ -1223,9 +1239,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 
-
-
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2}
+```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
 all_genes <- unique(TopTable$Gene)
 
 
@@ -1312,7 +1326,7 @@ write.csv(gost_export,
 ```
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs6,fig.height=3, fig.width=7}
+```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs6_TACC,fig.height=3, fig.width=7}
 
 top_terms <- gost_combined %>%
   filter(source == "GO:BP") %>%        # keep only BP terms

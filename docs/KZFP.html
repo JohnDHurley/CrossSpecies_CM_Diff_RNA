@@ -367,7 +367,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -378,8 +378,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -392,9 +392,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>CrossSpecies_CM_Diff_RNA/</code>
@@ -417,21 +417,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -522,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree7a92015a3689d99fb9f28e9ad98821e3cf252f6atargetblank7a92015a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree173d289fc459d2a62581d70f37419ec801524995targetblank173d289a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/7a92015a3689d99fb9f28e9ad98821e3cf252f6a" target="_blank">7a92015</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/173d289fc459d2a62581d70f37419ec801524995" target="_blank">173d289</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree7a92015a3689d99fb9f28e9ad98821e3cf252f6atargetblank7a92015a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree173d289fc459d2a62581d70f37419ec801524995targetblank173d289a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/7a92015a3689d99fb9f28e9ad98821e3cf252f6a" target="_blank">7a92015</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/173d289fc459d2a62581d70f37419ec801524995" target="_blank">173d289</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,11 +556,6 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/
-
-Unstaged changes:
-    Modified:   analysis/KZFP.Rmd
-    Modified:   analysis/RNA_Cormotif.Rmd
-    Modified:   analysis/RNA_DGE.Rmd
 
 </code></pre>
 <p>
@@ -607,6 +599,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/analysis/KZFP.Rmd" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+<td>
+08/22/2026 Commit 1 Updates to website
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/173d289fc459d2a62581d70f37419ec801524995/docs/KZFP.html" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+<td>
+08/22/2026 Commit 1 Updates to website
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1464,6 +1490,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_enrichment-2.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_enrichment-2.png" target="_blank">fcf4060</a>
 </td>
 <td>
@@ -1501,6 +1538,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_enrichment-3.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_enrichment-3.png" target="_blank">fcf4060</a>
@@ -1589,6 +1637,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Species_FC-1.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_Species_FC-1.png" target="_blank">fcf4060</a>
 </td>
 <td>
@@ -1614,6 +1673,43 @@ ggplot(KZFP_all, aes(Comparisons, absfc)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Species_FC-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Species_FC-2">
+Past versions of KZFP_Species_FC-2.png
+</button>
+</p>
+<div id="fig-KZFP_Species_FC-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Species_FC-2.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>saveRDS(KZFP_all,&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
 
 KZFP_FC &lt;- TopTable %&gt;%
@@ -2247,6 +2343,43 @@ ggplot(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Species_FC_lineplot-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Species_FC_lineplot-1">
+Past versions of KZFP_Species_FC_lineplot-1.png
+</button>
+</p>
+<div id="fig-KZFP_Species_FC_lineplot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Species_FC_lineplot-1.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>KZFP_Human_Traj &lt;- KZFP_all %&gt;%
   filter(grepl(&quot;^H_Day&quot;, Comparisons)) %&gt;%
   group_by(Symbol) %&gt;%
@@ -2300,6 +2433,43 @@ ggplot(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Species_FC_lineplot-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Species_FC_lineplot-2">
+Past versions of KZFP_Species_FC_lineplot-2.png
+</button>
+</p>
+<div id="fig-KZFP_Species_FC_lineplot-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Species_FC_lineplot-2.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>KZFP_Chimp_Traj &lt;- KZFP_all %&gt;%
   filter(grepl(&quot;^C_Day&quot;, Comparisons)) %&gt;%
   group_by(Symbol) %&gt;%
@@ -2353,6 +2523,43 @@ ggplot(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Species_FC_lineplot-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Species_FC_lineplot-3">
+Past versions of KZFP_Species_FC_lineplot-3.png
+</button>
+</p>
+<div id="fig-KZFP_Species_FC_lineplot-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Species_FC_lineplot-3.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>KZFP_Inter &lt;- KZFP_all %&gt;%
   filter(grepl(&quot;^Sig_Sp_inter_&quot;, Comparisons)) %&gt;%
   group_by(Symbol) %&gt;%
@@ -2404,6 +2611,43 @@ ggplot(
   theme(axis.text.x = element_text(angle = 45, hjust = 1)
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Species_FC_lineplot-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Species_FC_lineplot-4">
+Past versions of KZFP_Species_FC_lineplot-4.png
+</button>
+</p>
+<div id="fig-KZFP_Species_FC_lineplot-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Species_FC_lineplot-4.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="alluvial-plot" class="section level4">
 <h4>Alluvial plot</h4>
@@ -3183,6 +3427,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4-1.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4-1.png" target="_blank">fcf4060</a>
 </td>
 <td>
@@ -3200,7 +3455,8 @@ John D. Hurley
 </div>
 <div id="trajectory" class="section level3">
 <h3>Trajectory</h3>
-<p>####R2 scatter plots</p>
+<div id="r2-scatter-plots" class="section level4">
+<h4>R2 scatter plots</h4>
 <pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
 RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 KZFPs_list &lt;- readRDS(&quot;data/TEs/KZFPs_list.RDS&quot;)
@@ -3915,6 +4171,43 @@ scale_color_manual(
 
 p</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Trajectory_R2-1.png" alt="" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Trajectory_R2-1">
+Past versions of KZFP_Trajectory_R2-1.png
+</button>
+</p>
+<div id="fig-KZFP_Trajectory_R2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Trajectory_R2-1.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
 
 KZFP_Toptable_sig &lt;- KZFP_Toptable %&gt;% 
@@ -3972,7 +4265,9 @@ Reduce(
 <pre><code> [1] &quot;ZNF707&quot;  &quot;ZNF85&quot;   &quot;ZFP57&quot;   &quot;ZNF251&quot;  &quot;ZNF79&quot;   &quot;ZNF726&quot;  &quot;ZNF311&quot; 
  [8] &quot;ZNF169&quot;  &quot;ZNF23&quot;   &quot;ZFP2&quot;    &quot;ZNF343&quot;  &quot;ZNF17&quot;   &quot;ZNF473&quot;  &quot;ZNF585B&quot;
 [15] &quot;ZNF30&quot;   &quot;ZNF154&quot;  &quot;ZNF667&quot;  &quot;ZNF211&quot; </code></pre>
-<p>####Proportions</p>
+</div>
+<div id="proportions" class="section level4">
+<h4>Proportions</h4>
 <pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
@@ -4068,6 +4363,45 @@ ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
     pattern = &quot;&quot;
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-1">
+Past versions of
+RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-1.png
+</button>
+</p>
+<div id="fig-RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-1.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
 
   geom_col_pattern(
@@ -4099,6 +4433,46 @@ ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
     pattern = &quot;&quot;
   )</code></pre>
 <p><img src="figure/KZFP.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-2">
+Past versions of
+RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-2.png
+</button>
+</p>
+<div id="fig-RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4-2.png" target="_blank">173d289</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="interaction" class="section level3">
 <h3>Interaction</h3>

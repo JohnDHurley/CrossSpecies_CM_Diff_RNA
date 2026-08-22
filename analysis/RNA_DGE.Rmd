@@ -67,28 +67,6 @@ Filt_FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpressio
 Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
 Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
 
-#Loading R Objects This WorkflowR
-
-TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR <- readRDS("data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR.RDS")
-Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
-
-
-TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4 <- readRDS("data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4.RDS")
-Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
 ### Defining funcions

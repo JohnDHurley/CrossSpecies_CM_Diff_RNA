@@ -6661,3 +6661,6668 @@ wflow_publish("analysis/RNA_DGE.Rmd")
 
 ```
 
+=======
+---
+title: "RNA_DGE"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+date: "2026-03-03"
+---
+
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+# Differential Gene Analysis
+
+## Setting up the environment
+
+### Loading libraries
+```{r library loading, include=FALSE, warning = FALSE, message=FALSE}
+
+#loading libraries
+library("tidyverse")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+# install.packages(c("knitr", "BiocManager"))
+# BiocManager::install("org.Hs.eg.db")
+
+
+
+#Loading R Objects Other WorkflowR
+
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+RNA_fc_No5 <-readRDS("data/QC/concat/RNA_fc_No5.RDS")
+RNA_fc_No4 <-readRDS("data/QC/concat/RNA_fc_No4.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_colors.RDS")
+RNA_Metadata_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
+RNA_Metadata_No4_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4.RDS")
+RNA_Metadata_No5_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No5.RDS")
+
+Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+Filt_RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No5.RDS")
+Filt_logcpm_G1_SpTp_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
+Filt_logcpm_G1_SpTp_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
+Filt_logcpm_G1_SpTp_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
+Filt_FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
+Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
+Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
+
+#Loading R Objects This WorkflowR
+dge_RNA_fc_NoRep <- readRDS("data/DGE/dge_RNA_fc_NoRep.RDS")
+design_int_RNA_fc_NoRep <- readRDS("data/DGE/design_int_RNA_fc_NoRep.RDS")
+dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR <- readRDS("data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR.RDS")
+Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4 <- readRDS("data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4.RDS")
+Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+### Defining funcions
+```{r Functions, include=FALSE, warning = FALSE, message=FALSE}
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    ylim(0,20) +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+
+#FC_Plot_Function_sig_Species
+
+plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HvC_Day0","HvC_Day2","HvC_Day4","HvC_Day5","HvC_Day15","HvC_Day30"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Species DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#FC_Plot_Function_sig_Species_No4
+
+plot_cluster_fc_sig_species_No4 <- function(gene_vector, cluster_name, top_table) {
+  
+  comparison_colors <- c(
+  HvC_Day0  = unname(ann_colors$timepoint_cor["Day0"]),
+  HvC_Day2  = unname(ann_colors$timepoint_cor["Day2"]),
+  HvC_Day5  = unname(ann_colors$timepoint_cor["Day5"]),
+  HvC_Day15 = unname(ann_colors$timepoint_cor["Day15"]),
+  HvC_Day30 = unname(ann_colors$timepoint_cor["Day30"])
+)
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+ p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+  geom_boxplot(aes(fill = Comparisons)) +
+  scale_fill_manual(values = comparison_colors) +
+  theme_bw() +
+  xlab(" ") +
+  ylab("logFC") +
+  ggtitle(
+    paste0(
+      cluster_name,
+      " Species DEG FC Comparisons\nKruskal–Wallis p = ",
+      signif(kw$p.value, 3)
+    )
+  ) +
+  coord_cartesian(ylim = c(-2, 2)) +
+  theme(
+    plot.title = element_text(size = rel(1.3), hjust = 0.5),
+    axis.title = element_text(size = 15),
+    axis.text.x = element_text(size = 8, angle = 15),
+    legend.position = "none"
+  )
+
+  return(p)
+}
+
+#FC_Plot_Function_sig_trajectory
+
+plot_cluster_fc_sig_trajectory <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530","C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#FC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day25","H_Day515","H_Day1530","C_Day02","C_Day25","C_Day515","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#FC_Plot_Function_sig_Interaction
+
+plot_cluster_fc_sig_interaction <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530","C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Interaction DEGs FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#FC_Plot_Function_sig_Interaction_No4
+
+plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Interaction FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig_Interaction_No4
+
+plot_cluster_absfc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absfc)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("absFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Interaction absFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig_Speices
+
+plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HvC_Day0","HvC_Day2","HvC_Day4","HvC_Day5","HvC_Day15","HvC_Day30"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absfc,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absfc)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Species DEGs FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig_Species_No4
+
+plot_cluster_absfc_sig_species_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  comparison_colors <- c(
+  HvC_Day0  = unname(ann_colors$timepoint_cor["Day0"]),
+  HvC_Day2  = unname(ann_colors$timepoint_cor["Day2"]),
+  HvC_Day5  = unname(ann_colors$timepoint_cor["Day5"]),
+  HvC_Day15 = unname(ann_colors$timepoint_cor["Day15"]),
+  HvC_Day30 = unname(ann_colors$timepoint_cor["Day30"])
+)
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absfc,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absfc)) +
+  geom_boxplot(aes(fill = Comparisons)) +
+  scale_fill_manual(values = comparison_colors) +
+  theme_bw() +
+  xlab(" ") +
+  ylab("absfc") +
+  ggtitle(
+    paste0(
+      cluster_name,
+      " Species DEG absfc Comparisons\nKruskal–Wallis p = ",
+      signif(kw$p.value, 3)
+    )
+  ) +
+  coord_cartesian(ylim = c(0, 2)) +
+  theme(
+    plot.title = element_text(size = rel(1.3), hjust = 0.5),
+    axis.title = element_text(size = 15),
+    axis.text.x = element_text(size = 8, angle = 15),
+    legend.position = "none"
+  )
+
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig_Trajectory
+
+plot_cluster_absfc_sig_trajectory <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530","C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absfc,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absfc)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectory DEGs FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig_Trajectory_No4
+
+plot_cluster_absfc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day25","H_Day515","H_Day1530","C_Day02","C_Day25","C_Day515","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absfc,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absfc)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectory DEGs FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig_No4
+
+plot_cluster_absfc_sig_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day25","H_Day515","H_Day1530","C_Day02","C_Day25","C_Day515","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+  
+  # Global test across comparisons
+  kw <- kruskal.test(AbsFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$AbsFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbslogFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA AbsFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+  coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+
+#AbsFC_Plot_Function_sig_No5
+
+plot_cluster_absfc_sig_No5 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "H_Day02","H_Day24","H_Day415","H_Day1530","C_Day02","C_Day24","C_Day415","C_Day1530"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+  
+  # Global test across comparisons
+  kw <- kruskal.test(AbsFC ~ Comparisons, data = df)
+  
+  pw_kw <-pairwise.wilcox.test(
+    df$AbsFC,
+    df$Comparisons,
+    p.adjust.method = "BH")
+  
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("AbslogFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " RNA AbsFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+  coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+
+#get_directional_genes
+
+get_fc_directions <- function(traj_label, coef_name, comparison_label,
+                              top_table_all, fit_obj, p_cutoff = 0.05, gene_set = NULL) {
+
+  # ---------------------------
+  # trajectory FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(
+      Comparisons %in% c(
+        paste0("H_", comparison_label),
+        paste0("C_", comparison_label)
+      )
+    )
+
+  df_dir <- df_fc %>%
+    dplyr::mutate(Species = ifelse(grepl("^H_", Comparisons), "H", "C")) %>%
+    dplyr::group_by(Gene, Species) %>%
+    dplyr::summarise(logFC = mean(logFC, na.rm = TRUE), .groups = "drop") %>%
+    tidyr::pivot_wider(names_from = Species, values_from = logFC) %>%
+    dplyr::filter(!is.na(H), !is.na(C)) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # KEY FILTER: DEGs in BOTH species
+  # ---------------------------
+  if (!is.null(gene_set)) {
+    df_dir <- df_dir %>%
+      dplyr::filter(Gene %in% gene_set)
+  }
+
+  # ---------------------------
+  # direction classification
+  # ---------------------------
+  df_combo <- df_dir %>%
+    dplyr::mutate(
+      direction = dplyr::case_when(
+        H > 0 & C < 0 ~ "H_pos_C_neg",
+        H < 0 & C > 0 ~ "H_neg_C_pos",
+        H > 0 & C > 0 ~ "Both_pos",
+        H < 0 & C < 0 ~ "Both_neg",
+        TRUE ~ "Other"
+      ),
+      direction_group = dplyr::case_when(
+        H * C > 0 ~ "Same_direction",
+        H * C < 0 ~ "Opposite_direction",
+        TRUE ~ "Other"
+      )
+    )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    H_pos_C_neg = dplyr::filter(df_combo, direction == "H_pos_C_neg"),
+    H_neg_C_pos = dplyr::filter(df_combo, direction == "H_neg_C_pos"),
+    Both_pos = dplyr::filter(df_combo, direction == "Both_pos"),
+    Both_neg = dplyr::filter(df_combo, direction == "Both_neg"),
+
+    Same_direction = dplyr::filter(df_combo, direction_group == "Same_direction"),
+    Opposite_direction = dplyr::filter(df_combo, direction_group == "Opposite_direction"),
+
+    Other = dplyr::filter(df_combo, direction == "Other"),
+
+    n_sig = length(gene_set)
+  )
+}
+
+#get_directional_genes_HvC1
+
+get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
+                                 top_table_all, fit_obj, p_cutoff = 0.05) {
+
+  # ---------------------------
+  # DE genes
+  # ---------------------------
+  tt <- topTable(fit_obj, coef = coef_name, number = Inf)
+
+  sig_tt <- tt %>%
+    dplyr::filter(adj.P.Val < p_cutoff) %>%
+    tibble::rownames_to_column("Gene") %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # HvC FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(Comparisons == comparison_label) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # classify direction
+  # ---------------------------
+  df_combo <- df_fc %>%
+  dplyr::inner_join(sig_tt, by = "Gene") %>%
+  dplyr::mutate(
+    direction = dplyr::case_when(
+      logFC.x > 0 ~ "Human_higher",
+      logFC.x < 0 ~ "Chimp_higher",
+      TRUE ~ "No_difference"
+    ),
+    magnitude = abs(logFC.x)
+  )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    Human_higher = dplyr::filter(df_combo, direction == "Human_higher"),
+    Chimp_higher = dplyr::filter(df_combo, direction == "Chimp_higher"),
+    n_sig = nrow(sig_tt)
+  )
+}
+
+#get_directional_genes_HvC2
+
+get_fc_directions_HvC <- function(traj_label, coef_name, comparison_label,
+                                 top_table_all, fit_obj, p_cutoff = 0.05) {
+
+  # ---------------------------
+  # DE genes
+  # ---------------------------
+  tt <- topTable(fit_obj, coef = coef_name, number = Inf)
+
+  sig_tt <- tt %>%
+    dplyr::filter(adj.P.Val < p_cutoff) %>%
+    tibble::rownames_to_column("Gene") %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # Interaction FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(Comparisons == comparison_label) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # classify direction
+  # ---------------------------
+  df_combo <- df_fc %>%
+  dplyr::inner_join(sig_tt, by = "Gene") %>%
+  dplyr::mutate(
+    direction = dplyr::case_when(
+      logFC.x > 0 ~ "Human_higher",
+      logFC.x < 0 ~ "Chimp_higher",
+      TRUE ~ "No_difference"
+    ),
+    magnitude = abs(logFC.x)
+  )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    Human_higher = dplyr::filter(df_combo, direction == "Human_higher"),
+    Chimp_higher = dplyr::filter(df_combo, direction == "Chimp_higher"),
+    n_sig = nrow(sig_tt)
+  )
+}
+
+#go_enrichment
+
+Enrich_Go_sets <- function(gene_sets, v) {
+
+  library(clusterProfiler)
+  library(org.Hs.eg.db)
+  library(dplyr)
+
+  # -----------------------------
+  # Universe (FIXED)
+  # -----------------------------
+  background_genes <- rownames(v$E) %>%
+    sub("\\..*", "", .)
+
+  # -----------------------------
+  # GO helper
+  # -----------------------------
+  run_go <- function(genes) {
+
+    genes <- unique(sub("\\..*", "", genes))
+
+    if (length(genes) < 10) return(NULL)
+
+    ego <- enrichGO(
+      gene          = genes,
+      universe      = background_genes,
+      OrgDb         = org.Hs.eg.db,
+      keyType       = "ENSEMBL",
+      ont           = "BP",
+      readable      = TRUE
+    )
+
+    if (is.null(ego)) return(NULL)
+
+    as.data.frame(ego)
+  }
+
+  # -----------------------------
+  # Run for each gene set
+  # -----------------------------
+  results <- lapply(gene_sets, function(df) {
+    if (is.null(df) || nrow(df) == 0) return(NULL)
+    run_go(df$Gene)
+  })
+
+  return(results)
+}
+
+
+plot_KZFP_interaction <- function(
+    gene_set,
+    top_table
+) {
+
+  plot_data <- top_table %>%
+    filter(Gene %in% gene_set) %>%
+    mutate(
+      Transition = recode(
+        Comparisons,
+        "Sig_Sp_inter_Traj02" = "Day0-2",
+        "Sig_Sp_inter_Traj25" = "Day2-5",
+        "Sig_Sp_inter_Traj515" = "Day5-15",
+        "Sig_Sp_inter_Traj1530" = "Day15-30"
+      ),
+      Transition = factor(
+        Transition,
+        levels = c("Day0-2", "Day2-5", "Day5-15", "Day15-30")
+      )
+    )
+
+  ggplot(
+    plot_data,
+    aes(
+      x = Transition,
+      y = logFC,
+      group = Gene
+    )
+  ) +
+    geom_line(alpha = 0.5) +
+    geom_point() +
+    theme_bw() +
+    labs(
+      x = "Differentiation transition",
+      y = "Interaction logFC"
+    )
+}
+```
+
+```{r RNASeq_DGE_Differential_Data_unfiltered}
+counts_table <- RNA_fc
+metadata <- RNA_Metadata_NoRep
+
+counts_table_NoRep <- counts_table %>%
+  dplyr::select(-(contains("R")))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts_table_NoRep)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+# saveRDS(dge, "data/DGE/dge_RNA_fc_NoRep.RDS")
+dge$samples
+
+design_int <- model.matrix(~ Species * Timepoint,
+                           data = metadata)
+
+colnames(design_int)
+colnames(design_int) <- make.names(colnames(design_int))
+
+# saveRDS(dge, "data/DGE/dge_RNA_fc_NoRep.RDS")
+# saveRDS(design_int, "data/DGE/design_int_RNA_fc_NoRep.RDS")
+```
+
+## Unfiltered
+
+### DGE density plots
+```{r RNASeq_DGE_Differential_Data_Model_unfiltered, fig.height=6,fig.width=6}
+dge <- dge_RNA_fc_NoRep
+design_int <- design_int_RNA_fc_NoRep
+metadata <- RNA_Metadata_NoRep
+
+# Step 1: voom first
+v1 <- voom(dge, design_int, plot = TRUE)
+
+# saveRDS(v1,"data/DGE/Species/concat/RowMeans_PerDay/v1_RMG0_PerDay_All.RDS")
+
+# Step 2: estimate duplicate correlation on voom-transformed data
+corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
+corfit.correlation <- corfit$consensus.correlation
+
+# Step 3: voom again including correlation
+v2 <- voom(dge, design_int, plot = TRUE,
+           block = metadata$Individual,
+           correlation = corfit.correlation)
+
+# Step 4: fit linear model
+fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
+fit <- eBayes(fit)
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+day <- metadata$Timepoint
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+
+human_idx <- metadata$Species == "H"
+chimp_idx <- metadata$Species == "C"
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+
+# Human
+plotDensities(
+  v2[, human_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Human")
+  legend(
+      "right",
+      legend = metadata$Individual[human_idx],  # or Timepoint, etc.
+      col = rainbow(sum(human_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+# Chimp
+plotDensities(
+  v2[, chimp_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Chimp")
+  legend(
+      "right",
+      legend = metadata$Individual[chimp_idx],  # or Timepoint, etc.
+      col = rainbow(sum(chimp_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+species_levels <- unique(metadata$Species)
+day_levels <- unique(metadata$Timepoint)
+
+for (sp in species_levels) {
+  for (day in day_levels) {
+
+    idx <- metadata$Species == sp &
+           metadata$Timepoint == day
+
+    if (sum(idx) > 0) {
+
+      cols <- rainbow(sum(idx))
+
+      plotDensities(
+        v2[, idx],
+        col = cols,
+        main = paste(sp, day),
+        legend = FALSE,
+        axes = FALSE
+      )
+
+      axis(1)
+      axis(2)
+      mtext("log2 CPM", side = 1, line = 2)
+
+      legend(
+        "right",
+        legend = metadata$Individual[idx],
+        col = cols,
+        lty = 1,
+        cex = 0.7
+      )
+    }
+  }
+}
+
+```
+
+
+## RLCPM_G1_4SpTp
+
+### DGE density plots
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp}
+counts <- Filt_logcpm_G1_SpTp_RNA_fc
+metadata <- RNA_Metadata_NoRep
+
+counts_norep <- counts %>%
+  dplyr::select(-(contains("R")))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts_norep)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+metadata$Species <- factor(
+  metadata$Species,
+  levels = c("C", "H")   # Chimp baseline
+)
+
+ metadata$Timepoint <- factor(
+   metadata$Timepoint,
+  levels = c("Day0","Day2","Day4","Day5","Day15","Day30")
+)
+
+design_int <- model.matrix(~ Species * Timepoint,
+                           data =  metadata)
+
+colnames(design_int)
+colnames(design_int) <- make.names(colnames(design_int))
+
+# Step 1: voom first
+v1 <- voom(dge, design_int, plot = TRUE)
+
+# Step 2: estimate duplicate correlation on voom-transformed data
+corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
+corfit.correlation <- corfit$consensus.correlation
+
+# Step 3: voom again including correlation
+v2 <- voom(dge, design_int, plot = TRUE,
+           block = metadata$Individual,
+           correlation = corfit.correlation)
+
+# Step 4: fit linear model
+fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
+fit <- eBayes(fit)
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+day <- metadata$Timepoint
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+
+human_idx <- metadata$Species == "H"
+chimp_idx <- metadata$Species == "C"
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+
+# Human
+plotDensities(
+  v2[, human_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Human")
+  legend(
+      "right",
+      legend = metadata$Individual[human_idx],  # or Timepoint, etc.
+      col = rainbow(sum(human_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+# Chimp
+plotDensities(
+  v2[, chimp_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Chimp")
+  legend(
+      "right",
+      legend = metadata$Individual[chimp_idx],  # or Timepoint, etc.
+      col = rainbow(sum(chimp_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+species_levels <- unique(metadata$Species)
+day_levels <- unique(metadata$Timepoint)
+
+for (sp in species_levels) {
+  for (day in day_levels) {
+
+    idx <- metadata$Species == sp &
+           metadata$Timepoint == day
+
+    if (sum(idx) > 0) {
+
+      cols <- rainbow(sum(idx))
+
+      plotDensities(
+        v2[, idx],
+        col = cols,
+        main = paste(sp, day),
+        legend = FALSE,
+        axes = FALSE
+      )
+
+      axis(1)
+      axis(2)
+      mtext("log2 CPM", side = 1, line = 2)
+
+      legend(
+        "right",
+        legend = metadata$Individual[idx],
+        col = cols,
+        lty = 1,
+        cex = 0.7
+      )
+    }
+  }
+}
+
+
+# saveRDS(dge, "data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+# saveRDS(design_int, "data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+# saveRDS(v1,"data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+# saveRDS(fit, "data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+```
+
+### DGE
+```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp}
+fit <- fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+design_int <- design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+contrast_matrix <- makeContrasts(
+
+  # Species differences
+  HvC_Day0  = SpeciesH,
+  HvC_Day2  = SpeciesH + SpeciesH.TimepointDay2,
+  HvC_Day4  = SpeciesH + SpeciesH.TimepointDay4,
+  HvC_Day5  = SpeciesH + SpeciesH.TimepointDay5,
+  HvC_Day15 = SpeciesH + SpeciesH.TimepointDay15,
+  HvC_Day30 = SpeciesH + SpeciesH.TimepointDay30,
+  
+  #Trajectory differences
+  H_Day02 = TimepointDay2 + SpeciesH.TimepointDay2,
+  H_Day24 = TimepointDay4 + SpeciesH.TimepointDay4 - TimepointDay2 - SpeciesH.TimepointDay2,
+  H_Day45 = TimepointDay5 + SpeciesH.TimepointDay5 - TimepointDay4 - SpeciesH.TimepointDay4,
+  H_Day515 = TimepointDay15 + SpeciesH.TimepointDay15 - TimepointDay5 - SpeciesH.TimepointDay5,
+  H_Day1530 = TimepointDay30 + SpeciesH.TimepointDay30 - TimepointDay15 - SpeciesH.TimepointDay15,
+  C_Day02 = TimepointDay2,
+  C_Day24 = TimepointDay4 - TimepointDay2,
+  C_Day45 = TimepointDay5 - TimepointDay4,
+  C_Day515 = TimepointDay15 - TimepointDay5,
+  C_Day1530 = TimepointDay30 - TimepointDay15,
+  
+  # True interaction tests trajectory
+  Sig_Sp_inter_Traj02 = SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj24 = SpeciesH.TimepointDay4 - SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj45 = SpeciesH.TimepointDay5 - SpeciesH.TimepointDay4,
+  Sig_Sp_inter_Traj515 = SpeciesH.TimepointDay15 - SpeciesH.TimepointDay5,
+  Sig_Sp_inter_Traj1530 = SpeciesH.TimepointDay30 - SpeciesH.TimepointDay15,
+  
+  levels = design_int
+)
+
+fit2 <- contrasts.fit(fit, contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+
+# saveRDS(fit2, "data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+```
+
+```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp}
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+#Create Human TopTable. using listapply, then you can pull specific comp using the $
+TopTables_RNA_names <- colnames(fit2$coefficients) 
+
+TopTable_RNA_All <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
+
+# saveRDS(TopTable_RNA_All, "data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+# saveRDS(ComparisonNames, "data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+head(TopTable_RNA_All)
+```
+
+### Volcano plots
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+# Calculate global axis limits
+x_limits <- range(TopTable$logFC, na.rm = TRUE)
+y_limits <- range(-log10(TopTable$P.Value), na.rm = TRUE)
+
+plot <- list()
+
+for (n in ComparisonNames) {
+  data_n <- TopTable %>% 
+    dplyr::filter(Comparisons == n)
+  
+  plot[[n]] <- generate_volcano_plot(data_n, n) +
+    ggplot2::xlim(x_limits) +
+    ggplot2::ylim(y_limits)
+}
+
+# Print plots
+for (n in ComparisonNames) {
+  print(plot[[n]])
+}
+```
+
+```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+RNA_sets <- map(
+  ComparisonNames,
+  ~ {
+    df <- TopTable %>%
+      filter(Comparisons == paste0(.x))
+
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.05),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+    )
+  }
+)
+
+
+names(RNA_sets) <- paste0(ComparisonNames)
+
+# saveRDS(RNA_sets, "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+```
+
+### Species DEGs
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Species <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "HvC_Day0","HvC_Day2","HvC_Day4","HvC_Day5","HvC_Day15",
+    "HvC_Day30"
+  ))
+
+SpeciesD0_genes <- unique(c(RNA_sets$HvC_Day0$DEGs$Gene))
+SpeciesD2_genes <- unique(c(RNA_sets$HvC_Day2$DEGs$Gene))
+SpeciesD4_genes <- unique(c(RNA_sets$HvC_Day4$DEGs$Gene))
+SpeciesD5_genes <- unique(c(RNA_sets$HvC_Day5$DEGs$Gene))
+SpeciesD15_genes <- unique(c(RNA_sets$HvC_Day15$DEGs$Gene))
+SpeciesD30_genes <- unique(c(RNA_sets$HvC_Day30$DEGs$Gene))
+
+cluster_lists <- list(
+ HvC_Day0  = SpeciesD0_genes,
+  HvC_Day2  = SpeciesD2_genes,
+  HvC_Day4  = SpeciesD4_genes,
+  HvC_Day5  = SpeciesD5_genes,
+  HvC_Day15  = SpeciesD15_genes,
+ HvC_Day30  = SpeciesD30_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_species(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_species(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+```{r RNASeq_DGE_Species_Directionality_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+Species_DEG_info <- list(
+  HvC_Day0 = list(coef = "HvC_Day0", comp = "HvC_Day0"),
+  HvC_Day2 = list(coef = "HvC_Day2", comp = "HvC_Day2"),
+  HvC_Day4 = list(coef = "HvC_Day4", comp = "HvC_Day4"),
+  HvC_Day5 = list(coef ="HvC_Day5", comp = "HvC_Day5"),
+ HvC_Day15 = list(coef = "HvC_Day15", comp = "HvC_Day15"),
+ HvC_Day30 = list(coef = "HvC_Day30", comp = "HvC_Day30")
+)
+
+direction_results <- setNames(
+  lapply(names(Species_DEG_info), function(name) {
+
+    info <- Species_DEG_info[[name]]
+
+    get_fc_directions_HvC(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2
+    )
+
+  }),
+  names(Species_DEG_info)
+)
+
+# saveRDS(direction_results, "data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+```
+
+```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+direction_results <-Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Species <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "HvC_Day0","HvC_Day2","HvC_Day4","HvC_Day5","HvC_Day15",
+    "HvC_Day30"
+  ))
+
+aa <- unique(direction_results$HvC_Day0$all$Gene)
+ab <- unique(direction_results$HvC_Day0$Human_higher$Gene)
+ac <- unique(direction_results$HvC_Day0$Chimp_higher$Gene)
+
+ba <- unique(direction_results$HvC_Day2$all$Gene)
+bb <- unique(direction_results$HvC_Day2$Human_higher$Gene)
+bc <- unique(direction_results$HvC_Day2$Chimp_higher$Gene)
+
+ca <- unique(direction_results$HvC_Day4$all$Gene)
+cb <- unique(direction_results$HvC_Day4$Human_higher$Gene)
+cc <- unique(direction_results$HvC_Day4$Chimp_higher$Gene)
+
+da <- unique(direction_results$HvC_Day5$all$Gene)
+db <- unique(direction_results$HvC_Day5$Human_higher$Gene)
+dc <- unique(direction_results$HvC_Day5$Chimp_higher$Gene)
+
+ea <- unique(direction_results$HvC_Day15$all$Gene)
+eb <- unique(direction_results$HvC_Day15$Human_higher$Gene)
+ec <- unique(direction_results$HvC_Day15$Chimp_higher$Gene)
+
+fa <- unique(direction_results$HvC_Day30$all$Gene)
+fb <- unique(direction_results$HvC_Day30$Human_higher$Gene)
+fc <- unique(direction_results$HvC_Day30$Chimp_higher$Gene)
+
+
+cluster_lists <- list(
+  HvC_Day0_all = aa,
+  HvC_Day0_HumanHigher = ab,
+  HvC_Day0_ChimpHigher = ac,
+  
+  HvC_Day2_all = ba,
+  HvC_Day2_HumanHigher = bb,
+  HvC_Day2_ChimpHigher = bc,
+  
+  HvC_Day4_all = ca,
+  HvC_Day4_HumanHigher = cb,
+  HvC_Day4_ChimpHigher = cc,
+  
+  HvC_Day5_all = da,
+  HvC_Day5_HumanHigher = db,
+  HvC_Day5_ChimpHigher = dc,
+  
+  HvC_Day15_all = ea,
+  HvC_Day15_HumanHigher = eb,
+  HvC_Day15_ChimpHigher = ec,
+  
+  HvC_Day30_all = fa,
+  HvC_Day30_HumanHigher = fb,
+  HvC_Day30_ChimpHigher = fc
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_species(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp}
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     All = res$all,
+#     Human_higher = res$Human_higher,
+#     Chimp_higher    = res$Chimp_higher
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+
+
+# saveRDS(all_go_results, "data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep <- readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+```
+
+### Trajectory DEGs
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530",
+    "C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+  ))
+
+Traj02_genes <- intersect(RNA_sets$H_Day02$DEGs$Gene,RNA_sets$C_Day02$DEGs$Gene)
+Traj24_genes <- intersect(RNA_sets$H_Day24$DEGs$Gene,RNA_sets$C_Day24$DEGs$Gene)
+Traj45_genes <- intersect(RNA_sets$H_Day45$DEGs$Gene,RNA_sets$C_Day45$DEGs$Gene)
+Traj515_genes <- intersect(RNA_sets$H_Day515$DEGs$Gene,RNA_sets$C_Day515$DEGs$Gene)
+Traj1530_genes <- intersect(RNA_sets$H_Day1530$DEGs$Gene,RNA_sets$C_Day1530$DEGs$Gene)
+
+length(Traj02_genes)
+length(Traj24_genes)
+length(Traj45_genes)
+length(Traj515_genes)
+length(Traj1530_genes)
+
+cluster_lists <- list(
+ Traj02_genes  = Traj02_genes,
+  Traj24_genes  = Traj24_genes,
+  Traj45_genes  = Traj45_genes,
+  Traj515_genes  = Traj515_genes,
+  Traj1530_genes  = Traj1530_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+
+traj_info <- list(
+  Traj02_genes = list(coef = "H_Day02", comp = "Day02"),
+  Traj24_genes = list(coef = "H_Day24", comp = "Day24"),
+  Traj45_genes = list(coef = "H_Day45", comp = "Day45"),
+  Traj515_genes = list(coef ="H_Day515", comp = "Day515"),
+ Traj1530_genes = list(coef = "H_Day1530", comp = "Day1530")
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2,
+      gene_set = cluster_lists[[name]]
+    )
+
+  }),
+  names(traj_info)
+)
+
+# saveRDS(direction_results, "data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR.RDS")
+```
+
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+direction_results <- Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530",
+    "C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+  ))
+
+aa <- unique(direction_results$Traj02_genes$all$Gene)
+ab <- unique(direction_results$Traj02_genes$H_pos_C_neg$Gene)
+ac <- unique(direction_results$Traj02_genes$H_neg_C_pos$Gene)
+ad <- unique(direction_results$Traj02_genes$Both_pos$Gene)
+ae <- unique(direction_results$Traj02_genes$Both_neg$Gene)
+af <- unique(direction_results$Traj02_genes$Same_direction$Gene)
+ag <- unique(direction_results$Traj02_genes$Opposite_direction$Gene)
+
+ba <- unique(direction_results$Traj24_genes$all$Gene)
+bb <- unique(direction_results$Traj24_genes$H_pos_C_neg$Gene)
+bc <- unique(direction_results$Traj24_genes$H_neg_C_pos$Gene)
+bd <- unique(direction_results$Traj24_genes$Both_pos$Gene)
+be <- unique(direction_results$Traj24_genes$Both_neg$Gene)
+bf <- unique(direction_results$Traj24_genes$Same_direction$Gene)
+bg <- unique(direction_results$Traj24_genes$Opposite_direction$Gene)
+
+
+ca <- unique(direction_results$Traj45_genes$all$Gene)
+cb <- unique(direction_results$Traj45_genes$H_pos_C_neg$Gene)
+cc <- unique(direction_results$Traj45_genes$H_neg_C_pos$Gene)
+cd <- unique(direction_results$Traj45_genes$Both_pos$Gene)
+ce <- unique(direction_results$Traj45_genes$Both_neg$Gene)
+cf <- unique(direction_results$Traj45_genes$Same_direction$Gene)
+cg <- unique(direction_results$Traj45_genes$Opposite_direction$Gene)
+
+da <- unique(direction_results$Traj515_genes$all$Gene)
+db <- unique(direction_results$Traj515_genes$H_pos_C_neg$Gene)
+dc <- unique(direction_results$Traj515_genes$H_neg_C_pos$Gene)
+dd <- unique(direction_results$Traj515_genes$Both_pos$Gene)
+de <- unique(direction_results$Traj515_genes$Both_neg$Gene)
+df <- unique(direction_results$Traj515_genes$Both_pos$Gene)
+dg <- unique(direction_results$Traj515_genes$Both_neg$Gene)
+
+ea <- unique(direction_results$Traj1530_genes$all$Gene)
+eb <- unique(direction_results$Traj1530_genes$H_pos_C_neg$Gene)
+ec <- unique(direction_results$Traj1530_genes$H_neg_C_pos$Gene)
+ed <- unique(direction_results$Traj1530_genes$Both_pos$Gene)
+ee <- unique(direction_results$Traj1530_genes$Both_neg$Gene)
+ef <- unique(direction_results$Traj1530_genes$Same_direction$Gene)
+eg <- unique(direction_results$Traj1530_genes$Opposite_direction$Gene)
+
+cluster_lists <- list(
+  Traj02_All = aa,
+  Traj02_HumanPos = ab,
+  Traj02_ChimpPos = ac,
+  Traj02_Both_pos = ad,
+  Traj02_Both_neg = ae,
+  Traj02_Same_direction = af,
+  Traj02_Opposite_direction = ag,
+  
+  Traj24_All = ba,
+  Traj24_HumanPos = bb,
+  Traj24_ChimpPos = bc,
+  Traj24_Both_pos = bd,
+  Traj24_Both_neg = be,
+  Traj24_Same_direction = bf,
+  Traj24_Opposite_direction = bg,
+ 
+  Traj45_All = ca,
+  Traj45_HumanPos = cb,
+  Traj45_ChimpPos = cc,
+  Traj45_Both_pos = cd,
+  Traj45_Both_neg = ce,
+  Traj45_Same_direction = cf,
+  Traj45_Opposite_direction = cg,
+ 
+  Traj515_All = da,
+  Traj515_HumanPos = db,
+  Traj515_ChimpPos = dc,
+  Traj515_Both_pos = dd,
+  Traj515_Both_neg = de,
+  Traj515_Same_direction = df,
+  Traj515_Opposite_direction = dg,
+ 
+  Traj1530_All = ea,
+  Traj1530_HumanPos = eb,
+  Traj1530_ChimpPos = ec,
+  Traj1530_Both_pos = ed,
+  Traj1530_Both_neg = ee,
+  Traj1530_Same_direction = ef,
+  Traj1530_Opposite_direction = eg
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp}
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     H_pos_C_neg = res$H_pos_C_neg,
+#     H_neg_C_pos = res$H_neg_C_pos,
+#     Both_pos    = res$Both_pos,
+#     Both_neg    = res$Both_neg,
+#     Same_direction = res$Same_direction,
+#     Opposite_direction = res$Opposite_direction,
+#     All = res$all
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+
+
+# saveRDS(all_go_results, "data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+all_go_results <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+```
+
+#### R2 scatter plots
+```{r RNASeq_DGE_Clusters_FC_Quadrants_2_0_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+
+H_comp <- "H_Day02"
+C_comp <- "C_Day02"
+
+df_wide <- TopTable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+
+genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp),
+    color = "Gene Set"
+  )
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_4_2_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+
+H_comp <- "H_Day24"
+C_comp <- "C_Day24"
+
+df_wide <- TopTable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+
+genes_of_interest_human <- unique(RNA_sets$H_Day24$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day24$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp),
+    color = "Gene Set"
+  )
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_5_4_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+H_comp <- "H_Day45"
+C_comp <- "C_Day45"
+
+df_wide <- TopTable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+
+genes_of_interest_human <- unique(RNA_sets$H_Day45$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day45$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp),
+    color = "Gene Set"
+  )
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_15_5_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+
+H_comp <- "H_Day515"
+C_comp <- "C_Day515"
+
+df_wide <- TopTable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+
+genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp),
+    color = "Gene Set"
+  )
+
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_30_15_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+
+H_comp <- "H_Day1530"
+C_comp <- "C_Day1530"
+
+df_wide <- TopTable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+max_val <- max(abs(c(x_limits, y_limits)))
+x_limits <- c(-15, 15)
+y_limits <- c(-15, 15)
+
+
+genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp),
+    color = "Gene Set"
+  )
+
+```
+
+```{r Trajectory plotting_RLCOMP_G1_4SpTp_Quadrants_combined }
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+df_all <- TopTable %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  
+  mutate(
+    species = ifelse(str_starts(Comparisons, "H_"), "H", "C"),
+    trajectory = str_remove(Comparisons, "^[HC]_")
+  ) %>%
+  
+  group_by(Gene, species, trajectory) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  
+  pivot_wider(names_from = species, values_from = logFC) %>%
+  
+  filter(!is.na(H), !is.na(C))
+
+library(ggplot2)
+
+df_all$trajectory <- df_all$trajectory <- factor(
+  df_all$trajectory,
+  levels = c("Day02", "Day24", "Day45", "Day515","Day1530")
+)
+
+ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
+  geom_point(alpha = 0.7) +
+  
+  # one regression line per trajectory (same color as points)
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE)+
+  
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  
+  theme_bw() +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    color = "Trajectory",
+    title = "All Trajectories Combined"
+  )
+
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  do({
+    fit <- lm(C ~ H, data = .)
+    data.frame(
+      r2 = summary(fit)$r.squared,
+      p = summary(fit)$coefficients[2, "Pr(>|t|)"]
+    )
+  })
+```
+
+
+### Interaction DEGs
+```{r RNASeq_DGE_Interaction_FC_RLCOMP_G1_4SpTp}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+TopTable_RNA_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530",
+    "C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+  ))
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_24_genes <- unique(RNA_sets$Sig_Sp_inter_Traj24$DEGs$Gene)
+Inter_45_genes <- unique(RNA_sets$Sig_Sp_inter_Traj45$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+
+cluster_lists <- list(
+  Inter_02_genes  = Inter_02_genes,
+  Inter_24_genes  = Inter_24_genes,
+  Inter_45_genes  = Inter_45_genes,
+  Inter_515_genes  = Inter_515_genes,
+  Inter_1530_genes  = Inter_1530_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_DGE_Interaction_Directionality_RLCOMP_G1_4SpTp}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+traj_info <- list(
+  InterTraj02 = list(coef = "Sig_Sp_inter_Traj02", comp = "Day02"),
+  InterTraj24 = list(coef = "Sig_Sp_inter_Traj24", comp = "Day24"),
+  InterTraj45 = list(coef = "Sig_Sp_inter_Traj45", comp = "Day45"),
+  InterTraj515 = list(coef = "Sig_Sp_inter_Traj515", comp = "Day515"),
+  InterTraj1530 = list(coef = "Sig_Sp_inter_Traj1530", comp = "Day1530")
+)
+
+cluster_lists <- list(
+  InterTraj02  = Inter_02_genes,
+  InterTraj24  = Inter_24_genes,
+  InterTraj45  = Inter_45_genes,
+  InterTraj515 = Inter_515_genes,
+  InterTraj1530 = Inter_1530_genes
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2,
+      gene_set = cluster_lists[[name]]
+    )
+
+  }),
+  names(traj_info)
+)
+
+# saveRDS(direction_results, "data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+```
+
+```{r RNASeq_DGE_Interaction_Directionality_FC_RLCOMP_G1_4SpTp}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+RNA_sets <- Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_RNA_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day24","H_Day45","H_Day515","H_Day1530",
+    "C_Day02","C_Day24","C_Day45","C_Day515","C_Day1530"
+  ))
+
+aa <- unique(RNA_sets$InterTraj02$all$Gene)
+ab <- unique(RNA_sets$InterTraj02$H_pos_C_neg$Gene)
+ac <- unique(RNA_sets$InterTraj02$H_neg_C_pos$Gene)
+ad <- unique(RNA_sets$InterTraj02$Both_pos$Gene)
+ae <- unique(RNA_sets$InterTraj02$Both_neg$Gene)
+af <- unique(RNA_sets$InterTraj02$Same_direction$Gene)
+ag <- unique(RNA_sets$InterTraj02$Opposite_direction$Gene)
+
+ba <- unique(RNA_sets$InterTraj24$all$Gene)
+bb <- unique(RNA_sets$InterTraj24$H_pos_C_neg$Gene)
+bc <- unique(RNA_sets$InterTraj24$H_neg_C_pos$Gene)
+bd <- unique(RNA_sets$InterTraj24$Both_pos$Gene)
+be <- unique(RNA_sets$InterTraj24$Both_neg$Gene)
+bf <- unique(RNA_sets$InterTraj24$Same_direction$Gene)
+bg <- unique(RNA_sets$InterTraj24$Opposite_direction$Gene)
+
+ca <- unique(RNA_sets$InterTraj45$all$Gene)
+cb <- unique(RNA_sets$InterTraj45$H_pos_C_neg$Gene)
+cc <- unique(RNA_sets$InterTraj45$H_neg_C_pos$Gene)
+cd <- unique(RNA_sets$InterTraj45$Both_pos$Gene)
+ce <- unique(RNA_sets$InterTraj45$Both_neg$Gene)
+cf <- unique(RNA_sets$InterTraj45$Same_direction$Gene)
+cg <- unique(RNA_sets$InterTraj45$Opposite_direction$Gene)
+
+da <- unique(RNA_sets$InterTraj515$all$Gene)
+db <- unique(RNA_sets$InterTraj515$H_pos_C_neg$Gene)
+dc <- unique(RNA_sets$InterTraj515$H_neg_C_pos$Gene)
+dd <- unique(RNA_sets$InterTraj515$Both_pos$Gene)
+de <- unique(RNA_sets$InterTraj515$Both_neg$Gene)
+df <- unique(RNA_sets$InterTraj515$Same_direction$Gene)
+dg <- unique(RNA_sets$InterTraj515$Opposite_direction$Gene)
+
+ea <- unique(RNA_sets$InterTraj1530$all$Gene)
+eb <- unique(RNA_sets$InterTraj1530$H_pos_C_neg$Gene)
+ec <- unique(RNA_sets$InterTraj1530$H_neg_C_pos$Gene)
+ed <- unique(RNA_sets$InterTraj1530$Both_pos$Gene)
+ee <- unique(RNA_sets$InterTraj1530$Both_neg$Gene)
+ef <- unique(RNA_sets$InterTraj1530$Same_direction$Gene)
+eg <- unique(RNA_sets$InterTraj1530$Opposite_direction$Gene)
+
+cluster_lists <- list(
+  Inter02_All = aa,
+  Inter02_HumanPos = ab,
+  Inter02_ChimpPos = ac,
+  Inter02_Both_pos = ad,
+  Inter02_Both_neg = ae,
+  Inter02_Same_direction = af,
+  Inter02_Opposite_direction = ag,
+  
+  Inter24_All = ba,
+  Inter24_HumanPos = bb,
+  Inter24_ChimpPos = bc,
+  Inter24_Both_pos = bd,
+  Inter24_Both_neg = be,
+  Inter24_Same_direction = bf,
+  Inter24_Opposite_direction = bg,
+  
+  Inter45_All = ca,
+  Inter45_HumanPos = cb,
+  Inter45_ChimpPos = cc,
+  Inter45_Both_pos = cd,
+  Inter45_Both_neg = ce,
+  Inter45_Same_direction = cf,
+  Inter45_Opposite_direction = cg,
+  
+  Inter515_All = da,
+  Inter515_HumanPos = db,
+  Inter515_ChimpPos = dc,
+  Inter515_Both_pos = dd,
+  Inter515_Both_neg = de,
+  Inter515_Same_direction = df,
+  Inter515_Opposite_direction = dg,
+  
+  
+  Inter1530_All = ea,
+  Inter1530_HumanPos = eb,
+  Inter1530_ChimpPos = ec,
+  Inter1530_Both_pos = ed,
+  Inter1530_Both_neg = ee,
+  Inter1530_Same_direction = ef,
+  Inter1530_Opposite_direction = eg
+  
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_interaction(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp}
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     H_pos_C_neg = res$H_pos_C_neg,
+#     H_neg_C_pos = res$H_neg_C_pos,
+#     Both_pos    = res$Both_pos,
+#     Both_neg    = res$Both_neg,
+#     Same_direction = res$Same_direction,
+#     Opposite_direction = res$Opposite_direction,
+#     All = res$all
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+# saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+all_go_results <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+```
+
+## RLCPM_G1_4SpTp No4
+
+### DGE
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4}
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
+metadata <- RNA_Metadata_No4_NoRep
+
+counts_norep <- counts %>%
+  dplyr::select(-(contains("R")))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+# #create DGEList object
+# dge <- DGEList(counts = counts_norep)
+# dge$samples$group <- factor(metadata$dgelist)
+# dge <- calcNormFactors(dge, method = "TMM")
+# dge$samples
+
+dge <-readRDS("data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+dim(dge)
+dge$samples
+
+metadata$Species <- factor(
+  metadata$Species,
+  levels = c("C", "H")   # Chimp baseline
+)
+
+ metadata$Timepoint <- factor(
+   metadata$Timepoint,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+design_int <- model.matrix(~ Species * Timepoint,
+                           data =  metadata)
+
+colnames(design_int)
+colnames(design_int) <- make.names(colnames(design_int))
+
+# # Step 1: voom first
+# v1 <- voom(dge, design_int, plot = TRUE)
+# 
+# # Step 2: estimate duplicate correlation on voom-transformed data
+# corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
+# corfit.correlation <- corfit$consensus.correlation
+# 
+# # Step 3: voom again including correlation
+# v2 <- voom(dge, design_int, plot = TRUE,
+#            block = metadata$Individual,
+#            correlation = corfit.correlation)
+
+v2 <- readRDS("data/DGE/v2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+# # Step 4: fit linear model
+# fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
+# fit <- eBayes(fit)
+
+fit <- readRDS("data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+day <- metadata$Timepoint
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+
+human_idx <- metadata$Species == "H"
+chimp_idx <- metadata$Species == "C"
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+
+# Human
+plotDensities(
+  v2[, human_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Human")
+  legend(
+      "right",
+      legend = metadata$Individual[human_idx],  # or Timepoint, etc.
+      col = rainbow(sum(human_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+# Chimp
+plotDensities(
+  v2[, chimp_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[human_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Chimp")
+  legend(
+      "right",
+      legend = metadata$Individual[chimp_idx],  # or Timepoint, etc.
+      col = rainbow(sum(chimp_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+species_levels <- unique(metadata$Species)
+day_levels <- unique(metadata$Timepoint)
+
+for (sp in species_levels) {
+  for (day in day_levels) {
+
+    idx <- metadata$Species == sp &
+           metadata$Timepoint == day
+
+    if (sum(idx) > 0) {
+
+      cols <- rainbow(sum(idx))
+
+      plotDensities(
+        v2[, idx],
+        col = cols,
+        main = paste(sp, day),
+        legend = FALSE,
+        axes = FALSE
+      )
+
+      axis(1)
+      axis(2)
+      mtext("log2 CPM", side = 1, line = 2)
+
+      legend(
+        "right",
+        legend = metadata$Individual[idx],
+        col = cols,
+        lty = 1,
+        cex = 0.7
+      )
+    }
+  }
+}
+
+
+# saveRDS(dge, "data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# saveRDS(design_int, "data/DGE/design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# saveRDS(v1,"data/DGE/v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# saveRDS(v2,"data/DGE/v2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# saveRDS(fit, "data/DGE/fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp_No4}
+fit <- fit_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+design_int <- design_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+
+contrast_matrix <- makeContrasts(
+
+  # Species differences
+  HvC_Day0  = SpeciesH,
+  HvC_Day2  = SpeciesH + SpeciesH.TimepointDay2,
+  HvC_Day5  = SpeciesH + SpeciesH.TimepointDay5,
+  HvC_Day15 = SpeciesH + SpeciesH.TimepointDay15,
+  HvC_Day30 = SpeciesH + SpeciesH.TimepointDay30,
+  
+  #Trajectory differences
+  H_Day02 = TimepointDay2 + SpeciesH.TimepointDay2,
+  H_Day25 = TimepointDay5 + SpeciesH.TimepointDay5 - TimepointDay2 - SpeciesH.TimepointDay2,
+  H_Day515 = TimepointDay15 + SpeciesH.TimepointDay15 - TimepointDay5 - SpeciesH.TimepointDay5,
+  H_Day1530 = TimepointDay30 + SpeciesH.TimepointDay30 - TimepointDay15 - SpeciesH.TimepointDay15,
+  C_Day02 = TimepointDay2,
+  C_Day25 = TimepointDay5 - TimepointDay2,
+  C_Day515 = TimepointDay15 - TimepointDay5,
+  C_Day1530 = TimepointDay30 - TimepointDay15,
+  
+  # True interaction tests trajectory
+  Sig_Sp_inter_Traj02 = SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj25 = SpeciesH.TimepointDay5 - SpeciesH.TimepointDay2,
+  Sig_Sp_inter_Traj515 = SpeciesH.TimepointDay15 - SpeciesH.TimepointDay5,
+  Sig_Sp_inter_Traj1530 = SpeciesH.TimepointDay30 - SpeciesH.TimepointDay15,
+  
+  levels = design_int
+)
+
+fit2 <- contrasts.fit(fit, contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+
+# saveRDS(fit2, "data/DGE/fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp_No4}
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+#Create Human TopTable. using listapply, then you can pull specific comp using the $
+TopTables_RNA_names <- colnames(fit2$coefficients) 
+
+TopTable_RNA_All <- do.call(
+  rbind,
+  lapply(TopTables_RNA_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+ComparisonNames <- unique(TopTable_RNA_All$Comparisons)
+
+# saveRDS(TopTable_RNA_All, "data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# saveRDS(ComparisonNames, "data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+head(TopTable_RNA_All)
+```
+
+### Volcano plots
+```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4, fig.height=3,fig.width=5}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+# Calculate global axis limits
+x_limits <- range(TopTable$logFC, na.rm = TRUE)
+y_limits <- range(-log10(TopTable$P.Value), na.rm = TRUE)
+
+plot <- list()
+
+for (n in ComparisonNames) {
+  data_n <- TopTable %>% 
+    dplyr::filter(Comparisons == n)
+  
+  plot[[n]] <- generate_volcano_plot(data_n, n) +
+    ggplot2::xlim(x_limits) +
+    ggplot2::ylim(0,20)
+}
+
+# Print plots
+for (n in ComparisonNames) {
+  print(plot[[n]])
+}
+```
+
+```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+RNA_sets <- map(
+  ComparisonNames,
+  ~ {
+    df <- TopTable %>%
+      filter(Comparisons == paste0(.x))
+
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.05),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+    )
+  }
+)
+
+
+names(RNA_sets) <- paste0(ComparisonNames)
+
+# saveRDS(RNA_sets, "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+```{r Genes_Species_FC_lineplot}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+library(dplyr)
+library(ggplot2)
+
+# Split the existing Genes data into the three comparison types
+Genes_HvC <-TopTable %>%
+  filter(grepl("^HvC_", Comparisons))
+
+Genes_Traj <- TopTable %>%
+  filter(grepl("^[HC]_Day", Comparisons))
+
+Genes_Inter <- TopTable %>%
+  filter(grepl("^Sig_Sp_inter_", Comparisons))
+
+Genes_HvC <- TopTable %>%
+  filter(grepl("^HvC_", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+ggplot(
+  Genes_HvC,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group = Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  theme_bw() +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkblue"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 timepoint"
+    )
+  ) +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Human vs. Chimpanzee expression of Geness"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+Genes_Human_Traj <- TopTable %>%
+  filter(grepl("^H_Day", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+Genes_Human_Traj$Comparisons <- factor(
+  Genes_Human_Traj$Comparisons,
+  levels = c(
+    "H_Day02",
+    "H_Day25",
+    "H_Day515",
+    "H_Day1530"
+  )
+)
+
+ggplot(
+  Genes_Human_Traj,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group = Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkred"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 transition"
+    )
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(-2, 2)) +
+  theme_bw() +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Human Genes trajectories"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+Genes_Chimp_Traj <- TopTable %>%
+  filter(grepl("^C_Day", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+Genes_Chimp_Traj$Comparisons <- factor(
+  Genes_Chimp_Traj$Comparisons,
+  levels = c(
+    "C_Day02",
+    "C_Day25",
+    "C_Day515",
+    "C_Day1530"
+  )
+)
+
+ggplot(
+  Genes_Chimp_Traj,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group = Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkred"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 transition"
+    )
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(-2, 2)) +
+  theme_bw() +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Chimpanzee Genes trajectories"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
+
+Genes_Inter <- TopTable %>%
+  filter(grepl("^Sig_Sp_inter_", Comparisons)) %>%
+  group_by(Gene) %>%
+  mutate(
+    DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
+  ) %>%
+  ungroup()
+
+Genes_Inter$Comparisons <- factor(
+  Genes_Inter$Comparisons,
+  levels = c(
+    "Sig_Sp_inter_Traj02",
+    "Sig_Sp_inter_Traj25",
+    "Sig_Sp_inter_Traj515",
+    "Sig_Sp_inter_Traj1530"
+  )
+)
+
+ggplot(
+  Genes_Inter,
+  aes(
+    x = Comparisons,
+    y = logFC,
+    group =Gene,
+    color = DEG_any
+  )
+) +
+  geom_line(alpha = 0.5) +
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(
+      "FALSE" = "grey70",
+      "TRUE" = "darkgreen"
+    ),
+    labels = c(
+      "FALSE" = "Not DEG",
+      "TRUE" = "DEG in ≥1 interaction"
+    )
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  labs(
+    x = "Comparison",
+    y = "logFC",
+    color = "Genes status",
+    title = "Species × trajectory interactions"
+  ) +
+  coord_cartesian(ylim = c(-8, 8)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+### Species DEGs
+
+#### Absolute fold change
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Species <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "HvC_Day0","HvC_Day2","HvC_Day4","HvC_Day5","HvC_Day15",
+    "HvC_Day30"
+  ))
+
+SpeciesD0_genes <- unique(c(RNA_sets$HvC_Day0$DEGs$Gene))
+SpeciesD2_genes <- unique(c(RNA_sets$HvC_Day2$DEGs$Gene))
+SpeciesD5_genes <- unique(c(RNA_sets$HvC_Day5$DEGs$Gene))
+SpeciesD15_genes <- unique(c(RNA_sets$HvC_Day15$DEGs$Gene))
+SpeciesD30_genes <- unique(c(RNA_sets$HvC_Day30$DEGs$Gene))
+All_Expressed <- unique(TopTable$Gene)
+
+cluster_lists <- list(
+ HvC_Day0  = SpeciesD0_genes,
+  HvC_Day2  = SpeciesD2_genes,
+  HvC_Day5  = SpeciesD5_genes,
+  HvC_Day15  = SpeciesD15_genes,
+ HvC_Day30  = SpeciesD30_genes,
+ All_Expressed = All_Expressed
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_species_No4(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_species_No4(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+```{r RNASeq_DGE_Species_Directionality_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+Species_DEG_info <- list(
+  HvC_Day0 = list(coef = "HvC_Day0", comp = "HvC_Day0"),
+  HvC_Day2 = list(coef = "HvC_Day2", comp = "HvC_Day2"),
+  HvC_Day5 = list(coef ="HvC_Day5", comp = "HvC_Day5"),
+ HvC_Day15 = list(coef = "HvC_Day15", comp = "HvC_Day15"),
+ HvC_Day30 = list(coef = "HvC_Day30", comp = "HvC_Day30")
+)
+
+direction_results <- setNames(
+  lapply(names(Species_DEG_info), function(name) {
+
+    info <- Species_DEG_info[[name]]
+
+    get_fc_directions_HvC(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2
+    )
+
+  }),
+  names(Species_DEG_info)
+)
+
+# saveRDS(direction_results, "data/DGE/Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+#### Fold change
+
+```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+direction_results <-Species_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Species <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15",
+    "HvC_Day30"
+  ))
+
+aa <- unique(direction_results$HvC_Day0$all$Gene)
+ab <- unique(direction_results$HvC_Day0$Human_higher$Gene)
+ac <- unique(direction_results$HvC_Day0$Chimp_higher$Gene)
+
+ba <- unique(direction_results$HvC_Day2$all$Gene)
+bb <- unique(direction_results$HvC_Day2$Human_higher$Gene)
+bc <- unique(direction_results$HvC_Day2$Chimp_higher$Gene)
+
+da <- unique(direction_results$HvC_Day5$all$Gene)
+db <- unique(direction_results$HvC_Day5$Human_higher$Gene)
+dc <- unique(direction_results$HvC_Day5$Chimp_higher$Gene)
+
+ea <- unique(direction_results$HvC_Day15$all$Gene)
+eb <- unique(direction_results$HvC_Day15$Human_higher$Gene)
+ec <- unique(direction_results$HvC_Day15$Chimp_higher$Gene)
+
+fa <- unique(direction_results$HvC_Day30$all$Gene)
+fb <- unique(direction_results$HvC_Day30$Human_higher$Gene)
+fc <- unique(direction_results$HvC_Day30$Chimp_higher$Gene)
+
+
+cluster_lists <- list(
+  HvC_Day0_all = aa,
+  HvC_Day0_HumanHigher = ab,
+  HvC_Day0_ChimpHigher = ac,
+  
+  HvC_Day2_all = ba,
+  HvC_Day2_HumanHigher = bb,
+  HvC_Day2_ChimpHigher = bc,
+  
+  HvC_Day5_all = da,
+  HvC_Day5_HumanHigher = db,
+  HvC_Day5_ChimpHigher = dc,
+  
+  HvC_Day15_all = ea,
+  HvC_Day15_HumanHigher = eb,
+  HvC_Day15_ChimpHigher = ec,
+  
+  HvC_Day30_all = fa,
+  HvC_Day30_HumanHigher = fb,
+  HvC_Day30_ChimpHigher = fc
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_species_No4(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+
+#### Proportions
+```{r RNASeq_DGE_species_DEGs_RLCOMP_G1_4SpTp_No4}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+library(dplyr)
+
+species <- c(
+  "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
+)
+
+# 1. Filter + define DEG status
+df <- TopTable %>%
+  filter(Comparisons %in% species) %>%
+  mutate(DEG_status = ifelse(adj.P.Val < 0.05, "DEG", "Non-DEG"))
+
+# 2. Summarise proportions per comparison
+prop_df <- df %>%
+  group_by(Comparisons, DEG_status) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Comparisons) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup()
+
+# 3. Order comparisons properly
+prop_df$Comparisons <- factor(
+  prop_df$Comparisons,
+  levels = c(
+    "HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30"
+  )
+)
+
+# 4. Plot
+library(ggplot2)
+
+ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Proportion of genes",
+    fill = "",
+    title = "DEG vs NonDEG composition"
+  )
+```
+
+```{r RNASeq_DGE_Species_proportions_RLCOMP_G1_4SpTp_No4}
+library(dplyr)
+library(purrr)
+library(stringr)
+
+hvcdays <- names(RNA_sets)[str_detect(names(RNA_sets), "^HvC_")]
+
+prop_df <- map_dfr(hvcdays, function(traj) {
+  
+  x <- RNA_sets[[traj]]
+  
+  tibble(
+    trajectory = traj,
+    DEG = length(x$DEGs$Gene),
+    NonDEG = length(x$NonDEGs$Gene)
+  )
+})
+library(tidyr)
+
+prop_long <- prop_df %>%
+  pivot_longer(cols = c(DEG, NonDEG),
+               names_to = "type",
+               values_to = "count") %>%
+  group_by(trajectory) %>%
+  mutate(prop = count / sum(count)) %>%
+  ungroup()
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("HvC_Day0", "HvC_Day2", "HvC_Day5", "HvC_Day15", "HvC_Day30"),
+  labels = c("0", "2", "5", "15", "30")
+)
+library(ggplot2)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Proportion of genes",
+    fill = "",
+    title = "HvC comparisons: DEG vs NonDEG composition"
+  )
+```
+
+```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2, fig.height=7,fig.width=7}
+
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# Extract HvC DEGs
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+
+# Create DEG gene lists by developmental day
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0")  %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2")  %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5")  %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+# Genes DE at every developmental stage
+shared_all <- Reduce(intersect, genes)
+
+
+############################################################
+# Determine DEG fate categories and save gene identities
+############################################################
+
+fate_list <- lapply(names(genes), function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(g, unlist(genes[names(genes) != day]))
+
+  shared_all_day <- intersect(g, shared_all)
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Gene = c(
+      specific,
+      shared_partial,
+      shared_all_day
+    ),
+    Day = day,
+    Fate = c(
+      rep("Specific", length(specific)),
+      rep("Shared_partial", length(shared_partial)),
+      rep("Shared_all", length(shared_all_day))
+    )
+  )
+
+})
+
+fate_df <- bind_rows(fate_list)
+
+
+############################################################
+# Extract actual TopTable rows for each fate category
+############################################################
+
+TopTable_HvC_DEG_Fate <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Day = str_extract(Comparisons, "Day[0-9]+")
+  ) %>%
+  left_join(
+    fate_df,
+    by = c("Gene", "Day")
+  ) %>%
+  filter(!is.na(Fate))
+
+
+# Split into separate TopTables
+TopTable_Specific <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Specific")
+
+TopTable_Shared_partial <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Shared_partial")
+
+TopTable_Shared_all <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Shared_all")
+
+
+# Optional save
+# saveRDS(
+#   TopTable_HvC_DEG_Fate,
+#   "data/DGE/TopTable_HvC_DEG_Fate.RDS"
+# )
+
+
+############################################################
+# Plot counts
+############################################################
+
+plot_df <- fate_df %>%
+  dplyr::count(Day, Fate, name = "Count") %>%
+  pivot_wider(
+    names_from = Fate,
+    values_from = Count,
+    values_fill = 0
+  )
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of DEGs",
+    fill = "",
+    title = "Fate of HvC DEGs across development"
+  )
+
+
+############################################################
+# Plot proportions
+############################################################
+
+plot_long_prop <- plot_long %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of DEGs",
+    fill = "",
+    title = "Fate of HvC DEGs across development (normalized)"
+  )
+
+```
+#### Venn
+
+```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0")  %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2")  %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5")  %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+#### GoEnrichment
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4}
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     All = res$all,
+#     Human_higher = res$Human_higher,
+#     Chimp_higher    = res$Chimp_higher
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+
+
+Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <-readRDS("data/DGE/Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+```
+
+
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Species_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "HvC_Day0",
+    "HvC_Day2",
+    "HvC_Day5",
+    "HvC_Day15",
+    "HvC_Day30"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
+### Trajectory DEGs
+
+#### Absolute fold change
+```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day25","H_Day515","H_Day1530",
+    "C_Day02","C_Day25","C_Day515","C_Day1530"
+  ))
+
+Traj02_genes <- intersect(RNA_sets$H_Day02$DEGs$Gene,RNA_sets$C_Day02$DEGs$Gene)
+Traj25_genes <- intersect(RNA_sets$H_Day25$DEGs$Gene,RNA_sets$C_Day25$DEGs$Gene)
+Traj515_genes <- intersect(RNA_sets$H_Day515$DEGs$Gene,RNA_sets$C_Day515$DEGs$Gene)
+Traj1530_genes <- intersect(RNA_sets$H_Day1530$DEGs$Gene,RNA_sets$C_Day1530$DEGs$Gene)
+all_genes <- unique(TopTable$Gene)
+
+length(Traj02_genes)
+length(Traj25_genes)
+length(Traj515_genes)
+length(Traj1530_genes)
+length(all_genes)
+
+cluster_lists <- list(
+ Traj02_genes  = Traj02_genes,
+  Traj25_genes  = Traj25_genes,
+  Traj515_genes  = Traj515_genes,
+  Traj1530_genes  = Traj1530_genes,
+  all_genes = all_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+
+```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+traj_info <- list(
+  Traj02_genes = list(coef = "H_Day02", comp = "Day02"),
+  Traj25_genes = list(coef = "H_Day25", comp = "Day25"),
+  Traj515_genes = list(coef ="H_Day515", comp = "Day515"),
+Traj1530_genes = list(coef = "H_Day1530", comp = "Day1530")
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2,
+      gene_set = cluster_lists[[name]]
+    )
+
+  }),
+  names(traj_info)
+)
+
+# saveRDS(direction_results, "data/DGE/Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4.RDS")
+```
+
+#### Fold change
+```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+direction_results <- Trajectory_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoR_No4
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day25","H_Day515","H_Day1530",
+    "C_Day02","C_Day25","C_Day515","C_Day1530"
+  ))
+
+aa <- unique(direction_results$Traj02_genes$all$Gene)
+ab <- unique(direction_results$Traj02_genes$H_pos_C_neg$Gene)
+ac <- unique(direction_results$Traj02_genes$H_neg_C_pos$Gene)
+ad <- unique(direction_results$Traj02_genes$Both_pos$Gene)
+ae <- unique(direction_results$Traj02_genes$Both_neg$Gene)
+af <- unique(direction_results$Traj02_genes$Same_direction$Gene)
+ag <- unique(direction_results$Traj02_genes$Opposite_direction$Gene)
+
+ba <- unique(direction_results$Traj25_genes$all$Gene)
+bb <- unique(direction_results$Traj25_genes$H_pos_C_neg$Gene)
+bc <- unique(direction_results$Traj25_genes$H_neg_C_pos$Gene)
+bd <- unique(direction_results$Traj25_genes$Both_pos$Gene)
+be <- unique(direction_results$Traj25_genes$Both_neg$Gene)
+bf <- unique(direction_results$Traj25_genes$Same_direction$Gene)
+bg <- unique(direction_results$Traj25_genes$Opposite_direction$Gene)
+
+da <- unique(direction_results$Traj515_genes$all$Gene)
+db <- unique(direction_results$Traj515_genes$H_pos_C_neg$Gene)
+dc <- unique(direction_results$Traj515_genes$H_neg_C_pos$Gene)
+dd <- unique(direction_results$Traj515_genes$Both_pos$Gene)
+de <- unique(direction_results$Traj515_genes$Both_neg$Gene)
+df <- unique(direction_results$Traj515_genes$Both_pos$Gene)
+dg <- unique(direction_results$Traj515_genes$Both_neg$Gene)
+
+ea <- unique(direction_results$Traj1530_genes$all$Gene)
+eb <- unique(direction_results$Traj1530_genes$H_pos_C_neg$Gene)
+ec <- unique(direction_results$Traj1530_genes$H_neg_C_pos$Gene)
+ed <- unique(direction_results$Traj1530_genes$Both_pos$Gene)
+ee <- unique(direction_results$Traj1530_genes$Both_neg$Gene)
+ef <- unique(direction_results$Traj1530_genes$Same_direction$Gene)
+eg <- unique(direction_results$Traj1530_genes$Opposite_direction$Gene)
+
+cluster_lists <- list(
+  Traj02_All = aa,
+  Traj02_HumanPos = ab,
+  Traj02_ChimpPos = ac,
+  Traj02_Both_pos = ad,
+  Traj02_Both_neg = ae,
+  Traj02_Same_direction = af,
+  Traj02_Opposite_direction = ag,
+  
+  Traj25_All = ba,
+  Traj25_HumanPos = bb,
+  Traj25_ChimpPos = bc,
+  Traj25_Both_pos = bd,
+  Traj25_Both_neg = be,
+  Traj25_Same_direction = bf,
+  Traj25_Opposite_direction = bg,
+ 
+  Traj515_All = da,
+  Traj515_HumanPos = db,
+  Traj515_ChimpPos = dc,
+  Traj515_Both_pos = dd,
+  Traj515_Both_neg = de,
+  Traj515_Same_direction = df,
+  Traj515_Opposite_direction = dg,
+ 
+  Traj1530_All = ea,
+  Traj1530_HumanPos = eb,
+  Traj1530_ChimpPos = ec,
+  Traj1530_Both_pos = ed,
+  Traj1530_Both_neg = ee,
+  Traj1530_Same_direction = ef,
+  Traj1530_Opposite_direction = eg
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory_No4(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+#### Proportions
+
+```{r  RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_3}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# 1. Filter + define DEG status
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(DEG_status = ifelse(adj.P.Val < 0.05, "DEG", "Non-DEG"))
+
+# 2. Summarise proportions per comparison
+prop_df <- df %>%
+  group_by(Comparisons, DEG_status) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Comparisons) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup()
+
+# 3. Order comparisons properly
+prop_df$Comparisons <- factor(
+  prop_df$Comparisons,
+  levels = c(
+    "H_Day02","H_Day25","H_Day515","H_Day1530",
+    "C_Day02","C_Day25","C_Day515","C_Day1530"
+  )
+)
+
+# 4. Plot
+library(ggplot2)
+
+ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Proportion of genes",
+    fill = "",
+    title = "DEG vs NonDEG composition"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.05
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of DEGs",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of DEGs",
+    fill = "",
+    pattern = ""
+  )
+```
+#### Effect Sizes
+```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# ----------------------------
+# 1. Define trajectories
+# ----------------------------
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# ----------------------------
+# 2. Prepare long data
+# ----------------------------
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# ----------------------------
+# 3. Collapse to gene-level (keep all DEGs in either species)
+# ----------------------------
+df_wide <- df %>%
+  dplyr::select(Gene, Species, Stage, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  )
+
+df_deg <- df_wide %>%
+  filter(DEG_Human | DEG_Chimp)   # ALL DEGs (union)
+
+# ----------------------------
+# 4. Build plotting dataset
+# ----------------------------
+plot_df <- df_deg %>%
+  mutate(
+    logFC_H = abs(logFC_Human),
+    logFC_C = abs(logFC_Chimp)
+  ) %>%
+  dplyr::select(Gene, Stage, logFC_H, logFC_C) %>%
+  pivot_longer(
+    cols = c(logFC_H, logFC_C),
+    names_to = "Species",
+    values_to = "abs_logFC"
+  ) %>%
+  mutate(
+    Species = ifelse(Species == "logFC_H", "Human", "Chimp"),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+# ----------------------------
+# 5. Plot
+# ----------------------------
+ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
+  geom_boxplot() +
+  facet_wrap(~Stage, nrow = 1) +
+  scale_fill_manual(values = c(
+    "Human" = "black",
+    "Chimp" = "white"
+  )) +
+  coord_cartesian(ylim = c(0, 2)) +
+  theme_bw() +
+  labs(
+    x = "",
+    y = "|logFC| (all DEGs)",
+    title = "Effect sizes across all DEGs"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4_2}
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# ----------------------------
+# 1. Define trajectories
+# ----------------------------
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# ----------------------------
+# 2. Prepare long data
+# ----------------------------
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# ----------------------------
+# 3. Collapse to gene-level
+# ----------------------------
+df_wide <- df %>%
+  dplyr::select(Gene, Species, Stage, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  )
+
+# ----------------------------
+# 4. Build species-specific DEG sets
+# ----------------------------
+plot_df <- df_wide %>%
+  mutate(
+    use_H = DEG_Human,   # Human uses its DEGs (shared + human-only)
+    use_C = DEG_Chimp    # Chimp uses its DEGs (shared + chimp-only)
+  ) %>%
+  dplyr::select(Gene, Stage,
+         logFC_Human, logFC_Chimp,
+         use_H, use_C) %>%
+  
+  # reshape manually into long format
+  pivot_longer(
+    cols = c(logFC_Human, logFC_Chimp),
+    names_to = "Species",
+    values_to = "logFC"
+  ) %>%
+  
+  mutate(
+    use = ifelse(
+      Species == "logFC_Human", use_H,
+      use_C
+    ),
+    Species = ifelse(Species == "logFC_Human", "Human", "Chimp")
+  ) %>%
+  
+  filter(use) %>%   # keep only DEGs for that species
+  
+  mutate(
+    abs_logFC = abs(logFC),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+# ----------------------------
+# 5. Plot
+# ----------------------------
+ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
+  geom_boxplot() +
+  facet_wrap(~Stage, nrow = 1) +
+  scale_fill_manual(values = c(
+    "Human" = "black",
+    "Chimp" = "white"
+  )) +
+  coord_cartesian(ylim = c(0, 3)) +
+  theme_bw() +
+  labs(
+    x = "",
+    y = "|logFC| (species-specific DEGs)",
+    title = "Effect sizes within each species' DEG set"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_Divergence_RLCOMP_G1_4SpTp_No4}
+library(dplyr)
+library(stringr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# ----------------------------
+# 1. Define trajectories
+# ----------------------------
+traj <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+          "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+# ----------------------------
+# 2. Prepare long data
+# ----------------------------
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# ----------------------------
+# 3. Pair Human and Chimp values
+# ----------------------------
+df_wide <- df %>%
+  dplyr::select(Gene, Species, Stage, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  )
+
+# ----------------------------
+# 4. KEEP ALL DEGs (union)
+# ----------------------------
+df_deg <- df_wide %>%
+  filter(DEG_Human | DEG_Chimp)
+
+# ----------------------------
+# 5. Compute divergence
+# ----------------------------
+plot_df <- df_deg %>%
+  mutate(
+    diff_logFC = abs(logFC_Human - logFC_Chimp),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+# ----------------------------
+# 6. Plot
+# ----------------------------
+ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
+  geom_boxplot(fill = "grey80", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(0, 2)) +
+  theme_bw() +
+  labs(
+    x = "Developmental Stage",
+    y = "|H logFC − C logFC|",
+    title = "Species divergence across all DEGs"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_Divergence_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+library(stringr)
+
+traj <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+          "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+human_deg <- df %>%
+  filter(Species == "Human", DEG) %>%
+  dplyr::select(Gene, Stage, logFC)
+
+chimp_deg <- df %>%
+  filter(Species == "Chimp", DEG) %>%
+  dplyr::select(Gene, Stage, logFC)
+
+shared_deg <- inner_join(
+  human_deg,
+  chimp_deg,
+  by = c("Gene", "Stage"),
+  suffix = c("_H", "_C")
+)
+
+plot_df <- shared_deg %>%
+  mutate(
+    logFC_H = abs(logFC_H),
+    logFC_C = abs(logFC_C)
+  ) %>%
+  dplyr::select(Gene, Stage, logFC_H, logFC_C) %>%
+  tidyr::pivot_longer(
+    cols = c(logFC_H, logFC_C),
+    names_to = "Species",
+    values_to = "abs_logFC"
+  ) %>%
+  mutate(
+    Species = ifelse(Species == "logFC_H", "Human", "Chimp"),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+library(ggplot2)
+
+ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
+  geom_boxplot() +
+  facet_wrap(~Stage, nrow = 1) +
+  scale_fill_manual(values = c(
+    "Human" = "black",
+    "Chimp" = "white"
+  )) + 
+  scale_y_continuous(limits = c(0, 2)) +
+  theme_bw() +
+  labs(
+    x = "",
+    y = "|logFC| (DEGs in both species)",
+    title = "Conserved DEG effect sizes across development"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_EffectSizes_Divergence_RLCOMP_G1_4SpTp_No4}
+library(dplyr)
+library(stringr)
+
+traj <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+          "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+h <- df %>%
+  filter(Species == "Human", DEG) %>%
+  dplyr::select(Gene, Stage, logFC)
+
+c <- df %>%
+  filter(Species == "Chimp", DEG) %>%
+  dplyr::select(Gene, Stage, logFC)
+
+shared <- inner_join(
+  h, c,
+  by = c("Gene", "Stage"),
+  suffix = c("_H", "_C")
+)
+plot_df <- shared %>%
+  mutate(
+    diff_logFC = abs(logFC_H - logFC_C),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+library(ggplot2)
+
+ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
+  geom_boxplot(fill = "grey80", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() + 
+  coord_cartesian(ylim = c(0, 2)) +
+  labs(
+    x = "Developmental Stage",
+    y = "H logFC − C logFC",
+    title = "Species divergence in shared DEGs"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_correlationPlots_DEGs_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
+
+library(dplyr)
+library(stringr)
+
+traj <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+          "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    trajectory = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+df_all <- df %>%
+  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  ) %>%
+  filter(!is.na(logFC_Human) & !is.na(logFC_Chimp))
+
+df_all <- df_all %>%
+  filter(DEG_Human | DEG_Chimp)
+
+df_all$trajectory <- df_all$trajectory <- factor(
+  df_all$trajectory,
+  levels = c("Day02", "Day25", "Day515","Day1530")
+)
+
+df_all <- df_all %>%
+  mutate(
+    H = logFC_Human,
+    C = logFC_Chimp,
+    trajectory = recode(
+      trajectory,
+      "Day02"   = "Day0-Day2",
+      "Day25"   = "Day2-Day5",
+      "Day515"  = "Day5-Day15",
+      "Day1530" = "Day15-Day30"
+    )
+  )
+
+df_all <- df_all %>%
+  mutate(trajectory = recode(
+    trajectory,
+    "Day02"   = "Day0-Day2",
+    "Day25"   = "Day2-Day5",
+    "Day515"  = "Day5-Day15",
+    "Day1530" = "Day15-Day30"
+  ))
+
+ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
+  geom_point(alpha = 0.7) +
+  
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  
+  facet_wrap(~ trajectory, ncol = 2) +  # 2x2 layout
+  
+  theme_bw() +
+  theme(
+    legend.position = "none"  # cleaner since each panel is labeled
+  ) +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Trajectories (split panels)"
+  )
+
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  do({
+    fit <- lm(C ~ H, data = .)
+    data.frame(
+      r2 = round(summary(fit)$r.squared, 3),
+      p = format(summary(fit)$coefficients[2, "Pr(>|t|)"], scientific = TRUE, digits = 2)
+    )
+  })
+ggplot(df_all, aes(x = H, y = C)) +
+  geom_point(alpha = 0.7, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  
+  facet_wrap(~ trajectory, ncol = 2) +
+  
+  geom_text(
+    data = df_stats,
+    aes(
+      x = -Inf, y = Inf,
+      label = paste0("R² = ", r2, "\np = ", p)
+    ),
+    hjust = -0.1,
+    vjust = 1.1,
+    inherit.aes = FALSE
+  ) +
+  
+  coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) +
+  
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Trajectories (faceted)"
+  )
+
+```
+
+```{r RNASeq_DGE_Trajectory_correlationPlots_TrajecotrySpecific_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
+
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# ----------------------------
+# 1. Define trajectories
+# ----------------------------
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# ----------------------------
+# 2. Prepare long data
+# ----------------------------
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    trajectory = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# ----------------------------
+# 3. Pivot to paired H vs C
+# ----------------------------
+df_wide <- df %>%
+  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  )
+
+# ----------------------------
+# 4. KEEP ONLY shared DEGs
+# ----------------------------
+df_all <- df_wide %>%
+  filter(DEG_Human & DEG_Chimp)
+
+# ----------------------------
+# 5. Format for plotting
+# ----------------------------
+df_all <- df_all %>%
+  mutate(
+    H = logFC_Human,
+    C = logFC_Chimp,
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02","Day25","Day515","Day1530"),
+      labels = c("Day0-Day2","Day2-Day5","Day5-Day15","Day15-Day30")
+    )
+  )
+
+# ----------------------------
+# 6. Scatter plots + regression
+# ----------------------------
+ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  facet_wrap(~ trajectory, ncol = 2) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Shared DEGs: trajectory-specific conservation"
+  )
+
+# ----------------------------
+# 7. R² per trajectory
+# ----------------------------
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  summarise(
+    r2 = summary(lm(C ~ H))$r.squared,
+    p = summary(lm(C ~ H))$coefficients[2,4],
+    .groups = "drop"
+  )
+
+# ----------------------------
+# 8. Scatter + R² labels
+# ----------------------------
+ggplot(df_all, aes(x = H, y = C)) +
+  geom_point(alpha = 0.7, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  facet_wrap(~ trajectory, ncol = 2) +
+  geom_text(
+    data = df_stats,
+    aes(
+      x = -Inf, y = Inf,
+      label = paste0("R² = ", round(r2, 3), "\np = ", signif(p, 2))
+    ),
+    inherit.aes = FALSE,
+    hjust = -0.1,
+    vjust = 1.1
+  ) +
+  coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Shared DEGs: trajectory conservation"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_effectSizes_SpeciesSpecific_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# Prepare dataframe
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# Wide format: one row per Gene + Stage
+df_wide <- df %>%
+  dplyr::select(Gene, Stage, Species, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  ) %>%
+  filter(
+    !is.na(logFC_Human),
+    !is.na(logFC_Chimp)
+  )
+
+# Keep genes DEG in ONLY one species
+# (Human XOR Chimp)
+plot_df <- df_wide %>%
+  filter(DEG_Human != DEG_Chimp) %>%
+  mutate(
+    logFC_Human = abs(logFC_Human),
+    logFC_Chimp = abs(logFC_Chimp)
+  ) %>%
+  dplyr::select(
+    Gene,
+    Stage,
+    logFC_Human,
+    logFC_Chimp
+  ) %>%
+  pivot_longer(
+    cols = c(logFC_Human, logFC_Chimp),
+    names_to = "Species",
+    values_to = "abs_logFC"
+  ) %>%
+  mutate(
+    Species = recode(
+      Species,
+      "logFC_Human" = "Human",
+      "logFC_Chimp" = "Chimp"
+    ),
+    Stage = factor(
+      Stage,
+      levels = c(
+        "Day02",
+        "Day25",
+        "Day515",
+        "Day1530"
+      ),
+      labels = c(
+        "Day0-Day2",
+        "Day2-Day5",
+        "Day5-Day15",
+        "Day15-Day30"
+      )
+    )
+  )
+
+# Plot
+ggplot(plot_df,
+       aes(x = Species,
+           y = abs_logFC,
+           fill = Species)) +
+
+  geom_boxplot(width = 0.7) +
+
+  facet_wrap(~Stage, nrow = 1) +
+
+  scale_fill_manual(values = c(
+    "Human" = "black",
+    "Chimp" = "white"
+  )) +
+
+  scale_y_continuous(limits = c(0, 2)) +
+
+  theme_bw() +
+
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text = element_text(size = 12)
+  ) +
+
+  labs(
+    x = "",
+    y = "|logFC|",
+    title = "Effect sizes for species-specific DEGs"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_effectSizes_Divergence_SpeciesSpecific_RLCOMP_G1_4SpTp_No4}
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# Prepare dataframe
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# Wide format
+df_wide <- df %>%
+  dplyr::select(Gene, Stage, Species, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  ) %>%
+  filter(
+    !is.na(logFC_Human),
+    !is.na(logFC_Chimp)
+  )
+
+# Keep genes DEG in ONLY one species
+# (Human XOR Chimp)
+plot_df <- df_wide %>%
+  filter(DEG_Human != DEG_Chimp) %>%
+  mutate(
+    diff_logFC = abs(logFC_Human - logFC_Chimp),
+    Stage = factor(
+      Stage,
+      levels = c(
+        "Day02",
+        "Day25",
+        "Day515",
+        "Day1530"
+      ),
+      labels = c(
+        "Day0-Day2",
+        "Day2-Day5",
+        "Day5-Day15",
+        "Day15-Day30"
+      )
+    )
+  )
+
+# Plot
+ggplot(plot_df,
+       aes(x = Stage,
+           y = diff_logFC)) +
+
+  geom_boxplot(
+    fill = "grey80",
+    color = "black"
+  ) +
+
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  coord_cartesian(ylim = c(0, 2)) +
+
+  theme_bw() +
+
+  labs(
+    x = "Developmental Stage",
+    y = "|Human logFC − Chimp logFC|",
+    title = "Species divergence in species-specific DEGs"
+  )
+```
+
+#### R2 scatter plots
+
+```{r RNASeq_DGE_Trajectory_SpeciesSpecific_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+# ----------------------------
+# 1. Define trajectories
+# ----------------------------
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# ----------------------------
+# 2. Prepare long data
+# ----------------------------
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    trajectory = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# ----------------------------
+# 3. Pivot to paired H vs C
+# ----------------------------
+df_wide <- df %>%
+  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  ) %>%
+  filter(
+    !is.na(logFC_Human),
+    !is.na(logFC_Chimp)
+  )
+
+# ----------------------------
+# 4. KEEP ONLY species-specific DEGs
+#    (DEG in Human XOR Chimp)
+# ----------------------------
+df_all <- df_wide %>%
+  filter(DEG_Human != DEG_Chimp)
+
+# ----------------------------
+# 5. Format for plotting
+# ----------------------------
+df_all <- df_all %>%
+  mutate(
+    H = logFC_Human,
+    C = logFC_Chimp,
+    trajectory = factor(
+      trajectory,
+      levels = c(
+        "Day02",
+        "Day25",
+        "Day515",
+        "Day1530"
+      ),
+      labels = c(
+        "Day0-Day2",
+        "Day2-Day5",
+        "Day5-Day15",
+        "Day15-Day30"
+      )
+    )
+  )
+
+# ----------------------------
+# 6. Scatter plots + regression
+# ----------------------------
+ggplot(df_all,
+       aes(x = H,
+           y = C,
+           color = trajectory)) +
+
+  geom_point(alpha = 0.7) +
+
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    fullrange = TRUE
+  ) +
+
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~ trajectory, ncol = 2) +
+
+  theme_bw() +
+
+  theme(
+    legend.position = "none"
+  ) +
+
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Species-specific DEGs: trajectory divergence"
+  )
+
+# ----------------------------
+# 7. R² per trajectory
+# ----------------------------
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  summarise(
+    r2 = summary(lm(C ~ H))$r.squared,
+    p = summary(lm(C ~ H))$coefficients[2,4],
+    .groups = "drop"
+  )
+
+# ----------------------------
+# 8. Scatter + R² labels
+# ----------------------------
+ggplot(df_all,
+       aes(x = H,
+           y = C)) +
+
+  geom_point(
+    alpha = 0.7,
+    color = "steelblue"
+  ) +
+
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    color = "black"
+  ) +
+
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~ trajectory, ncol = 2) +
+
+  geom_text(
+    data = df_stats,
+    aes(
+      x = -Inf,
+      y = Inf,
+      label = paste0(
+        "R² = ",
+        round(r2, 3),
+        "\np = ",
+        signif(p, 2)
+      )
+    ),
+    inherit.aes = FALSE,
+    hjust = -0.1,
+    vjust = 1.1
+  ) +
+
+  coord_cartesian(
+    xlim = c(-15, 15),
+    ylim = c(-15, 15)
+  ) +
+
+  theme_bw() +
+
+  theme(
+    legend.position = "none"
+  ) +
+
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Species-specific DEGs: trajectory divergence"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_NonDEGs_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+
+# Comparisons to include
+traj <- c(
+  "H_Day02","H_Day25","H_Day515","H_Day1530",
+  "C_Day02","C_Day25","C_Day515","C_Day1530"
+)
+
+# Prepare dataframe
+df <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  mutate(
+    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
+    trajectory = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  )
+
+# Wide format
+df_all <- df %>%
+  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = c(logFC, DEG)
+  )
+
+# Remove missing values
+df_all <- df_all %>%
+  filter(
+    !is.na(logFC_Human),
+    !is.na(logFC_Chimp),
+    !is.na(DEG_Human),
+    !is.na(DEG_Chimp)
+  )
+
+# KEEP genes non-significant in BOTH species
+df_all <- df_all %>%
+  filter(
+    DEG_Human == FALSE &
+    DEG_Chimp == FALSE
+  )
+
+# Rename trajectory labels
+df_all <- df_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Day02"   = "Day0-Day2",
+      "Day25"   = "Day2-Day5",
+      "Day515"  = "Day5-Day15",
+      "Day1530" = "Day15-Day30"
+    )
+  )
+
+# Set factor order
+df_all$trajectory <- factor(
+  df_all$trajectory,
+  levels = c(
+    "Day0-Day2",
+    "Day2-Day5",
+    "Day5-Day15",
+    "Day15-Day30"
+  )
+)
+
+# Create plotting variables
+df_all <- df_all %>%
+  mutate(
+    H = logFC_Human,
+    C = logFC_Chimp
+  )
+
+# Calculate statistics
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  do({
+    fit <- lm(C ~ H, data = .)
+
+    data.frame(
+      r2 = round(summary(fit)$r.squared, 3),
+      p = format(
+        summary(fit)$coefficients[2, "Pr(>|t|)"],
+        scientific = TRUE,
+        digits = 2
+      )
+    )
+  })
+
+# Plot
+ggplot(df_all, aes(x = H, y = C)) +
+
+  geom_point(
+    alpha = 0.5,
+    color = "grey40"
+  ) +
+
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    color = "black"
+  ) +
+
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(
+    ~ trajectory,
+    ncol = 2
+  ) +
+
+  geom_text(
+    data = df_stats,
+    aes(
+      x = -Inf,
+      y = Inf,
+      label = paste0(
+        "R² = ", r2,
+        "\np = ", p
+      )
+    ),
+    hjust = -0.1,
+    vjust = 1.1,
+    inherit.aes = FALSE
+  ) +
+
+  coord_cartesian(
+    xlim = c(-15, 15),
+    ylim = c(-15, 15)
+  ) +
+
+  theme_bw() +
+
+  theme(
+    legend.position = "none"
+  ) +
+
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Non-DEGs in both species"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_PlotsCombined_RLCOMP_G1_4SpTp_No4 }
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+df_all <- TopTable %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  
+  mutate(
+    species = ifelse(str_starts(Comparisons, "H_"), "H", "C"),
+    trajectory = str_remove(Comparisons, "^[HC]_")
+  ) %>%
+  
+  group_by(Gene, species, trajectory) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  
+  pivot_wider(names_from = species, values_from = logFC) %>%
+  
+  filter(!is.na(H), !is.na(C))
+
+library(ggplot2)
+
+df_all$trajectory <- df_all$trajectory <- factor(
+  df_all$trajectory,
+  levels = c("Day02", "Day25", "Day515","Day1530")
+)
+
+ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
+  geom_point(alpha = 0.7) +
+  
+  # one regression line per trajectory (same color as points)
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE)+
+  
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  
+  theme_bw() +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    color = "Trajectory",
+    title = "All Trajectories Combined"
+  )
+
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  do({
+    fit <- lm(C ~ H, data = .)
+    data.frame(
+      r2 = summary(fit)$r.squared,
+      p = summary(fit)$coefficients[2, "Pr(>|t|)"]
+    )
+  })
+```
+
+```{r RNASeq_DGE_Trajectory_AllExpressedGenes_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
+library(dplyr)
+
+df_all <- df_all %>%
+  mutate(trajectory = recode(
+    trajectory,
+    "Day02"   = "Day0-Day2",
+    "Day25"   = "Day2-Day5",
+    "Day515"  = "Day5-Day15",
+    "Day1530" = "Day15-Day30"
+  ))
+
+ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
+  geom_point(alpha = 0.7) +
+  
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  
+  facet_wrap(~ trajectory, ncol = 2) +  # 2x2 layout
+  
+  theme_bw() +
+  theme(
+    legend.position = "none"  # cleaner since each panel is labeled
+  ) +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Trajectories (split panels)"
+  )
+
+df_stats <- df_all %>%
+  group_by(trajectory) %>%
+  do({
+    fit <- lm(C ~ H, data = .)
+    data.frame(
+      r2 = round(summary(fit)$r.squared, 3),
+      p = format(summary(fit)$coefficients[2, "Pr(>|t|)"], scientific = TRUE, digits = 2)
+    )
+  })
+ggplot(df_all, aes(x = H, y = C)) +
+  geom_point(alpha = 0.7, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  
+  facet_wrap(~ trajectory, ncol = 2) +
+  
+  geom_text(
+    data = df_stats,
+    aes(
+      x = -Inf, y = Inf,
+      label = paste0("R² = ", r2, "\np = ", p)
+    ),
+    hjust = -0.1,
+    vjust = 1.1,
+    inherit.aes = FALSE
+  ) +
+  
+  coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) +
+  
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(
+    x = "Human logFC",
+    y = "Chimp logFC",
+    title = "Trajectories (faceted)"
+  )
+
+```
+
+```{r RNASeq_DGE_CorrelationValues_Combined_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=6}
+r2_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.538, 0.673, 0.562, 0.428)
+)
+
+r2_df$Transition <- factor(
+  r2_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+r3_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.606, 0.708, 0.61, 0.471)
+)
+
+r3_df$Transition <- factor(
+  r3_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+r4_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.844, 0.868, 0.84, 0.797)
+)
+
+r4_df$Transition <- factor(
+  r4_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+r5_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.123, 0.204, 0.183, 0.158)
+)
+
+r5_df$Transition <- factor(
+  r5_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+r6_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.042,0.14,0.09,0.144)
+)
+
+r6_df$Transition <- factor(
+  r6_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+library(dplyr)
+library(ggplot2)
+
+# Add labels
+r2_df$Group <- "All Expressed"
+r3_df$Group <- "All DEGs"
+r4_df$Group <- "Shared DEGs"
+r5_df$Group <- "Species-Specific DEGs"
+r6_df$Group <- "Non-DEGs"
+
+# Combine
+all_df <- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df)
+
+# Factor order
+all_df$Transition <- factor(
+  all_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+p <- ggplot(
+  all_df,
+  aes(
+    x = Transition,
+    y = R2,
+    group = Group,
+    linetype = Group
+  )
+) +
+
+  # Background highlight
+  annotate(
+    "rect",
+    xmin = 1.5, xmax = 3.5,
+    ymin = -Inf, ymax = Inf,
+    alpha = 0.1,
+    fill = "grey70"
+  ) +
+
+  geom_line(
+    aes(linewidth = Group),
+    color = "black"
+  ) +
+
+  geom_point(
+    size = 3,
+    color = "black"
+  ) +
+
+  geom_text(
+    aes(label = round(R2, 2)),
+    vjust = -1,
+    size = 3,
+    show.legend = FALSE
+  ) +
+
+  scale_linetype_manual(
+  values = c(
+    "All Expressed" = "solid",
+    "All DEGs" = "dashed",
+    "Shared DEGs" = "dotted",
+    "Species-Specific DEGs" = "longdash",
+    "Non-DEGs" = "dotdash"
+  )
+  ) +
+
+  scale_linewidth_manual(
+    values = c(
+      "All Expressed" = 1.8,  # bold
+      "All DEGs" = 1.2,
+      "Shared DEGs" = 1.2,
+      "Species-Specific DEGs" = 1.2,
+      "Non-DEGs" = 1.2
+    )
+  ) +
+
+  labs(
+    title = "Inter-species correlation peaks at mid-development",
+    x = "Differentiation Transition",
+    y = expression(R^2),
+    linetype = "Dataset",
+    linewidth = "Dataset"
+  ) +
+
+  ylim(0, 1) +
+
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    plot.title = element_text(face = "bold")
+  )
+
+p
+```
+
+#### Venn
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day02","Day25","Day515","Day1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^H_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+#### GoEnrichemnt
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     H_pos_C_neg = res$H_pos_C_neg,
+#     H_neg_C_pos = res$H_neg_C_pos,
+#     Both_pos    = res$Both_pos,
+#     Both_neg    = res$Both_neg,
+#     Same_direction = res$Same_direction,
+#     Opposite_direction = res$Opposite_direction,
+#     All = res$all
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+
+
+# saveRDS(all_go_results, "data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+```
+
+```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "Traj02_genes",
+    "Traj25_genes",
+    "Traj515_genes",
+    "Traj1530_genes"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Traj02_genes"   = "Day02",
+      "Traj25_genes"   = "Day25",
+      "Traj515_genes"  = "Day515",
+      "Traj1530_genes" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion developmental GO terms",
+    title = "GO enrichment of DEGs (All DEGs at a transition)"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Traj02_genes"   = "Day02",
+      "Traj25_genes"   = "Day25",
+      "Traj515_genes"  = "Day515",
+      "Traj1530_genes" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("heart|cardiac", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion cardiac/heart GO terms",
+    title = "GO enrichment of DEGs (All DEGs at a transition)"
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4_3}
+all_go_results <- Trajectory_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$Same_direction
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "Traj02_genes"   = "Day02",
+      "Traj25_genes"   = "Day25",
+      "Traj515_genes"  = "Day5-15",
+      "Traj1530_genes" = "Day15-30"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day5-15", "Day15-30")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion developmental GO terms",
+    title = "GO enrichment of DEGs (All)"
+  )
+```
+
+## Interaction DEGs
+
+#### FC plot
+```{r RNASeq_DGE_Interaction_FC_No4}
+
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+all_genes <- unique(TopTable$Gene)
+
+TopTable_RNA_Inter <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
+  ))
+
+TopTable_RNA_Inter$absfc <- abs(TopTable_RNA_Inter$logFC)
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+cluster_lists <- list(
+  Inter_02_genes  = Inter_02_genes,
+  Inter_25_genes  = Inter_25_genes,
+  Inter_515_genes  = Inter_515_genes,
+  Inter_1530_genes  = Inter_1530_genes,
+  'All interaction genes' = InteractionAtLeastOne,
+  'All expressed genes' = all_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Inter)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+#### absFC plot
+```{r RNASeq_DGE_Interaction_absFC_No4}
+
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+all_genes <- unique(TopTable$Gene)
+
+TopTable_RNA_Inter <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530"
+  ))
+
+TopTable_RNA_Inter$absfc <- abs(TopTable_RNA_Inter$logFC)
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+cluster_lists <- list(
+  Inter_02_genes  = Inter_02_genes,
+  Inter_25_genes  = Inter_25_genes,
+  Inter_515_genes  = Inter_515_genes,
+  Inter_1530_genes  = Inter_1530_genes,
+  'All interaction genes' = InteractionAtLeastOne,
+  'All expressed genes' = all_genes
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Inter)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r RNASeq_DGE_Interaction_Directionality_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+traj_info <- list(
+  InterTraj02 = list(
+    coef = "Sig_Sp_inter_Traj02",
+    comp = "Day02"
+  ),
+  InterTraj25 = list(
+    coef = "Sig_Sp_inter_Traj25",
+    comp = "Day25"
+  ),
+  InterTraj515 = list(
+    coef = "Sig_Sp_inter_Traj515",
+    comp = "Day515"
+  ),
+  InterTraj1530 = list(
+    coef = "Sig_Sp_inter_Traj1530",
+    comp = "Day1530"
+  )
+)
+
+cluster_lists <- list(
+  InterTraj02 = Inter_02_genes,
+  InterTraj25 = Inter_25_genes,
+  InterTraj515 = Inter_515_genes,
+  InterTraj1530 = Inter_1530_genes
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2,
+      gene_set = cluster_lists[[name]]
+    )
+
+  }),
+  names(traj_info)
+)
+
+saveRDS(direction_results, "data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+```{r RNASeq_DGE_Interaction_Directionality_FC_No4}
+
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+ComparisonNames <- ComparisonNames_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- readRDS("data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_RNA_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "H_Day02","H_Day25","H_Day515","H_Day1530",
+    "C_Day02","C_Day25","C_Day515","C_Day1530"
+  ))
+
+aa <- unique(RNA_sets$InterTraj02$all$Gene)
+ab <- unique(RNA_sets$InterTraj02$H_pos_C_neg$Gene)
+ac <- unique(RNA_sets$InterTraj02$H_neg_C_pos$Gene)
+ad <- unique(RNA_sets$InterTraj02$Both_pos$Gene)
+ae <- unique(RNA_sets$InterTraj02$Both_neg$Gene)
+af <- unique(RNA_sets$InterTraj02$Same_direction$Gene)
+ag <- unique(RNA_sets$InterTraj02$Opposite_direction$Gene)
+
+ba <- unique(RNA_sets$InterTraj25$all$Gene)
+bb <- unique(RNA_sets$InterTraj25$H_pos_C_neg$Gene)
+bc <- unique(RNA_sets$InterTraj25$H_neg_C_pos$Gene)
+bd <- unique(RNA_sets$InterTraj25$Both_pos$Gene)
+be <- unique(RNA_sets$InterTraj25$Both_neg$Gene)
+bf <- unique(RNA_sets$InterTraj25$Same_direction$Gene)
+bg <- unique(RNA_sets$InterTraj25$Opposite_direction$Gene)
+
+da <- unique(RNA_sets$InterTraj515$all$Gene)
+db <- unique(RNA_sets$InterTraj515$H_pos_C_neg$Gene)
+dc <- unique(RNA_sets$InterTraj515$H_neg_C_pos$Gene)
+dd <- unique(RNA_sets$InterTraj515$Both_pos$Gene)
+de <- unique(RNA_sets$InterTraj515$Both_neg$Gene)
+df <- unique(RNA_sets$InterTraj515$Same_direction$Gene)
+dg <- unique(RNA_sets$InterTraj515$Opposite_direction$Gene)
+
+ea <- unique(RNA_sets$InterTraj1530$all$Gene)
+eb <- unique(RNA_sets$InterTraj1530$H_pos_C_neg$Gene)
+ec <- unique(RNA_sets$InterTraj1530$H_neg_C_pos$Gene)
+ed <- unique(RNA_sets$InterTraj1530$Both_pos$Gene)
+ee <- unique(RNA_sets$InterTraj1530$Both_neg$Gene)
+ef <- unique(RNA_sets$InterTraj1530$Same_direction$Gene)
+eg <- unique(RNA_sets$InterTraj1530$Opposite_direction$Gene)
+
+cluster_lists <- list(
+  Inter02_All = aa,
+  Inter02_HumanPos = ab,
+  Inter02_ChimpPos = ac,
+  Inter02_Both_pos = ad,
+  Inter02_Both_neg = ae,
+  Inter02_Same_direction = af,
+  Inter02_Opposite_direction = ag,
+  
+  Inter25_All = ba,
+  Inter25_HumanPos = bb,
+  Inter25_ChimpPos = bc,
+  Inter25_Both_pos = bd,
+  Inter25_Both_neg = be,
+  Inter25_Same_direction = bf,
+  Inter25_Opposite_direction = bg,
+  
+  Inter515_All = da,
+  Inter515_HumanPos = db,
+  Inter515_ChimpPos = dc,
+  Inter515_Both_pos = dd,
+  Inter515_Both_neg = de,
+  Inter515_Same_direction = df,
+  Inter515_Opposite_direction = dg,
+  
+  
+  Inter1530_All = ea,
+  Inter1530_HumanPos = eb,
+  Inter1530_ChimpPos = ec,
+  Inter1530_Both_pos = ed,
+  Inter1530_Both_neg = ee,
+  Inter1530_Same_direction = ef,
+  Inter1530_Opposite_direction = eg
+  
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_interaction_No4(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+#### VennDiagram
+```{r RNASeq_DGE_Interaction_Venn_No4, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Traj02","Traj25","Traj515","Traj1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^Sig_Sp_inter_")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Traj[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Traj02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Traj25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Traj515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Traj1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+#### Proportion
+```{r RNASeq_DGE_Interactions_DEGs_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+library(dplyr)
+library(purrr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+days <- c("02", "25", "515", "1530")
+
+prop_df <- map_dfr(days, function(day) {
+
+  x <- RNA_sets[[paste0("Sig_Sp_inter_Traj", day)]]
+
+  tibble(
+    trajectory = day,
+
+    INTER_DEG = length(x$DEGs$Gene),
+    INTER_NonDEG = length(x$NonDEGs$Gene)
+  )
+})
+
+# IMPORTANT: use TRUE universe (same logic as trajectory plot)
+total_genes <- prop_df$INTER_DEG + prop_df$INTER_NonDEG
+
+prop_df <- prop_df %>%
+  mutate(
+    INTER_DEG = INTER_DEG / total_genes,
+    INTER_NonDEG = INTER_NonDEG / total_genes
+  )
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = "type",
+    values_to = "prop"
+  )
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("02", "25", "515", "1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time window",
+    y = "Proportion of genes",
+    fill = ""
+  )
+```
+
+```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
+TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- readRDS("data/DGE/Interaction_Directions_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(ggplot2)
+
+days <- c("02", "25", "515", "1530")
+
+prop_df <- map_dfr(days, function(day) {
+
+  x <- RNA_sets[[paste0("InterTraj", day)]]
+
+  tibble(
+    trajectory = day,
+
+    Same_direction = length(x$Same_direction$Gene),
+
+    Human_higher = length(x$H_pos_C_neg$Gene),
+
+    Chimp_higher = length(x$H_neg_C_pos$Gene)
+  )
+})
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = "type",
+    values_to = "count"
+  ) %>%
+  group_by(trajectory) %>%
+  mutate(
+    prop = count / sum(count)
+  ) %>%
+  ungroup()
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("02", "25", "515", "1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+ggplot(
+  prop_long,
+  aes(x = trajectory, y = prop, fill = type)
+) +
+  geom_col(
+    color = "black",
+    linewidth = 0.3
+  ) +
+  theme_bw() +
+  labs(
+    x = "Time window",
+    y = "Proportion of interaction DEGs",
+    fill = ""
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Same_direction" = "grey70",
+      "Human_higher"   = "black",
+      "Chimp_higher"   = "white"
+    )
+  ) +
+  theme(
+    panel.grid = element_blank()
+  )
+```
+
+#### GoEnrichemnt
+```{r RNASeq_DGE_Interaction_EnrichGo}
+fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     H_pos_C_neg = res$H_pos_C_neg,
+#     H_neg_C_pos = res$H_neg_C_pos,
+#     Both_pos    = res$Both_pos,
+#     Both_neg    = res$Both_neg,
+#     Same_direction = res$Same_direction,
+#     Opposite_direction = res$Opposite_direction,
+#     All = res$all
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+# saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+```
+
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "InterTraj02",
+    "InterTraj25",
+    "InterTraj515",
+    "InterTraj1530"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+
+```
+
+```{r RNASeq_DGE_ Interaction_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "InterTraj02"   = "Day02",
+      "InterTraj25"   = "Day25",
+      "InterTraj515"  = "Day515",
+      "InterTraj1530" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion GO terms",
+    title = "Proportion Go terms that are development|morphogenesis|differentiation"
+  )
+```
+
+```{r RNASeq_DGE_ Interaction_EnrichGoHeartTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+all_go_results <- Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+
+go_all <- imap_dfr(all_go_results, function(x, name) {
+
+  df <- x$All
+  if (is.null(df)) return(NULL)
+
+  df %>%
+    mutate(trajectory = name)
+})
+
+go_all <- go_all %>%
+  mutate(
+    trajectory = recode(
+      trajectory,
+      "InterTraj02"   = "Day02",
+      "InterTraj25"   = "Day25",
+      "InterTraj515"  = "Day515",
+      "InterTraj1530" = "Day1530"
+    ),
+    trajectory = factor(
+      trajectory,
+      levels = c("Day02", "Day25", "Day515", "Day1530")
+    )
+  )
+
+is_dev <- function(x) {
+  grepl("heart|cardiac", x, ignore.case = TRUE)
+}
+
+go_summary <- go_all %>%
+  mutate(dev = is_dev(Description)) %>%
+  group_by(trajectory) %>%
+  summarise(
+    prop_dev = mean(dev),
+    n_terms = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
+  geom_col(fill = "black") +
+  theme_bw() +
+  labs(
+    x = "Trajectory",
+    y = "Proportion of GO terms",
+    title = "Proportion Go terms that are heart|cardiac"
+  )
+```
+##### Any Interaction Gene
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions}
+fit2 <- fit2 <- fit2_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+v <- v1_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+InteractionAtLeastOne_df <- data.frame(
+  Gene = InteractionAtLeastOne
+)
+
+all_go_results <- lapply(names(direction_results), function(traj) {
+
+  res <- direction_results[[traj]]
+
+  gene_sets <- list(
+    H_pos_C_neg = res$H_pos_C_neg,
+    H_neg_C_pos = res$H_neg_C_pos,
+    Both_pos    = res$Both_pos,
+    Both_neg    = res$Both_neg,
+    Same_direction = res$Same_direction,
+    Opposite_direction = res$Opposite_direction,
+    All = res$all
+  )
+
+  Enrich_Go_sets(gene_sets, v)
+})
+
+names(all_go_results) <- names(direction_results)
+
+all_go_results$InteractionAtLeastOne <- Enrich_Go_sets(
+  list(
+    All = InteractionAtLeastOne_df
+  ),
+  v
+)
+
+
+saveRDS(all_go_results, "data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+
+```{r RNASeq_DGE_Interaction_EnrichGo_2,fig.height=10,fig.height=10}
+
+library(dplyr)
+library(purrr)
+
+
+top10_terms <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+  Interaction_go_results_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "InterTraj02",
+    "InterTraj25",
+    "InterTraj515",
+    "InterTraj1530",
+    "InteractionAtLeastOne"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+library(ggplot2)
+
+ggplot(GO_plot_data,
+       aes(x = Comparison,
+           y = Description,
+           size = Count,
+           color = -log10(p.adjust))) +
+  geom_point() +
+  facet_wrap(~GeneSet, scales = "free_y") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(
+    x = NULL,
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+```
+
+
+```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/RNA_DGE.Rmd")
+
+```
+
+>>>>>>> 37d7b88d947fed7e954e32e773c93ab093a830be

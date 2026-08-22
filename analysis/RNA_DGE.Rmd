@@ -1878,7 +1878,7 @@ SpeciesGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/SpeciesGo_Filt_logcpm_G1_SpTp
 # saveRDS(GO_plot_data,"data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 ```
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 library(ggplot2)
@@ -1904,7 +1904,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=5}
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -3012,7 +3012,7 @@ all_go_results <- readRDS("data/DGE/InteractionGo_Filt_logcpm_G1_SpTp_RNA_fc_NoR
 
 ```
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_2,fig.height=10,fig.height=10}
 
 InteractionGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/InteractionGo_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 
@@ -3095,7 +3095,7 @@ InteractionGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/InteractionGo_Filt_logcpm
 
 ```
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 library(ggplot2)
@@ -3121,7 +3121,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=5}
+```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -4239,7 +4239,7 @@ library(purrr)
 
 
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1, fig.height=10}
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(ggplot2)
@@ -6242,7 +6242,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_plot2,fig.height=5}
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4_plot2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/TrajectoryGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {

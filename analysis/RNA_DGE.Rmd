@@ -1750,24 +1750,24 @@ v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_All_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
 
-all_go_results <- lapply(names(direction_results), function(traj) {
-
-  res <- direction_results[[traj]]
-
-  gene_sets <- list(
-    All = res$all,
-    Human_higher = res$Human_higher,
-    Chimp_higher    = res$Chimp_higher
-  )
-
-  go <- Enrich_Go_sets(gene_sets, v)
-
-  return(go)
-})
-
-names(all_go_results) <- names(direction_results)
-
-
+# all_go_results <- lapply(names(direction_results), function(traj) {
+# 
+#   res <- direction_results[[traj]]
+# 
+#   gene_sets <- list(
+#     All = res$all,
+#     Human_higher = res$Human_higher,
+#     Chimp_higher    = res$Chimp_higher
+#   )
+# 
+#   go <- Enrich_Go_sets(gene_sets, v)
+# 
+#   return(go)
+# })
+# 
+# names(all_go_results) <- names(direction_results)
+# 
+# 
 # saveRDS(all_go_results, "data/DGE/SpeciesGo_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 
 ```
@@ -2461,8 +2461,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
     color = "Gene Set"
   )
 
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
 H_comp <- "H_Day45"
 C_comp <- "C_Day45"
@@ -2542,9 +2540,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
     title = paste0(H_comp, " vs ", C_comp),
     color = "Gene Set"
   )
-
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
 
 H_comp <- "H_Day515"
@@ -2626,8 +2621,6 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
     color = "Gene Set"
   )
 
-TopTable <- TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
-RNA_sets <- RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep
 
 
 H_comp <- "H_Day1530"

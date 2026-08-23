@@ -1640,32 +1640,32 @@ ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RD
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_All_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
-Species_DEG_info <- list(
-  HvC_Day0 = list(coef = "HvC_Day0", comp = "HvC_Day0"),
-  HvC_Day2 = list(coef = "HvC_Day2", comp = "HvC_Day2"),
-  HvC_Day4 = list(coef = "HvC_Day4", comp = "HvC_Day4"),
-  HvC_Day5 = list(coef ="HvC_Day5", comp = "HvC_Day5"),
- HvC_Day15 = list(coef = "HvC_Day15", comp = "HvC_Day15"),
- HvC_Day30 = list(coef = "HvC_Day30", comp = "HvC_Day30")
-)
-
-direction_results <- setNames(
-  lapply(names(Species_DEG_info), function(name) {
-
-    info <- Species_DEG_info[[name]]
-
-    get_fc_directions_HvC(
-      traj_label = name,
-      coef_name = info$coef,
-      comparison_label = info$comp,
-      top_table_all = TopTable,
-      fit_obj = fit2
-    )
-
-  }),
-  names(Species_DEG_info)
-)
-
+# Species_DEG_info <- list(
+#   HvC_Day0 = list(coef = "HvC_Day0", comp = "HvC_Day0"),
+#   HvC_Day2 = list(coef = "HvC_Day2", comp = "HvC_Day2"),
+#   HvC_Day4 = list(coef = "HvC_Day4", comp = "HvC_Day4"),
+#   HvC_Day5 = list(coef ="HvC_Day5", comp = "HvC_Day5"),
+#  HvC_Day15 = list(coef = "HvC_Day15", comp = "HvC_Day15"),
+#  HvC_Day30 = list(coef = "HvC_Day30", comp = "HvC_Day30")
+# )
+# 
+# direction_results <- setNames(
+#   lapply(names(Species_DEG_info), function(name) {
+# 
+#     info <- Species_DEG_info[[name]]
+# 
+#     get_fc_directions_HvC(
+#       traj_label = name,
+#       coef_name = info$coef,
+#       comparison_label = info$comp,
+#       top_table_all = TopTable,
+#       fit_obj = fit2
+#     )
+# 
+#   }),
+#   names(Species_DEG_info)
+# )
+# 
 # saveRDS(direction_results, "data/DGE/directions_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 

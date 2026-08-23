@@ -1640,32 +1640,32 @@ ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RD
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_All_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
-Species_DEG_info <- list(
-  HvC_Day0 = list(coef = "HvC_Day0", comp = "HvC_Day0"),
-  HvC_Day2 = list(coef = "HvC_Day2", comp = "HvC_Day2"),
-  HvC_Day4 = list(coef = "HvC_Day4", comp = "HvC_Day4"),
-  HvC_Day5 = list(coef ="HvC_Day5", comp = "HvC_Day5"),
- HvC_Day15 = list(coef = "HvC_Day15", comp = "HvC_Day15"),
- HvC_Day30 = list(coef = "HvC_Day30", comp = "HvC_Day30")
-)
-
-direction_results <- setNames(
-  lapply(names(Species_DEG_info), function(name) {
-
-    info <- Species_DEG_info[[name]]
-
-    get_fc_directions_HvC(
-      traj_label = name,
-      coef_name = info$coef,
-      comparison_label = info$comp,
-      top_table_all = TopTable,
-      fit_obj = fit2
-    )
-
-  }),
-  names(Species_DEG_info)
-)
-
+# Species_DEG_info <- list(
+#   HvC_Day0 = list(coef = "HvC_Day0", comp = "HvC_Day0"),
+#   HvC_Day2 = list(coef = "HvC_Day2", comp = "HvC_Day2"),
+#   HvC_Day4 = list(coef = "HvC_Day4", comp = "HvC_Day4"),
+#   HvC_Day5 = list(coef ="HvC_Day5", comp = "HvC_Day5"),
+#  HvC_Day15 = list(coef = "HvC_Day15", comp = "HvC_Day15"),
+#  HvC_Day30 = list(coef = "HvC_Day30", comp = "HvC_Day30")
+# )
+# 
+# direction_results <- setNames(
+#   lapply(names(Species_DEG_info), function(name) {
+# 
+#     info <- Species_DEG_info[[name]]
+# 
+#     get_fc_directions_HvC(
+#       traj_label = name,
+#       coef_name = info$coef,
+#       comparison_label = info$comp,
+#       top_table_all = TopTable,
+#       fit_obj = fit2
+#     )
+# 
+#   }),
+#   names(Species_DEG_info)
+# )
+# 
 # saveRDS(direction_results, "data/DGE/directions_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 
@@ -1856,6 +1856,7 @@ SpeciesGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/SpeciesGo_Filt_logcpm_G1_SpTp
 # saveRDS(GO_plot_data,"data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 ```
+
 ```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
@@ -2846,7 +2847,7 @@ direction_results <- setNames(
   names(traj_info)
 )
 
-saveRDS(direction_results, "data/DGE/InteractionDirections_logcpm_G1_SpTp_All_NoRep.RDS")
+# saveRDS(direction_results, "data/DGE/InteractionDirections_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 
 ```{r RNASeq_DGE_Interaction_Directionality_FC_RLCOMP_G1_4SpTp}
@@ -3145,42 +3146,42 @@ for (p in plots) {
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 
-counts_norep <- counts %>%
-  dplyr::select(-(contains("R")))
-
-metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
-
-#create DGEList object
-dge <- DGEList(counts = counts_norep)
-dge$samples$group <- factor(metadata$dgelist)
-dge <- calcNormFactors(dge, method = "TMM")
-dge$samples
-
-saveRDS(dge,"data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_No4_NoRep.RDS")
-
-dge <-readRDS("data/DGE/dge_Filt_logcpm_G1_SpTp_RNA_fc_No4_NoRep.RDS")
-
-dim(dge)
-dge$samples
-
-metadata$Species <- factor(
-  metadata$Species,
-  levels = c("C", "H")   # Chimp baseline
-)
-
- metadata$Timepoint <- factor(
-   metadata$Timepoint,
-  levels = c("Day0","Day2","Day5","Day15","Day30")
-)
-
-design_int <- model.matrix(~ Species * Timepoint,
-                           data =  metadata)
-
-colnames(design_int)
-colnames(design_int) <- make.names(colnames(design_int))
+# counts_norep <- counts %>%
+#   dplyr::select(-(contains("R")))
+# 
+# metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+# 
+# #create DGEList object
+# dge <- DGEList(counts = counts_norep)
+# dge$samples$group <- factor(metadata$dgelist)
+# dge <- calcNormFactors(dge, method = "TMM")
+# dge$samples
+# 
+# dim(dge)
+# dge$samples
+# 
+# metadata$Species <- factor(
+#   metadata$Species,
+#   levels = c("C", "H")   # Chimp baseline
+# )
+# 
+#  metadata$Timepoint <- factor(
+#    metadata$Timepoint,
+#   levels = c("Day0","Day2","Day5","Day15","Day30")
+# )
+# 
+# design_int <- model.matrix(~ Species * Timepoint,
+#                            data =  metadata)
+# 
+# colnames(design_int)
+# colnames(design_int) <- make.names(colnames(design_int))
 
 # saveRDS(dge,"data/DGE/dge_logcpm_G1_SpTp_No4_NoRep.RDS")
 # saveRDS(design_int,"data/DGE/design_int_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+dge <- readRDS("data/DGE/dge_logcpm_G1_SpTp_No4_NoRep.RDS")
+design_int <- readRDS("data/DGE/design_int_logcpm_G1_SpTp_No4_NoRep.RDS")
+
 
 # # Step 1: voom first
 # v1 <- voom(dge, design_int, plot = TRUE)
@@ -4367,7 +4368,7 @@ direction_results <- setNames(
   names(traj_info)
 )
 
-saveRDS(direction_results, "data/DGE/TrajectoryDirection_logcpm_G1_SpTp_No4_NoRep.RDS")
+# saveRDS(direction_results, "data/DGE/TrajectoryDirection_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
 #### Fold change
@@ -6608,6 +6609,7 @@ for (p in cluster_plots) print(p)
 
 
 ```
+
 ```{r RNASeq_DGE_Interaction_Directionality_absFC_No4}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")

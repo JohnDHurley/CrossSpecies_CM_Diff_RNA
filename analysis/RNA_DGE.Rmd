@@ -3154,6 +3154,11 @@ metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 # dim(dge)
 # dge$samples
 # 
+# Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM <- cpm(dge, log=TRUE)
+# 
+# save(Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM, file = "data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RData")
+# 
+# 
 # metadata$Species <- factor(
 #   metadata$Species,
 #   levels = c("C", "H")   # Chimp baseline
@@ -3175,6 +3180,7 @@ metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 
 dge <- readRDS("data/DGE/dge_logcpm_G1_SpTp_No4_NoRep.RDS")
 design_int <- readRDS("data/DGE/design_int_logcpm_G1_SpTp_No4_NoRep.RDS")
+
 
 
 # # Step 1: voom first

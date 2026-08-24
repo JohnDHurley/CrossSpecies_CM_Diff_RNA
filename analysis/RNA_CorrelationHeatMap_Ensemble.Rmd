@@ -67,8 +67,8 @@ RNA_log2cpm_No4 <-readRDS("data/QC/concat/RNA_log2cpm_No4.RDS")
 
 
 RNA_Metadata_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
-RNA_Metadata_No4_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4.RDS")
-RNA_Metadata_No5_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No5.RDS")
+RNA_Metadata_No4_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
+RNA_Metadata_No5_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No5_NoRep.RDS")
 
 Cor_RNA_log2cpm <-readRDS("data/QC/concat/Cor_RNA_log2cpm.RDS")
 Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")

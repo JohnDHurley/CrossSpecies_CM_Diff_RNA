@@ -3411,7 +3411,7 @@ Sig_Sp_inter_Sig_DEG_nonspecific
 ```
 
 
-### CorMotiff
+### CorMotif Species
 
 #### Data Adding
 ```{r KZFP_Interactions_Cormotif,fig.height=4, fig.width=7}
@@ -3552,7 +3552,140 @@ TF_cluster_results <- cluster_enrichment_NoResponse(
  
 ```
 
+### CorMotif Trajectory
 
+#### Data Adding
+```{r KZFP_Cormotif_Trajectory,fig.height=4, fig.width=7}
+cluster_annotation <- readRDS("data/Cormotif/Trajectory/TrajectoryClusterAnnotation_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+TopTable$Cluster <- unname(cluster_annotation[rownames(TopTable)])
+
+TopTable$Cluster <- ifelse(
+  is.na(TopTable$Cluster),
+  "Unassigned",
+  TopTable$Cluster
+)
+
+# saveRDS(TopTable,"data/DGE/TopTable_Symbols_TrajectoryClusters__Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+```
+
+####Enrichment Unassigned 
+```{r KZFP_Cormotif_Trajectory_enrichment_Unassigned,fig.height=4, fig.width=4}
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_TrajectoryClusters__Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+TopTable_OneSet <- TopTable %>% 
+  filter(Comparisons == "HvC_Day0")
+
+TopTable_OneSet_Unassigned <- TopTable_OneSet %>% 
+  filter(Cluster == "Unassigned")
+length(unique(TopTable_OneSet$Gene))
+
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+
+clusters <- paste0("cluster", 1:12)
+
+KZFP_cluster_results <- KZFP_cluster_enrichment_Unassigned(
+  clusters,
+  TopTable_OneSet,
+  KZFPs_list
+)
+
+KZFP_cluster_results$FDR <- p.adjust(
+  KZFP_cluster_results$Fisher_p,
+  method = "BH"
+)
+
+ KZFP_cluster_results
+ 
+ plot_OR_cluster(
+  KZFP_cluster_results,
+  paste0("cluster", 1:12)
+)
+ 
+```
+
+####Enrichment No Response
+```{r KZFP_Cormotif_Trajectory_enrichment_NoRepsonse,fig.height=4, fig.width=4}
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+TopTable <-readRDS("data/DGE/TopTable_Symbols_TrajectoryClusters__Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+TopTable_OneSet <- TopTable %>% 
+  filter(Comparisons == "HvC_Day0")
+
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+
+clusters <- paste0("cluster", 2:12)
+
+KZFP_cluster_results <- cluster_enrichment_NoResponse(
+  clusters,
+  TopTable_OneSet,
+  KZFPs_list
+)
+
+KZFP_cluster_results$FDR <- p.adjust(
+  KZFP_cluster_results$Fisher_p,
+  method = "BH"
+)
+
+ KZFP_cluster_results
+ 
+  plot_OR_cluster(
+  KZFP_cluster_results,
+  paste0("cluster", 2:12)
+)
+ 
+```
+
+#### TF Enrichment No Response
+```{r TF_Cormotif_Trajectory_enrichment_NoResponse,fig.height=4, fig.width=4}
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+TopTable <-readRDS("data/DGE/TopTable_Symbols_TrajectoryClusters__Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+TopTable_OneSet <- TopTable %>% 
+  filter(Comparisons == "HvC_Day0") %>% 
+  filter(Cluster != "Unassigned")
+
+
+clusters <- paste0("cluster", 2:12)
+
+TF_cluster_results <- cluster_enrichment_NoResponse(
+  clusters,
+  TopTable_OneSet,
+  TF_list
+)
+
+  TF_cluster_results$FDR <- p.adjust(
+  TF_cluster_results$Fisher_p,
+  method = "BH"
+)
+
+ TF_cluster_results
+ 
+  plot_OR_cluster(
+  TF_cluster_results,
+  paste0("cluster", 2:12)
+)
+ 
+```
 
 
 

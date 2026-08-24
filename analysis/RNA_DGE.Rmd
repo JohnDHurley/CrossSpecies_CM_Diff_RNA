@@ -181,7 +181,7 @@ plot_cluster_fc_sig_species <- function(gene_vector, cluster_name, top_table) {
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(-2, 2)) +
+    coord_cartesian(ylim = c(-4, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -248,7 +248,7 @@ plot_cluster_fc_sig_species_No4 <- function(gene_vector, cluster_name, top_table
       signif(kw$p.value, 3)
     )
   ) +
-  coord_cartesian(ylim = c(-2, 2)) +
+  coord_cartesian(ylim = c(-4, 4)) +
   theme(
     plot.title = element_text(size = rel(1.3), hjust = 0.5),
     axis.title = element_text(size = 15),
@@ -307,7 +307,7 @@ plot_cluster_fc_sig_trajectory <- function(gene_vector, cluster_name, top_table)
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(-2, 2)) +
+    coord_cartesian(ylim = c(-4, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -365,7 +365,7 @@ plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_ta
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(-2, 2)) +
+    coord_cartesian(ylim = c(-4, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -423,7 +423,7 @@ plot_cluster_fc_sig_interaction <- function(gene_vector, cluster_name, top_table
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(-2, 2)) +
+    coord_cartesian(ylim = c(-4, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -481,7 +481,7 @@ plot_cluster_fc_sig_interaction_No4 <- function(gene_vector, cluster_name, top_t
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(-2, 2)) +
+    coord_cartesian(ylim = c(-4, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -539,7 +539,7 @@ plot_cluster_absfc_sig_interaction_No4 <- function(gene_vector, cluster_name, to
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(0, 2)) +
+    coord_cartesian(ylim = c(0, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -597,7 +597,7 @@ plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table)
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(0, 2)) +
+    coord_cartesian(ylim = c(0, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -664,7 +664,7 @@ plot_cluster_absfc_sig_species_No4 <- function(gene_vector, cluster_name, top_ta
       signif(kw$p.value, 3)
     )
   ) +
-  coord_cartesian(ylim = c(0, 2)) +
+  coord_cartesian(ylim = c(0, 4)) +
   theme(
     plot.title = element_text(size = rel(1.3), hjust = 0.5),
     axis.title = element_text(size = 15),
@@ -723,7 +723,7 @@ plot_cluster_absfc_sig_trajectory <- function(gene_vector, cluster_name, top_tab
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(0, 2)) +
+    coord_cartesian(ylim = c(0, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -781,7 +781,7 @@ plot_cluster_absfc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top
         signif(kw$p.value, 3)
       )
     ) +
-    coord_cartesian(ylim = c(0, 2)) +
+    coord_cartesian(ylim = c(0, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -826,7 +826,7 @@ plot_cluster_absfc_sig_No4 <- function(gene_vector, cluster_name, top_table) {
         signif(kw$p.value, 3)
       )
     ) +
-  coord_cartesian(ylim = c(0, 2)) +
+  coord_cartesian(ylim = c(0, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -873,7 +873,7 @@ plot_cluster_absfc_sig_No5 <- function(gene_vector, cluster_name, top_table) {
         signif(kw$p.value, 3)
       )
     ) +
-  coord_cartesian(ylim = c(0, 2)) +
+  coord_cartesian(ylim = c(0, 4)) +
     theme(
       plot.title = element_text(size = rel(1.3), hjust = 0.5),
       axis.title = element_text(size = 15),
@@ -1668,6 +1668,7 @@ fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 # 
 # saveRDS(direction_results, "data/DGE/directions_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
+
 
 ```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp}
 
@@ -2791,7 +2792,7 @@ cluster_lists <- list(
 )
 
 cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
-  plot_cluster_fc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
+  plot_cluster_fc_sig_interaction(cluster_lists[[clust_name]], clust_name, TopTable_RNA_Traj)
 })
 names(cluster_plots) <- names(cluster_lists)
 

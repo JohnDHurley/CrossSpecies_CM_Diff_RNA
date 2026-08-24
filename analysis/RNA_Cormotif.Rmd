@@ -52,31 +52,6 @@ ann_colors <- readRDS("data/Raw_Data/concat/ann_colors.RDS")
 ann_colors_No4 <- readRDS("data/QC/concat/ann_colors_No4.RDS")
 ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_No5.RDS")
 
-RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
-RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm.RDS")
-RNA_fc_No5 <-readRDS("data/QC/concat/RNA_fc_No5.RDS")
-RNA_log2cpm_No5 <-readRDS("data/QC/concat/RNA_log2cpm_No5.RDS")
-RNA_fc_No4 <-readRDS("data/QC/concat/RNA_fc_No4.RDS")
-RNA_log2cpm_No4 <-readRDS("data/QC/concat/RNA_log2cpm_No4.RDS")
-
-RNA_Metadata_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
-RNA_Metadata_No4_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4.RDS")
-RNA_Metadata_No5_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No5.RDS")
-
-RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
-
-Filt_logcpm_G1_SpTp_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
-Filt_logcpm_G1_SpTp_RNA_log2cpm <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm.RDS")
-Filt_logcpm_G1_SpTp_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
-Filt_logcpm_G1_SpTp_RNA_log2cpm_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS")
-Filt_logcpm_G1_SpTp_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
-Filt_logcpm_G1_SpTp_RNA_log2cpm_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No5.RDS")
-
-#Loaded from this Worksheet
-Filt_logcpm_G1_SpTp_RNA_log2cpm_NoRep <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_NoRep.RDS")
-Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep.RDS")
-Filt_logcpm_G1_SpTp_RNA_log2cpm_No5_NoRep <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No5_NoRep.RDS")
-
 ```
 
 ### Defining Functions
@@ -348,13 +323,22 @@ Filt_logcpm_G1_SpTp_RNA_log2cpm_No5_NoRep <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No5
 
 ```
 
-##Trajectory
+## No Day 4
 
+### Trajectory
+
+#### Modeling on Laptop
+
+##### Data Preparation
 ```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer,fig.height=8,fig.width=15}
+counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
+metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 
-# --- Define Variables ---
-log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
-metadata <- RNA_Metadata_No4_NoRep
+counts_norep <- counts %>%
+  dplyr::select(-(contains("R")))
+
+log2cpm <- cpm(counts_norep, log=TRUE) 
+
 
 # --- Align metadata and log2cpm
 metadata <- metadata[match(colnames(log2cpm), metadata$SampleName), ]
@@ -387,21 +371,23 @@ compid <- rbind(
 
 #Model Fitting
 
-# Run model
-# set.seed(8)
-# motif.fitted <- cormotiffit(
-#   exprs = log2cpm,
-#   groupid = groupid,
-#   compid = compid,
-#   K = 1:20,
-#   max.iter = 2000,
-#   runtype = "logCPM"
-# )
+#Run model
+set.seed(8)
+motif.fitted <- cormotiffit(
+  exprs = log2cpm,
+  groupid = groupid,
+  compid = compid,
+  K = 1:20,
+  max.iter = 2000,
+  runtype = "logCPM"
+)
 
-# saveRDS(motif.fitted,
-#         file = paste0("CorMotif_trajectory_k1_k20_No4_seed8_computer.rds"))
+saveRDS(motif.fitted,"data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+```
 
-motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
+##### Graphing
+
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer,fig.height=8,fig.width=15}
 plotIC(motif.fitted)
 plotMotif(motif.fitted)
 cols <- gray(seq(1, 0, length.out = 6))
@@ -418,14 +404,16 @@ legend(
 
 ```
 
+##### PPost
+
 ```{r RNA-Seq_CorMotif_Species_Assigning1}
-motif.fit <- readRDS("data/Cormotif/concat/CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
+readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
 log2cpm <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep.RDS")
 
 #extract the posterior probability that these genes belong to motifs
 gene_prob_ppost <- motif.fit$bestmotif$p.post
 rownames(gene_prob_ppost) <- rownames(log2cpm)
-saveRDS(gene_prob_ppost,"data/Cormotif/concat/RNA_gene_prob_CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
+saveRDS(gene_prob_ppost,"data/Cormotif/concat/RNA_gene_prob_CorMotif_k1_k20_No4_seed8_TACC.RDS")
 
 #assign each gene to a motif with max post prob
 assigned_motifs <- apply(gene_prob_ppost, 1, which.max)
@@ -498,6 +486,8 @@ gene_prob_ppost %>%
   xlim(0,1)+
   ggtitle("Cormtif p.post RNA V8")
 ```
+
+##### Cluster Assignments
 
 ```{r RNA-Seq_CorMotif_Species_ClustSets1,fig.height=8,fig.width=15}
 motif.fit <- readRDS("data/Cormotif/concat/CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
@@ -668,6 +658,9 @@ for (p in cluster_plots) print(p)
 
 ```
 
+
+##### EnrichGo
+
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler1}
 all_genes <- unique(TopTable$Gene)
 
@@ -722,6 +715,10 @@ gost_results <- setNames(
   names(clust_names_list)
 )
 
+saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+
 gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
 
   res <- gost_results[[clust_name]]
@@ -733,7 +730,7 @@ gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name)
   df
 }))
 
-saveRDS(gost_results, "data/Cormotif/concat/gost_all_clusters_trajectories.RDS")
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 gost_export <- gost_combined
 
@@ -748,13 +745,15 @@ gost_export[] <- lapply(gost_export, function(col) {
 })
 
 write.csv(gost_export,
-          "data/Cormotif/concat/gost_all_clusters_trajectories.csv",
+          "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.csv",
           row.names = FALSE)
 ```
 
+##### EnrichGo_Plots
 
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
 
+gost_combined <- readRDS("data/Cormotif/concat/gost_combined_clusters_trajectories.RDS")
 
 top_terms <- gost_combined %>%
   filter(source == "GO:BP") %>%        # keep only BP terms
@@ -829,6 +828,7 @@ ggplot(top_terms,
 
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2,fig.height=5, fig.width=6}
 
+gost_combined <- readRDS("data/Cormotif/concat/gost_combined_clusters_trajectories.RDS")
 
 top_terms <- gost_combined %>%
   filter(source == "KEGG") %>%        # keep only BP terms
@@ -863,10 +863,10 @@ for (clust_name in names(cluster_list)) {
 }
 ```
 
-
-
-
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=12, fig.width=12}
+gost_combined <- readRDS("data/Cormotif/concat/gost_combined_clusters_trajectories.RDS")
+
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -893,10 +893,13 @@ heatmap_data <- gost_combined %>%
 # 4. Pivot to wide format for matrix-style heatmap
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
+# saveRDS(heatmap_wide,"data/Cormotif/concat/gost_heatmap_wide_trajectories.RDS")
 
 # 5. Convert to long format for ggplot
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
+
+# saveRDS(heatmap_long,"data/Cormotif/concat/gost_heatmap_long_trajectories.RDS")
 
 # 6. Plot heatmap
 ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
@@ -909,6 +912,8 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
 ```
 
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs4,fig.height=12, fig.width=12}
+heatmap_wide <- readRDS("data/Cormotif/concat/gost_heatmap_wide_trajectories.RDS")
+
 library(dplyr)
 library(tidyr)
 library(pheatmap)
@@ -936,6 +941,8 @@ pheatmap(
 ```
 
 ```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs5,fig.height=20, fig.width=12}
+heatmap_long <- readRDS("data/Cormotif/concat/gost_heatmap_long_trajectories.RDS")
+
 heatmap_long <- heatmap_long %>%
   group_by(term_name) %>%
   mutate(min_logp = min(logp, na.rm = TRUE)) %>%
@@ -962,13 +969,19 @@ pheatmap(
 )
 ```
 
-##Species
+### Species
 
-###Data set up
+#### Modeling on Laptop
+
+##### Data Preparation
 ```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
-# --- Define Variables ---
-log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
-metadata <- RNA_Metadata_No4_NoRep
+counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
+metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
+
+counts_norep <- counts %>%
+  dplyr::select(-(contains("R")))
+
+log2cpm <- cpm(counts_norep, log=TRUE) 
 
 # --- Align metadata and log2cpm
 metadata <- metadata[match(colnames(log2cpm), metadata$SampleName), ]
@@ -1004,26 +1017,28 @@ colnames(compid) <- c("Human", "Chimp")
 rownames(compid) <- paste0(time_order, "_H_vs_C")
 
 compid
-```
 
-
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
 #Model Fitting
 
-# # Run model
-# set.seed(8)
-# motif.fitted <- cormotiffit(
-#   exprs = log2cpm,
-#   groupid = groupid,
-#   compid = compid,
-#   K = 1:20,
-#   max.iter = 2000,
-#   runtype = "logCPM"
-# )
-# 
-# saveRDS(motif.fitted,"data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
+# Run model
+set.seed(8)
+motif.fitted <- cormotiffit(
+  exprs = log2cpm,
+  groupid = groupid,
+  compid = compid,
+  K = 1:20,
+  max.iter = 2000,
+  runtype = "logCPM"
+)
 
-motif.fitted <- readRDS("data/Cormotif/concat/CorMotif_species_k1_k20_No4_seed8_Computer.RDS")
+saveRDS(motif.fitted,"data/Cormotif/Trajectory/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+```
+
+##### Graphing
+
+```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+
 plotIC(motif.fitted)
 plotMotif(motif.fitted)
 cols <- gray(seq(1, 0, length.out = 6))
@@ -1038,27 +1053,10 @@ legend(
 
 ```
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_TACC,fig.height=8,fig.width=15}
-
-motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
-plotIC(motif.fitted)
-plotMotif(motif.fitted)
-cols <- gray(seq(1, 0, length.out = 6))
-
-legend(
-  "topright",
-  legend = seq(0, 1, length.out = 6),
-  fill = cols,
-  border = "black",
-  title = "Posterior probability")
-
-
-
-```
-
+##### PPost
 
 ```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
-motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
+motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 motif.fit <- motif.fitted
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
@@ -1121,8 +1119,10 @@ gene_prob_ppost %>%
 
 ```
 
+##### Cluster Assignments
+
 ```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
-motif.fitted <- readRDS("data/Cormotif/TACC/cormotif/CorMotif_k1_k20_No4_seed8_TACC.rds")
+motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -1239,7 +1239,12 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 
+##### EnrichGo
+
 ```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
+
+motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+
 all_genes <- unique(TopTable$Gene)
 
 
@@ -1293,7 +1298,9 @@ gost_results <- setNames(
   names(clust_names_list)
 )
 
-gost_results <- readRDS("data/Cormotif/concat/gost_all_clusters_species.RDS")
+saveRDS(gost_results, "data/Cormotif/Species/SpeciesGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+gost_results <- readRDS("data/Cormotif/Species/SpeciesGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
 
@@ -1306,7 +1313,9 @@ gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name)
   df
 }))
 
-saveRDS(gost_results, "data/Cormotif/concat/gost_all_clusters_species.RDS")
+saveRDS(gost_combined, "data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 gost_export <- gost_combined
 
@@ -1321,7 +1330,7 @@ gost_export[] <- lapply(gost_export, function(col) {
 })
 
 write.csv(gost_export,
-          "data/Cormotif/concat/gost_all_clusters_species.csv",
+          "data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.csv",
           row.names = FALSE)
 ```
 

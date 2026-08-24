@@ -1917,7 +1917,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 ```
 
-```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+```{r TF_Trajectory,fig.height=7,fig.width=7}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 TF_df <- readRDS("data/TEs/TF_df.RDS")
@@ -1951,7 +1951,7 @@ saveRDS(TF_all,"data/TEs/TFs_Toptable.RDS")
 ```
 
 
-```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+```{r TF_Trajectory_02,fig.height=7,fig.width=7}
 
 TF_TopTable <- readRDS("data/TEs/TFs_Toptable.RDS")
 
@@ -2123,7 +2123,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 
 ```
-```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+```{r TF_Trajectory_25,fig.height=7,fig.width=7}
 
 TF_TopTable <- readRDS("data/TEs/TFs_Toptable.RDS")
 
@@ -2294,7 +2294,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 
 ```
-```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+```{r TF_Trajectory_515,fig.height=7,fig.width=7}
 
 TF_TopTable <- readRDS("data/TEs/TFs_Toptable.RDS")
 
@@ -2465,7 +2465,7 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 
 ```
-```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+```{r TF_Trajectory_1530,fig.height=7,fig.width=7}
 
 TF_TopTable <- readRDS("data/TEs/TFs_Toptable.RDS")
 
@@ -3414,7 +3414,7 @@ Sig_Sp_inter_Sig_DEG_nonspecific
 ### CorMotiff
 
 #### Data Adding
-```{r KZFP_Interactions,fig.height=4, fig.width=7}
+```{r KZFP_Interactions_Cormotif,fig.height=4, fig.width=7}
 cluster_annotation <- readRDS("data/Cormotif/Species/SpeciesClusterAnnotation_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 
@@ -3432,7 +3432,7 @@ TopTable$Cluster <- ifelse(
 ```
 
 ####Enrichment Unassigned 
-```{r KZFP_enrichment,fig.height=4, fig.width=4}
+```{r KZFP_Interactions_Cormotif_enrichment_Unassigned,fig.height=4, fig.width=4}
 
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
@@ -3454,7 +3454,7 @@ KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
 clusters <- paste0("cluster", 1:5)
 
-KZFP_cluster_results <- KZFP_cluster_enrichment(
+KZFP_cluster_results <- KZFP_cluster_enrichment_Unassigned(
   clusters,
   TopTable_OneSet,
   KZFPs_list
@@ -3475,7 +3475,7 @@ KZFP_cluster_results$FDR <- p.adjust(
 ```
 
 ####Enrichment No Response
-```{r KZFP_enrichment,fig.height=4, fig.width=4}
+```{r KZFP_Interactions_Cormotif_enrichment_NoRepsonse,fig.height=4, fig.width=4}
 
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
@@ -3494,7 +3494,7 @@ KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
 clusters <- paste0("cluster", 2:5)
 
-KZFP_cluster_results <- KZFP_cluster_enrichment_NoResponse(
+KZFP_cluster_results <- cluster_enrichment_NoResponse(
   clusters,
   TopTable_OneSet,
   KZFPs_list
@@ -3515,7 +3515,7 @@ KZFP_cluster_results$FDR <- p.adjust(
 ```
 
 #### TF Enrichment No Response
-```{r KZFP_enrichment,fig.height=4, fig.width=4}
+```{r TF_Interactions_Cormotif_enrichment_NoResponse,fig.height=4, fig.width=4}
 
 TF_df <- readRDS("data/TEs/TF_df.RDS")
 

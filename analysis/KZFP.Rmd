@@ -2166,8 +2166,8 @@ x_limits <- c(-15, 15)
 y_limits <- c(-15, 15)
 max_val <- max(abs(c(x_limits, y_limits)))
 
-genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+genes_of_interest_human <- unique(RNA_sets$H_Day25$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day25$DEGs$Gene)
 
 df_wide$highlight <- dplyr::case_when(
   df_wide$Gene %in% genes_of_interest_human &
@@ -2337,8 +2337,8 @@ x_limits <- c(-15, 15)
 y_limits <- c(-15, 15)
 max_val <- max(abs(c(x_limits, y_limits)))
 
-genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
 
 df_wide$highlight <- dplyr::case_when(
   df_wide$Gene %in% genes_of_interest_human &
@@ -2508,8 +2508,8 @@ x_limits <- c(-15, 15)
 y_limits <- c(-15, 15)
 max_val <- max(abs(c(x_limits, y_limits)))
 
-genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
 
 df_wide$highlight <- dplyr::case_when(
   df_wide$Gene %in% genes_of_interest_human &

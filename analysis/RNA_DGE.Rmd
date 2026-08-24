@@ -3157,6 +3157,8 @@ metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 # Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM <- cpm(dge, log=TRUE)
 # 
 # save(Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM, file = "data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RData")
+# saveRDS(Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM, "data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
+# 
 # 
 # 
 # metadata$Species <- factor(

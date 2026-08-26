@@ -1,0 +1,3024 @@
+---
+title: "RNA_CorrelationPlots"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+date: "2026-03-03"
+---
+
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+# Correlation Plotting
+
+## Setting up the environment
+
+### Loading libraries
+```{r library loading, include=FALSE, warning = FALSE, message=FALSE}
+
+#loading libraries
+library("tidyverse")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+# install.packages(c("knitr", "BiocManager"))
+# BiocManager::install("org.Hs.eg.db")
+
+
+
+#Loading R Objects Other WorkflowR
+
+```
+
+### Defining functions
+
+```{r Functions, include=FALSE, warning = FALSE, message=FALSE}
+# ---------------------------------------------------------
+    # Setting up function variables
+    # ---------------------------------------------------------
+
+plot_species_comparison <- function(
+    TopTable,
+    comps,
+    genes_to_include = NULL,
+    genes_label = NULL,
+    x_limits = c(-15, 15),
+    y_limits = c(-15, 15)
+) {
+
+    # ---------------------------------------------------------
+    # Actual plotting function
+    # ---------------------------------------------------------
+  make_plot <- function(comp) {
+
+    H_comp <- paste0("H_", comp)
+    C_comp <- paste0("C_", comp)
+  
+    # Prepare data
+    df_wide <- TopTable %>%
+      filter(Comparisons %in% c(H_comp, C_comp)) %>%
+      dplyr::select(Gene, Symbol, Comparisons, logFC) %>%
+    group_by(Gene, Symbol, Comparisons) %>%
+    summarize(
+      logFC = mean(logFC),
+      .groups = "drop"
+    ) %>%
+    pivot_wider(
+      names_from = Comparisons,
+      values_from = logFC
+    ) %>%
+    filter(
+      !is.na(.data[[H_comp]]),
+      !is.na(.data[[C_comp]])
+  )
+
+    # ---------------------------------------------------------
+    # Labeling for the purpose or color coding dots on plot
+    # ---------------------------------------------------------
+
+    if (!is.null(genes_to_include)) {
+
+      df_wide <- df_wide %>%
+        filter(Symbol %in% genes_to_include)
+
+    }
+
+    # Linear regression
+    fit <- lm(
+      df_wide[[C_comp]] ~ df_wide[[H_comp]]
+    )
+
+    r2 <- summary(fit)$r.squared
+    pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+    # DEGs
+    genes_of_interest_human <- TopTable %>%
+  filter(
+    Comparisons == H_comp,
+    adj.P.Val < 0.05
+  ) %>%
+  pull(Symbol) %>%
+  unique()
+
+genes_of_interest_chimp <- TopTable %>%
+  filter(
+    Comparisons == C_comp,
+    adj.P.Val < 0.05
+  ) %>%
+  pull(Symbol) %>%
+  unique()
+
+df_wide$highlight <- dplyr::case_when(
+
+  df_wide$Symbol %in% genes_of_interest_human &
+    df_wide$Symbol %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Symbol %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Symbol %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+    # ---------------------------------------------------------
+    # plotting
+    # --------------------------------------------------------- 
+
+    p <- ggplot(
+      df_wide,
+      aes(
+        x = .data[[H_comp]],
+        y = .data[[C_comp]],
+        color = highlight
+      )
+    ) +
+
+      geom_point(
+        size = 3,
+        alpha = 0.8
+      ) +
+
+      scale_color_manual(
+        values = c(
+          "T-DEG Human Only" = "red",
+          "T-DEG Chimp Only" = "blue",
+          "T-DEG Both" = "purple",
+          "Other" = "grey70"
+        )
+      ) +
+
+      geom_smooth(
+        method = "lm",
+        se = FALSE,
+        linetype = "dashed",
+        color = "black"
+      ) +
+
+      geom_hline(
+        yintercept = 0,
+        linetype = "dashed"
+      ) +
+
+      geom_vline(
+        xintercept = 0,
+        linetype = "dashed"
+      ) +
+
+      annotate(
+        "text",
+        x = x_limits[1],
+        y = y_limits[2],
+        label = paste0(
+          "R² = ", round(r2, 2),
+          "\np = ", format(
+            pval,
+            scientific = TRUE,
+            digits = 3
+          )
+        ),
+        hjust = 0,
+        vjust = 1,
+        size = 5
+      ) +
+
+      coord_cartesian(
+        xlim = x_limits,
+        ylim = y_limits
+      ) +
+
+      theme_bw() +
+
+      labs(
+        x = H_comp,
+        y = C_comp,
+        title = paste0(H_comp, " vs ", C_comp," --", genes_label),
+        color = "Gene Set"
+      )
+
+    return(list(
+  plot = p,
+  r2 = r2,
+  pval = pval
+))
+  }
+
+  # Generate one plot for each comparison
+  plots <- lapply(comps, make_plot)
+
+  # Name plots
+  names(plots) <- comps
+
+  return(plots)
+}
+```
+
+
+```{r Functions_2, include=FALSE, warning = FALSE, message=FALSE}
+## Finding "matched" DEGs
+
+    # ---------------------------------------------------------
+    # Get genes significant in each comparison
+    # --------------------------------------------------------- 
+
+get_matched_degs <- function(
+    TopTable,
+    transitions,
+    genes_to_include = NULL,
+    FDR_cutoff = 0.05
+) {
+
+  matched_genes <- lapply(
+    transitions,
+    function(comp) {
+
+      H_genes <- TopTable %>%
+        filter(
+          Comparisons == paste0("H_", comp),
+          adj.P.Val < FDR_cutoff
+        ) %>%
+        pull(Symbol) %>%
+        unique()
+
+      C_genes <- TopTable %>%
+        filter(
+          Comparisons == paste0("C_", comp),
+          adj.P.Val < FDR_cutoff
+        ) %>%
+        pull(Symbol) %>%
+        unique()
+
+      # Same gene is DEG in both species for this transition
+      intersect(H_genes, C_genes)
+    }
+  )
+
+  # Gene is retained if matched in at least one transition
+  matched_genes <- unique(unlist(matched_genes))
+
+  # Optional restriction to TFs, KZFPs, etc.
+  if (!is.null(genes_to_include)) {
+    matched_genes <- intersect(
+      matched_genes,
+      genes_to_include
+    )
+  }
+
+  matched_genes
+}
+```
+
+
+
+```{r}
+
+
+plot_R2_trajectories <- function(
+    R2_table,
+    colors
+) {
+
+  R2_table <- R2_table %>%
+    mutate(
+      Group = case_when(
+        Gene_Set == "All Expressed Genes" ~ "All Expressed",
+        Gene_Set == "All Trajectory DEGs" ~ "All DEGs",
+        Gene_Set == "Species-Shared Trajectory DEGs" ~ "Shared DEGs",
+        Gene_Set == "Species-NonShared Trajectory DEGs" ~ "Species-Specific DEGs",
+        Gene_Set == "Trajectory Non-DEGs" ~ "Non-DEGs"
+      ),
+      
+      Transition = case_when(
+        Transition == "Day02" ~ "Day0-2",
+        Transition == "Day24" ~ "Day2-4",
+        Transition == "Day45" ~ "Day4-5",
+        Transition == "Day515" ~ "Day5-15",
+        Transition == "Day1530" ~ "Day15-30"
+      )
+    )
+  # Set factor order
+  R2_table$Transition <- factor(
+    R2_table$Transition,
+    levels = c(
+      "Day0-2",
+      "Day2-4",
+      "Day4-5",
+      "Day5-15",
+      "Day15-30"
+    )
+  )
+
+  R2_table$Group <- factor(
+    R2_table$Group,
+    levels = c(
+      "All Expressed",
+      "All DEGs",
+      "Shared DEGs",
+      "Species-Specific DEGs",
+      "Non-DEGs"
+    )
+  )
+
+  # Plot
+  ggplot(
+    R2_table,
+    aes(
+      x = Transition,
+      y = R2,
+      group = Group,
+      linetype = Group
+    )
+  ) +
+
+    annotate(
+      "rect",
+      xmin = 1.5,
+      xmax = 3.5,
+      ymin = -Inf,
+      ymax = Inf,
+      alpha = 0.1,
+      fill = "grey70"
+    ) +
+
+    geom_line(
+      aes(
+        linewidth = Group,
+        color = Group
+      )
+    ) +
+
+ # Significant points
+geom_point(
+  data = R2_table %>% filter(P_value < 0.05),
+  aes(color = Group),
+  shape = 16,
+  size = 3
+) +
+
+# Non-significant points
+geom_point(
+  data = R2_table %>% filter(P_value >= 0.05),
+  aes(color = Group),
+  shape = 4,
+  size = 3,
+  stroke = 1.2
+) +
+    # geom_text(
+    #   aes(label = round(R2, 2)),
+    #   vjust = -1,
+    #   size = 3,
+    #   show.legend = FALSE
+    # ) +
+
+    scale_linetype_manual(
+      values = c(
+        "All Expressed" = "solid",
+        "All DEGs" = "solid",
+        "Shared DEGs" = "longdash",
+        "Species-Specific DEGs" = "dotdash",
+        "Non-DEGs" = "dotted"
+      )
+    ) +
+
+    scale_color_manual(
+      values = colors
+    ) +
+
+    scale_linewidth_manual(
+      values = c(
+        "All Expressed" = 1.8,
+        "All DEGs" = 1.8,
+        "Shared DEGs" = 1.2,
+        "Species-Specific DEGs" = 1.2,
+        "Non-DEGs" = 1.2
+      )
+    ) +
+
+    labs(
+      title = "Inter-species correlation peaks at mid-development",
+      x = "Differentiation Transition",
+      y = expression(R^2),
+      linetype = "Dataset",
+      linewidth = "Dataset",
+      color = "Dataset"
+    ) +
+
+    coord_cartesian(
+      ylim = c(0, 1)
+    ) +
+
+    theme_minimal(
+      base_size = 14
+    ) +
+    
+    guides(
+  color = "none",
+  linetype = guide_legend(title = "Line Type"),
+  linewidth = "none"
+) +
+
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      axis.text.x = element_text(
+        angle = 0,
+        hjust = 0.5
+      ),
+      plot.title = element_text(face = "bold")
+    )
+}
+```
+
+
+```{r}
+
+
+plot_R2_trajectories_No4 <- function(
+    R2_table,
+    colors
+) {
+
+  R2_table <- R2_table %>%
+    mutate(
+      Group = case_when(
+        Gene_Set == "All Expressed Genes" ~ "All Expressed",
+        Gene_Set == "All Trajectory DEGs" ~ "All DEGs",
+        Gene_Set == "Species-Shared Trajectory DEGs" ~ "Shared DEGs",
+        Gene_Set == "Species-NonShared Trajectory DEGs" ~ "Species-Specific DEGs",
+        Gene_Set == "Trajectory Non-DEGs" ~ "Non-DEGs"
+      ),
+      
+      Transition = case_when(
+        Transition == "Day02" ~ "Day0-2",
+        Transition == "Day25" ~ "Day2-5",
+        Transition == "Day515" ~ "Day5-15",
+        Transition == "Day1530" ~ "Day15-30"
+      )
+    )
+  # Set factor order
+  R2_table$Transition <- factor(
+    R2_table$Transition,
+    levels = c(
+      "Day0-2",
+      "Day2-5",
+      "Day5-15",
+      "Day15-30"
+    )
+  )
+
+  R2_table$Group <- factor(
+    R2_table$Group,
+    levels = c(
+      "All Expressed",
+      "All DEGs",
+      "Shared DEGs",
+      "Species-Specific DEGs",
+      "Non-DEGs"
+    )
+  )
+
+  # Plot
+  ggplot(
+    R2_table,
+    aes(
+      x = Transition,
+      y = R2,
+      group = Group,
+      linetype = Group
+    )
+  ) +
+
+    annotate(
+      "rect",
+      xmin = 1.5,
+      xmax = 3.5,
+      ymin = -Inf,
+      ymax = Inf,
+      alpha = 0.1,
+      fill = "grey70"
+    ) +
+
+    geom_line(
+      aes(
+        linewidth = Group,
+        color = Group
+      )
+    ) +
+
+# Significant points
+geom_point(
+  data = R2_table %>% filter(P_value < 0.05),
+  aes(color = Group),
+  shape = 16,
+  size = 3
+) +
+
+# Non-significant points
+geom_point(
+  data = R2_table %>% filter(P_value >= 0.05),
+  aes(color = Group),
+  shape = 4,
+  size = 3,
+  stroke = 1.2
+) +
+
+    # geom_text(
+    #   aes(label = round(R2, 2)),
+    #   vjust = -1,
+    #   size = 3,
+    #   show.legend = FALSE
+    # ) +
+
+    scale_linetype_manual(
+      values = c(
+        "All Expressed" = "solid",
+        "All DEGs" = "solid",
+        "Shared DEGs" = "longdash",
+        "Species-Specific DEGs" = "dotdash",
+        "Non-DEGs" = "dotted"
+      )
+    ) +
+
+    scale_color_manual(
+      values = colors
+    ) +
+
+    scale_linewidth_manual(
+      values = c(
+        "All Expressed" = 1.8,
+        "All DEGs" = 1.8,
+        "Shared DEGs" = 1.2,
+        "Species-Specific DEGs" = 1.2,
+        "Non-DEGs" = 1.2
+      )
+    ) +
+
+    labs(
+      title = "Inter-species correlation peaks at mid-development",
+      x = "Differentiation Transition",
+      y = expression(R^2),
+      linetype = "Dataset",
+      linewidth = "Dataset",
+      color = "Dataset"
+    ) +
+
+    coord_cartesian(
+      ylim = c(0, 1)
+    ) +
+
+    theme_minimal(
+      base_size = 14
+    ) +
+    
+    guides(
+  color = "none",
+  linetype = guide_legend(title = "Line Type"),
+  linewidth = "none"
+) +
+
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      axis.text.x = element_text(
+        angle = 0,
+        hjust = 0.5
+      ),
+      plot.title = element_text(face = "bold")
+    )
+}
+```
+
+## RLCPM_G1_4SpTp
+
+### Gene Expression and DGE
+
+#### All Genes
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+comparisons <- c("H_Day02", "H_Day24", "H_Day45", "H_Day515", "H_Day1530","C_Day02", "C_Day24", "C_Day45", "C_Day515", "C_Day1530")
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+comparisons <- c("H_Day02", "H_Day24", "H_Day45", "H_Day515", "H_Day1530","C_Day02", "C_Day24", "C_Day45", "C_Day515", "C_Day1530")
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("All Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day24",
+  "Day45",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons
+)
+
+saveRDS(matched_DEGs,"data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+all_expressed_genes <- readRDS("data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("Non-DEG at any transition - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkblue",
+  "Shared DEGs" = "darkblue",
+  "Species-Specific DEGs" = "darkblue",
+  "Non-DEGs" = "darkblue"
+)
+
+plot_R2_trajectories(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+
+
+
+### Transcription Factors
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+comparisons <- c("H_Day02", "H_Day24", "H_Day45", "H_Day515", "H_Day1530","C_Day02", "C_Day24", "C_Day45", "C_Day515", "C_Day1530")
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% TF_list) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+comparisons <- c("H_Day02", "H_Day24", "H_Day45", "H_Day515", "H_Day1530","C_Day02", "C_Day24", "C_Day45", "C_Day515", "C_Day1530")
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% TF_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("All TF Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day24",
+  "Day45",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("TF Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("TF Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkgreen",
+  "Shared DEGs" = "darkgreen",
+  "Species-Specific DEGs" = "darkgreen",
+  "Non-DEGs" = "darkgreen"
+)
+
+plot_R2_trajectories(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+
+
+### KZFPs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+comparisons <- c("H_Day02", "H_Day24", "H_Day45", "H_Day515", "H_Day1530","C_Day02", "C_Day24", "C_Day45", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_list) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+comparisons <- c("H_Day02", "H_Day24", "H_Day45", "H_Day515", "H_Day1530","C_Day02", "C_Day24", "C_Day45", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("All KZFP Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day24",
+  "Day45",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "KZFP Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("KZFP Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day24", "Day45", "Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day24
+plots$Day45
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkred",
+  "Shared DEGs" = "darkred",
+  "Species-Specific DEGs" = "darkred",
+  "Non-DEGs" = "darkred"
+)
+
+plot_R2_trajectories(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+## RLCPM_G1_4SpTp No4
+
+### Gene Expression and DGE
+
+#### All Genes
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons
+)
+
+saveRDS(matched_DEGs,"data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+all_expressed_genes <- readRDS("data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("Non-DEG at any transition - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkblue",
+  "Shared DEGs" = "darkblue",
+  "Species-Specific DEGs" = "darkblue",
+  "Non-DEGs" = "darkblue"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+
+### Transcription Factors
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% TF_list) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% TF_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All TF Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("TF Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("TF Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25","Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkgreen",
+  "Shared DEGs" = "darkgreen",
+  "Species-Specific DEGs" = "darkgreen",
+  "Non-DEGs" = "darkgreen"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+
+
+### KZFPs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_list) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All KZFP Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("KZFP Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25","Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkred",
+  "Shared DEGs" = "darkred",
+  "Species-Specific DEGs" = "darkred",
+  "Non-DEGs" = "darkred"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+### KZFP G100 mya
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_G100 <- KZFPs %>% 
+  filter(`KZFP age` > 100)
+
+KZFPs_G100_list <- unique(KZFPs_G100$Label)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_G100_list) %>% 
+    pull(Symbol)
+)
+#61
+
+saveRDS(gene_set,"data/DGE/KZFP_G100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_G100 <- KZFPs %>% 
+  filter(`KZFP age` > 100)
+
+KZFPs_G100_list <- unique(KZFPs_G100$Label)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_G100_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_G100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All KZFP Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_G100 <- KZFPs %>% 
+  filter(`KZFP age` > 100)
+
+KZFPs_G100_list <- unique(KZFPs_G100$Label)
+
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_G100_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/KZFP_G100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_G100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/KZFP_G100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_G100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/KZFP_G100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("KZFP Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25","Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/KZFP_G100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/KZFP_G100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkred",
+  "Shared DEGs" = "darkred",
+  "Species-Specific DEGs" = "darkred",
+  "Non-DEGs" = "darkred"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+
+
+### KZFP 50_100 mya
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_50_100 <- KZFPs %>% 
+  filter(`KZFP age` >= 50, `KZFP age` < 100)
+
+KZFPs_50_100_list <- unique(KZFPs_50_100$Label)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_50_100_list) %>% 
+    pull(Symbol)
+)
+#61
+
+saveRDS(gene_set,"data/DGE/KZFP_50_100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_50_100 <- KZFPs %>% 
+  filter(`KZFP age` >= 50, `KZFP age` < 100)
+
+KZFPs_50_100_list <- unique(KZFPs_50_100$Label)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_50_100_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_50_100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All KZFP Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_50_100 <- KZFPs %>% 
+  filter(`KZFP age` >= 50, `KZFP age` < 100)
+
+KZFPs_50_100_list <- unique(KZFPs_50_100$Label)
+
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_50_100_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/KZFP_50_100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_50_100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/KZFP_50_100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_50_100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/KZFP_50_100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("KZFP Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25","Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/KZFP_50_100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/KZFP_50_100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkred",
+  "Shared DEGs" = "darkred",
+  "Species-Specific DEGs" = "darkred",
+  "Non-DEGs" = "darkred"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+
+### KZFP L50 mya
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp_Empty Table, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+#### All Expressed
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_L50 <- KZFPs %>% 
+  filter(`KZFP age` < 50)
+
+KZFPs_L50_list <- unique(KZFPs_L50$Label)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_L50_list) %>% 
+    pull(Symbol)
+)
+#61
+
+saveRDS(gene_set,"data/DGE/KZFP_L50_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Expressed Genes",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  ))
+
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_L50 <- KZFPs %>% 
+  filter(`KZFP age` < 50)
+
+KZFPs_L50_list <- unique(KZFPs_L50$Label)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% KZFPs_L50_list) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/KZFP_L50_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All KZFP Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "All Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Matched Trajectory DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_L50 <- KZFPs %>% 
+  filter(`KZFP age` < 50)
+
+KZFPs_L50_list <- unique(KZFPs_L50$Label)
+
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_L50_list
+)
+
+saveRDS(matched_DEGs,"data/DGE/KZFP_L50_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-Shared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_L50_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/KZFP_L50_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Species-NonShared Trajectory DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+```
+#### All Trajectory Non-DEGs
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/KZFP_L50_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/KZFP_L50_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("KZFP Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25","Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = "Trajectory Non-DEGs",
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval")
+  )
+)
+
+saveRDS(R2_table,"data/DGE/KZFP_L50_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+```
+
+#### Plotting R2 Together
+
+```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp, fig.width=7, fig.height=6}
+
+TrajectoryR2Genes <- readRDS("data/DGE/KZFP_L50_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+RNA_colors <- c(
+  "All Expressed" = "black",
+  "All DEGs" = "darkred",
+  "Shared DEGs" = "darkred",
+  "Species-Specific DEGs" = "darkred",
+  "Non-DEGs" = "darkred"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)
+
+```
+
+```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/RNA_CorrelationPlots.Rmd")
+
+```
+
+

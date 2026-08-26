@@ -626,28 +626,51 @@ get_fc_directions <- function(traj_label, coef_name, comparison_label,
 
 ### Data Upload
 ```{r TopTable_Symbols}
-TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-# Extract Ensembl IDs for every row
-ens_ids <- sub("\\..*$", "", TopTable$Gene)
-
-# Make a lookup table
-symbol_map <- mapIds(
-    org.Hs.eg.db,
-    keys = unique(ens_ids),
-    column = "SYMBOL",
-    keytype = "ENSEMBL",
-    multiVals = "first"
-)
-
-TopTable$Symbol <- unname(symbol_map[ens_ids])
-
+# TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
+# 
+# # Extract Ensembl IDs for every row
+# ens_ids <- sub("\\..*$", "", TopTable$Gene)
+# 
+# # Make a lookup table
+# symbol_map <- mapIds(
+#     org.Hs.eg.db,
+#     keys = unique(ens_ids),
+#     column = "SYMBOL",
+#     keytype = "ENSEMBL",
+#     multiVals = "first"
+# )
+# 
+# TopTable$Symbol <- unname(symbol_map[ens_ids])
+# 
+# saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
+# 
+# TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# 
+# # Extract Ensembl IDs for every row
+# ens_ids <- sub("\\..*$", "", TopTable$Gene)
+# 
+# # Make a lookup table
+# symbol_map <- mapIds(
+#     org.Hs.eg.db,
+#     keys = unique(ens_ids),
+#     column = "SYMBOL",
+#     keytype = "ENSEMBL",
+#     multiVals = "first"
+# )
+# 
+# TopTable$Symbol <- unname(symbol_map[ens_ids])
+# 
 # saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 # TF_df <- read.delim("C:/Users/jdhurley/Downloads/protein_class_Transcription (1).tsv")
 # saveRDS(TF_df,"data/TEs/TF_df.RDS")
 
 
+# library(readxl)
+# KZFP_metadata_Hardy2023 <- read_excel("C:/Users/jdhurley/Downloads/KZFP_metadata_Hardy2023.xlsx", 
+#     sheet = "Primary_targets")
+# 
+# saveRDS(KZFP_metadata_Hardy2023,"data/TEs/KZFPs_ages.RDS")
 ```
 
 ```{r KZFPs}
@@ -1826,7 +1849,8 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
 
 ### Trajectory
 
-#### R2 scatter plots
+#### General Correaltions
+##### R2 scatter plots
 
 ```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
@@ -2551,7 +2575,1398 @@ ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)
 
 
 ```
-```{r KZFP_Trajectory_R2, fig.height=6, fig.width=6}
+
+#### Age Stratification
+```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+KZFPs_ages <- readRDS("data/TEs/KZFPs_ages.RDS")
+
+
+KZFPs <- KZFPs %>%
+  left_join(
+    KZFPs_ages %>%
+      dplyr::select(KZFP, 'KZFP age','TE age'),
+    by = c("Label" = "KZFP")
+  )
+
+# saveRDS(KZFPs, "data/TEs/KZFPs.RDS")
+
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_L50 <- KZFPs %>% 
+  filter(`KZFP age` < 50)
+#155
+
+KZFPs_L50_list <- unique(KZFPs_L50$Label)
+
+KZFP_Toptable_L50 <- KZFP_Toptable %>% 
+  filter(Symbol %in% KZFPs_L50_list)
+
+KZFPs_50_100 <- KZFPs %>% 
+  filter(`KZFP age` >= 50, `KZFP age` < 100)
+#65
+
+KZFPs_50_100_list <- unique(KZFPs_50_100$Label)
+
+KZFP_Toptable_50_100 <- KZFP_Toptable %>% 
+  filter(Symbol %in% KZFPs_50_100_list)
+
+KZFPs_G100 <- KZFPs %>% 
+  filter(`KZFP age` >= 100)
+#41
+
+KZFPs_G100_list <- unique(KZFPs_G100$Label)
+
+KZFP_ToptableG100 <- KZFP_Toptable %>% 
+  filter(Symbol %in% KZFPs_G100_list)
+```
+
+##### R2 scatter plots
+
+###### <50 Million
+```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_L50 <- KZFPs %>% 
+  filter(`KZFP age` < 50)
+#155
+
+KZFPs_L50_list <- unique(KZFPs_L50$Label)
+
+KZFP_Toptable <- KZFP_Toptable %>% 
+  filter(Symbol %in% KZFPs_L50_list)
+
+H_comp <- "H_Day02"
+C_comp <- "C_Day02"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," <50 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day25"
+C_comp <- "C_Day25"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day25$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day25$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," <50 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day515"
+C_comp <- "C_Day515"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," <50 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day1530"
+C_comp <- "C_Day1530"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," <50 Million"),
+    color = "Gene Set"
+  )
+
+```
+
+###### 50-100 Million
+
+```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_50_100 <- KZFPs %>% 
+  filter(`KZFP age` >= 50, `KZFP age` < 100)
+
+
+KZFPs_50_100_list <- unique(KZFPs_50_100$Label)
+
+KZFP_Toptable <- KZFP_Toptable %>% 
+  filter(Symbol %in% KZFPs_50_100_list)
+
+H_comp <- "H_Day02"
+C_comp <- "C_Day02"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," 50-100 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day25"
+C_comp <- "C_Day25"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day25$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day25$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," 50-100 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day515"
+C_comp <- "C_Day515"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," 50-100 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day1530"
+C_comp <- "C_Day1530"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," 50-100 Million"),
+    color = "Gene Set"
+  )
+
+```
+
+
+###### 100-150 Million
+
+```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+# KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+# RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+# 
+# KZFPs_100_150 <- KZFPs %>% 
+#   filter(`KZFP age` >= 100, `KZFP age` < 150)
+# #65
+# 
+# KZFPs_100_150_list <- unique(KZFPs_100_150$Label)
+# 
+# KZFP_Toptable <- KZFP_Toptable %>% 
+#   filter(Symbol %in% KZFPs_100_150_list)
+# 
+# H_comp <- "H_Day02"
+# C_comp <- "C_Day02"
+# 
+# df_wide <- KZFP_Toptable %>%
+#   filter(Comparisons %in% c(H_comp, C_comp)) %>%
+#   dplyr::select(Gene, Comparisons, logFC) %>%
+#   group_by(Gene, Comparisons) %>%
+#   summarize(logFC = mean(logFC), .groups = "drop") %>%
+#   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+#   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+# 
+# # head(df_wide)
+# # nrow(df_wide)
+# 
+# fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+# summary(fit)
+# 
+# r2 <- summary(fit)$r.squared
+# pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+# 
+# # r2
+# # pval
+# 
+# format(pval, scientific = TRUE, digits = 3)
+# 
+# library(ggplot2)
+# 
+# x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+# x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+# 
+# y_pos <- max(df_wide[[C_comp]]) * 0.95
+# 
+# # Optional: make axes symmetric around 0 for a nicer visual
+# 
+# x_limits <- c(-4, 4)
+# y_limits <- c(-4, 4)
+# max_val <- max(abs(c(x_limits, y_limits)))
+# 
+# genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
+# genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+# 
+# df_wide$highlight <- dplyr::case_when(
+#   df_wide$Gene %in% genes_of_interest_human &
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+# 
+#   df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+# 
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+# 
+#   TRUE ~ "Other"
+# )
+# 
+# # Plot
+# ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+#   geom_point(size = 3, alpha = 0.8) +
+#   scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+#   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+#   geom_hline(yintercept = 0, linetype = "dashed") +
+#   geom_vline(xintercept = 0, linetype = "dashed") +
+#   annotate(
+#     "text",
+#     x = min(df_wide[[H_comp]], na.rm = TRUE),
+#     y = max(df_wide[[C_comp]], na.rm = TRUE),
+#     label = paste0(
+#       "R² = ", round(r2, 3),
+#       "\np = ", format(pval, scientific = TRUE, digits = 3)
+#     ),
+#     hjust = 0,
+#     vjust = 1
+#   ) +
+#   coord_cartesian(xlim = x_limits, ylim = y_limits) +
+#   theme_bw() +
+#   labs(
+#     x = H_comp,
+#     y = C_comp,
+#     title = paste0(H_comp, " vs ", C_comp," 100-150 Million"),
+#     color = "Gene Set"
+#   )
+# 
+# H_comp <- "H_Day25"
+# C_comp <- "C_Day25"
+# 
+# df_wide <- KZFP_Toptable %>%
+#   filter(Comparisons %in% c(H_comp, C_comp)) %>%
+#   dplyr::select(Gene, Comparisons, logFC) %>%
+#   group_by(Gene, Comparisons) %>%
+#   summarize(logFC = mean(logFC), .groups = "drop") %>%
+#   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+#   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+# 
+# # head(df_wide)
+# # nrow(df_wide)
+# 
+# fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+# summary(fit)
+# 
+# r2 <- summary(fit)$r.squared
+# pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+# 
+# # r2
+# # pval
+# 
+# format(pval, scientific = TRUE, digits = 3)
+# 
+# library(ggplot2)
+# 
+# x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+# x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+# 
+# y_pos <- max(df_wide[[C_comp]]) * 0.95
+# 
+# # Optional: make axes symmetric around 0 for a nicer visual
+# 
+# x_limits <- c(-4, 4)
+# y_limits <- c(-4, 4)
+# max_val <- max(abs(c(x_limits, y_limits)))
+# 
+# genes_of_interest_human <- unique(RNA_sets$H_Day25$DEGs$Gene)
+# genes_of_interest_chimp <- unique(RNA_sets$C_Day25$DEGs$Gene)
+# 
+# df_wide$highlight <- dplyr::case_when(
+#   df_wide$Gene %in% genes_of_interest_human &
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+# 
+#   df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+# 
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+# 
+#   TRUE ~ "Other"
+# )
+# 
+# # Plot
+# ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+#   geom_point(size = 3, alpha = 0.8) +
+#   scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+#   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+#   geom_hline(yintercept = 0, linetype = "dashed") +
+#   geom_vline(xintercept = 0, linetype = "dashed") +
+#   annotate(
+#     "text",
+#     x = min(df_wide[[H_comp]], na.rm = TRUE),
+#     y = max(df_wide[[C_comp]], na.rm = TRUE),
+#     label = paste0(
+#       "R² = ", round(r2, 3),
+#       "\np = ", format(pval, scientific = TRUE, digits = 3)
+#     ),
+#     hjust = 0,
+#     vjust = 1
+#   ) +
+#   coord_cartesian(xlim = x_limits, ylim = y_limits) +
+#   theme_bw() +
+#   labs(
+#     x = H_comp,
+#     y = C_comp,
+#     title = paste0(H_comp, " vs ", C_comp," 100-150 Million"),
+#     color = "Gene Set"
+#   )
+# 
+# H_comp <- "H_Day515"
+# C_comp <- "C_Day515"
+# 
+# df_wide <- KZFP_Toptable %>%
+#   filter(Comparisons %in% c(H_comp, C_comp)) %>%
+#   dplyr::select(Gene, Comparisons, logFC) %>%
+#   group_by(Gene, Comparisons) %>%
+#   summarize(logFC = mean(logFC), .groups = "drop") %>%
+#   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+#   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+# 
+# # head(df_wide)
+# # nrow(df_wide)
+# 
+# fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+# summary(fit)
+# 
+# r2 <- summary(fit)$r.squared
+# pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+# 
+# # r2
+# # pval
+# 
+# format(pval, scientific = TRUE, digits = 3)
+# 
+# library(ggplot2)
+# 
+# x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+# x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+# 
+# y_pos <- max(df_wide[[C_comp]]) * 0.95
+# 
+# # Optional: make axes symmetric around 0 for a nicer visual
+# 
+# x_limits <- c(-4, 4)
+# y_limits <- c(-4, 4)
+# max_val <- max(abs(c(x_limits, y_limits)))
+# 
+# genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
+# genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
+# 
+# df_wide$highlight <- dplyr::case_when(
+#   df_wide$Gene %in% genes_of_interest_human &
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+# 
+#   df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+# 
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+# 
+#   TRUE ~ "Other"
+# )
+# 
+# # Plot
+# ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+#   geom_point(size = 3, alpha = 0.8) +
+#   scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+#   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+#   geom_hline(yintercept = 0, linetype = "dashed") +
+#   geom_vline(xintercept = 0, linetype = "dashed") +
+#   annotate(
+#     "text",
+#     x = min(df_wide[[H_comp]], na.rm = TRUE),
+#     y = max(df_wide[[C_comp]], na.rm = TRUE),
+#     label = paste0(
+#       "R² = ", round(r2, 3),
+#       "\np = ", format(pval, scientific = TRUE, digits = 3)
+#     ),
+#     hjust = 0,
+#     vjust = 1
+#   ) +
+#   coord_cartesian(xlim = x_limits, ylim = y_limits) +
+#   theme_bw() +
+#   labs(
+#     x = H_comp,
+#     y = C_comp,
+#     title = paste0(H_comp, " vs ", C_comp," 100-150 Million"),
+#     color = "Gene Set"
+#   )
+# 
+# H_comp <- "H_Day1530"
+# C_comp <- "C_Day1530"
+# 
+# df_wide <- KZFP_Toptable %>%
+#   filter(Comparisons %in% c(H_comp, C_comp)) %>%
+#   dplyr::select(Gene, Comparisons, logFC) %>%
+#   group_by(Gene, Comparisons) %>%
+#   summarize(logFC = mean(logFC), .groups = "drop") %>%
+#   pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+#   filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+# 
+# # head(df_wide)
+# # nrow(df_wide)
+# 
+# fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+# summary(fit)
+# 
+# r2 <- summary(fit)$r.squared
+# pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+# 
+# # r2
+# # pval
+# 
+# format(pval, scientific = TRUE, digits = 3)
+# 
+# library(ggplot2)
+# 
+# x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+# x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+# 
+# y_pos <- max(df_wide[[C_comp]]) * 0.95
+# 
+# # Optional: make axes symmetric around 0 for a nicer visual
+# 
+# x_limits <- c(-4, 4)
+# y_limits <- c(-4, 4)
+# max_val <- max(abs(c(x_limits, y_limits)))
+# 
+# genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
+# genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
+# 
+# df_wide$highlight <- dplyr::case_when(
+#   df_wide$Gene %in% genes_of_interest_human &
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+# 
+#   df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+# 
+#   df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+# 
+#   TRUE ~ "Other"
+# )
+# 
+# # Plot
+# ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+#   geom_point(size = 3, alpha = 0.8) +
+#   scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+#   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+#   geom_hline(yintercept = 0, linetype = "dashed") +
+#   geom_vline(xintercept = 0, linetype = "dashed") +
+#   annotate(
+#     "text",
+#     x = min(df_wide[[H_comp]], na.rm = TRUE),
+#     y = max(df_wide[[C_comp]], na.rm = TRUE),
+#     label = paste0(
+#       "R² = ", round(r2, 3),
+#       "\np = ", format(pval, scientific = TRUE, digits = 3)
+#     ),
+#     hjust = 0,
+#     vjust = 1
+#   ) +
+#   coord_cartesian(xlim = x_limits, ylim = y_limits) +
+#   theme_bw() +
+#   labs(
+#     x = H_comp,
+#     y = C_comp,
+#     title = paste0(H_comp, " vs ", C_comp," 100-150 Million"),
+#     color = "Gene Set"
+#   )
+
+```
+
+###### >100 Million
+
+```{r KZFP_Trajectory_02,fig.height=7,fig.width=7}
+KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_G100 <- KZFPs %>% 
+  filter(`KZFP age` >= 100)
+#65
+
+KZFPs_G100_list <- unique(KZFPs_G100$Label)
+
+KZFP_Toptable <- KZFP_Toptable %>% 
+  filter(Symbol %in% KZFPs_G100_list)
+
+H_comp <- "H_Day02"
+C_comp <- "C_Day02"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," >100 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day25"
+C_comp <- "C_Day25"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day25$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day25$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," >100 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day515"
+C_comp <- "C_Day515"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," >100 Million"),
+    color = "Gene Set"
+  )
+
+H_comp <- "H_Day1530"
+C_comp <- "C_Day1530"
+
+df_wide <- KZFP_Toptable %>%
+  filter(Comparisons %in% c(H_comp, C_comp)) %>%
+  dplyr::select(Gene, Comparisons, logFC) %>%
+  group_by(Gene, Comparisons) %>%
+  summarize(logFC = mean(logFC), .groups = "drop") %>%
+  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
+  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
+
+# head(df_wide)
+# nrow(df_wide)
+
+fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
+summary(fit)
+
+r2 <- summary(fit)$r.squared
+pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+# r2
+# pval
+
+format(pval, scientific = TRUE, digits = 3)
+
+library(ggplot2)
+
+x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
+x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
+
+y_pos <- max(df_wide[[C_comp]]) * 0.95
+
+# Optional: make axes symmetric around 0 for a nicer visual
+
+x_limits <- c(-4, 4)
+y_limits <- c(-4, 4)
+max_val <- max(abs(c(x_limits, y_limits)))
+
+genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
+genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
+
+df_wide$highlight <- dplyr::case_when(
+  df_wide$Gene %in% genes_of_interest_human &
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
+
+  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
+
+  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
+
+  TRUE ~ "Other"
+)
+
+# Plot
+ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  annotate(
+    "text",
+    x = min(df_wide[[H_comp]], na.rm = TRUE),
+    y = max(df_wide[[C_comp]], na.rm = TRUE),
+    label = paste0(
+      "R² = ", round(r2, 3),
+      "\np = ", format(pval, scientific = TRUE, digits = 3)
+    ),
+    hjust = 0,
+    vjust = 1
+  ) +
+  coord_cartesian(xlim = x_limits, ylim = y_limits) +
+  theme_bw() +
+  labs(
+    x = H_comp,
+    y = C_comp,
+    title = paste0(H_comp, " vs ", C_comp," >100 Million"),
+    color = "Gene Set"
+  )
+
+```
+
+
+#### Combined Corr. Data
+```{r KZFP_Trajectory_R2, fig.width=10, fig.height=8, fig.width=10}
 
 r2_df <- data.frame(
   Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
@@ -2624,6 +4039,36 @@ r8_df$Transition <- factor(
   levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
 )
 
+r9_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.615, 0.586, 0.334, 0.217)
+)
+
+r9_df$Transition <- factor(
+  r9_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+r10_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.515, 0.34, 0.602, 0.406)
+)
+
+r10_df$Transition <- factor(
+  r10_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
+r11_df <- data.frame(
+  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
+  R2 = c(0.322, 0.217, 0.34, 0.2)
+)
+
+r11_df$Transition <- factor(
+  r11_df$Transition,
+  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
+)
+
 library(dplyr)
 library(ggplot2)
 
@@ -2635,9 +4080,12 @@ r5_df$Group <- "Species-Specific DEGs"
 r6_df$Group <- "Non-DEGs"
 r7_df$Group <- "All Expressed KZFPs"
 r8_df$Group <- "All Expressed TFs"
+r9_df$Group <- "KZFP <50"
+r10_df$Group <- "KZFP 50-100"
+r11_df$Group <- "KZFP >100"
 
 # Combine
-all_df <- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df,r7_df,r8_df)
+all_df <- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df,r7_df,r8_df,r9_df,r10_df,r11_df)
 
 # Factor order
 all_df$Transition <- factor(
@@ -2683,23 +4131,34 @@ geom_point(
  scale_linetype_manual(
   values = c(
     "All Expressed" = "solid",
-    "All DEGs" = "twodash",
-    "Shared DEGs" = "dotted",
-    "Species-Specific DEGs" = "longdash",
-    "Non-DEGs" = "dotdash",
-    "All Expressed KZFPs" = "twodash",
-    "All Expressed TFs" = "twodash"
+    "All DEGs" = "solid",
+    "Shared DEGs" = "longdash",
+    "Species-Specific DEGs" = "dotdash",
+    "Non-DEGs" = "dotted",
+    
+    "All Expressed KZFPs" = "solid",
+    "KZFP <50" = "longdash",
+    "KZFP 50-100" = "dotdash",
+    "KZFP >100" = "dotted",
+    
+    "All Expressed TFs" = "solid"
   )
 ) +
 
 scale_color_manual(
   values = c(
     "All Expressed" = "black",
+    
     "All DEGs" = "darkblue",
-    "Shared DEGs" = "black",
-    "Species-Specific DEGs" = "black",
-    "Non-DEGs" = "black",
+    "Shared DEGs" = "darkblue",
+    "Species-Specific DEGs" = "darkblue",
+    "Non-DEGs" = "darkblue",
+    
     "All Expressed KZFPs" = "#D55E00",
+    "KZFP <50" = "#D55E00",
+    "KZFP 50-100" = "#D55E00",
+    "KZFP >100" = "#D55E00",
+    
     "All Expressed TFs" = "darkgreen"
   )
 ) +
@@ -2707,12 +4166,18 @@ scale_color_manual(
   scale_linewidth_manual(
     values = c(
       "All Expressed" = 1.8,  # bold
-      "All DEGs" = 1.2,
+      
+      "All DEGs" =1.8,
       "Shared DEGs" = 1.2,
       "Species-Specific DEGs" = 1.2,
       "Non-DEGs" = 1.2,
-      "All Expressed KZFPs" = 1.2,
-      "All Expressed TFs" = 1.2
+      
+      "All Expressed KZFPs" = 1.8,
+      "KZFP <50" = 1.2,
+    "KZFP 50-100" = 1.2,
+    "KZFP >100" = 1.2,
+    
+      "All Expressed TFs" = 1.8
     )
   ) +
 

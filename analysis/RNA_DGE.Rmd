@@ -3418,8 +3418,8 @@ RNA_sets <- map(
       filter(Comparisons == paste0(.x))
 
     list(
-      DEGs = df %>% filter(adj.P.Val < 0.05),
-      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+      DEGs = df %>% filter(adj.P.Val < 0.0500000),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.0500000)
     )
   }
 )

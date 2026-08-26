@@ -388,7 +388,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-24
+<strong>Last updated:</strong> 2026-08-26
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0d972599ff1c29f3bca7b6246061b61d99c19d3ftargetblank0d97259a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreebbdc213817c98b53bd118d91399cc43c84a9832ctargetblankbbdc213a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0d972599ff1c29f3bca7b6246061b61d99c19d3f" target="_blank">0d97259</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/bbdc213817c98b53bd118d91399cc43c84a9832c" target="_blank">bbdc213</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0d972599ff1c29f3bca7b6246061b61d99c19d3ftargetblank0d97259a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreebbdc213817c98b53bd118d91399cc43c84a9832ctargetblankbbdc213a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0d972599ff1c29f3bca7b6246061b61d99c19d3f" target="_blank">0d97259</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/bbdc213817c98b53bd118d91399cc43c84a9832c" target="_blank">bbdc213</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -555,11 +555,7 @@ Ignored files:
     Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/
-
-Unstaged changes:
-    Modified:   analysis/RNA_Cormotif.Rmd
 
 </code></pre>
 <p>
@@ -603,6 +599,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/bbdc213817c98b53bd118d91399cc43c84a9832c/analysis/KZFP.Rmd" target="_blank">bbdc213</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-26
+</td>
+<td>
+Index Update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/bfe4b59c6bd197d9aa4d3c0a49b51427f70ded14/analysis/KZFP.Rmd" target="_blank">bfe4b59</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-26
+</td>
+<td>
+Breaking up R2 correlations
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/ab7a38ed36711688ea213415523c98b3efcfd03c/docs/KZFP.html" target="_blank">ab7a38e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1455,26 +1502,51 @@ get_fc_directions &lt;- function(traj_label, coef_name, comparison_label,
 </div>
 <div id="data-upload" class="section level3">
 <h3>Data Upload</h3>
-<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-
-# Extract Ensembl IDs for every row
-ens_ids &lt;- sub(&quot;\\..*$&quot;, &quot;&quot;, TopTable$Gene)
-
-# Make a lookup table
-symbol_map &lt;- mapIds(
-    org.Hs.eg.db,
-    keys = unique(ens_ids),
-    column = &quot;SYMBOL&quot;,
-    keytype = &quot;ENSEMBL&quot;,
-    multiVals = &quot;first&quot;
-)
-
-TopTable$Symbol &lt;- unname(symbol_map[ens_ids])
-
+<pre class="r"><code># TopTable &lt;- readRDS(&quot;data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+# 
+# # Extract Ensembl IDs for every row
+# ens_ids &lt;- sub(&quot;\\..*$&quot;, &quot;&quot;, TopTable$Gene)
+# 
+# # Make a lookup table
+# symbol_map &lt;- mapIds(
+#     org.Hs.eg.db,
+#     keys = unique(ens_ids),
+#     column = &quot;SYMBOL&quot;,
+#     keytype = &quot;ENSEMBL&quot;,
+#     multiVals = &quot;first&quot;
+# )
+# 
+# TopTable$Symbol &lt;- unname(symbol_map[ens_ids])
+# 
+# saveRDS(TopTable,&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+# 
+# TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+# 
+# # Extract Ensembl IDs for every row
+# ens_ids &lt;- sub(&quot;\\..*$&quot;, &quot;&quot;, TopTable$Gene)
+# 
+# # Make a lookup table
+# symbol_map &lt;- mapIds(
+#     org.Hs.eg.db,
+#     keys = unique(ens_ids),
+#     column = &quot;SYMBOL&quot;,
+#     keytype = &quot;ENSEMBL&quot;,
+#     multiVals = &quot;first&quot;
+# )
+# 
+# TopTable$Symbol &lt;- unname(symbol_map[ens_ids])
+# 
 # saveRDS(TopTable,&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
 # TF_df &lt;- read.delim(&quot;C:/Users/jdhurley/Downloads/protein_class_Transcription (1).tsv&quot;)
-# saveRDS(TF_df,&quot;data/TEs/TF_df.RDS&quot;)</code></pre>
+# saveRDS(TF_df,&quot;data/TEs/TF_df.RDS&quot;)
+
+
+# library(readxl)
+# KZFP_metadata_Hardy2023 &lt;- read_excel(&quot;C:/Users/jdhurley/Downloads/KZFP_metadata_Hardy2023.xlsx&quot;, 
+#     sheet = &quot;Primary_targets&quot;)
+# 
+# saveRDS(KZFP_metadata_Hardy2023,&quot;data/TEs/KZFPs_ages.RDS&quot;)</code></pre>
 <pre class="r"><code>KZFPs &lt;- read_excel(&quot;data/TEs/KZFPs_list.xlsx&quot;)
 
 # saveRDS(KZFPs,&quot;data/TEs/KZFPs.RDS&quot;)
@@ -4451,1465 +4523,6 @@ John D. Hurley
 </div>
 <div id="trajectory" class="section level3">
 <h3>Trajectory</h3>
-<div id="r2-scatter-plots" class="section level4">
-<h4>R2 scatter plots</h4>
-<pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
-RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-KZFPs_list &lt;- readRDS(&quot;data/TEs/KZFPs_list.RDS&quot;)
-
-
-
-H_comp &lt;- &quot;H_Day02&quot;
-C_comp &lt;- &quot;C_Day02&quot;
-
-df_wide &lt;- KZFP_Toptable %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--4.7789 -0.2569  0.0048  0.2362  1.7783 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)       -0.03841    0.02870  -1.338    0.182    
-df_wide[[H_comp]]  0.80886    0.05503  14.700   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.4879 on 300 degrees of freedom
-Multiple R-squared:  0.4187,    Adjusted R-squared:  0.4168 
-F-statistic: 216.1 on 1 and 300 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;3.24e-37&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-4, 4)
-y_limits &lt;- c(-4, 4)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day02$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day02$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/KZFP_Trajectory_02-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Trajectory_02-1">
-Past versions of KZFP_Trajectory_02-1.png
-</button>
-</p>
-<div id="fig-KZFP_Trajectory_02-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/KZFP_Trajectory_02-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/565c3ec3a077bd55f5e394024c8d2f778e950363/docs/figure/KZFP.Rmd/KZFP_Trajectory_02-1.png" target="_blank">565c3ec</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_Trajectory_02-1.png" target="_blank">fcf4060</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-21
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
-TF_list &lt;- TF_df$Gene
-comparisons &lt;- unique(TopTable$Comparisons)
-comparisons</code></pre>
-<pre><code> [1] &quot;HvC_Day0&quot;              &quot;HvC_Day2&quot;              &quot;HvC_Day5&quot;             
- [4] &quot;HvC_Day15&quot;             &quot;HvC_Day30&quot;             &quot;H_Day02&quot;              
- [7] &quot;H_Day25&quot;               &quot;H_Day515&quot;              &quot;H_Day1530&quot;            
-[10] &quot;C_Day02&quot;               &quot;C_Day25&quot;               &quot;C_Day515&quot;             
-[13] &quot;C_Day1530&quot;             &quot;Sig_Sp_inter_Traj02&quot;   &quot;Sig_Sp_inter_Traj25&quot;  
-[16] &quot;Sig_Sp_inter_Traj515&quot;  &quot;Sig_Sp_inter_Traj1530&quot;</code></pre>
-<pre class="r"><code>comparison_order &lt;- c(
-  &quot;H_Day02&quot;,
-  &quot;H_Day25&quot;,
-  &quot;H_Day515&quot;,
-  &quot;H_Day1530&quot;,
-  &quot;C_Day02&quot;,
-  &quot;C_Day25&quot;,
-  &quot;C_Day515&quot;,
-  &quot;C_Day1530&quot;
-)
-
-TF_TopTable &lt;- TopTable %&gt;%
-  filter(
-    Comparisons %in% comparison_order,
-    Symbol %in% TF_list
-  ) %&gt;%
-  mutate(
-    Comparisons = factor(
-      Comparisons,
-      levels = comparison_order
-    )
-  )
-
-saveRDS(TF_all,&quot;data/TEs/TFs_Toptable.RDS&quot;)</code></pre>
-<pre class="r"><code>TF_TopTable &lt;- readRDS(&quot;data/TEs/TFs_Toptable.RDS&quot;)
-
-
-H_comp &lt;- &quot;H_Day02&quot;
-C_comp &lt;- &quot;C_Day02&quot;
-
-df_wide &lt;- TF_all %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--5.8162 -0.4747 -0.1454  0.2489  4.7467 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        0.13151    0.02946   4.464 8.84e-06 ***
-df_wide[[H_comp]]  0.91123    0.01582  57.606  &lt; 2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.9709 on 1113 degrees of freedom
-Multiple R-squared:  0.7488,    Adjusted R-squared:  0.7486 
-F-statistic:  3318 on 1 and 1113 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;0e+00&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-15, 15)
-y_limits &lt;- c(-15, 15)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day02$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day02$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/TF_Trajectory_02-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-TF_Trajectory_02-1">
-Past versions of TF_Trajectory_02-1.png
-</button>
-</p>
-<div id="fig-TF_Trajectory_02-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/TF_Trajectory_02-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
-RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-
-H_comp &lt;- &quot;H_Day25&quot;
-C_comp &lt;- &quot;C_Day25&quot;
-
-df_wide &lt;- KZFP_Toptable %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--1.7611 -0.2279  0.0134  0.2549  3.6133 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        0.27392    0.02610   10.49   &lt;2e-16 ***
-df_wide[[H_comp]]  0.51064    0.04254   12.01   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.443 on 300 degrees of freedom
-Multiple R-squared:  0.3245,    Adjusted R-squared:  0.3223 
-F-statistic: 144.1 on 1 and 300 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;2.23e-27&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-4, 4)
-y_limits &lt;- c(-4, 4)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day25$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day25$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/KZFP_Trajectory_25-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Trajectory_25-1">
-Past versions of KZFP_Trajectory_25-1.png
-</button>
-</p>
-<div id="fig-KZFP_Trajectory_25-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/KZFP_Trajectory_25-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/565c3ec3a077bd55f5e394024c8d2f778e950363/docs/figure/KZFP.Rmd/KZFP_Trajectory_25-1.png" target="_blank">565c3ec</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_Trajectory_25-1.png" target="_blank">fcf4060</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-21
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>TF_TopTable &lt;- readRDS(&quot;data/TEs/TFs_Toptable.RDS&quot;)
-
-
-H_comp &lt;- &quot;H_Day25&quot;
-C_comp &lt;- &quot;C_Day25&quot;
-
-df_wide &lt;- TF_all %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--3.8241 -0.3157  0.0438  0.4063  3.9690 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        0.04584    0.02448   1.872   0.0614 .  
-df_wide[[H_comp]]  0.85911    0.01228  69.939   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.8116 on 1113 degrees of freedom
-Multiple R-squared:  0.8146,    Adjusted R-squared:  0.8145 
-F-statistic:  4892 on 1 and 1113 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;0e+00&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-15, 15)
-y_limits &lt;- c(-15, 15)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day25$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day25$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/TF_Trajectory_25-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-TF_Trajectory_25-1">
-Past versions of TF_Trajectory_25-1.png
-</button>
-</p>
-<div id="fig-TF_Trajectory_25-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/TF_Trajectory_25-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
-RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-
-H_comp &lt;- &quot;H_Day515&quot;
-C_comp &lt;- &quot;C_Day515&quot;
-
-df_wide &lt;- KZFP_Toptable %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--1.4981 -0.2432 -0.0085  0.2400  2.2494 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)       -0.31719    0.02560  -12.39   &lt;2e-16 ***
-df_wide[[H_comp]]  0.56111    0.04067   13.80   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.4388 on 300 degrees of freedom
-Multiple R-squared:  0.3882,    Adjusted R-squared:  0.3862 
-F-statistic: 190.4 on 1 and 300 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;7.2e-34&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-4, 4)
-y_limits &lt;- c(-4, 4)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day515$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day515$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/KZFP_Trajectory_515-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Trajectory_515-1">
-Past versions of KZFP_Trajectory_515-1.png
-</button>
-</p>
-<div id="fig-KZFP_Trajectory_515-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/KZFP_Trajectory_515-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/565c3ec3a077bd55f5e394024c8d2f778e950363/docs/figure/KZFP.Rmd/KZFP_Trajectory_515-1.png" target="_blank">565c3ec</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_Trajectory_515-1.png" target="_blank">fcf4060</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-21
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>TF_TopTable &lt;- readRDS(&quot;data/TEs/TFs_Toptable.RDS&quot;)
-
-
-H_comp &lt;- &quot;H_Day515&quot;
-C_comp &lt;- &quot;C_Day515&quot;
-
-df_wide &lt;- TF_all %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--3.4686 -0.4526 -0.1297  0.2905  4.7170 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        0.03765    0.02419   1.557     0.12    
-df_wide[[H_comp]]  0.61127    0.01650  37.041   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.803 on 1113 degrees of freedom
-Multiple R-squared:  0.5521,    Adjusted R-squared:  0.5517 
-F-statistic:  1372 on 1 and 1113 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;2.39e-196&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-15, 15)
-y_limits &lt;- c(-15, 15)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day515$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day515$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/TF_Trajectory_515-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-TF_Trajectory_515-1">
-Past versions of TF_Trajectory_515-1.png
-</button>
-</p>
-<div id="fig-TF_Trajectory_515-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/TF_Trajectory_515-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
-RNA_sets &lt;- readRDS(&quot;data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
-
-H_comp &lt;- &quot;H_Day1530&quot;
-C_comp &lt;- &quot;C_Day1530&quot;
-
-df_wide &lt;- KZFP_Toptable %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--1.66867 -0.21915  0.00977  0.27245  1.42000 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)       -0.02981    0.03629  -0.822    0.412    
-df_wide[[H_comp]]  0.54397    0.05210  10.440   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.4207 on 300 degrees of freedom
-Multiple R-squared:  0.2665,    Adjusted R-squared:  0.2641 
-F-statistic:   109 on 1 and 300 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;5.7e-22&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-x_limits &lt;- c(-4, 4)
-y_limits &lt;- c(-4, 4)
-
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day1530$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day1530$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/KZFP_Trajectory_1530-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Trajectory_1530-1">
-Past versions of KZFP_Trajectory_1530-1.png
-</button>
-</p>
-<div id="fig-KZFP_Trajectory_1530-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/KZFP_Trajectory_1530-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/565c3ec3a077bd55f5e394024c8d2f778e950363/docs/figure/KZFP.Rmd/KZFP_Trajectory_1530-1.png" target="_blank">565c3ec</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/fcf4060cb11de83da18d34284385941ce8d7cbd5/docs/figure/KZFP.Rmd/KZFP_Trajectory_1530-1.png" target="_blank">fcf4060</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-21
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>TF_TopTable &lt;- readRDS(&quot;data/TEs/TFs_Toptable.RDS&quot;)
-
-
-H_comp &lt;- &quot;H_Day1530&quot;
-C_comp &lt;- &quot;C_Day1530&quot;
-
-df_wide &lt;- TF_all %&gt;%
-  filter(Comparisons %in% c(H_comp, C_comp)) %&gt;%
-  dplyr::select(Gene, Comparisons, logFC) %&gt;%
-  group_by(Gene, Comparisons) %&gt;%
-  summarize(logFC = mean(logFC), .groups = &quot;drop&quot;) %&gt;%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %&gt;%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit &lt;- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)</code></pre>
-<pre><code>
-Call:
-lm(formula = df_wide[[C_comp]] ~ df_wide[[H_comp]])
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--5.5078 -0.2462  0.0680  0.3708  3.9713 
-
-Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        0.02960    0.02944   1.005    0.315    
-df_wide[[H_comp]]  0.84659    0.02555  33.128   &lt;2e-16 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.9087 on 1113 degrees of freedom
-Multiple R-squared:  0.4965,    Adjusted R-squared:  0.496 
-F-statistic:  1097 on 1 and 1113 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>r2 &lt;- summary(fit)$r.squared
-pval &lt;- summary(fit)$coefficients[2, &quot;Pr(&gt;|t|)&quot;]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)</code></pre>
-<pre><code>[1] &quot;5e-168&quot;</code></pre>
-<pre class="r"><code>library(ggplot2)
-
-x_pos &lt;- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg &lt;- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos &lt;- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-
-x_limits &lt;- c(-15, 15)
-y_limits &lt;- c(-15, 15)
-max_val &lt;- max(abs(c(x_limits, y_limits)))
-
-genes_of_interest_human &lt;- unique(RNA_sets$H_Day1530$DEGs$Gene)
-genes_of_interest_chimp &lt;- unique(RNA_sets$C_Day1530$DEGs$Gene)
-
-df_wide$highlight &lt;- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &amp;
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Both&quot;,
-
-  df_wide$Gene %in% genes_of_interest_human ~ &quot;T-DEG Human Only&quot;,
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ &quot;T-DEG Chimp Only&quot;,
-
-  TRUE ~ &quot;Other&quot;
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c(&quot;T-DEG Human Only&quot; = &quot;red&quot;, &quot;T-DEG Chimp Only&quot; = &quot;blue&quot;, &quot;T-DEG Both&quot; = &quot;purple&quot;, &quot;Other&quot; = &quot;grey70&quot;)) +
-  geom_smooth(method = &quot;lm&quot;, se = FALSE, linetype = &quot;dashed&quot;, color = &quot;black&quot;) +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
-  annotate(
-    &quot;text&quot;,
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      &quot;R² = &quot;, round(r2, 3),
-      &quot;\np = &quot;, format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, &quot; vs &quot;, C_comp),
-    color = &quot;Gene Set&quot;
-  )</code></pre>
-<p><img src="figure/KZFP.Rmd/TF_Trajectory_1530-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-TF_Trajectory_1530-1">
-Past versions of TF_Trajectory_1530-1.png
-</button>
-</p>
-<div id="fig-TF_Trajectory_1530-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/TF_Trajectory_1530-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>r2_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.538, 0.673, 0.562, 0.428)
-)
-
-r2_df$Transition &lt;- factor(
-  r2_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r3_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.606, 0.708, 0.61, 0.471)
-)
-
-r3_df$Transition &lt;- factor(
-  r3_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r4_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.844, 0.868, 0.84, 0.797)
-)
-
-r4_df$Transition &lt;- factor(
-  r4_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r5_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.123, 0.204, 0.183, 0.158)
-)
-
-r5_df$Transition &lt;- factor(
-  r5_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r6_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.042,0.14,0.09,0.144)
-)
-
-r6_df$Transition &lt;- factor(
-  r6_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-
-r7_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.419,0.325,0.388,0.267)
-)
-
-r7_df$Transition &lt;- factor(
-  r7_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-r8_df &lt;- data.frame(
-  Transition = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;),
-  R2 = c(0.749,0.815,0.552,0.496)
-)
-
-r8_df$Transition &lt;- factor(
-  r8_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-library(dplyr)
-library(ggplot2)
-
-# Add labels
-r2_df$Group &lt;- &quot;All Expressed&quot;
-r3_df$Group &lt;- &quot;All DEGs&quot;
-r4_df$Group &lt;- &quot;Shared DEGs&quot;
-r5_df$Group &lt;- &quot;Species-Specific DEGs&quot;
-r6_df$Group &lt;- &quot;Non-DEGs&quot;
-r7_df$Group &lt;- &quot;All Expressed KZFPs&quot;
-r8_df$Group &lt;- &quot;All Expressed TFs&quot;
-
-# Combine
-all_df &lt;- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df,r7_df,r8_df)
-
-# Factor order
-all_df$Transition &lt;- factor(
-  all_df$Transition,
-  levels = c(&quot;Day0-2&quot;,&quot;Day2-5&quot;,&quot;Day5-15&quot;,&quot;Day15-30&quot;)
-)
-
-p &lt;- ggplot(
-  all_df,
-  aes(
-    x = Transition,
-    y = R2,
-    group = Group,
-    linetype = Group
-  )
-) +
-
-  # Background highlight
-  annotate(
-    &quot;rect&quot;,
-    xmin = 1.5, xmax = 3.5,
-    ymin = -Inf, ymax = Inf,
-    alpha = 0.1,
-    fill = &quot;grey70&quot;
-  ) +
-
-  geom_line(
-  aes(linewidth = Group, color = Group)
-) +
-
-geom_point(
-  aes(color = Group),
-  size = 3
-) +
-
-  geom_text(
-    aes(label = round(R2, 2)),
-    vjust = -1,
-    size = 3,
-    show.legend = FALSE
-  ) +
-
- scale_linetype_manual(
-  values = c(
-    &quot;All Expressed&quot; = &quot;solid&quot;,
-    &quot;All DEGs&quot; = &quot;twodash&quot;,
-    &quot;Shared DEGs&quot; = &quot;dotted&quot;,
-    &quot;Species-Specific DEGs&quot; = &quot;longdash&quot;,
-    &quot;Non-DEGs&quot; = &quot;dotdash&quot;,
-    &quot;All Expressed KZFPs&quot; = &quot;twodash&quot;,
-    &quot;All Expressed TFs&quot; = &quot;twodash&quot;
-  )
-) +
-
-scale_color_manual(
-  values = c(
-    &quot;All Expressed&quot; = &quot;black&quot;,
-    &quot;All DEGs&quot; = &quot;darkblue&quot;,
-    &quot;Shared DEGs&quot; = &quot;black&quot;,
-    &quot;Species-Specific DEGs&quot; = &quot;black&quot;,
-    &quot;Non-DEGs&quot; = &quot;black&quot;,
-    &quot;All Expressed KZFPs&quot; = &quot;#D55E00&quot;,
-    &quot;All Expressed TFs&quot; = &quot;darkgreen&quot;
-  )
-) +
-
-  scale_linewidth_manual(
-    values = c(
-      &quot;All Expressed&quot; = 1.8,  # bold
-      &quot;All DEGs&quot; = 1.2,
-      &quot;Shared DEGs&quot; = 1.2,
-      &quot;Species-Specific DEGs&quot; = 1.2,
-      &quot;Non-DEGs&quot; = 1.2,
-      &quot;All Expressed KZFPs&quot; = 1.2,
-      &quot;All Expressed TFs&quot; = 1.2
-    )
-  ) +
-
-  labs(
-    title = &quot;Inter-species correlation peaks at mid-development&quot;,
-    x = &quot;Differentiation Transition&quot;,
-    y = expression(R^2),
-    linetype = &quot;Dataset&quot;,
-    linewidth = &quot;Dataset&quot;
-  ) +
-
-  ylim(0, 1) +
-
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.text.x = element_text(angle = 0, hjust = 0.5),
-    plot.title = element_text(face = &quot;bold&quot;)
-  )
-
-p</code></pre>
-<p><img src="figure/KZFP.Rmd/KZFP_Trajectory_R2-1.png" alt="" width="576" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Trajectory_R2-1">
-Past versions of KZFP_Trajectory_R2-1.png
-</button>
-</p>
-<div id="fig-KZFP_Trajectory_R2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec7545b6a32034099aaa1185e94f3749008ce8fb/docs/figure/KZFP.Rmd/KZFP_Trajectory_R2-1.png" target="_blank">ec7545b</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/565c3ec3a077bd55f5e394024c8d2f778e950363/docs/figure/KZFP.Rmd/KZFP_Trajectory_R2-1.png" target="_blank">565c3ec</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/173d289fc459d2a62581d70f37419ec801524995/docs/figure/KZFP.Rmd/KZFP_Trajectory_R2-1.png" target="_blank">173d289</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 <pre class="r"><code>KZFP_Toptable &lt;- readRDS(&quot;data/TEs/KZFPs_Toptable.RDS&quot;)
 
 KZFP_Toptable_sig &lt;- KZFP_Toptable %&gt;% 
@@ -5967,7 +4580,6 @@ Reduce(
 <pre><code> [1] &quot;ZNF707&quot;  &quot;ZNF85&quot;   &quot;ZFP57&quot;   &quot;ZNF251&quot;  &quot;ZNF79&quot;   &quot;ZNF726&quot;  &quot;ZNF311&quot; 
  [8] &quot;ZNF169&quot;  &quot;ZNF23&quot;   &quot;ZFP2&quot;    &quot;ZNF343&quot;  &quot;ZNF17&quot;   &quot;ZNF473&quot;  &quot;ZNF585B&quot;
 [15] &quot;ZNF30&quot;   &quot;ZNF154&quot;  &quot;ZNF667&quot;  &quot;ZNF211&quot; </code></pre>
-</div>
 <div id="proportions" class="section level4">
 <h4>Proportions</h4>
 <pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
@@ -7492,6 +6104,44 @@ odds ratio11               4302  0.6029108 3.472061e-01 0.6086192278</code></pre
   paste0(&quot;cluster&quot;, 1:12)
 )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Cormotif_Trajectory_enrichment_Unassigned-1.png" alt="" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Cormotif_Trajectory_enrichment_Unassigned-1">
+Past versions of KZFP_Cormotif_Trajectory_enrichment_Unassigned-1.png
+</button>
+</p>
+<div id="fig-KZFP_Cormotif_Trajectory_enrichment_Unassigned-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ab7a38ed36711688ea213415523c98b3efcfd03c/docs/figure/KZFP.Rmd/KZFP_Cormotif_Trajectory_enrichment_Unassigned-1.png" target="_blank">ab7a38e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>####Enrichment No Response</p>
 <pre class="r"><code>KZFPs_list &lt;- readRDS(&quot;data/TEs/KZFPs_list.RDS&quot;)
 
@@ -7548,6 +6198,44 @@ odds ratio10             4037 0.33040126 8.866210e-03 1.950566e-02</code></pre>
   paste0(&quot;cluster&quot;, 2:12)
 )</code></pre>
 <p><img src="figure/KZFP.Rmd/KZFP_Cormotif_Trajectory_enrichment_NoRepsonse-1.png" alt="" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-KZFP_Cormotif_Trajectory_enrichment_NoRepsonse-1">
+Past versions of KZFP_Cormotif_Trajectory_enrichment_NoRepsonse-1.png
+</button>
+</p>
+<div id="fig-KZFP_Cormotif_Trajectory_enrichment_NoRepsonse-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ab7a38ed36711688ea213415523c98b3efcfd03c/docs/figure/KZFP.Rmd/KZFP_Cormotif_Trajectory_enrichment_NoRepsonse-1.png" target="_blank">ab7a38e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="tf-enrichment-no-response-1" class="section level4">
 <h4>TF Enrichment No Response</h4>
@@ -7605,6 +6293,44 @@ odds ratio10             3839  1.3015131 0.124650666 0.68557866</code></pre>
   paste0(&quot;cluster&quot;, 2:12)
 )</code></pre>
 <p><img src="figure/KZFP.Rmd/TF_Cormotif_Trajectory_enrichment_NoResponse-1.png" alt="" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-TF_Cormotif_Trajectory_enrichment_NoResponse-1">
+Past versions of TF_Cormotif_Trajectory_enrichment_NoResponse-1.png
+</button>
+</p>
+<div id="fig-TF_Cormotif_Trajectory_enrichment_NoResponse-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ab7a38ed36711688ea213415523c98b3efcfd03c/docs/figure/KZFP.Rmd/TF_Cormotif_Trajectory_enrichment_NoResponse-1.png" target="_blank">ab7a38e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
 wflow_publish(&quot;analysis/KZFP.Rmd&quot;)</code></pre>
@@ -7654,25 +6380,24 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] DBI_1.3.0          gridExtra_2.3.1    rlang_1.3.0        magrittr_2.0.5    
  [5] git2r_0.36.2       otel_0.2.0         e1071_1.7-17       compiler_4.6.1    
- [9] RSQLite_3.53.3     getPass_0.2-4      mgcv_1.9-4         png_0.1-9         
-[13] callr_3.8.0        vctrs_0.7.3        pkgconfig_2.0.3    crayon_1.5.3      
-[17] fastmap_1.2.0      XVector_0.52.0     labeling_0.4.3     utf8_1.2.6        
-[21] promises_1.5.0     tzdb_0.5.0         ggbeeswarm_0.7.3   bit_4.6.0         
-[25] xfun_0.59          cachem_1.1.0       jsonlite_2.0.0     blob_1.3.0        
-[29] later_1.4.8        R6_2.6.1           bslib_0.11.0       stringi_1.8.7     
-[33] RColorBrewer_1.1-3 jquerylib_0.1.4    cellranger_1.1.0   Rcpp_1.1.1-1.1    
-[37] Seqinfo_1.2.0      knitr_1.51         httpuv_1.6.17      Matrix_1.7-5      
-[41] splines_4.6.1      timechange_0.4.0   tidyselect_1.2.1   rstudioapi_0.19.0 
-[45] yaml_2.3.12        processx_3.9.0     lattice_0.22-9     withr_3.0.3       
-[49] KEGGREST_1.52.2    S7_0.2.2           evaluate_1.0.5     sf_1.1-1          
-[53] units_1.0-1        proxy_0.4-29       Biostrings_2.80.1  pillar_1.11.1     
-[57] KernSmooth_2.23-26 whisker_0.4.1      rprojroot_2.1.1    hms_1.1.4         
-[61] scales_1.4.0       class_7.3-23       glue_1.8.1         tools_4.6.1       
-[65] gridpattern_1.4.2  locfit_1.5-9.12    fs_2.1.0           grid_4.6.1        
-[69] nlme_3.1-169       beeswarm_0.4.0     vipor_0.4.7        cli_3.6.6         
-[73] gtable_0.3.6       sass_0.4.10        digest_0.6.39      classInt_0.4-11   
-[77] farver_2.1.2       memoise_2.0.1      htmltools_0.5.9    lifecycle_1.0.5   
-[81] httr_1.4.8         statmod_1.5.2      bit64_4.8.2       </code></pre>
+ [9] RSQLite_3.53.3     getPass_0.2-4      png_0.1-9          callr_3.8.0       
+[13] vctrs_0.7.3        pkgconfig_2.0.3    crayon_1.5.3       fastmap_1.2.0     
+[17] XVector_0.52.0     labeling_0.4.3     utf8_1.2.6         promises_1.5.0    
+[21] tzdb_0.5.0         ggbeeswarm_0.7.3   bit_4.6.0          xfun_0.59         
+[25] cachem_1.1.0       jsonlite_2.0.0     blob_1.3.0         later_1.4.8       
+[29] R6_2.6.1           bslib_0.11.0       stringi_1.8.7      RColorBrewer_1.1-3
+[33] jquerylib_0.1.4    cellranger_1.1.0   Rcpp_1.1.1-1.1     Seqinfo_1.2.0     
+[37] knitr_1.51         httpuv_1.6.17      timechange_0.4.0   tidyselect_1.2.1  
+[41] rstudioapi_0.19.0  yaml_2.3.12        processx_3.9.0     lattice_0.22-9    
+[45] withr_3.0.3        KEGGREST_1.52.2    S7_0.2.2           evaluate_1.0.5    
+[49] sf_1.1-1           units_1.0-1        proxy_0.4-29       Biostrings_2.80.1 
+[53] pillar_1.11.1      whisker_0.4.1      KernSmooth_2.23-26 rprojroot_2.1.1   
+[57] hms_1.1.4          scales_1.4.0       class_7.3-23       glue_1.8.1        
+[61] tools_4.6.1        gridpattern_1.4.2  locfit_1.5-9.12    fs_2.1.0          
+[65] grid_4.6.1         beeswarm_0.4.0     vipor_0.4.7        cli_3.6.6         
+[69] gtable_0.3.6       sass_0.4.10        digest_0.6.39      classInt_0.4-11   
+[73] farver_2.1.2       memoise_2.0.1      htmltools_0.5.9    lifecycle_1.0.5   
+[77] httr_1.4.8         statmod_1.5.2      bit64_4.8.2       </code></pre>
 </div>
 </div>
 </div>

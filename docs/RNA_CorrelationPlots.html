@@ -1,0 +1,4552 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2026-03-03" />
+
+<title>RNA_CorrelationPlots</title>
+
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CrossSpecies_CM_Diff_RNA</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">RNA_CorrelationPlots</h1>
+<h4 class="date">2026-03-03</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-08-26
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>CrossSpecies_CM_Diff_RNA/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20251129code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20251129)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20251129code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20251129)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree5d70e723e3373b349e6848858a25bf8e8d5b69adtargetblank5d70e72a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/5d70e723e3373b349e6848858a25bf8e8d5b69ad" target="_blank">5d70e72</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree5d70e723e3373b349e6848858a25bf8e8d5b69adtargetblank5d70e72a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/5d70e723e3373b349e6848858a25bf8e8d5b69ad" target="_blank">5d70e72</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/RNA_CorrelationPlots.Rmd</code>)
+and HTML (<code>docs/RNA_CorrelationPlots.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/5d70e723e3373b349e6848858a25bf8e8d5b69ad/analysis/RNA_CorrelationPlots.Rmd" target="_blank">5d70e72</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-26
+</td>
+<td>
+R2 Plotting
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/bfe4b59c6bd197d9aa4d3c0a49b51427f70ded14/analysis/RNA_CorrelationPlots.Rmd" target="_blank">bfe4b59</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-26
+</td>
+<td>
+Breaking up R2 correlations
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="correlation-plotting" class="section level1">
+<h1>Correlation Plotting</h1>
+<div id="setting-up-the-environment" class="section level2">
+<h2>Setting up the environment</h2>
+<div id="loading-libraries" class="section level3">
+<h3>Loading libraries</h3>
+</div>
+<div id="defining-functions" class="section level3">
+<h3>Defining functions</h3>
+</div>
+</div>
+<div id="rlcpm_g1_4sptp" class="section level2">
+<h2>RLCPM_G1_4SpTp</h2>
+<div id="gene-expression-and-dge" class="section level3">
+<h3>Gene Expression and DGE</h3>
+<div id="all-genes" class="section level4">
+<h4>All Genes</h4>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day24&quot;, &quot;H_Day45&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day24&quot;, &quot;C_Day45&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 14527</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5380686
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6337044
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3184417
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5607931
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4256706
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day24&quot;, &quot;H_Day45&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day24&quot;, &quot;C_Day45&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;All Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 13329</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5458845
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6373884
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3247087
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5675564
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4298802
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day24&quot;,
+  &quot;Day45&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 7990</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6353504
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7041076
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.357868
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6631177
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5166158
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 5339</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.08794466
+
+$pval
+[1] 7.27514e-109</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2424328
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2272309
+
+$pval
+[1] 3.668691e-301</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.123195
+
+$pval
+[1] 1.26052e-154</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.125104
+
+$pval
+[1] 3.722016e-157</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;Non-DEG at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Non-DEG at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 1198</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.0599683
+
+$pval
+[1] 8.085931e-18</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3067198
+
+$pval
+[1] 3.035659e-97</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1780339
+
+$pval
+[1] 6.587125e-53</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1017161
+
+$pval
+[1] 9.941978e-30</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1510065
+
+$pval
+[1] 1.804131e-44</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkblue&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkblue&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkblue&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkblue&quot;
+)
+
+plot_R2_trajectories(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Gene_FC_Quadrants_RLCOMP_G1_4SpTp_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="transcription-factors" class="section level3">
+<h3>Transcription Factors</h3>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<div id="all-expressed" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day24&quot;, &quot;H_Day45&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day24&quot;, &quot;C_Day45&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
+
+TF_list &lt;- TF_df$Gene
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% TF_list) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 1119</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7481608
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7797656
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4034038
+
+$pval
+[1] 1.958498e-127</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5523854
+
+$pval
+[1] 3.43882e-197</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4918641
+
+$pval
+[1] 2.095286e-166</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-1" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day24&quot;, &quot;H_Day45&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day24&quot;, &quot;C_Day45&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
+
+TF_list &lt;- TF_df$Gene
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% TF_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;All TF Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All TF Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 1001</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7522815
+
+$pval
+[1] 5.571842e-305</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7845357
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4088392
+
+$pval
+[1] 3.652624e-116</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5679533
+
+$pval
+[1] 2.965787e-184</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4974714
+
+$pval
+[1] 1.918816e-151</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-1" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
+
+TF_list &lt;- TF_df$Gene
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day24&quot;,
+  &quot;Day45&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 603</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8197983
+
+$pval
+[1] 8.144382e-226</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8591926
+
+$pval
+[1] 5.09493e-258</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4455218
+
+$pval
+[1] 5.300138e-79</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6586192
+
+$pval
+[1] 2.192737e-142</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5849674
+
+$pval
+[1] 7.276776e-117</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-1" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;TF Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;TF Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 398</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;TF Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1609878
+
+$pval
+[1] 7.943821e-17</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2399177
+
+$pval
+[1] 2.088301e-25</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2933913
+
+$pval
+[1] 1.009108e-31</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.09265139
+
+$pval
+[1] 5.60505e-10</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1704383
+
+$pval
+[1] 8.202008e-18</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-1" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;TF Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;TF Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 118</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2201542
+
+$pval
+[1] 8.350759e-08</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4701379
+
+$pval
+[1] 1.071645e-17</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3200274
+
+$pval
+[1] 2.472769e-11</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.06203246
+
+$pval
+[1] 0.006533811</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2457587
+
+$pval
+[1] 1.144106e-08</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-1" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkgreen&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkgreen&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkgreen&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkgreen&quot;
+)
+
+plot_R2_trajectories(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="kzfps" class="section level3">
+<h3>KZFPs</h3>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<div id="all-expressed-1" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day24&quot;, &quot;H_Day45&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day24&quot;, &quot;C_Day45&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_list &lt;- KZFPs$Label
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_list) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 302</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4191951
+
+$pval
+[1] 2.846951e-37</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3319329
+
+$pval
+[1] 4.194273e-28</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.002588122
+
+$pval
+[1] 0.3783215</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3893554
+
+$pval
+[1] 5.418689e-34</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_AllExpressed-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2667744
+
+$pval
+[1] 5.391678e-22</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-2" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day24&quot;, &quot;H_Day45&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day24&quot;, &quot;C_Day45&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_list &lt;- KZFPs$Label
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 243</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4192957
+
+$pval
+[1] 2.840267e-30</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3704546
+
+$pval
+[1] 5.080304e-26</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 5.54747e-05
+
+$pval
+[1] 0.9080426</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.418908
+
+$pval
+[1] 3.079555e-30</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2928117
+
+$pval
+[1] 6.949401e-20</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-2" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_list &lt;- KZFPs$Label
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day24&quot;,
+  &quot;Day45&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 97</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7261308
+
+$pval
+[1] 1.83256e-28</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6844028
+
+$pval
+[1] 1.588782e-25</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.01296981
+
+$pval
+[1] 0.2666907</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5609571
+
+$pval
+[1] 1.130095e-18</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_MatchedDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4550859
+
+$pval
+[1] 3.574896e-14</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-2" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 146</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;KZFP Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2164453
+
+$pval
+[1] 3.289589e-09</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1047687
+
+$pval
+[1] 6.740967e-05</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.004271181
+
+$pval
+[1] 0.4331989</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1709205
+
+$pval
+[1] 2.143525e-07</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonMatchedDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1017591
+
+$pval
+[1] 8.696235e-05</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-2" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 59</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day24&quot;, &quot;Day45&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4409257
+
+$pval
+[1] 9.860608e-09</code></pre>
+<pre class="r"><code>plots$Day24</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1483477
+
+$pval
+[1] 0.00259266</code></pre>
+<pre class="r"><code>plots$Day45</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.02409319
+
+$pval
+[1] 0.2404403</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1837247
+
+$pval
+[1] 0.0007065756</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_NonDEGs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1357228
+
+$pval
+[1] 0.004092301</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-2" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkred&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkred&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkred&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkred&quot;
+)
+
+plot_R2_trajectories(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="rlcpm_g1_4sptp-no4" class="section level2">
+<h2>RLCPM_G1_4SpTp No4</h2>
+<div id="gene-expression-and-dge-1" class="section level3">
+<h3>Gene Expression and DGE</h3>
+<div id="all-genes-1" class="section level4">
+<h4>All Genes</h4>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 14491</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5381049
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6728661
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5621199
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4279829
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-3" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 13438</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5448963
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6763436
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.568933
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4317865
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-3" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day25&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 8137</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6330415
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7447449
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6519967
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5122104
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-3" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 5301</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.0772687
+
+$pval
+[1] 1.107207e-94</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1926794
+
+$pval
+[1] 1.17242e-248</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1510592
+
+$pval
+[1] 9.437702e-191</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1204478
+
+$pval
+[1] 6.19546e-150</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-3" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/AllExpressedGenes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;Non-DEG at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Non-DEG at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 1053</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.07549372
+
+$pval
+[1] 1.078456e-19</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1689387
+
+$pval
+[1] 3.486044e-44</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.04589438
+
+$pval
+[1] 2.137495e-12</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1376837
+
+$pval
+[1] 1.027675e-35</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-3" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkblue&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkblue&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkblue&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkblue&quot;
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="transcription-factors-1" class="section level3">
+<h3>Transcription Factors</h3>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<div id="all-expressed-2" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
+
+TF_list &lt;- TF_df$Gene
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% TF_list) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 1115</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.748842
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8146395
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5521202
+
+$pval
+[1] 2.391322e-196</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4964871
+
+$pval
+[1] 5.002294e-168</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-4" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
+
+TF_list &lt;- TF_df$Gene
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% TF_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All TF Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All TF Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 1011</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7530182
+
+$pval
+[1] 1.150338e-308</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8191096
+
+$pval
+[1] 0</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5645239
+
+$pval
+[1] 2.405657e-184</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5013124
+
+$pval
+[1] 1.270375e-154</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-4" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+TF_df &lt;- readRDS(&quot;data/TEs/TF_df.RDS&quot;)
+
+TF_list &lt;- TF_df$Gene
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day25&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 637</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8094587
+
+$pval
+[1] 8.76406e-231</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8687457
+
+$pval
+[1] 3.402837e-282</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6320841
+
+$pval
+[1] 5.306167e-140</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5679309
+
+$pval
+[1] 8.144197e-118</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-4" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;TF Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;TF Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 374</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;TF Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1624089
+
+$pval
+[1] 4.889219e-16</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3032977
+
+$pval
+[1] 4.781953e-31</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.125145
+
+$pval
+[1] 1.81974e-12</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1424818
+
+$pval
+[1] 4.130754e-14</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-4" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;TF Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;TF Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 104</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;,&quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2393372
+
+$pval
+[1] 1.36606e-07</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1937903
+
+$pval
+[1] 2.922998e-06</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.08655828
+
+$pval
+[1] 0.00243364</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2127204
+
+$pval
+[1] 8.335941e-07</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-4" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/TF_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkgreen&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkgreen&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkgreen&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkgreen&quot;
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="kzfps-1" class="section level3">
+<h3>KZFPs</h3>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<div id="all-expressed-3" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_list &lt;- KZFPs$Label
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_list) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 302</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4187023
+
+$pval
+[1] 3.23502e-37</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.324508
+
+$pval
+[1] 2.225821e-27</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3882056
+
+$pval
+[1] 7.195789e-34</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2665047
+
+$pval
+[1] 5.700199e-22</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-5" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_list &lt;- KZFPs$Label
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 241</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4187435
+
+$pval
+[1] 5.505543e-30</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3472094
+
+$pval
+[1] 6.370078e-24</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4185161
+
+$pval
+[1] 5.770531e-30</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2923549
+
+$pval
+[1] 1.066662e-19</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-5" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_list &lt;- KZFPs$Label
+
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day25&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 637</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8094587
+
+$pval
+[1] 8.76406e-231</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.8687457
+
+$pval
+[1] 3.402837e-282</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6320841
+
+$pval
+[1] 5.306167e-140</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5679309
+
+$pval
+[1] 8.144197e-118</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-5" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 141</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;TF Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2234192
+
+$pval
+[1] 3.257904e-09</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1821997
+
+$pval
+[1] 1.304613e-07</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1869107
+
+$pval
+[1] 8.628486e-08</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1521029
+
+$pval
+[1] 1.748549e-06</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-5" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/KZFP_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 61</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;,&quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.438779
+
+$pval
+[1] 6.085758e-09</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1586256
+
+$pval
+[1] 0.001478159</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1695764
+
+$pval
+[1] 0.0009761509</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1337587
+
+$pval
+[1] 0.003749563</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-5" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/KZFP_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkred&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkred&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkred&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkred&quot;
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" />
+### KZFP G100 mya</p>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+</div>
+<div id="all-expressed-4" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_G100 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &gt; 100)
+
+KZFPs_G100_list &lt;- unique(KZFPs_G100$Label)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_G100_list) %&gt;% 
+    pull(Symbol)
+)
+#61
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_G100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 144</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.32184
+
+$pval
+[1] 1.229285e-13</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2172773
+
+$pval
+[1] 3.912211e-09</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3404757
+
+$pval
+[1] 1.654687e-14</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1998723
+
+$pval
+[1] 1.939213e-08</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-6" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_G100 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &gt; 100)
+
+KZFPs_G100_list &lt;- unique(KZFPs_G100$Label)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_G100_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_G100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 115</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3119846
+
+$pval
+[1] 8.784183e-11</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2460773
+
+$pval
+[1] 1.725724e-08</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4131152
+
+$pval
+[1] 9.647875e-15</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2067102
+
+$pval
+[1] 3.320447e-07</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-6" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_G100 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &gt; 100)
+
+KZFPs_G100_list &lt;- unique(KZFPs_G100$Label)
+
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day25&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_G100_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/KZFP_G100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 40</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7980543
+
+$pval
+[1] 9.01417e-15</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5960696
+
+$pval
+[1] 5.423548e-09</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7158583
+
+$pval
+[1] 6.23348e-12</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1954534
+
+$pval
+[1] 0.004287026</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-6" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_G100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_G100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 75</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;TF Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.06145585
+
+$pval
+[1] 0.03199776</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.07446975
+
+$pval
+[1] 0.0178476</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1168757
+
+$pval
+[1] 0.002682376</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1640088
+
+$pval
+[1] 0.0003133107</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-6" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_G100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/KZFP_G100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 29</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;,&quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4385072
+
+$pval
+[1] 9.117531e-05</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.0001940592
+
+$pval
+[1] 0.9428235</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.04669421
+
+$pval
+[1] 0.2602289</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1608129
+
+$pval
+[1] 0.03108742</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/KZFP_G100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-6" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/KZFP_G100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkred&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkred&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkred&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkred&quot;
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="kzfp-50_100-mya" class="section level3">
+<h3>KZFP 50_100 mya</h3>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<div id="all-expressed-5" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_50_100 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &gt;= 50, `KZFP age` &lt; 100)
+
+KZFPs_50_100_list &lt;- unique(KZFPs_50_100$Label)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_50_100_list) %&gt;% 
+    pull(Symbol)
+)
+#61
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_50_100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 35</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5153618
+
+$pval
+[1] 1.207031e-06</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3396557
+
+$pval
+[1] 0.0002390656</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6024684
+
+$pval
+[1] 4.277657e-08</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4060586
+
+$pval
+[1] 3.847966e-05</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-7" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_50_100 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &gt;= 50, `KZFP age` &lt; 100)
+
+KZFPs_50_100_list &lt;- unique(KZFPs_50_100$Label)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_50_100_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_50_100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 28</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3866328
+
+$pval
+[1] 0.0004121047</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4913685
+
+$pval
+[1] 3.257984e-05</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5648027
+
+$pval
+[1] 4.03626e-06</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3062277
+
+$pval
+[1] 0.002253782</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-7" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_50_100 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &gt;= 50, `KZFP age` &lt; 100)
+
+KZFPs_50_100_list &lt;- unique(KZFPs_50_100$Label)
+
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day25&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_50_100_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/KZFP_50_100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 16</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5066954
+
+$pval
+[1] 0.001981476</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3461244
+
+$pval
+[1] 0.01651952</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5997244
+
+$pval
+[1] 0.0004285175</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5980314
+
+$pval
+[1] 0.0004418798</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-7" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_50_100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_50_100_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 12</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;TF Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3055918
+
+$pval
+[1] 0.06230751</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7721791
+
+$pval
+[1] 0.000167893</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4412625
+
+$pval
+[1] 0.01846704</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.05064911
+
+$pval
+[1] 0.4818952</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-7" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_50_100_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/KZFP_50_100_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 7</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;,&quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.7311095
+
+$pval
+[1] 0.01418792</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.08854234
+
+$pval
+[1] 0.5169089</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6356271
+
+$pval
+[1] 0.03176251</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5650855
+
+$pval
+[1] 0.05133933</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/KZFP_50_100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-7" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/KZFP_50_100_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkred&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkred&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkred&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkred&quot;
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_50_100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="kzfp-l50-mya" class="section level3">
+<h3>KZFP L50 mya</h3>
+<pre class="r"><code>R2_table &lt;- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  stringsAsFactors = FALSE
+)</code></pre>
+<div id="all-expressed-6" class="section level4">
+<h4>All Expressed</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_L50 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &lt; 50)
+
+KZFPs_L50_list &lt;- unique(KZFPs_L50$Label)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_L50_list) %&gt;% 
+    pull(Symbol)
+)
+#61
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_L50_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All Expressed Genes - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All Expressed Genes - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 61</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Expressed Genes&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6145468
+
+$pval
+[1] 7.983657e-14</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5858562
+
+$pval
+[1] 6.789492e-13</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3335099
+
+$pval
+[1] 1.100999e-06</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2168149
+
+$pval
+[1] 0.0001558979</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Expressed Genes&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  ))</code></pre>
+</div>
+<div id="all-trajectory-degs-8" class="section level4">
+<h4>All Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+comparisons &lt;- c(&quot;H_Day02&quot;, &quot;H_Day25&quot;, &quot;H_Day515&quot;, &quot;H_Day1530&quot;,&quot;C_Day02&quot;, &quot;C_Day25&quot;, &quot;C_Day515&quot;, &quot;C_Day1530&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_L50 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &lt; 50)
+
+KZFPs_L50_list &lt;- unique(KZFPs_L50$Label)
+
+gene_set &lt;- unique(
+  TopTable %&gt;%
+    filter(Comparisons %in% comparisons) %&gt;%
+    filter(Symbol %in% KZFPs_L50_list) %&gt;% 
+    filter(adj.P.Val &lt; 0.05) %&gt;% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,&quot;data/DGE/KZFP_L50_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;All KZFP Trajectory DEGs - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(gene_set)</code></pre>
+<pre><code>[1] 51</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = gene_set,
+  genes_label = &quot;All Trajectory DEGs&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6512413
+
+$pval
+[1] 8.613277e-13</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6157124
+
+$pval
+[1] 9.52472e-12</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.3133093
+
+$pval
+[1] 1.950935e-05</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.2008043
+
+$pval
+[1] 0.0009752813</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;All Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-matched-trajectory-degs-8" class="section level4">
+<h4>All Matched Trajectory DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+KZFPs &lt;- readRDS(&quot;data/TEs/KZFPs.RDS&quot;)
+
+KZFPs_L50 &lt;- KZFPs %&gt;% 
+  filter(`KZFP age` &lt; 50)
+
+KZFPs_L50_list &lt;- unique(KZFPs_L50$Label)
+
+
+trajectory_comparisons &lt;- c(
+  &quot;Day02&quot;,
+  &quot;Day25&quot;,
+  &quot;Day515&quot;,
+  &quot;Day1530&quot;
+)
+
+matched_DEGs &lt;- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  KZFPs_L50_list
+)
+
+saveRDS(matched_DEGs,&quot;data/DGE/KZFP_L50_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+print(&quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;Trajectory DEGs matched across species in at least one transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(matched_DEGs)</code></pre>
+<pre><code>[1] 26</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = matched_DEGs,
+  genes_label = &quot;Species-Shared Trajectory DEGs \n (at least on Transition)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6681542
+
+$pval
+[1] 3.452618e-07</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6498841
+
+$pval
+[1] 6.650137e-07</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.4862949
+
+$pval
+[1] 7.51957e-05</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1996087
+
+$pval
+[1] 0.02212885</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-Shared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-degs-nonshared-8" class="section level4">
+<h4>All Trajectory DEGs (NonShared)</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_L50_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+matched_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_L50_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+umatched_deg_genes &lt;- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print(&quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Trajectory DEGs with no species matches at any transition - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(umatched_deg_genes)</code></pre>
+<pre><code>[1] 25</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;, &quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = umatched_deg_genes,
+  genes_label = &quot;TF Species-NonShared Trajectory DEGs \n (no Transitions)&quot;
+)
+
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6457091
+
+$pval
+[1] 1.317905e-06</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.5203138
+
+$pval
+[1] 4.724874e-05</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.05027488
+
+$pval
+[1] 0.2812567</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1415445
+
+$pval
+[1] 0.06379862</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Species-NonShared Trajectory DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)</code></pre>
+</div>
+<div id="all-trajectory-non-degs-8" class="section level4">
+<h4>All Trajectory Non-DEGs</h4>
+<pre class="r"><code>TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+trajectory_deg_genes &lt;- readRDS(&quot;data/DGE/KZFP_L50_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+all_expressed_genes &lt;- readRDS(&quot;data/DGE/KZFP_L50_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+Non_DEGs &lt;- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print(&quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;)</code></pre>
+<pre><code>[1] &quot;KZFP Non-DEG at all transitions - with Symbol IDs&quot;</code></pre>
+<pre class="r"><code>length(Non_DEGs)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>plots &lt;- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c(&quot;Day02&quot;, &quot;Day25&quot;,&quot;Day515&quot;, &quot;Day1530&quot;),
+  genes_to_include = Non_DEGs,
+  genes_label = &quot;Trajectory Non-DEGs \n (no Transitions)&quot;
+)
+
+plots$Day02</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.0001367911
+
+$pval
+[1] 0.974419</code></pre>
+<pre class="r"><code>plots$Day25</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.1191588
+
+$pval
+[1] 0.3286162</code></pre>
+<pre class="r"><code>plots$Day515</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.6631077
+
+$pval
+[1] 0.004129434</code></pre>
+<pre class="r"><code>plots$Day1530</code></pre>
+<pre><code>$plot</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$r2
+[1] 0.05611473
+
+$pval
+[1] 0.509925</code></pre>
+<pre class="r"><code>R2_table &lt;- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = &quot;Trajectory Non-DEGs&quot;,
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, &quot;r2&quot;),
+    P_value = sapply(plots, `[[`, &quot;pval&quot;)
+  )
+)
+
+saveRDS(R2_table,&quot;data/DGE/KZFP_L50_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)</code></pre>
+</div>
+<div id="plotting-r2-together-8" class="section level4">
+<h4>Plotting R2 Together</h4>
+<pre class="r"><code>TrajectoryR2Genes &lt;- readRDS(&quot;data/DGE/KZFP_L50_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS&quot;)
+
+RNA_colors &lt;- c(
+  &quot;All Expressed&quot; = &quot;black&quot;,
+  &quot;All DEGs&quot; = &quot;darkred&quot;,
+  &quot;Shared DEGs&quot; = &quot;darkred&quot;,
+  &quot;Species-Specific DEGs&quot; = &quot;darkred&quot;,
+  &quot;Non-DEGs&quot; = &quot;darkred&quot;
+)
+
+plot_R2_trajectories_No4(
+  R2_table = TrajectoryR2Genes,
+  colors = RNA_colors
+)</code></pre>
+<p><img src="figure/RNA_CorrelationPlots.Rmd/ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># git -&gt; commit all changes
+# git -&gt; push
+wflow_publish(&quot;analysis/RNA_CorrelationPlots.Rmd&quot;)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.6.1 (2026-06-24 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] ggsignif_0.6.4       edgeR_4.10.1         limma_3.68.4        
+ [4] ggrastr_1.0.2        ggVennDiagram_1.5.7  org.Hs.eg.db_3.23.1 
+ [7] AnnotationDbi_1.74.0 IRanges_2.46.0       S4Vectors_0.50.1    
+[10] Biobase_2.72.0       BiocGenerics_0.58.1  generics_0.1.4      
+[13] eulerr_8.1.0         patchwork_1.3.2      ggfortify_0.4.19    
+[16] ggrepel_0.9.8        readxl_1.5.0         lubridate_1.9.5     
+[19] forcats_1.0.1        stringr_1.6.0        dplyr_1.2.1         
+[22] purrr_1.2.2          readr_2.2.0          tidyr_1.3.2         
+[25] tibble_3.3.1         ggplot2_4.0.3        tidyverse_2.0.0     
+[28] workflowr_1.7.2     
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1   vipor_0.4.7        farver_2.1.2       blob_1.3.0        
+ [5] Biostrings_2.80.1  S7_0.2.2           fastmap_1.2.0      promises_1.5.0    
+ [9] digest_0.6.39      timechange_0.4.0   lifecycle_1.0.5    statmod_1.5.2     
+[13] processx_3.9.0     KEGGREST_1.52.2    RSQLite_3.53.3     magrittr_2.0.5    
+[17] compiler_4.6.1     rlang_1.3.0        sass_0.4.10        tools_4.6.1       
+[21] yaml_2.3.12        knitr_1.51         labeling_0.4.3     bit_4.6.0         
+[25] RColorBrewer_1.1-3 withr_3.0.3        grid_4.6.1         git2r_0.36.2      
+[29] scales_1.4.0       cli_3.6.6          rmarkdown_2.31     crayon_1.5.3      
+[33] otel_0.2.0         rstudioapi_0.19.0  httr_1.4.8         tzdb_0.5.0        
+[37] DBI_1.3.0          ggbeeswarm_0.7.3   cachem_1.1.0       splines_4.6.1     
+[41] cellranger_1.1.0   XVector_0.52.0     vctrs_0.7.3        Matrix_1.7-5      
+[45] jsonlite_2.0.0     callr_3.8.0        hms_1.1.4          bit64_4.8.2       
+[49] beeswarm_0.4.0     locfit_1.5-9.12    jquerylib_0.1.4    glue_1.8.1        
+[53] stringi_1.8.7      gtable_0.3.6       later_1.4.8        pillar_1.11.1     
+[57] htmltools_0.5.9    Seqinfo_1.2.0      R6_2.6.1           rprojroot_2.1.1   
+[61] lattice_0.22-9     evaluate_1.0.5     png_0.1-9          memoise_2.0.1     
+[65] httpuv_1.6.17      bslib_0.11.0       Rcpp_1.1.1-1.1     nlme_3.1-169      
+[69] gridExtra_2.3.1    mgcv_1.9-4         whisker_0.4.1      xfun_0.59         
+[73] fs_2.1.0           getPass_0.2-4      pkgconfig_2.0.3   </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

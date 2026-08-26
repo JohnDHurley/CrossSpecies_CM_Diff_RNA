@@ -346,20 +346,20 @@ compid <- rbind(
 
 
 
-#Model Fitting
-
-#Run model
-set.seed(8)
-motif.fitted <- cormotiffit(
-  exprs = log2cpm,
-  groupid = groupid,
-  compid = compid,
-  K = 1:20,
-  max.iter = 2000,
-  runtype = "logCPM"
-)
-
-saveRDS(motif.fitted,"data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+# #Model Fitting
+# 
+# #Run model
+# set.seed(8)
+# motif.fitted <- cormotiffit(
+#   exprs = log2cpm,
+#   groupid = groupid,
+#   compid = compid,
+#   K = 1:20,
+#   max.iter = 2000,
+#   runtype = "logCPM"
+# )
+# 
+# saveRDS(motif.fitted,"data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
 ##### Graphing
@@ -2497,20 +2497,20 @@ rownames(compid) <- paste0(time_order, "_H_vs_C")
 
 compid
 
-#Model Fitting
-
-# Run model
-set.seed(8)
-motif.fitted <- cormotiffit(
-  exprs = log2cpm,
-  groupid = groupid,
-  compid = compid,
-  K = 1:20,
-  max.iter = 2000,
-  runtype = "logCPM"
-)
-
-saveRDS(motif.fitted,"data/Cormotif/Trajectory/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+# #Model Fitting
+# 
+# # Run model
+# set.seed(8)
+# motif.fitted <- cormotiffit(
+#   exprs = log2cpm,
+#   groupid = groupid,
+#   compid = compid,
+#   K = 1:20,
+#   max.iter = 2000,
+#   runtype = "logCPM"
+# )
+# 
+# saveRDS(motif.fitted,"data/Cormotif/Trajectory/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
 ##### Graphing

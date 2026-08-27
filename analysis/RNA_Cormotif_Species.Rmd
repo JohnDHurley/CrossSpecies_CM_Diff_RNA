@@ -349,8 +349,8 @@ rownames(compid) <- paste0(time_order, "_H_vs_C")
 
 compid
 
-# #Model Fitting
-# 
+#Model Fitting
+
 # # Run model
 # set.seed(8)
 # motif.fitted <- cormotiffit(
@@ -362,13 +362,13 @@ compid
 #   runtype = "logCPM"
 # )
 # 
-# saveRDS(motif.fitted,"data/Cormotif/Trajectory/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+# saveRDS(motif.fitted,"data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS")
 ```
 
 #### Graphing
 
 ```{r RNA-Seq_No4_Species_modeling_computer_plot,fig.height=8,fig.width=15}
-motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
+motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS")
 
 plotIC(motif.fitted)
 plotMotif(motif.fitted)

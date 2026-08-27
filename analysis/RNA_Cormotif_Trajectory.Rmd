@@ -55,7 +55,7 @@ ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_No5.RDS")
 ```
 
 ### Defining Functions
-```{r Load_CorMotif_Function, warning=FALSE, message=FALSE}
+```{r Load_CorMotif_Functions, warning=FALSE, message=FALSE}
 #Run the Function corMotifcustom.R
 
 #Check_Overlap Function
@@ -364,7 +364,7 @@ compid <- rbind(
 
 ##### Graphing
 
-```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot,fig.height=8,fig.width=15}
 motif.fit <- readRDS("data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 plotIC(motif.fit)
@@ -385,7 +385,7 @@ legend(
 
 ##### PPost
 
-```{r RNA-Seq_CorMotif_Species_Assigning1}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_PPost}
 motif.fit<- readRDS("data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 log2cpm <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep.RDS")
 
@@ -468,7 +468,7 @@ gene_prob_ppost %>%
 
 ##### Cluster Assignments
 
-```{r RNA-Seq_CorMotif_Species_ClustSets1,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_ClusterAssign,fig.height=8,fig.width=15}
 motif.fit<- readRDS("data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 log2cpm <- readRDS("data/Cormotif/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep.RDS")
 gene_prob_ppost <- readRDS("data/Cormotif/concat/RNA_gene_prob_CorMotif_trajectory_k1_k20_No4_seed8_computer.RDS")
@@ -640,7 +640,7 @@ for (p in cluster_plots) print(p)
 
 ##### EnrichGo
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler1}
+```{r r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_GOProfiler}
 
 
 all_genes <- unique(TopTable$Gene)
@@ -732,7 +732,7 @@ write.csv(gost_export,
 
 ##### EnrichGo_Plots
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
+```{r r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_GoProfiler_graphs1,fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -807,7 +807,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2,fig.height=5, fig.width=6}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_GProfiler_graphs2,fig.height=5, fig.width=6}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -839,7 +839,7 @@ for (clust_name in names(cluster_list)) {
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=12, fig.width=12}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_GProfiler_graphs3,fig.height=12, fig.width=12}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -893,7 +893,7 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs4,fig.height=12, fig.width=12}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_GProfiler_graphs4,fig.height=12, fig.width=12}
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -923,7 +923,7 @@ pheatmap(
 )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs5,fig.height=20, fig.width=12}
+```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_GProfiler_graphs5,fig.height=20, fig.width=12}
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -957,7 +957,7 @@ pheatmap(
 
 ##### RScript
 
-```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_Rscript,fig.height=8,fig.width=15}
 
 # ## --- Load required libraries ---
 # suppressPackageStartupMessages({
@@ -1047,7 +1047,7 @@ pheatmap(
 
 ##### Graphing
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
 
 plotIC(motif.fitted)
@@ -1066,7 +1066,7 @@ legend(
 
 ##### PPost
 
-```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
 
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
@@ -1170,7 +1170,7 @@ gene_prob_ppost %>%
 
 ##### Cluster Assignments
 
-```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
+```{rRNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
 
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
@@ -1325,7 +1325,7 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks_TACC}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterOverlapCheck}
 
 clust_names_list <- list(
  clust1_RNA,
@@ -1350,7 +1350,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ##### EnrichGo
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_GoProfiler}
 
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -1448,7 +1448,7 @@ all_genes <- unique(TopTable$Gene)
 
 ##### EnrichGo_Plots
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=10, fig.width==8}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_GProfiler_graphs1,fig.height=10, fig.width==8}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -1552,7 +1552,7 @@ pheatmap(
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2,fig.height=5, fig.width=6}
+```{rRNA-Seq_No4_CorMotif_Trajectory_TACC_GoProfiler_graphs2,fig.height=5, fig.width=6}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -1587,7 +1587,7 @@ for (clust_name in names(cluster_list)) {
 
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=5}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_GProfiler_graphs3,fig.height=5}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -1691,7 +1691,7 @@ pheatmap(
 
 ##### RScript
 
-```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_Rscript,fig.height=8,fig.width=15}
 
 
 
@@ -1801,7 +1801,7 @@ pheatmap(
 
 ##### Graphing
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 
 plotIC(motif.fitted)
@@ -1820,7 +1820,7 @@ legend(
 
 ##### PPost
 
-```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 
 log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
@@ -1917,7 +1917,7 @@ gene_prob_ppost %>%
 
 ##### Cluster Assignments
 
-```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 
 log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
@@ -2084,7 +2084,7 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks_TACC}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterOverlapChecks}
 
 clust_names_list <- list(
  clust1_RNA,
@@ -2109,7 +2109,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ##### EnrichGo
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler2}
 
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -2207,7 +2207,7 @@ all_genes <- unique(TopTable$Gene)
 
 ##### EnrichGo_Plots
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.width=6, fig.height=8}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler_graphs1,fig.width=6, fig.height=8}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2311,7 +2311,7 @@ pheatmap(
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2, width=6, fig.height=8}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler_graphs2, width=6, fig.height=8}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2347,7 +2347,7 @@ for (clust_name in names(cluster_list)) {
 
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3, fig.width=6, fig.height=6}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler_graphs3, fig.width=6, fig.height=6}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2453,7 +2453,7 @@ pheatmap(
 #### Modeling on Laptop
 
 ##### Data Preparation
-```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_Species_modeling_computer_dataset,fig.height=8,fig.width=15}
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 
@@ -2515,7 +2515,7 @@ compid
 
 ##### Graphing
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_Species_modeling_computer_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 plotIC(motif.fitted)
@@ -2534,7 +2534,7 @@ legend(
 
 ##### PPost
 
-```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
+```{r RNA-Seq_No4_Species_modeling_computer_PPost}
 motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 motif.fit <- motif.fitted
@@ -2600,7 +2600,7 @@ gene_prob_ppost %>%
 
 ##### Cluster Assignments
 
-```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
+```{r RNA-Seq_No4_Species_modeling_computer_ClusterAssign}
 motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -2702,7 +2702,7 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks_TACC}
+```{r RNA-Seq_No4_Species_modeling_computer_CluserOverlapCheck}
 
 clust_names_list <- list(
   clust1_RNA,
@@ -2720,7 +2720,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ##### EnrichGo
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
+```{r RNA-Seq_No4_Species_modeling_computer_GProfiler2}
 
 motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -2815,7 +2815,7 @@ write.csv(gost_export,
 
 ##### EnrichGo_Plots
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
+```{r RNA-Seq_No4_Species_modeling_computer_GProfiler_graphs1,fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -2890,7 +2890,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2,fig.height=5, fig.width=6}
+```{r RNA-Seq_No4_Species_modeling_computer_GProfiler_graphs2,fig.height=5, fig.width=6}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -2923,7 +2923,7 @@ for (clust_name in names(cluster_list)) {
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=12, fig.width=12}
+```{r RNA-Seq_No4_Species_modeling_computer_GProfiler_graphs3,fig.height=12, fig.width=12}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -2977,7 +2977,7 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs4,fig.height=12, fig.width=12}
+```{r RNA-Seq_No4_Species_modeling_computer_GProfiler_graphs4,fig.height=12, fig.width=12}
 
 heatmap_wide <- readRDS("data/Cormotif/Species/SpeciesGoWide_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3007,7 +3007,7 @@ pheatmap(
 )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs5,fig.height=20, fig.width=12}
+```{r RNA-Seq_No4_Species_modeling_computer_GProfiler_graphs5,fig.height=20, fig.width=12}
 
 heatmap_long <- readRDS("data/Cormotif/Species/SpeciesGoLong_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3040,7 +3040,7 @@ pheatmap(
 #### Modeling on TACC
 
 ##### RScript
-```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_Species_TACC_RScript,fig.height=8,fig.width=15}
 
 # set.seed(8)
 # print(runif(5))
@@ -3135,7 +3135,7 @@ pheatmap(
 
 ##### Graphing
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_Species_TACC_Plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_seed8_Species_TACC.rds")
 
 plotIC(motif.fitted)
@@ -3154,7 +3154,7 @@ legend(
 
 ##### PPost
 
-```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
+```{r RNA-Seq_No4_Species_TACC_PPost}
 motif.fitted <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_seed8_Species_TACC.rds")
 
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
@@ -3228,7 +3228,7 @@ gene_prob_ppost %>%
 
 ##### Cluster Assignments
 
-```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
+```{r RNA-Seq_No4_Species_TACC_CluserAssign}
 motif.fit <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_seed8_Species_TACC.rds")
 
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
@@ -3337,7 +3337,7 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks_TACC}
+```{r RNA-Seq_No4_Species_TACC_ClusterOverlapChecks}
 
 clust_names_list <- list(
   clust1_RNA,
@@ -3355,7 +3355,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ##### EnrichGo
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
+```{r RNA-Seq_No4_Species_TACC_GProfiler2}
 
 motif.fit <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_seed8_Species_TACC.rds")
 
@@ -3451,7 +3451,7 @@ all_genes <- unique(TopTable$Gene)
 
 ##### EnrichGo_Plots
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
+```{r r RNA-Seq_No4_Species_TACC_GProfiler_graphs1,fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3522,7 +3522,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs2,fig.height=5, fig.width=6}
+```{r RNA-Seq_No4_Species_TACC_GProfiler_graphs2,fig.height=5, fig.width=6}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3555,7 +3555,7 @@ for (clust_name in names(cluster_list)) {
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=12, fig.width=12}
+```{r RNA-Seq_No4_Species_TACC_GProfiler_graphs3,fig.height=12, fig.width=12}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3609,7 +3609,7 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
 
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs4,fig.height=12, fig.width=12}
+```{r RNA-Seq_No4_Species_TACC_GProfiler_graphs4,fig.height=12, fig.width=12}
 
 heatmap_wide <- readRDS("data/Cormotif/Species/SpeciesGoWide_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3639,7 +3639,7 @@ pheatmap(
 )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs5,fig.height=20, fig.width=12}
+```{r RNA-Seq_No4_Species_TACC_GProfiler_graphs5,fig.height=20, fig.width=12}
 
 heatmap_long <- readRDS("data/Cormotif/Species/SpeciesGoLong_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3672,7 +3672,7 @@ pheatmap(
 
 ##### RScript
 
-```{r RNA-Seq_No4_CorMotif_Species_dataset,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_TMM_Species_TACC_RScript,fig.height=8,fig.width=15}
 
 
 
@@ -3770,7 +3770,7 @@ pheatmap(
 
 ##### Graphing
 
-```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_TMM_Species_TACC_plot ,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_TMM_seed8_Species_TACC.rds")
 
 plotIC(motif.fitted)
@@ -3789,7 +3789,7 @@ legend(
 
 ##### PPost
 
-```{r RNA-Seq_CorMotif_Species_Assigning2_TACC}
+```{r RRNA-Seq_No4_TMM_Species_TACC_PPost}
 motif.fitted <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_TMM_seed8_Species_TACC.rds")
 
 log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
@@ -3857,7 +3857,7 @@ gene_prob_ppost %>%
 
 ##### Cluster Assignments
 
-```{r RNA-Seq_CorMotif_Species_ClustSets2_TACC}
+```{r RNA-Seq_No4_TMM_Species_TACC_ClusterAssign}
 
 motif.fitted <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_TMM_seed8_Species_TACC.rds")
 
@@ -3975,7 +3975,7 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_Checks_TACC}
+```{r RNA-Seq_No4_TMM_Species_TACC_ClusterOverlapChecks}
 
 clust_names_list <- list(
   clust1_RNA,
@@ -3992,7 +3992,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 ```
 ##### EnrichGo
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler2_TACC}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler2}
 
 motif.fitted <- readRDS("data/Cormotif/TACC/Species/CorMotif_k1_k20_No4_TMM_seed8_Species_TACC.rds")
 
@@ -4090,7 +4090,7 @@ gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TM
 
 ##### EnrichGo Plotting
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_graphs1,fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -4163,7 +4163,7 @@ ggplot(top_terms,
 
 
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=5}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_graphs3,fig.height=5}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -4267,7 +4267,7 @@ pheatmap(
 
 ```
 
-```{r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs1,fig.height=3, fig.width=7}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_graphs3,fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -4338,7 +4338,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r r RNA-Seq_CorMotif_Species_ClustSets_GO_GProfiler_graphs3,fig.height=5}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_graphs4,fig.height=5}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 

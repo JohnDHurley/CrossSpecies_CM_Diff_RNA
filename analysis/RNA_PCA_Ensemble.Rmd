@@ -18,7 +18,9 @@ knitr::opts_chunk$set(
 
 ## Principle Component Analysis
 
-### Library and Data Upload
+### Settin up enviroment
+
+#### Library and Data Upload
 
 ```{r Setting_Up_Enviroment, include=FALSE,warning=FALSE}
 
@@ -73,6 +75,8 @@ Filt_FilterByExpression_RNA_log2cpm_No5 <-readRDS("data/QC/concat/Filt_FilterByE
 ```
 
 ### Unfiltered
+
+#### PC1-PC2
 
 ```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
 prcomp_RNA <- prcomp(t(RNA_log2cpm), scale=FALSE, center = TRUE)
@@ -163,6 +167,7 @@ l0g2cpm >1 in 4 or more SpTp")
 ```
 
 #### No4
+
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4
@@ -292,6 +297,7 @@ Scale = TRUE")
 ```
 
 #### No5
+
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No5

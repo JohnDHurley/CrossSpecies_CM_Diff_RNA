@@ -1,5 +1,5 @@
 ---
-title: "RNA_Cormotif"
+title: "RNA_Cormotif_Trajectory"
 output:
   html_document:
     toc: true
@@ -4447,6 +4447,6 @@ pheatmap(
 
 # git -> commit all changes
 # git -> push
-wflow_publish("analysis/RNA_Cormotif.Rmd")
+wflow_publish("analysis/RNA_Cormotif_Trajectory.Rmd")
 
 ```

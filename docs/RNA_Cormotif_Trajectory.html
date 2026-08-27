@@ -1,0 +1,3960 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2026-01-28" />
+
+<title>RNA_Cormotif_Trajectory</title>
+
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CrossSpecies_CM_Diff_RNA</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">RNA_Cormotif_Trajectory</h1>
+<h4 class="date">2026-01-28</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-08-27
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>CrossSpecies_CM_Diff_RNA/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20251129code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20251129)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20251129code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20251129)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree59a1478959d6e3b7a62b6fb69143931d7caae616targetblank59a1478a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/59a1478959d6e3b7a62b6fb69143931d7caae616" target="_blank">59a1478</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree59a1478959d6e3b7a62b6fb69143931d7caae616targetblank59a1478a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/59a1478959d6e3b7a62b6fb69143931d7caae616" target="_blank">59a1478</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
+    Ignored:    data/
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/RNA_Cormotif_Trajectory.Rmd</code>) and HTML
+(<code>docs/RNA_Cormotif_Trajectory.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/59a1478959d6e3b7a62b6fb69143931d7caae616/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">59a1478</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+wflow_publish("analysis/RNA_Cormotif_Trajectory.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/3e9e724802c81b89ef48e27e5323b95bfd8af1d6/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">3e9e724</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+CorMotif splitting 2
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/b7376e6d1de5580970e6340c2f072ec5fbe98eb4/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">b7376e6</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+splitting cormotif - Species
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/e828a47f22fb6a269b5b2a33f62c741339047f33/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">e828a47</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+Cleaning CorMotif
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/26c083315ca24d4c40ce73c6aa79113261e09d58/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">26c0833</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-26
+</td>
+<td>
+Cormotif code updates
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/bfe4b59c6bd197d9aa4d3c0a49b51427f70ded14/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">bfe4b59</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-26
+</td>
+<td>
+Breaking up R2 correlations
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="rna-cormotif" class="section level1">
+<h1>RNA Cormotif</h1>
+<div id="setting-up-the-environment" class="section level2">
+<h2>Setting up the environment</h2>
+<div id="loading-libraries" class="section level3">
+<h3>Loading libraries</h3>
+<pre class="r"><code>####Library Loading####
+library(&quot;edgeR&quot;)
+library(&quot;ggplot2&quot;)
+library(&quot;tibble&quot;)
+library(&quot;dplyr&quot;)
+library(&quot;ggrepel&quot;)
+library(&quot;readr&quot;)
+library(&quot;org.Hs.eg.db&quot;)
+library(&quot;AnnotationDbi&quot;)
+library(&quot;pheatmap&quot;)
+library(&quot;tidyverse&quot;)
+library(&quot;workflowr&quot;)
+library(&quot;RUVSeq&quot;)
+library(&quot;SummarizedExperiment&quot;)
+library(&quot;readxl&quot;)
+library(&quot;ggfortify&quot;)
+library(&quot;ComplexHeatmap&quot;)
+library(&quot;clusterProfiler&quot;)
+library(&quot;enrichplot&quot;)
+library(&quot;gprofiler2&quot;)
+library(&quot;Cormotif&quot;)
+
+# BiocManager::install(&quot;SummarizedExperiment&quot;)
+
+#Loading objects used in this workbook
+ann_colors &lt;- readRDS(&quot;data/Raw_Data/concat/ann_colors.RDS&quot;)
+ann_colors_No4 &lt;- readRDS(&quot;data/QC/concat/ann_colors_No4.RDS&quot;)
+ann_colors_No5 &lt;-readRDS(&quot;data/QC/concat/ann_colors_No5.RDS&quot;)</code></pre>
+</div>
+<div id="defining-functions" class="section level3">
+<h3>Defining Functions</h3>
+<pre class="r"><code>#Run the Function corMotifcustom.R
+
+#Check_Overlap Function
+
+check_overlap &lt;- function(list_of_lists) {
+  # create empty list to store results
+  overlap_results &lt;- list()
+  
+  # loop over each cluster
+  for (i in seq_along(list_of_lists)) {
+    cluster_name &lt;- names(list_of_lists)[i]
+    genes_i &lt;- list_of_lists[[i]]
+    
+    # compare to all other clusters
+    overlaps &lt;- sapply(seq_along(list_of_lists), function(j) {
+      if (i == j) return(NA)  # skip self
+      genes_j &lt;- list_of_lists[[j]]
+      length(intersect(genes_i, genes_j))  # count of overlapping genes
+    })
+    names(overlaps) &lt;- names(list_of_lists)
+    
+    overlap_results[[cluster_name]] &lt;- overlaps
+  }
+  
+  return(overlap_results)
+}
+
+#FC_Plot_Function_sig
+
+plot_cluster_fc_sig &lt;- function(gene_vector, cluster_name, top_table) {
+
+  df &lt;- top_table %&gt;%
+    dplyr::filter(Gene %in% gene_vector) %&gt;%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      &quot;H_Day02&quot;,&quot;H_Day25&quot;,&quot;H_Day515&quot;,&quot;H_Day1530&quot;,&quot;C_Day02&quot;,&quot;C_Day25&quot;,&quot;C_Day515&quot;,&quot;C_Day1530&quot;
+    )))
+
+  cat(cluster_name, &quot;:&quot;, nrow(df), &quot;rows,&quot;,
+      length(unique(df$Gene)), &quot;unique genes\n&quot;)
+
+  # Global test across comparisons
+  kw &lt;- kruskal.test(logFC ~ Comparisons, data = df)
+  
+  pw_kw &lt;-pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = &quot;BH&quot;)
+  
+  print(pw_kw)
+
+  p &lt;- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(&quot; &quot;) +
+    ylab(&quot;logFC&quot;) +
+    ggtitle(
+      paste0(
+        cluster_name,
+        &quot; RNA FC Comparisons\nKruskal–Wallis p = &quot;,
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+
+#FC_Plot_Function_sig_species
+
+plot_cluster_fc_sig_species &lt;- function(gene_vector, cluster_name, top_table) {
+
+  df &lt;- top_table %&gt;%
+    dplyr::filter(Gene %in% gene_vector) %&gt;%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      &quot;HvC_Day0&quot;,&quot;HvC_Day2&quot;,&quot;HvC_Day5&quot;,&quot;HvC_Day15&quot;,&quot;HvC_Day30&quot;)))
+
+  cat(cluster_name, &quot;:&quot;, nrow(df), &quot;rows,&quot;,
+      length(unique(df$Gene)), &quot;unique genes\n&quot;)
+
+  # Global test across comparisons
+  kw &lt;- kruskal.test(logFC ~ Comparisons, data = df)
+  
+  pw_kw &lt;-pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = &quot;BH&quot;)
+  
+  print(pw_kw)
+
+  p &lt;- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(&quot; &quot;) +
+    ylab(&quot;logFC&quot;) +
+    ggtitle(
+      paste0(
+        cluster_name,
+        &quot; RNA FC Comparisons\nKruskal–Wallis p = &quot;,
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+
+#AbsFC_Plot_Function
+
+plot_cluster_absfc &lt;- function(gene_vector, cluster_name, top_table) {
+  
+  # Filter TopTable for the genes in this cluster
+  df &lt;- top_table %&gt;% dplyr::filter(Gene %in% gene_vector) %&gt;%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      &quot;HC_D0&quot;,&quot;HC_D2&quot;,&quot;HC_D5&quot;,&quot;HC_D15&quot;,&quot;HC_D30&quot;
+    )))
+  
+  # Optional: print dimensions and unique genes
+  cat(cluster_name, &quot;:&quot;, dim(df)[1], &quot;rows,&quot;, length(unique(df$Gene)), &quot;unique genes\n&quot;)
+  
+  # Create boxplot
+  p &lt;- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    guides(fill = guide_legend(title = &quot;Comparisons&quot;)) +
+    theme_bw() +
+    xlab(&quot; &quot;) +
+    ylab(&quot;AbsFC&quot;) +
+    ggtitle(paste0(cluster_name, &quot; RNA AbsFC Comparisons&quot;)) +
+    theme(
+      plot.title = element_text(size = rel(1.5), hjust = 0.5),
+      axis.title = element_text(size = 15, colour = &quot;black&quot;),
+      strip.background = element_rect(fill = &quot;#CAD899&quot;),
+      axis.text.x = element_text(size = 8, colour = &quot;white&quot;, angle = 15),
+      strip.text.x = element_text(size = 12, colour = &quot;black&quot;, face = &quot;bold&quot;)
+    )
+  
+  return(p)
+}
+
+#AbsFC_Plot_Function_sig
+
+plot_cluster_absfc_sig &lt;- function(gene_vector, cluster_name, top_table) {
+
+  df &lt;- top_table %&gt;%
+    dplyr::filter(Gene %in% gene_vector) %&gt;%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      &quot;H_Day02&quot;,&quot;H_Day25&quot;,&quot;H_Day515&quot;,&quot;H_Day1530&quot;,&quot;C_Day02&quot;,&quot;C_Day25&quot;,&quot;C_Day515&quot;,&quot;C_Day1530&quot;
+    )))
+
+  cat(cluster_name, &quot;:&quot;, nrow(df), &quot;rows,&quot;,
+      length(unique(df$Gene)), &quot;unique genes\n&quot;)
+  
+  # Global test across comparisons
+  kw &lt;- kruskal.test(AbsFC ~ Comparisons, data = df)
+  
+  pw_kw &lt;-pairwise.wilcox.test(
+    df$AbsFC,
+    df$Comparisons,
+    p.adjust.method = &quot;BH&quot;)
+  
+  print(pw_kw)
+
+  p &lt;- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(&quot; &quot;) +
+    ylab(&quot;AbslogFC&quot;) +
+    ggtitle(
+      paste0(
+        cluster_name,
+        &quot; RNA AbsFC Comparisons\nKruskal–Wallis p = &quot;,
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}
+
+#AbsFC_Plot_Function_sig_species
+
+plot_cluster_absfc_sig_species &lt;- function(gene_vector, cluster_name, top_table) {
+
+  df &lt;- top_table %&gt;%
+    dplyr::filter(Gene %in% gene_vector) %&gt;%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      &quot;HvC_Day0&quot;,&quot;HvC_Day2&quot;,&quot;HvC_Day5&quot;,&quot;HvC_Day15&quot;,&quot;HvC_Day30&quot;)))
+
+  cat(cluster_name, &quot;:&quot;, nrow(df), &quot;rows,&quot;,
+      length(unique(df$Gene)), &quot;unique genes\n&quot;)
+
+  # Global test across comparisons
+  kw &lt;- kruskal.test(logFC ~ Comparisons, data = df)
+  
+  pw_kw &lt;-pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = &quot;BH&quot;)
+  
+  print(pw_kw)
+
+  p &lt;- ggplot(df, aes(x = Comparisons, y = AbsFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(&quot; &quot;) +
+    ylab(&quot;abslogFC&quot;) +
+    ggtitle(
+      paste0(
+        cluster_name,
+        &quot; RNA FC Comparisons\nKruskal–Wallis p = &quot;,
+        signif(kw$p.value, 3)
+      )
+    ) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+
+
+}</code></pre>
+</div>
+</div>
+<div id="no-day-4" class="section level2">
+<h2>No Day 4</h2>
+<div id="trajectory" class="section level3">
+<h3>Trajectory</h3>
+<div id="modeling-on-laptop" class="section level4">
+<h4>Modeling on Laptop</h4>
+<div id="data-preparation" class="section level5">
+<h5>Data Preparation</h5>
+<pre class="r"><code>counts &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
+metadata &lt;- readRDS(&quot;data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS&quot;)
+
+counts_norep &lt;- counts %&gt;%
+  dplyr::select(-(contains(&quot;R&quot;)))
+
+log2cpm &lt;- cpm(counts_norep, log=TRUE) 
+
+
+# --- Align metadata and log2cpm
+metadata &lt;- metadata[match(colnames(log2cpm), metadata$SampleName), ]
+
+# --- Build group and comp IDs from metadata ---
+metadata$group &lt;- paste(metadata$Species, metadata$Timepoint, sep = &quot;_&quot;)
+
+time_order &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+species_order &lt;- c(&quot;H&quot;,&quot;C&quot;)
+
+group_levels &lt;- c(paste(&quot;H&quot;,time_order,sep = &quot;_&quot;), paste(&quot;C&quot;,time_order, sep = &quot;_&quot;))
+
+metadata$group &lt;- factor(metadata$group, levels = group_levels, ordered = TRUE)
+
+groupid &lt;- as.numeric(metadata$group)
+
+make_trajectory &lt;- function(levels_vec, prefix, times) {
+  target &lt;- paste(prefix, times, sep = &quot;_&quot;)
+  idx &lt;- match(target, levels_vec)
+  idx &lt;- idx[!is.na(idx)]
+  cbind(idx[-length(idx)], idx[-1])
+}
+
+compid &lt;- rbind(
+  make_trajectory(levels(metadata$group), &quot;H&quot;, time_order),
+  make_trajectory(levels(metadata$group), &quot;C&quot;, time_order)
+)
+
+
+
+# #Model Fitting
+# 
+# #Run model
+# set.seed(8)
+# motif.fitted &lt;- cormotiffit(
+#   exprs = log2cpm,
+#   groupid = groupid,
+#   compid = compid,
+#   K = 1:20,
+#   max.iter = 2000,
+#   runtype = &quot;logCPM&quot;
+# )
+# 
+# saveRDS(motif.fitted,&quot;data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS&quot;)</code></pre>
+</div>
+<div id="graphing" class="section level5">
+<h5>Graphing</h5>
+<pre class="r"><code>motif.fit &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS&quot;)
+
+plotIC(motif.fit)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMotif(motif.fit)
+cols &lt;- gray(seq(1, 0, length.out = 6))
+
+legend(
+  &quot;topright&quot;,
+  legend = seq(0, 1, length.out = 6),
+  fill = cols,
+  border = &quot;black&quot;,
+  title = &quot;Posterior probability&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-2.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#  Studies Human Day0 - 1. HDay2, 2. HDay5, 3. HDay15, 4. HDay30
+#          Chimp Day0 - 5. CDay2, 6. CDay5, 7. CDay15, 8. CDay30</code></pre>
+</div>
+</div>
+<div id="modeling-on-tacc" class="section level4">
+<h4>Modeling on TACC</h4>
+<div id="rscript" class="section level5">
+<h5>RScript</h5>
+<pre class="r"><code># ## --- Load required libraries ---
+# suppressPackageStartupMessages({
+#         library(edgeR)
+#         library(BiocParallel)
+#         library(Biobase)
+#         library(limma)
+#         library(Rfast)
+# })
+# 
+# # --- Load custom function ---
+# source(&quot;cormotif_function.R&quot;)
+# 
+# # --- Parse SLURM seed ---
+# args &lt;- commandArgs(trailingOnly = TRUE)
+# 
+# set.seed(8)
+# 
+# cat(&quot;Running seed: 8&quot;)
+# 
+# # --- Load data ---
+# load(&quot;Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RData&quot;)
+# load(&quot;RNA_Metadata_No4_NoRep.RData&quot;)
+# 
+# # --- Define Variables ---
+# log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
+# metadata &lt;- RNA_Metadata_No4_NoRep
+# 
+# # --- Align metadata and log2cpm
+# metadata &lt;- metadata[match(colnames(log2cpm), metadata$SampleName), ]
+# 
+# # --- Build group and comp IDs from metadata ---
+# metadata$group &lt;- paste(metadata$Species, metadata$Timepoint, sep = &quot;_&quot;)
+# 
+# time_order &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+# species_order &lt;- c(&quot;H&quot;,&quot;C&quot;)
+# 
+# group_levels &lt;- c(paste(&quot;H&quot;,time_order,sep = &quot;_&quot;), paste(&quot;C&quot;,time_order, sep = &quot;_&quot;))
+# 
+# metadata$group &lt;- factor(metadata$group, levels = group_levels, ordered = TRUE)
+# 
+# groupid &lt;- as.numeric(metadata$group)
+# 
+# make_trajectory &lt;- function(levels_vec, prefix, times) {
+#   target &lt;- paste(prefix, times, sep = &quot;_&quot;)
+#   idx &lt;- match(target, levels_vec)
+#   idx &lt;- idx[!is.na(idx)]
+#   cbind(idx[-length(idx)], idx[-1])
+# }
+# 
+# compid &lt;- rbind(
+#   make_trajectory(levels(metadata$group), &quot;H&quot;, time_order),
+#   make_trajectory(levels(metadata$group), &quot;C&quot;, time_order)
+# )
+# 
+# # ==============================
+# # Run model
+# # ==============================
+# cat(&quot;Fitting CorMotif...\n&quot;)
+# 
+# set.seed(8)
+# motif.fitted &lt;- cormotiffit(
+#   exprs = log2cpm,
+#   groupid = groupid,
+#   compid = compid,
+#   K = 1:20,
+#   max.iter = 2000,
+#   runtype = &quot;logCPM&quot;
+# )
+# 
+# # --- Save results ---
+# saveRDS(motif.fitted, file = paste0(&quot;CorMotif_k1_k20_seed8_TMM_No4.rds&quot;))
+# 
+# # --- Generate diagnostic plots ---
+# pdf(paste0(&quot;CorMotif_k1_k20_plots_seed8_TMM_No4.pdf&quot;))
+# plotIC(motif.fitted)
+# plotMotif(motif.fitted)
+# dev.off()
+# 
+# # --- Extract and save gene rankings ---
+# topgenelist &lt;- generank(motif.fitted$bestmotif$p.post)
+# write.csv(topgenelist, paste0(&quot;CorMotif_top_genes_seed8_TMM_No4.csv&quot;), row.names = TRUE)
+# 
+# cat(&quot;&gt;&gt;&gt; Finished seed_No4_TMM: 8&quot;)</code></pre>
+</div>
+<div id="graphing-1" class="section level5">
+<h5>Graphing</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
+
+plotIC(motif.fitted)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMotif(motif.fitted)
+cols &lt;- gray(seq(1, 0, length.out = 6))
+
+legend(
+  &quot;topright&quot;,
+  legend = seq(0, 1, length.out = 6),
+  fill = cols,
+  border = &quot;black&quot;,
+  title = &quot;Posterior probability&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-2.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ppost" class="section level5">
+<h5>PPost</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
+
+counts &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
+
+counts_norep &lt;- counts %&gt;%
+  dplyr::select(-(contains(&quot;R&quot;)))
+
+log2cpm &lt;- cpm(counts_norep, log=TRUE) 
+
+motif.fit &lt;- motif.fitted
+log2cpm &lt;- log2cpm
+
+TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+#extract the posterior probability that these genes belong to motifs
+gene_prob_ppost &lt;- motif.fit$bestmotif$p.post
+rownames(gene_prob_ppost) &lt;- rownames(log2cpm)
+saveRDS(gene_prob_ppost,&quot;data/Cormotif/Trajectory/RNA_gene_prob_ppost_Trajectory.RDS&quot;)
+
+#assign each gene to a motif with max post prob
+assigned_motifs &lt;- apply(gene_prob_ppost, 1, which.max)
+max_probs &lt;- apply(gene_prob_ppost, 1, max)
+
+#combine these into a dataframe - motif assigned genes (p.post)
+motif_assignment_df &lt;- gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;Gene&quot;) %&gt;%
+  mutate(
+    Assigned_Motif = assigned_motifs[Gene],
+    Max_Probability = max_probs[Gene]
+  )
+
+#make some histograms of the unfiltered data from Cormotif p.post
+
+gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V1))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V1&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V2))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V2&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V3))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V3&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V4))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V4&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V5))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V5&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V6))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V6&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V7))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V7&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V8))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V8&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="cluster-assignments" class="section level5">
+<h5>Cluster Assignments</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
+
+counts &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
+
+counts_norep &lt;- counts %&gt;%
+  dplyr::select(-(contains(&quot;R&quot;)))
+
+log2cpm &lt;- cpm(counts_norep, log=TRUE) 
+
+motif.fit &lt;- motif.fitted
+log2cpm &lt;- log2cpm
+
+TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+# Extract cluster probabilities
+motif_prob &lt;- motif.fit$bestmotif$clustlike
+rownames(motif_prob) &lt;- rownames(gene_prob_ppost)
+
+saveRDS(
+  motif_prob,
+  &quot;data/Cormotif/Species/RNA_motif_prob_Trajectory.RDS&quot;
+)
+
+# Keep species comparisons only
+TopTable &lt;- TopTable %&gt;%
+  filter(
+    Comparisons %in% c(
+      &quot;H_Day02&quot;,
+      &quot;H_Day25&quot;,
+      &quot;H_Day515&quot;,
+      &quot;H_Day1530&quot;,
+      &quot;C_Day02&quot;,
+      &quot;C_Day25&quot;,
+      &quot;C_Day515&quot;,
+      &quot;C_Day1530&quot;
+      
+    )
+  )
+
+# Define clusters
+clust1_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+  filter(V1 &gt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust2_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &gt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust3_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &gt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust4_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &gt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust5_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &gt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust6_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &gt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust7_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &gt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust8_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &gt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust9_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &gt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust10_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &gt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust11_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &gt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust12_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &gt; 0.5) %&gt;%
+  rownames()
+
+# Cluster list
+clust_names_list &lt;- list(
+  clust1 = clust1_RNA,
+  clust2 = clust2_RNA,
+  clust3 = clust3_RNA,
+  clust4 = clust4_RNA,
+  clust5 = clust5_RNA,
+  clust6 = clust6_RNA,
+  clust7 = clust7_RNA,
+  clust8 = clust8_RNA,
+  clust9 = clust9_RNA,
+  clust10 = clust10_RNA,
+  clust11 = clust11_RNA,
+  clust12 = clust12_RNA
+)
+
+# Check sizes
+sapply(clust_names_list, length)</code></pre>
+<pre><code> clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+   3635    1137     721     560     444     486    1008     566     446     643 
+clust11 clust12 
+    528     479 </code></pre>
+<pre class="r"><code># Overlap
+overlap_matrix &lt;- check_overlap(clust_names_list)
+print(overlap_matrix)</code></pre>
+<pre><code>$clust1
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+     NA       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust2
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0      NA       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust3
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0      NA       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust4
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0      NA       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust5
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0      NA       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust6
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0      NA       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust7
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0      NA       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust8
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0      NA       0       0 
+clust11 clust12 
+      0       0 
+
+$clust9
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0      NA       0 
+clust11 clust12 
+      0       0 
+
+$clust10
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0      NA 
+clust11 clust12 
+      0       0 
+
+$clust11
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+     NA       0 
+
+$clust12
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0      NA </code></pre>
+<pre class="r"><code>TopTable$AbsFC &lt;- abs(TopTable$logFC)
+
+# FC plots
+cluster_plots &lt;- lapply(names(clust_names_list), function(clust_name) {
+  plot_cluster_fc_sig(
+    clust_names_list[[clust_name]],
+    clust_name,
+    TopTable
+  )
+})</code></pre>
+<pre><code>clust1 : 29080 rows, 3635 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.00015 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 2.0e-05  -         -       -       -       
+C_Day02   0.00057 0.34548 &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   0.00893 0.02974 &lt; 2e-16  &lt; 2e-16   0.11125 -       -       
+C_Day515  1.6e-14 &lt; 2e-16 0.00021  &lt; 2e-16   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 0.02974  0.01313   &lt; 2e-16 &lt; 2e-16 1.7e-13 
+
+P value adjustment method: BH 
+clust2 : 9096 rows, 1137 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.66449 -       -        -         -       -       -       
+H_Day515  0.00082 0.00051 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   0.20441 0.42876 0.02492  &lt; 2e-16   -       -       -       
+C_Day25   0.00386 0.00271 0.59264  &lt; 2e-16   0.06832 -       -       
+C_Day515  0.30620 0.25680 1.5e-07  &lt; 2e-16   0.05005 2.6e-06 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  0.24348   &lt; 2e-16 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust3 : 5768 rows, 721 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  0.0591  &lt; 2e-16 -        -         -       -       -       
+H_Day1530 0.0028  &lt; 2e-16 0.9146   -         -       -       -       
+C_Day02   2.5e-11 0.0019  3.9e-13  &lt; 2e-16   -       -       -       
+C_Day25   8.1e-12 0.0725  4.5e-12  3.3e-14   0.1088  -       -       
+C_Day515  0.5013  2.6e-10 0.0028   0.0019    8.9e-07 1.6e-05 -       
+C_Day1530 0.0119  &lt; 2e-16 0.9638   0.7237    &lt; 2e-16 2.8e-13 0.0065  
+
+P value adjustment method: BH 
+clust4 : 4480 rows, 560 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.0044  -       -        -         -       -       -       
+H_Day515  0.8757  2.2e-05 -        -         -       -       -       
+H_Day1530 8.1e-07 1.0e-11 &lt; 2e-16  -         -       -       -       
+C_Day02   0.0017  4.7e-10 0.0023   0.0078    -       -       -       
+C_Day25   0.0010  0.6934  5.4e-06  9.6e-14   1.3e-11 -       -       
+C_Day515  0.0038  1.4e-09 1.5e-06  6.6e-05   0.7973  6.9e-11 -       
+C_Day1530 1.7e-07 1.3e-11 &lt; 2e-16  0.4263    0.0023  9.6e-14 1.0e-06 
+
+P value adjustment method: BH 
+clust5 : 3552 rows, 444 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  1.3e-05 1.5e-15 -        -         -       -       -       
+H_Day1530 1.1e-15 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   3.1e-12 1.6e-11 0.0057   &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 0.6834  &lt; 2e-16  &lt; 2e-16   2.4e-12 -       -       
+C_Day515  3.1e-15 1.9e-08 8.0e-05  &lt; 2e-16   0.1929  7.7e-09 -       
+C_Day1530 1.5e-11 &lt; 2e-16 &lt; 2e-16  0.1916    &lt; 2e-16 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust6 : 3888 rows, 486 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   3.1e-05 -       -        -         -       -       -       
+H_Day515  0.6469  &lt; 2e-16 -        -         -       -       -       
+H_Day1530 0.2776  &lt; 2e-16 0.0764   -         -       -       -       
+C_Day02   0.0719  4.7e-05 0.0022   0.0878    -       -       -       
+C_Day25   0.0086  0.0067  3.1e-15  5.7e-13   0.0160  -       -       
+C_Day515  0.0086  3.6e-12 0.0033   0.2374    0.8403  6.1e-08 -       
+C_Day1530 0.8872  &lt; 2e-16 0.4944   0.4168    0.0086  9.2e-14 0.0413  
+
+P value adjustment method: BH 
+clust7 : 8064 rows, 1008 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.77576 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 0.17139  -         -       -       -       
+C_Day02   0.00872 0.01320 &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   0.17139 0.17978 &lt; 2e-16  &lt; 2e-16   1.6e-05 -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 0.00021  0.00012   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 0.51414  0.21163   &lt; 2e-16 &lt; 2e-16 7.3e-06 
+
+P value adjustment method: BH 
+clust8 : 4528 rows, 566 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.00021 -       -        -         -       -       -       
+H_Day515  0.00403 0.61523 -        -         -       -       -       
+H_Day1530 6.1e-06 0.05798 0.03410  -         -       -       -       
+C_Day02   0.04538 0.06284 0.38703  0.03410   -       -       -       
+C_Day25   0.13038 2.5e-06 0.00041  2.8e-09   0.55667 -       -       
+C_Day515  4.2e-06 0.03410 0.02315  0.93414   0.03410 1.4e-11 -       
+C_Day1530 1.3e-06 0.00015 0.00021  0.11776   0.06284 6.2e-15 0.07005 
+
+P value adjustment method: BH 
+clust9 : 3568 rows, 446 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  7.4e-07 0.0020  -        -         -       -       -       
+H_Day1530 &lt; 2e-16 5.7e-05 0.2976   -         -       -       -       
+C_Day02   3.1e-10 3.2e-09 0.0051   2.1e-14   -       -       -       
+C_Day25   7.8e-15 0.7013  0.0072   4.0e-05   1.1e-08 -       -       
+C_Day515  1.3e-13 0.0555  0.2278   0.0790    8.4e-06 0.1190  -       
+C_Day1530 &lt; 2e-16 1.2e-05 0.1596   0.8582    1.3e-13 8.4e-06 0.0327  
+
+P value adjustment method: BH 
+clust10 : 5144 rows, 643 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   5.1e-14 -       -        -         -       -       -       
+H_Day515  1.1e-05 0.6398  -        -         -       -       -       
+H_Day1530 &lt; 2e-16 1.5e-11 0.5290   -         -       -       -       
+C_Day02   0.0456  4.4e-08 0.0545   &lt; 2e-16   -       -       -       
+C_Day25   1.8e-08 0.0167  0.4420   &lt; 2e-16   0.0003  -       -       
+C_Day515  6.1e-06 0.5052  0.9959   0.7414    0.0456  0.3380  -       
+C_Day1530 &lt; 2e-16 8.9e-15 0.5339   0.4978    &lt; 2e-16 &lt; 2e-16 0.7525  
+
+P value adjustment method: BH 
+clust11 : 4224 rows, 528 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.1110  -       -        -         -       -       -       
+H_Day515  0.3436  0.5908  -        -         -       -       -       
+H_Day1530 4.1e-05 0.0081  0.0589   -         -       -       -       
+C_Day02   0.0067  0.2978  0.1110   0.0067    -       -       -       
+C_Day25   0.6762  0.2978  0.5968   0.0019    0.0307  -       -       
+C_Day515  0.0012  0.1110  0.0276   0.9170    0.5846  0.0067  -       
+C_Day1530 7.6e-05 0.0193  0.0845   0.4161    0.0159  0.0036  0.7736  
+
+P value adjustment method: BH 
+clust12 : 3832 rows, 479 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.00078 -       -        -         -       -       -       
+H_Day515  0.82782 0.00493 -        -         -       -       -       
+H_Day1530 0.22347 4.8e-07 7.6e-10  -         -       -       -       
+C_Day02   0.00508 0.54335 0.00534  0.00012   -       -       -       
+C_Day25   0.00508 0.81505 0.00352  1.2e-06   0.91555 -       -       
+C_Day515  0.01357 0.77887 4.0e-11  &lt; 2e-16   0.98062 0.86034 -       
+C_Day1530 0.00389 1.1e-10 7.8e-15  0.10002   3.9e-08 5.5e-10 &lt; 2e-16 
+
+P value adjustment method: BH </code></pre>
+<pre class="r"><code>for (p in cluster_plots) {
+  if (!is.null(p)) print(p)
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># AbsFC plots
+cluster_plots &lt;- lapply(names(clust_names_list), function(clust_name) {
+   plot_cluster_absfc_sig(
+    clust_names_list[[clust_name]],
+    clust_name,
+    TopTable
+  )
+})</code></pre>
+<pre><code>clust1 : 29080 rows, 3635 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.2992  -       -        -         -       -       -       
+H_Day515  6.9e-14 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 4.6e-08 1.8e-05 &lt; 2e-16  -         -       -       -       
+C_Day02   4.1e-11 5.3e-08 &lt; 2e-16  0.4043    -       -       -       
+C_Day25   &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  2.0e-06   2.4e-05 -       -       
+C_Day515  8.8e-15 4.0e-11 &lt; 2e-16  0.0548    0.2303  0.0028  -       
+C_Day1530 &lt; 2e-16 6.3e-14 &lt; 2e-16  0.0028    0.0196  0.0965  0.2397  
+
+P value adjustment method: BH 
+clust2 : 9096 rows, 1137 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   9.2e-05 -       -        -         -       -       -       
+H_Day515  2.4e-07 0.16324 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   0.50779 0.00089 3.6e-06  &lt; 2e-16   -       -       -       
+C_Day25   2.3e-08 0.06676 0.71171  &lt; 2e-16   4.4e-07 -       -       
+C_Day515  8.4e-16 1.1e-05 0.00485  &lt; 2e-16   3.6e-14 0.01580 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  0.80436   &lt; 2e-16 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust3 : 5768 rows, 721 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 0.79638 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 0.00035 0.00049  -         -       -       -       
+C_Day02   0.18258 &lt; 2e-16 &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 0.79638 0.84289  0.00154   &lt; 2e-16 -       -       
+C_Day515  &lt; 2e-16 0.06894 0.06982  0.10667   &lt; 2e-16 0.15620 -       
+C_Day1530 &lt; 2e-16 0.00029 0.00050  0.84289   &lt; 2e-16 0.00092 0.07264 
+
+P value adjustment method: BH 
+clust4 : 4480 rows, 560 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt;2e-16  -       -        -         -       -       -       
+H_Day515  &lt;2e-16  &lt;2e-16  -        -         -       -       -       
+H_Day1530 &lt;2e-16  &lt;2e-16  0.2265   -         -       -       -       
+C_Day02   0.0034  &lt;2e-16  &lt;2e-16   &lt;2e-16    -       -       -       
+C_Day25   &lt;2e-16  0.1230  &lt;2e-16   &lt;2e-16    &lt;2e-16  -       -       
+C_Day515  &lt;2e-16  &lt;2e-16  0.7623   0.1229    &lt;2e-16  &lt;2e-16  -       
+C_Day1530 &lt;2e-16  &lt;2e-16  0.1800   0.8346    &lt;2e-16  &lt;2e-16  0.1085  
+
+P value adjustment method: BH 
+clust5 : 3552 rows, 444 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  6.2e-07 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 3.6e-13 &lt; 2e-16  -         -       -       -       
+C_Day02   1.8e-08 &lt; 2e-16 0.56829  &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 1.5e-05 &lt; 2e-16  0.02006   &lt; 2e-16 -       -       
+C_Day515  0.01816 &lt; 2e-16 0.00208  &lt; 2e-16   0.00019 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 1.4e-14 &lt; 2e-16  0.21057   &lt; 2e-16 0.00077 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust6 : 3888 rows, 486 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  0.45732 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 7.9e-07 &lt; 2e-16 0.00011  -         -       -       -       
+C_Day02   6.5e-06 &lt; 2e-16 0.00036  0.85006   -       -       -       
+C_Day25   &lt; 2e-16 0.91148 &lt; 2e-16  &lt; 2e-16   &lt; 2e-16 -       -       
+C_Day515  0.00036 &lt; 2e-16 0.01168  0.15774   0.23709 &lt; 2e-16 -       
+C_Day1530 0.01168 &lt; 2e-16 0.06429  0.08408   0.15774 &lt; 2e-16 0.67264 
+
+P value adjustment method: BH 
+clust7 : 8064 rows, 1008 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   1.2e-05 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 0.0727   -         -       -       -       
+C_Day02   0.0013  0.2217  &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   0.8601  9.7e-06 &lt; 2e-16  &lt; 2e-16   0.0011  -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 3.9e-12  &lt; 2e-16   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 0.0050   0.1786    &lt; 2e-16 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust8 : 4528 rows, 566 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 5.3e-06 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 0.00011 0.60545  -         -       -       -       
+C_Day02   6.1e-11 &lt; 2e-16 &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 0.07245 0.01308  0.06633   &lt; 2e-16 -       -       
+C_Day515  &lt; 2e-16 0.72560 5.3e-05  0.00066   &lt; 2e-16 0.16033 -       
+C_Day1530 &lt; 2e-16 2.3e-05 0.57920  0.97904   &lt; 2e-16 0.04635 0.00033 
+
+P value adjustment method: BH 
+clust9 : 3568 rows, 446 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 0.94912 -        -         -       -       -       
+H_Day1530 0.02635 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   0.00950 &lt; 2e-16 &lt; 2e-16  8.1e-07   -       -       -       
+C_Day25   &lt; 2e-16 0.29693 0.33285  &lt; 2e-16   &lt; 2e-16 -       -       
+C_Day515  &lt; 2e-16 0.00019 8.1e-05  &lt; 2e-16   &lt; 2e-16 8.8e-07 -       
+C_Day1530 0.00266 &lt; 2e-16 &lt; 2e-16  0.46375   7.8e-09 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust10 : 5144 rows, 643 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   4.0e-15 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 3.5e-08 0.0171  &lt; 2e-16  -         -       -       -       
+C_Day02   0.5135  &lt; 2e-16 &lt; 2e-16  2.2e-10   -       -       -       
+C_Day25   1.2e-15 0.7925  &lt; 2e-16  0.0214    &lt; 2e-16 -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 0.7814   &lt; 2e-16   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 3.4e-07 0.0011  &lt; 2e-16  0.5135    2.8e-09 0.0012  &lt; 2e-16 
+
+P value adjustment method: BH 
+clust11 : 4224 rows, 528 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.9446  -       -        -         -       -       -       
+H_Day515  0.2637  0.2617  -        -         -       -       -       
+H_Day1530 &lt;2e-16  &lt;2e-16  &lt;2e-16   -         -       -       -       
+C_Day02   0.6800  0.6800  0.5113   &lt;2e-16    -       -       -       
+C_Day25   0.6800  0.6800  0.5113   &lt;2e-16    0.9446  -       -       
+C_Day515  0.0025  0.0025  0.0924   &lt;2e-16    0.0118  0.0118  -       
+C_Day1530 &lt;2e-16  &lt;2e-16  &lt;2e-16   0.0658    &lt;2e-16  &lt;2e-16  &lt;2e-16  
+
+P value adjustment method: BH 
+clust12 : 3832 rows, 479 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.16427 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 4.6e-14 1.3e-09 &lt; 2e-16  -         -       -       -       
+C_Day02   0.70860 0.07534 &lt; 2e-16  4.8e-16   -       -       -       
+C_Day25   0.16427 0.99143 &lt; 2e-16  2.0e-09   0.07411 -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 0.00011  &lt; 2e-16   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 3.2e-08 2.8e-05 &lt; 2e-16  0.16872   1.9e-09 2.9e-05 &lt; 2e-16 
+
+P value adjustment method: BH </code></pre>
+<pre class="r"><code>for (p in cluster_plots) {
+  if (!is.null(p)) print(p)
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>clust_names_list &lt;- list(
+ clust1_RNA,
+ clust2_RNA,
+  clust3_RNA,
+ clust4_RNA,
+ clust5_RNA,
+ clust6_RNA,
+ clust7_RNA,
+ clust8_RNA,
+  clust9_RNA,
+ clust10_RNA,
+  clust11_RNA,
+  clust12_RNA
+)
+
+names(clust_names_list) &lt;- paste0(&quot;clust&quot;, 1:12)
+
+print(overlap_matirx &lt;- check_overlap(clust_names_list))</code></pre>
+<pre><code>$clust1
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+     NA       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust2
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0      NA       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust3
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0      NA       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust4
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0      NA       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust5
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0      NA       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust6
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0      NA       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust7
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0      NA       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust8
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0      NA       0       0 
+clust11 clust12 
+      0       0 
+
+$clust9
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0      NA       0 
+clust11 clust12 
+      0       0 
+
+$clust10
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0      NA 
+clust11 clust12 
+      0       0 
+
+$clust11
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+     NA       0 
+
+$clust12
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0      NA </code></pre>
+</div>
+<div id="enrichgo" class="section level5">
+<h5>EnrichGo</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
+TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+
+all_genes &lt;- unique(TopTable$Gene)
+
+
+# convert_to_entrez_df &lt;- function(genes) {
+# 
+#   genes &lt;- sub(&quot;\\..*&quot;, &quot;&quot;, genes)
+# 
+#   bitr(
+#     genes,
+#     fromType = &quot;ENSEMBL&quot;,
+#     toType   = &quot;ENTREZID&quot;,
+#     OrgDb    = org.Hs.eg.db
+#   ) %&gt;% distinct()
+# }
+# 
+# background_entrez &lt;- convert_to_entrez_df(all_genes)$ENTREZID
+# 
+# gost_results &lt;- setNames(
+# 
+#   lapply(names(clust_names_list), function(clust_name) {
+# 
+#     genes &lt;- clust_names_list[[clust_name]]
+# 
+#     entrez_df &lt;- convert_to_entrez_df(genes)
+# 
+#     if (nrow(entrez_df) == 0) return(NULL)
+# 
+#     gost(
+#       query = entrez_df$ENTREZID,
+# 
+#       organism = &quot;hsapiens&quot;,
+# 
+#       significant = FALSE,
+#       ordered_query = FALSE,         # TRUE only if ranked
+#       domain_scope = &quot;custom&quot;,
+# 
+#       measure_underrepresentation = FALSE,
+#       evcodes = FALSE,
+# 
+#       numeric_ns = &quot;ENTREZGENE&quot;,
+# 
+#       user_threshold = 0.05,
+#       correction_method = &quot;fdr&quot;,
+# 
+#       custom_bg = background_entrez,
+# 
+#       sources = c(&quot;GO:BP&quot;, &quot;KEGG&quot;)
+#     )
+#   }),
+# 
+#   names(clust_names_list)
+# )
+# 
+# saveRDS(gost_results, &quot;data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+# 
+# gost_results &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+# 
+# gost_combined &lt;- do.call(rbind, lapply(names(gost_results), function(clust_name) {
+# 
+#   res &lt;- gost_results[[clust_name]]
+# 
+#   if (is.null(res)) return(NULL)
+# 
+#   df &lt;- res$result
+#   df$Cluster &lt;- clust_name
+#   df
+# }))
+# 
+# saveRDS(gost_combined, &quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+# 
+# gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+# 
+# gost_export &lt;- gost_combined
+# 
+# gost_export[] &lt;- lapply(gost_export, function(col) {
+# 
+#   if (is.list(col)) {
+#     sapply(col, paste, collapse = &quot;;&quot;)
+#   } else {
+#     col
+#   }
+# 
+# })
+# 
+# write.csv(gost_export,
+#           &quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.csv&quot;,
+#           row.names = FALSE)</code></pre>
+</div>
+<div id="enrichgo-plotting" class="section level5">
+<h5>EnrichGo Plotting</h5>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;) %&gt;%        # keep only BP terms
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 10) %&gt;%       # top 10 per cluster
+  ungroup()
+
+cluster_list &lt;- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df &lt;- cluster_list[[clust_name]]
+  
+  p &lt;- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = &quot;white&quot;) +
+    scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+    labs(fill = &quot;-log10(p-value)&quot;,
+         x = &quot;Cluster&quot;,
+         y = &quot;GO Term&quot;) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;,
+         p_value &lt; 0.05) %&gt;%
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 3, with_ties = FALSE) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    Cluster_num = as.numeric(gsub(&quot;clust&quot;, &quot;&quot;, Cluster)),
+    term_label = paste0(Cluster, &quot; : &quot;, term_name)
+  ) %&gt;%
+  arrange(desc(Cluster_num))
+
+top_terms$term_label &lt;- factor(
+  top_terms$term_label,
+  levels = rev(top_terms$term_label)
+)
+
+ggplot(top_terms,
+       aes(x = 1,
+           y = term_label,
+           fill = -log10(p_value))) +
+  geom_tile(color = &quot;white&quot;, width = 0.8) +
+  geom_text(aes(label = Cluster), size = 3) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;,
+       x = NULL,
+       y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank()
+  )</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh &lt;- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;) %&gt;%
+  group_by(Cluster) %&gt;%
+  filter(p_value &lt; sig_thresh) %&gt;%                    # keep only significant
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %&gt;%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms &lt;- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;, term_name %in% unique_terms) %&gt;%
+  mutate(logp = -log10(p_value)) %&gt;%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide &lt;- heatmap_data %&gt;%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, &quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+# 5. Convert to long format for ggplot
+heatmap_long &lt;- heatmap_wide %&gt;%
+  pivot_longer(cols = -term_name, names_to = &quot;Cluster&quot;, values_to = &quot;logp&quot;)
+
+saveRDS(heatmap_long, &quot;data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+heatmap_long &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;, na.value = &quot;white&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;, x = &quot;Cluster&quot;, y = &quot;GO Term&quot;) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix &lt;- heatmap_wide %&gt;%
+  column_to_rownames(var = &quot;term_name&quot;) %&gt;%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] &lt;- 0
+
+sig_matrix &lt;- gost_combined %&gt;%
+  filter(
+    source == &quot;GO:BP&quot;,
+    term_name %in% unique_terms
+  ) %&gt;%
+  mutate(
+    sig = ifelse(p_value &lt; 0.05, &quot;*&quot;, &quot;&quot;)
+  ) %&gt;%
+  select(Cluster, term_name, sig) %&gt;%
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = &quot;&quot;
+  ) %&gt;%
+  column_to_rownames(&quot;term_name&quot;) %&gt;%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c(&quot;grey90&quot;, &quot;firebrick&quot;))(100),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = &quot;GO:BP Enrichment Heatmap&quot;,
+  display_numbers = sig_matrix,
+  number_color = &quot;black&quot;
+)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;) %&gt;%        # keep only BP terms
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 10) %&gt;%       # top 10 per cluster
+  ungroup()
+
+cluster_list &lt;- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df &lt;- cluster_list[[clust_name]]
+  
+  p &lt;- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = &quot;white&quot;) +
+    scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+    labs(fill = &quot;-log10(p-value)&quot;,
+         x = &quot;Cluster&quot;,
+         y = &quot;KEGG Term&quot;) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;,
+         p_value &lt; 0.05) %&gt;%
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 3, with_ties = FALSE) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    Cluster_num = as.numeric(gsub(&quot;clust&quot;, &quot;&quot;, Cluster)),
+    term_label = paste0(Cluster, &quot; : &quot;, term_name)
+  ) %&gt;%
+  arrange(desc(Cluster_num))
+
+top_terms$term_label &lt;- factor(
+  top_terms$term_label,
+  levels = rev(top_terms$term_label)
+)
+
+ggplot(top_terms,
+       aes(x = 1,
+           y = term_label,
+           fill = -log10(p_value))) +
+  geom_tile(color = &quot;white&quot;, width = 0.8) +
+  geom_text(aes(label = Cluster), size = 3) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;,
+       x = NULL,
+       y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank()
+  )</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh &lt;- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;) %&gt;%
+  group_by(Cluster) %&gt;%
+  filter(p_value &lt; sig_thresh) %&gt;%                    # keep only significant
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %&gt;%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms &lt;- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;, term_name %in% unique_terms) %&gt;%
+  mutate(logp = -log10(p_value)) %&gt;%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide &lt;- heatmap_data %&gt;%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, &quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+# 5. Convert to long format for ggplot
+heatmap_long &lt;- heatmap_wide %&gt;%
+  pivot_longer(cols = -term_name, names_to = &quot;Cluster&quot;, values_to = &quot;logp&quot;)
+
+saveRDS(heatmap_long, &quot;data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+heatmap_long &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;, na.value = &quot;white&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;, x = &quot;Cluster&quot;, y = &quot;GO Term&quot;) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix &lt;- heatmap_wide %&gt;%
+  column_to_rownames(var = &quot;term_name&quot;) %&gt;%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] &lt;- 0
+
+sig_matrix &lt;- gost_combined %&gt;%
+  filter(
+    source == &quot;KEGG&quot;,
+    term_name %in% unique_terms
+  ) %&gt;%
+  mutate(
+    sig = ifelse(p_value &lt; 0.05, &quot;*&quot;, &quot;&quot;)
+  ) %&gt;%
+  select(Cluster, term_name, sig) %&gt;%
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = &quot;&quot;
+  ) %&gt;%
+  column_to_rownames(&quot;term_name&quot;) %&gt;%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c(&quot;grey90&quot;, &quot;firebrick&quot;))(100),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = &quot;KEGG Enrichment Heatmap&quot;,
+  display_numbers = sig_matrix,
+  number_color = &quot;black&quot;
+)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2.png" alt="" width="672" style="display: block; margin: auto;" />
+#### TMM on TACC</p>
+</div>
+<div id="rscript-1" class="section level5">
+<h5>RScript</h5>
+<pre class="r"><code># # --- Load required libraries ---
+# suppressPackageStartupMessages({
+#         library(edgeR)
+#         library(BiocParallel)
+#         library(Biobase)
+#         library(limma)
+#         library(Rfast)
+# })
+# 
+# # --- Load custom function ---
+# source(&quot;cormotif_function.R&quot;)
+# 
+# # --- Parse SLURM seed ---
+# args &lt;- commandArgs(trailingOnly = TRUE)
+# 
+# set.seed(8)
+# 
+# cat(&quot;Running seed: 8&quot;)
+# 
+# # --- Load data ---
+# load(&quot;Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RData&quot;)
+# load(&quot;RNA_Metadata_No4_NoRep.RData&quot;)
+# 
+# # --- Define Variables ---
+# log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_NoRep
+# metadata &lt;- RNA_Metadata_No4_NoRep
+# 
+# # --- Align metadata and log2cpm
+# metadata &lt;- metadata[match(colnames(log2cpm), metadata$SampleName), ]
+# 
+# # --- Build group and comp IDs from metadata ---
+# metadata$group &lt;- paste(metadata$Species, metadata$Timepoint, sep = &quot;_&quot;)
+# 
+# time_order &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+# species_order &lt;- c(&quot;H&quot;,&quot;C&quot;)
+# 
+# group_levels &lt;- c(paste(&quot;H&quot;,time_order,sep = &quot;_&quot;), paste(&quot;C&quot;,time_order, sep = &quot;_&quot;))
+# 
+# metadata$group &lt;- factor(metadata$group, levels = group_levels, ordered = TRUE)
+# 
+# groupid &lt;- as.numeric(metadata$group)
+# 
+# make_trajectory &lt;- function(levels_vec, prefix, times) {
+#   target &lt;- paste(prefix, times, sep = &quot;_&quot;)
+#   idx &lt;- match(target, levels_vec)
+#   idx &lt;- idx[!is.na(idx)]
+#   cbind(idx[-length(idx)], idx[-1])
+# }
+# 
+# compid &lt;- rbind(
+#   make_trajectory(levels(metadata$group), &quot;H&quot;, time_order),
+#   make_trajectory(levels(metadata$group), &quot;C&quot;, time_order)
+# )
+# 
+# # ==============================
+# # Run model
+# # ==============================
+# cat(&quot;Fitting CorMotif...\n&quot;)
+# 
+# set.seed(8)
+# motif.fitted &lt;- cormotiffit(
+#   exprs = log2cpm,
+#   groupid = groupid,
+#   compid = compid,
+#   K = 1:20,
+#   max.iter = 2000,
+#   runtype = &quot;logCPM&quot;
+# )
+# 
+# # --- Save results ---
+# saveRDS(motif.fitted, file = paste0(&quot;CorMotif_k1_k20_seed8_TMM_No4.rds&quot;))
+# 
+# # --- Generate diagnostic plots ---
+# pdf(paste0(&quot;CorMotif_k1_k20_plots_seed8_TMM_No4.pdf&quot;))
+# plotIC(motif.fitted)
+# plotMotif(motif.fitted)
+# dev.off()
+# 
+# # --- Extract and save gene rankings ---
+# topgenelist &lt;- generank(motif.fitted$bestmotif$p.post)
+# write.csv(topgenelist, paste0(&quot;CorMotif_top_genes_seed8_TMM_No4.csv&quot;), row.names = TRUE)
+# 
+# cat(&quot;&gt;&gt;&gt; Finished seed_No4_TMM: 8&quot;)
+# 
+# ```
+# 
+# ##### Graphing
+# ```{r RNA-Seq_No4_CorMotif_Species_Modeling_computer,fig.height=8,fig.width=15}
+# motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
+# 
+# plotIC(motif.fitted)
+# plotMotif(motif.fitted)
+# cols &lt;- gray(seq(1, 0, length.out = 6))
+# 
+# legend(
+#   &quot;topright&quot;,
+#   legend = seq(0, 1, length.out = 6),
+#   fill = cols,
+#   border = &quot;black&quot;,
+#   title = &quot;Posterior probability&quot;)</code></pre>
+</div>
+<div id="graphing-2" class="section level5">
+<h5>Graphing</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
+
+plotIC(motif.fitted)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMotif(motif.fitted)
+cols &lt;- gray(seq(1, 0, length.out = 6))
+
+legend(
+  &quot;topright&quot;,
+  legend = seq(0, 1, length.out = 6),
+  fill = cols,
+  border = &quot;black&quot;,
+  title = &quot;Posterior probability&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-2.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ppost-1" class="section level5">
+<h5>PPost</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
+
+log2cpm &lt;- readRDS(&quot;data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS&quot;)
+
+motif.fit &lt;- motif.fitted
+
+TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+#extract the posterior probability that these genes belong to motifs
+gene_prob_ppost &lt;- motif.fit$bestmotif$p.post
+rownames(gene_prob_ppost) &lt;- rownames(log2cpm)
+saveRDS(gene_prob_ppost,&quot;data/Cormotif/Trajectory/RNA_TMM_gene_prob_ppost_Trajectory.RDS&quot;)
+
+#assign each gene to a motif with max post prob
+assigned_motifs &lt;- apply(gene_prob_ppost, 1, which.max)
+max_probs &lt;- apply(gene_prob_ppost, 1, max)
+
+#combine these into a dataframe - motif assigned genes (p.post)
+motif_assignment_df &lt;- gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column(&quot;Gene&quot;) %&gt;%
+  mutate(
+    Assigned_Motif = assigned_motifs[Gene],
+    Max_Probability = max_probs[Gene]
+  )
+
+#make some histograms of the unfiltered data from Cormotif p.post
+
+gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V1))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V1&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V2))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V2&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V3))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V3&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V4))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V4&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V5))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V5&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V5))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V5&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V6))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V6&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V7))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V7&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gene_prob_ppost %&gt;%
+  as.data.frame() %&gt;%
+  ggplot(., aes(x = V8))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle(&quot;Cormtif p.post RNA V8&quot;)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="cluster-assignments-1" class="section level5">
+<h5>Cluster Assignments</h5>
+<pre class="r"><code>motif.fit &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
+
+log2cpm &lt;- readRDS(&quot;data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS&quot;)
+
+TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+# Extract cluster probabilities
+motif_prob &lt;- motif.fit$bestmotif$clustlike
+rownames(motif_prob) &lt;- rownames(gene_prob_ppost)
+
+saveRDS(
+  motif_prob,
+  &quot;data/Cormotif/Species/RNA_TMM_motif_prob_Trajectory.RDS&quot;
+)
+
+# Keep species comparisons only
+TopTable &lt;- TopTable %&gt;%
+  filter(
+    Comparisons %in% c(
+      &quot;H_Day02&quot;,
+      &quot;H_Day25&quot;,
+      &quot;H_Day515&quot;,
+      &quot;H_Day1530&quot;,
+      &quot;C_Day02&quot;,
+      &quot;C_Day25&quot;,
+      &quot;C_Day515&quot;,
+      &quot;C_Day1530&quot;
+      
+    )
+  )
+
+# Define clusters
+clust1_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+  filter(V1 &gt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust2_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &gt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust3_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &gt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust4_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &gt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust5_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &gt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust6_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &gt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust7_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &gt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust8_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &gt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust9_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &gt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust10_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &gt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust11_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &gt; 0.5 &amp; V12 &lt; 0.5) %&gt;%
+  rownames()
+
+clust12_RNA &lt;- motif_prob %&gt;%
+  as.data.frame() %&gt;%
+ filter(V1 &lt; 0.5 &amp; V2 &lt; 0.5 &amp; V3 &lt; 0.5 &amp; V4 &lt; 0.5 &amp; V5 &lt; 0.5 &amp; V6 &lt; 0.5 &amp; V7 &lt; 0.5 &amp; V8 &lt; 0.5 &amp; V9 &lt; 0.5 &amp; V10 &lt; 0.5 &amp; V11 &lt; 0.5 &amp; V12 &gt; 0.5) %&gt;%
+  rownames()
+
+# Cluster list
+clust_names_list &lt;- list(
+  clust1 = clust1_RNA,
+  clust2 = clust2_RNA,
+  clust3 = clust3_RNA,
+  clust4 = clust4_RNA,
+  clust5 = clust5_RNA,
+  clust6 = clust6_RNA,
+  clust7 = clust7_RNA,
+  clust8 = clust8_RNA,
+  clust9 = clust9_RNA,
+  clust10 = clust10_RNA,
+  clust11 = clust11_RNA,
+  clust12 = clust12_RNA
+)
+
+# Check sizes
+sapply(clust_names_list, length)</code></pre>
+<pre><code> clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+   4631     395     861     867     311     380     792     529     508     789 
+clust11 clust12 
+    511     489 </code></pre>
+<pre class="r"><code># Overlap
+overlap_matrix &lt;- check_overlap(clust_names_list)
+print(overlap_matrix)</code></pre>
+<pre><code>$clust1
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+     NA       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust2
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0      NA       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust3
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0      NA       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust4
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0      NA       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust5
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0      NA       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust6
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0      NA       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust7
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0      NA       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust8
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0      NA       0       0 
+clust11 clust12 
+      0       0 
+
+$clust9
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0      NA       0 
+clust11 clust12 
+      0       0 
+
+$clust10
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0      NA 
+clust11 clust12 
+      0       0 
+
+$clust11
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+     NA       0 
+
+$clust12
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0      NA </code></pre>
+<pre class="r"><code>TopTable$AbsFC &lt;- abs(TopTable$logFC)
+
+
+# Create cluster annotation for every gene
+cluster_annotation &lt;- c(
+  setNames(rep(&quot;cluster1&quot;, length(clust1_RNA)), clust1_RNA),
+  setNames(rep(&quot;cluster2&quot;, length(clust2_RNA)), clust2_RNA),
+  setNames(rep(&quot;cluster3&quot;, length(clust3_RNA)), clust3_RNA),
+  setNames(rep(&quot;cluster4&quot;, length(clust4_RNA)), clust4_RNA),
+  setNames(rep(&quot;cluster5&quot;, length(clust5_RNA)), clust5_RNA),
+  setNames(rep(&quot;cluster6&quot;, length(clust6_RNA)), clust6_RNA),
+  setNames(rep(&quot;cluster7&quot;, length(clust7_RNA)), clust7_RNA),
+  setNames(rep(&quot;cluster8&quot;, length(clust8_RNA)), clust8_RNA),
+  setNames(rep(&quot;cluster9&quot;, length(clust9_RNA)), clust9_RNA),
+  setNames(rep(&quot;cluster10&quot;, length(clust10_RNA)), clust10_RNA),
+  setNames(rep(&quot;cluster11&quot;, length(clust11_RNA)), clust11_RNA),
+  setNames(rep(&quot;cluster12&quot;, length(clust12_RNA)), clust12_RNA)
+)
+
+saveRDS(cluster_annotation, &quot;data/Cormotif/Trajectory/TrajectoryClusterAnnotation_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+
+# FC plots
+cluster_plots &lt;- lapply(names(clust_names_list), function(clust_name) {
+  plot_cluster_fc_sig(
+    clust_names_list[[clust_name]],
+    clust_name,
+    TopTable
+  )
+})</code></pre>
+<pre><code>clust1 : 37048 rows, 4631 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  0.00732 4.0e-11 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 0.03439 6.3e-06  -         -       -       -       
+C_Day02   4.6e-14 0.00059 0.00059  0.23555   -       -       -       
+C_Day25   5.7e-13 1.6e-06 0.00367  0.01422   0.14938 -       -       
+C_Day515  &lt; 2e-16 0.08293 7.0e-08  0.58883   0.08293 0.00130 -       
+C_Day1530 &lt; 2e-16 0.33268 3.3e-15  0.00217   1.2e-05 4.4e-09 0.00732 
+
+P value adjustment method: BH 
+clust2 : 3160 rows, 395 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   6.8e-07 -       -        -         -       -       -       
+H_Day515  0.00015 0.18487 -        -         -       -       -       
+H_Day1530 0.00015 0.46069 0.18487  -         -       -       -       
+C_Day02   6.8e-07 0.54161 0.07402  0.47260   -       -       -       
+C_Day25   0.00327 0.00865 0.29003  0.17574   0.00695 -       -       
+C_Day515  4.5e-07 0.78186 0.11097  0.47260   0.64385 0.00383 -       
+C_Day1530 0.00202 0.71478 0.41800  0.44615   0.76356 0.38676 0.72782 
+
+P value adjustment method: BH 
+clust3 : 6888 rows, 861 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  0.04324 4.5e-12 -        -         -       -       -       
+H_Day1530 0.00078 3.0e-10 0.26007  -         -       -       -       
+C_Day02   1.7e-10 0.00053 0.00078  0.02209   -       -       -       
+C_Day25   1.7e-10 0.00723 4.0e-05  0.00110   0.21755 -       -       
+C_Day515  3.1e-15 0.04493 7.0e-08  7.9e-06   0.03004 0.38070 -       
+C_Day1530 0.00093 4.0e-09 0.20543  0.70506   0.07904 0.00472 0.00012 
+
+P value adjustment method: BH 
+clust4 : 6936 rows, 867 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.57286 -       -        -         -       -       -       
+H_Day515  0.97137 0.09617 -        -         -       -       -       
+H_Day1530 0.97567 0.00475 0.72086  -         -       -       -       
+C_Day02   0.97137 0.00010 0.85314  0.93708   -       -       -       
+C_Day25   0.57286 0.00763 0.97567  0.97137   0.57286 -       -       
+C_Day515  0.97137 0.00015 0.49022  0.80920   0.49022 0.97137 -       
+C_Day1530 0.57286 0.00475 0.21459  0.66738   0.49022 0.97137 0.97567 
+
+P value adjustment method: BH 
+clust5 : 2488 rows, 311 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   2.2e-15 -       -        -         -       -       -       
+H_Day515  0.06081 1.3e-10 -        -         -       -       -       
+H_Day1530 0.15126 2.2e-15 2.7e-05  -         -       -       -       
+C_Day02   1.0e-11 3.3e-05 5.5e-11  5.1e-10   -       -       -       
+C_Day25   1.2e-12 0.36207 1.2e-08  1.7e-12   0.00058 -       -       
+C_Day515  8.9e-12 3.5e-05 9.5e-11  6.8e-11   0.42157 0.00058 -       
+C_Day1530 0.22169 2.2e-15 0.00041  0.65509   3.4e-08 1.5e-12 1.7e-08 
+
+P value adjustment method: BH 
+clust6 : 3040 rows, 380 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  0.05537 0.00024 -        -         -       -       -       
+H_Day1530 3.9e-07 0.05768 0.07434  -         -       -       -       
+C_Day02   0.07988 7.0e-11 0.70273  0.00112   -       -       -       
+C_Day25   3.8e-13 0.10778 0.00387  0.37241   8.4e-09 -       -       
+C_Day515  1.3e-08 0.37241 0.00425  0.25508   7.2e-05 0.95902 -       
+C_Day1530 0.01075 0.01119 0.89488  0.20096   0.34242 0.10778 0.01075 
+
+P value adjustment method: BH 
+clust7 : 6336 rows, 792 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.00118 -       -        -         -       -       -       
+H_Day515  1.0e-07 0.00478 -        -         -       -       -       
+H_Day1530 0.00056 0.34337 0.12972  -         -       -       -       
+C_Day02   0.00979 0.39076 0.00396  0.34337   -       -       -       
+C_Day25   0.06557 0.15215 0.00049  0.08309   0.54455 -       -       
+C_Day515  1.4e-07 0.00944 0.56702  0.05215   0.00979 0.00092 -       
+C_Day1530 0.00056 0.34337 0.03938  0.49694   0.34337 0.08069 0.00944 
+
+P value adjustment method: BH 
+clust8 : 4232 rows, 529 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.1260  -       -        -         -       -       -       
+H_Day515  0.3370  0.3370  -        -         -       -       -       
+H_Day1530 0.0675  0.8161  0.2683   -         -       -       -       
+C_Day02   0.3221  0.1846  0.4633   0.1268    -       -       -       
+C_Day25   0.8688  0.0142  0.1415   0.0075    0.7298  -       -       
+C_Day515  0.0552  0.8205  0.2727   0.8688    0.0747  0.0075  -       
+C_Day1530 0.1640  0.8161  0.5478   0.6614    0.2727  0.0321  0.7232  
+
+P value adjustment method: BH 
+clust9 : 4064 rows, 508 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  2.3e-08 2.1e-08 -        -         -       -       -       
+H_Day1530 8.4e-05 &lt; 2e-16 0.00035  -         -       -       -       
+C_Day02   2.4e-11 &lt; 2e-16 0.00029  0.47545   -       -       -       
+C_Day25   &lt; 2e-16 0.47545 1.5e-06  &lt; 2e-16   &lt; 2e-16 -       -       
+C_Day515  1.6e-13 5.4e-06 0.17825  8.8e-07   1.3e-06 0.00018 -       
+C_Day1530 2.0e-06 &lt; 2e-16 0.00032  0.59233   0.67600 &lt; 2e-16 1.3e-06 
+
+P value adjustment method: BH 
+clust10 : 6312 rows, 789 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.02544 -       -        -         -       -       -       
+H_Day515  0.24447 0.00357 -        -         -       -       -       
+H_Day1530 0.26640 0.21881 0.00523  -         -       -       -       
+C_Day02   0.03281 6.2e-06 0.02833  0.00049   -       -       -       
+C_Day25   0.04975 0.77968 0.00208  0.26640   6.2e-06 -       -       
+C_Day515  0.06047 0.00038 0.21881  0.00048   0.00179 0.00038 -       
+C_Day1530 0.30732 0.20439 0.01004  0.97999   0.00043 0.26640 0.00130 
+
+P value adjustment method: BH 
+clust11 : 4088 rows, 511 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.00470 -       -        -         -       -       -       
+H_Day515  0.33254 0.06613 -        -         -       -       -       
+H_Day1530 1.5e-05 0.33254 0.69264  -         -       -       -       
+C_Day02   0.00782 0.98123 0.07054  0.07425   -       -       -       
+C_Day25   0.07054 0.32796 0.42776  0.55622   0.33254 -       -       
+C_Day515  0.00018 0.98123 0.06109  0.18011   0.63277 0.33254 -       
+C_Day1530 4.4e-05 0.19615 0.98123  0.69264   0.19359 0.33254 0.07425 
+
+P value adjustment method: BH 
+clust12 : 3912 rows, 489 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$logFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.08738 -       -        -         -       -       -       
+H_Day515  0.61268 0.20903 -        -         -       -       -       
+H_Day1530 0.61268 0.04768 0.03603  -         -       -       -       
+C_Day02   0.07172 0.00051 0.04590  0.19125   -       -       -       
+C_Day25   0.04590 0.69896 0.37466  0.05618   6.5e-05 -       -       
+C_Day515  0.37466 0.03837 4.3e-06  0.14195   0.33932 0.04451 -       
+C_Day1530 0.81121 0.18714 0.14195  0.37466   0.05131 0.19205 0.02991 
+
+P value adjustment method: BH </code></pre>
+<pre class="r"><code>for (p in cluster_plots) {
+  if (!is.null(p)) print(p)
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># AbsFC plots
+cluster_plots &lt;- lapply(names(clust_names_list), function(clust_name) {
+   plot_cluster_absfc_sig(
+    clust_names_list[[clust_name]],
+    clust_name,
+    TopTable
+  )
+})</code></pre>
+<pre><code>clust1 : 37048 rows, 4631 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.00091 -       -        -         -       -       -       
+H_Day515  1.5e-09 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 0.04481 0.21257 1.6e-15  -         -       -       -       
+C_Day02   1.9e-07 0.05383 &lt; 2e-16  0.00218   -       -       -       
+C_Day25   &lt; 2e-16 1.7e-15 &lt; 2e-16  &lt; 2e-16   1.5e-09 -       -       
+C_Day515  2.9e-16 5.5e-07 &lt; 2e-16  1.9e-09   0.00218 0.00218 -       
+C_Day1530 4.1e-11 0.00063 &lt; 2e-16  6.6e-06   0.11567 1.2e-05 0.15795 
+
+P value adjustment method: BH 
+clust2 : 3160 rows, 395 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 0.232   -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   0.035   2.8e-10 1.1e-13  &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 0.809   0.148    &lt; 2e-16   6.5e-10 -       -       
+C_Day515  &lt; 2e-16 0.611   0.468    &lt; 2e-16   3.0e-12 0.484   -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  0.110     &lt; 2e-16 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust3 : 6888 rows, 861 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.0145  -       -        -         -       -       -       
+H_Day515  0.9957  0.0145  -        -         -       -       -       
+H_Day1530 0.0407  2.7e-06 0.0358   -         -       -       -       
+C_Day02   1.4e-09 &lt; 2e-16 1.2e-09  7.6e-06   -       -       -       
+C_Day25   0.3832  0.0014  0.3832   0.3832    1.9e-06 -       -       
+C_Day515  0.0024  1.7e-08 0.0020   0.2740    0.0024  0.0409  -       
+C_Day1530 0.9090  0.0200  0.9090   0.0270    3.6e-10 0.3164  0.0013  
+
+P value adjustment method: BH 
+clust4 : 6936 rows, 867 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  1.2e-10 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 1.0e-13 &lt; 2e-16 0.49806  -         -       -       -       
+C_Day02   &lt; 2e-16 &lt; 2e-16 0.00016  0.00115   -       -       -       
+C_Day25   &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  &lt; 2e-16   &lt; 2e-16 -       -       
+C_Day515  1.8e-14 &lt; 2e-16 0.48603  0.99824   0.00100 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 0.00045  0.00262   0.82734 &lt; 2e-16 0.00256 
+
+P value adjustment method: BH 
+clust5 : 2488 rows, 311 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  7.3e-15 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 0.13177 &lt; 2e-16  -         -       -       -       
+C_Day02   0.00031 &lt; 2e-16 2.5e-05  &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 0.97117 &lt; 2e-16  0.13676   &lt; 2e-16 -       -       
+C_Day515  6.8e-12 &lt; 2e-16 0.34292  &lt; 2e-16   0.00090 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 0.84314 &lt; 2e-16  0.16222   &lt; 2e-16 0.84314 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust6 : 3040 rows, 380 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt; 2e-16 -       -        -         -       -       -       
+H_Day515  0.15203 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   0.76325 &lt; 2e-16 0.24044  &lt; 2e-16   -       -       -       
+C_Day25   &lt; 2e-16 0.02586 &lt; 2e-16  &lt; 2e-16   &lt; 2e-16 -       -       
+C_Day515  5.2e-10 &lt; 2e-16 8.5e-06  2.1e-07   1.1e-09 &lt; 2e-16 -       
+C_Day1530 2.6e-11 &lt; 2e-16 2.5e-07  0.00024   4.9e-11 &lt; 2e-16 0.27328 
+
+P value adjustment method: BH 
+clust7 : 6336 rows, 792 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.11227 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 0.96613  -         -       -       -       
+C_Day02   0.07470 0.00028 &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   0.11227 0.96613 &lt; 2e-16  &lt; 2e-16   0.00026 -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 0.11227  0.12126   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 0.11227  0.11641   &lt; 2e-16 &lt; 2e-16 0.96613 
+
+P value adjustment method: BH 
+clust8 : 4232 rows, 529 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt;2e-16  -       -        -         -       -       -       
+H_Day515  &lt;2e-16  0.579   -        -         -       -       -       
+H_Day1530 &lt;2e-16  0.635   0.386    -         -       -       -       
+C_Day02   &lt;2e-16  &lt;2e-16  &lt;2e-16   &lt;2e-16    -       -       -       
+C_Day25   &lt;2e-16  0.386   0.652    0.186     &lt;2e-16  -       -       
+C_Day515  &lt;2e-16  0.164   0.047    0.390     &lt;2e-16  0.023   -       
+C_Day1530 &lt;2e-16  0.833   0.652    0.579     &lt;2e-16  0.470   0.147   
+
+P value adjustment method: BH 
+clust9 : 4064 rows, 508 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   &lt;2e-16  -       -        -         -       -       -       
+H_Day515  &lt;2e-16  0.5207  -        -         -       -       -       
+H_Day1530 &lt;2e-16  &lt;2e-16  &lt;2e-16   -         -       -       -       
+C_Day02   0.0499  &lt;2e-16  &lt;2e-16   &lt;2e-16    -       -       -       
+C_Day25   &lt;2e-16  0.7005  0.8752   &lt;2e-16    &lt;2e-16  -       -       
+C_Day515  &lt;2e-16  0.0019  0.0076   &lt;2e-16    &lt;2e-16  0.0082  -       
+C_Day1530 &lt;2e-16  &lt;2e-16  &lt;2e-16   0.2631    &lt;2e-16  &lt;2e-16  &lt;2e-16  
+
+P value adjustment method: BH 
+clust10 : 6312 rows, 789 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.23596 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 0.47624 0.68828 &lt; 2e-16  -         -       -       -       
+C_Day02   0.02210 0.00044 &lt; 2e-16  0.00131   -       -       -       
+C_Day25   0.00130 0.04394 &lt; 2e-16  0.00956   9.3e-09 -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 0.68828  &lt; 2e-16   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 0.00350 0.09331 &lt; 2e-16  0.02600   4.1e-08 0.68828 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust11 : 4088 rows, 511 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   9.5e-06 -       -        -         -       -       -       
+H_Day515  0.00085 0.20870 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  -         -       -       -       
+C_Day02   0.09359 0.00524 0.10600  &lt; 2e-16   -       -       -       
+C_Day25   0.00012 0.52670 0.53014  &lt; 2e-16   0.03651 -       -       
+C_Day515  0.51372 5.3e-08 1.8e-05  &lt; 2e-16   0.01166 1.4e-06 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 &lt; 2e-16  0.25125   &lt; 2e-16 &lt; 2e-16 &lt; 2e-16 
+
+P value adjustment method: BH 
+clust12 : 3912 rows, 489 unique genes
+
+    Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  df$AbsFC and df$Comparisons 
+
+          H_Day02 H_Day25 H_Day515 H_Day1530 C_Day02 C_Day25 C_Day515
+H_Day25   0.01995 -       -        -         -       -       -       
+H_Day515  &lt; 2e-16 &lt; 2e-16 -        -         -       -       -       
+H_Day1530 &lt; 2e-16 &lt; 2e-16 1.2e-08  -         -       -       -       
+C_Day02   0.47683 0.09308 &lt; 2e-16  &lt; 2e-16   -       -       -       
+C_Day25   0.38110 0.15360 &lt; 2e-16  &lt; 2e-16   0.85911 -       -       
+C_Day515  &lt; 2e-16 &lt; 2e-16 0.65712  1.6e-07   &lt; 2e-16 &lt; 2e-16 -       
+C_Day1530 &lt; 2e-16 &lt; 2e-16 4.3e-05  0.18998   &lt; 2e-16 &lt; 2e-16 0.00027 
+
+P value adjustment method: BH </code></pre>
+<pre class="r"><code>for (p in cluster_plots) {
+  if (!is.null(p)) print(p)
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>clust_names_list &lt;- list(
+ clust1_RNA,
+ clust2_RNA,
+  clust3_RNA,
+ clust4_RNA,
+ clust5_RNA,
+ clust6_RNA,
+ clust7_RNA,
+ clust8_RNA,
+  clust9_RNA,
+ clust10_RNA,
+  clust11_RNA,
+  clust12_RNA
+)
+
+names(clust_names_list) &lt;- paste0(&quot;clust&quot;, 1:12)
+
+print(overlap_matirx &lt;- check_overlap(clust_names_list))</code></pre>
+<pre><code>$clust1
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+     NA       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust2
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0      NA       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust3
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0      NA       0       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust4
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0      NA       0       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust5
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0      NA       0       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust6
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0      NA       0       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust7
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0      NA       0       0       0 
+clust11 clust12 
+      0       0 
+
+$clust8
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0      NA       0       0 
+clust11 clust12 
+      0       0 
+
+$clust9
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0      NA       0 
+clust11 clust12 
+      0       0 
+
+$clust10
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0      NA 
+clust11 clust12 
+      0       0 
+
+$clust11
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+     NA       0 
+
+$clust12
+ clust1  clust2  clust3  clust4  clust5  clust6  clust7  clust8  clust9 clust10 
+      0       0       0       0       0       0       0       0       0       0 
+clust11 clust12 
+      0      NA </code></pre>
+</div>
+<div id="enrichgo-1" class="section level5">
+<h5>EnrichGo</h5>
+<pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
+TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
+
+
+all_genes &lt;- unique(TopTable$Gene)
+
+
+# convert_to_entrez_df &lt;- function(genes) {
+# 
+#   genes &lt;- sub(&quot;\\..*&quot;, &quot;&quot;, genes)
+# 
+#   bitr(
+#     genes,
+#     fromType = &quot;ENSEMBL&quot;,
+#     toType   = &quot;ENTREZID&quot;,
+#     OrgDb    = org.Hs.eg.db
+#   ) %&gt;% distinct()
+# }
+# 
+# background_entrez &lt;- convert_to_entrez_df(all_genes)$ENTREZID
+# 
+# gost_results &lt;- setNames(
+# 
+#   lapply(names(clust_names_list), function(clust_name) {
+# 
+#     genes &lt;- clust_names_list[[clust_name]]
+# 
+#     entrez_df &lt;- convert_to_entrez_df(genes)
+# 
+#     if (nrow(entrez_df) == 0) return(NULL)
+# 
+#     gost(
+#       query = entrez_df$ENTREZID,
+# 
+#       organism = &quot;hsapiens&quot;,
+# 
+#       significant = FALSE,
+#       ordered_query = FALSE,         # TRUE only if ranked
+#       domain_scope = &quot;custom&quot;,
+# 
+#       measure_underrepresentation = FALSE,
+#       evcodes = FALSE,
+# 
+#       numeric_ns = &quot;ENTREZGENE&quot;,
+# 
+#       user_threshold = 0.05,
+#       correction_method = &quot;fdr&quot;,
+# 
+#       custom_bg = background_entrez,
+# 
+#       sources = c(&quot;GO:BP&quot;, &quot;KEGG&quot;)
+#     )
+#   }),
+# 
+#   names(clust_names_list)
+# )
+# 
+# saveRDS(gost_results, &quot;data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+# 
+# gost_results &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+# 
+# gost_combined &lt;- do.call(rbind, lapply(names(gost_results), function(clust_name) {
+# 
+#   res &lt;- gost_results[[clust_name]]
+# 
+#   if (is.null(res)) return(NULL)
+# 
+#   df &lt;- res$result
+#   df$Cluster &lt;- clust_name
+#   df
+# }))
+# 
+# saveRDS(gost_combined, &quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+# 
+# gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+# 
+# gost_export &lt;- gost_combined
+# 
+# gost_export[] &lt;- lapply(gost_export, function(col) {
+# 
+#   if (is.list(col)) {
+#     sapply(col, paste, collapse = &quot;;&quot;)
+#   } else {
+#     col
+#   }
+# 
+# })
+# 
+# write.csv(gost_export,
+#           &quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.csv&quot;,
+#           row.names = FALSE)</code></pre>
+</div>
+<div id="enrichgo-plotting-1" class="section level5">
+<h5>EnrichGo Plotting</h5>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;) %&gt;%        # keep only BP terms
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 10) %&gt;%       # top 10 per cluster
+  ungroup()
+
+cluster_list &lt;- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df &lt;- cluster_list[[clust_name]]
+  
+  p &lt;- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = &quot;white&quot;) +
+    scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+    labs(fill = &quot;-log10(p-value)&quot;,
+         x = &quot;Cluster&quot;,
+         y = &quot;GO Term&quot;) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;,
+         p_value &lt; 0.05) %&gt;%
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 3, with_ties = FALSE) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    Cluster_num = as.numeric(gsub(&quot;clust&quot;, &quot;&quot;, Cluster)),
+    term_label = paste0(Cluster, &quot; : &quot;, term_name)
+  ) %&gt;%
+  arrange(desc(Cluster_num))
+
+top_terms$term_label &lt;- factor(
+  top_terms$term_label,
+  levels = rev(top_terms$term_label)
+)
+
+ggplot(top_terms,
+       aes(x = 1,
+           y = term_label,
+           fill = -log10(p_value))) +
+  geom_tile(color = &quot;white&quot;, width = 0.8) +
+  geom_text(aes(label = Cluster), size = 3) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;,
+       x = NULL,
+       y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank()
+  )</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh &lt;- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;) %&gt;%
+  group_by(Cluster) %&gt;%
+  filter(p_value &lt; sig_thresh) %&gt;%                    # keep only significant
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %&gt;%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms &lt;- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data &lt;- gost_combined %&gt;%
+  filter(source == &quot;GO:BP&quot;, term_name %in% unique_terms) %&gt;%
+  mutate(logp = -log10(p_value)) %&gt;%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide &lt;- heatmap_data %&gt;%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, &quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+# 5. Convert to long format for ggplot
+heatmap_long &lt;- heatmap_wide %&gt;%
+  pivot_longer(cols = -term_name, names_to = &quot;Cluster&quot;, values_to = &quot;logp&quot;)
+
+saveRDS(heatmap_long, &quot;data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+heatmap_long &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;, na.value = &quot;white&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;, x = &quot;Cluster&quot;, y = &quot;GO Term&quot;) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined%20-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix &lt;- heatmap_wide %&gt;%
+  column_to_rownames(var = &quot;term_name&quot;) %&gt;%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] &lt;- 0
+
+sig_matrix &lt;- gost_combined %&gt;%
+  filter(
+    source == &quot;GO:BP&quot;,
+    term_name %in% unique_terms
+  ) %&gt;%
+  mutate(
+    sig = ifelse(p_value &lt; 0.05, &quot;*&quot;, &quot;&quot;)
+  ) %&gt;%
+  select(Cluster, term_name, sig) %&gt;%
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = &quot;&quot;
+  ) %&gt;%
+  column_to_rownames(&quot;term_name&quot;) %&gt;%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c(&quot;grey90&quot;, &quot;firebrick&quot;))(100),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = &quot;GO:BP Enrichment Heatmap&quot;,
+  display_numbers = sig_matrix,
+  number_color = &quot;black&quot;
+)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined%20-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;) %&gt;%        # keep only BP terms
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 10) %&gt;%       # top 10 per cluster
+  ungroup()
+
+cluster_list &lt;- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df &lt;- cluster_list[[clust_name]]
+  
+  p &lt;- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = &quot;white&quot;) +
+    scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+    labs(fill = &quot;-log10(p-value)&quot;,
+         x = &quot;Cluster&quot;,
+         y = &quot;KEGG Term&quot;) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+}</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+top_terms &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;,
+         p_value &lt; 0.05) %&gt;%
+  group_by(Cluster) %&gt;%
+  slice_min(p_value, n = 3, with_ties = FALSE) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    Cluster_num = as.numeric(gsub(&quot;clust&quot;, &quot;&quot;, Cluster)),
+    term_label = paste0(Cluster, &quot; : &quot;, term_name)
+  ) %&gt;%
+  arrange(desc(Cluster_num))
+
+top_terms$term_label &lt;- factor(
+  top_terms$term_label,
+  levels = rev(top_terms$term_label)
+)
+
+ggplot(top_terms,
+       aes(x = 1,
+           y = term_label,
+           fill = -log10(p_value))) +
+  geom_tile(color = &quot;white&quot;, width = 0.8) +
+  geom_text(aes(label = Cluster), size = 3) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;,
+       x = NULL,
+       y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank()
+  )</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh &lt;- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;) %&gt;%
+  group_by(Cluster) %&gt;%
+  filter(p_value &lt; sig_thresh) %&gt;%                    # keep only significant
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %&gt;%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms &lt;- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data &lt;- gost_combined %&gt;%
+  filter(source == &quot;KEGG&quot;, term_name %in% unique_terms) %&gt;%
+  mutate(logp = -log10(p_value)) %&gt;%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide &lt;- heatmap_data %&gt;%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, &quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+# 5. Convert to long format for ggplot
+heatmap_long &lt;- heatmap_wide %&gt;%
+  pivot_longer(cols = -term_name, names_to = &quot;Cluster&quot;, values_to = &quot;logp&quot;)
+
+saveRDS(heatmap_long, &quot;data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+heatmap_long &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;grey90&quot;, high = &quot;firebrick&quot;, na.value = &quot;white&quot;) +
+  labs(fill = &quot;-log10(p-value)&quot;, x = &quot;Cluster&quot;, y = &quot;GO Term&quot;) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix &lt;- heatmap_wide %&gt;%
+  column_to_rownames(var = &quot;term_name&quot;) %&gt;%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] &lt;- 0
+
+sig_matrix &lt;- gost_combined %&gt;%
+  filter(
+    source == &quot;KEGG&quot;,
+    term_name %in% unique_terms
+  ) %&gt;%
+  mutate(
+    sig = ifelse(p_value &lt; 0.05, &quot;*&quot;, &quot;&quot;)
+  ) %&gt;%
+  select(Cluster, term_name, sig) %&gt;%
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = &quot;&quot;
+  ) %&gt;%
+  column_to_rownames(&quot;term_name&quot;) %&gt;%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c(&quot;grey90&quot;, &quot;firebrick&quot;))(100),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = &quot;KEGG Enrichment Heatmap&quot;,
+  display_numbers = sig_matrix,
+  number_color = &quot;black&quot;
+)</code></pre>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># git -&gt; commit all changes
+# git -&gt; push
+wflow_publish(&quot;analysis/RNA_Cormotif_Trajectory.Rmd&quot;)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.6.1 (2026-06-24 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] Cormotif_1.58.0             affy_1.90.0                
+ [3] gprofiler2_0.2.4            enrichplot_1.32.0          
+ [5] clusterProfiler_4.20.0      ComplexHeatmap_2.28.0      
+ [7] ggfortify_0.4.19            readxl_1.5.0               
+ [9] RUVSeq_1.46.0               EDASeq_2.46.0              
+[11] ShortRead_1.70.0            GenomicAlignments_1.48.0   
+[13] SummarizedExperiment_1.42.0 MatrixGenerics_1.24.0      
+[15] matrixStats_1.5.0           Rsamtools_2.28.0           
+[17] GenomicRanges_1.64.0        Biostrings_2.80.1          
+[19] Seqinfo_1.2.0               XVector_0.52.0             
+[21] BiocParallel_1.46.0         lubridate_1.9.5            
+[23] forcats_1.0.1               stringr_1.6.0              
+[25] purrr_1.2.2                 tidyr_1.3.2                
+[27] tidyverse_2.0.0             pheatmap_1.0.13            
+[29] org.Hs.eg.db_3.23.1         AnnotationDbi_1.74.0       
+[31] IRanges_2.46.0              S4Vectors_0.50.1           
+[33] Biobase_2.72.0              BiocGenerics_0.58.1        
+[35] generics_0.1.4              readr_2.2.0                
+[37] ggrepel_0.9.8               dplyr_1.2.1                
+[39] tibble_3.3.1                ggplot2_4.0.3              
+[41] edgeR_4.10.1                limma_3.68.4               
+[43] workflowr_1.7.2            
+
+loaded via a namespace (and not attached):
+  [1] fs_2.1.0                bitops_1.0-9            httr_1.4.8             
+  [4] RColorBrewer_1.1-3      doParallel_1.0.17       tools_4.6.1            
+  [7] R6_2.6.1                lazyeval_0.2.3          GetoptLong_1.1.1       
+ [10] withr_3.0.3             prettyunits_1.2.0       gridExtra_2.3.1        
+ [13] preprocessCore_1.74.0   cli_3.6.6               Cairo_1.7-0            
+ [16] scatterpie_0.2.6        labeling_0.4.3          sass_0.4.10            
+ [19] S7_0.2.2                systemfonts_1.3.2       yulab.utils_0.2.4      
+ [22] gson_0.2.0              DOSE_4.6.0              R.utils_2.13.0         
+ [25] rstudioapi_0.19.0       RSQLite_3.53.3          gridGraphics_0.5-1     
+ [28] shape_1.4.6.1           BiocIO_1.22.0           hwriter_1.3.2.1        
+ [31] GO.db_3.23.1            Matrix_1.7-5            interp_1.1-6           
+ [34] abind_1.4-8             R.methodsS3_1.8.2       lifecycle_1.0.5        
+ [37] whisker_0.4.1           yaml_2.3.12             qvalue_2.44.0          
+ [40] SparseArray_1.12.2      BiocFileCache_3.2.0     blob_1.3.0             
+ [43] promises_1.5.0          crayon_1.5.3            pwalign_1.8.0          
+ [46] ggtangle_0.1.2          lattice_0.22-9          GenomicFeatures_1.64.0 
+ [49] cigarillo_1.2.1         KEGGREST_1.52.2         pillar_1.11.1          
+ [52] knitr_1.51              rjson_0.2.23            codetools_0.2-20       
+ [55] glue_1.8.1              ggiraph_0.9.6           getPass_0.2-4          
+ [58] ggfun_0.2.1             fontLiberation_0.1.0    data.table_1.18.4      
+ [61] vctrs_0.7.3             png_0.1-9               treeio_1.36.1          
+ [64] cellranger_1.1.0        gtable_0.3.6            cachem_1.1.0           
+ [67] aroma.light_3.42.0      xfun_0.59               S4Arrays_1.12.0        
+ [70] aisdk_1.4.12            iterators_1.0.14        statmod_1.5.2          
+ [73] nlme_3.1-169            ggtree_4.2.0            bit64_4.8.2            
+ [76] fontquiver_0.2.1        progress_1.2.3          filelock_1.0.3         
+ [79] rprojroot_2.1.1         bslib_0.11.0            affyio_1.82.0          
+ [82] otel_0.2.0              colorspace_2.1-3        DBI_1.3.0              
+ [85] tidyselect_1.2.1        processx_3.9.0          bit_4.6.0              
+ [88] compiler_4.6.1          curl_7.1.0              git2r_0.36.2           
+ [91] httr2_1.3.0             fontBitstreamVera_0.1.1 DelayedArray_0.38.2    
+ [94] plotly_4.12.0           rtracklayer_1.72.0      scales_1.4.0           
+ [97] callr_3.8.0             rappdirs_0.3.4          digest_0.6.39          
+[100] rmarkdown_2.31          htmltools_0.5.9         pkgconfig_2.0.3        
+[103] jpeg_0.1-11             dbplyr_2.6.0            fastmap_1.2.0          
+[106] rlang_1.3.0             GlobalOptions_0.1.4     htmlwidgets_1.6.4      
+[109] farver_2.1.2            jquerylib_0.1.4         jsonlite_2.0.0         
+[112] GOSemSim_2.38.3         R.oo_1.27.1             RCurl_1.98-1.19        
+[115] magrittr_2.0.5          ggplotify_0.1.3         patchwork_1.3.2        
+[118] Rcpp_1.1.1-1.1          ape_5.8-1               ggnewscale_0.5.2       
+[121] gdtools_0.5.1           stringi_1.8.7           MASS_7.3-65            
+[124] plyr_1.8.9              parallel_4.6.1          deldir_2.0-4           
+[127] splines_4.6.1           hms_1.1.4               circlize_0.4.18        
+[130] locfit_1.5-9.12         igraph_2.3.3            enrichit_0.2.0         
+[133] reshape2_1.4.5          biomaRt_2.68.0          XML_3.99-0.23          
+[136] evaluate_1.0.5          latticeExtra_0.6-31     BiocManager_1.30.27    
+[139] tzdb_0.5.0              foreach_1.5.2           tweenr_2.0.3           
+[142] httpuv_1.6.17           polyclip_1.10-7         clue_0.3-68            
+[145] ggforce_0.5.0           restfulr_0.0.17         tidytree_0.4.8         
+[148] tidydr_0.0.6            later_1.4.8             viridisLite_0.4.3      
+[151] aplot_0.3.1             memoise_2.0.1           cluster_2.1.8.2        
+[154] timechange_0.4.0       </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

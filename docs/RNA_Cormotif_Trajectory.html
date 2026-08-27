@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree59a1478959d6e3b7a62b6fb69143931d7caae616targetblank59a1478a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree19aa2db3de6cbfc5ae8d382bc2e59eb2cda35f75targetblank19aa2dba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/59a1478959d6e3b7a62b6fb69143931d7caae616" target="_blank">59a1478</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/19aa2db3de6cbfc5ae8d382bc2e59eb2cda35f75" target="_blank">19aa2db</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree59a1478959d6e3b7a62b6fb69143931d7caae616targetblank59a1478a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree19aa2db3de6cbfc5ae8d382bc2e59eb2cda35f75targetblank19aa2dba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/59a1478959d6e3b7a62b6fb69143931d7caae616" target="_blank">59a1478</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/19aa2db3de6cbfc5ae8d382bc2e59eb2cda35f75" target="_blank">19aa2db</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -555,11 +555,7 @@ Ignored files:
     Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -605,6 +601,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/19aa2db3de6cbfc5ae8d382bc2e59eb2cda35f75/analysis/RNA_Cormotif_Trajectory.Rmd" target="_blank">19aa2db</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+Correcting Trajectory Headers
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/RNA_Cormotif_Trajectory.html" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -714,12 +744,12 @@ Breaking up R2 correlations
 </div>
 </div>
 </div>
-<div id="rna-cormotif" class="section level1">
-<h1>RNA Cormotif</h1>
-<div id="setting-up-the-environment" class="section level2">
-<h2>Setting up the environment</h2>
-<div id="loading-libraries" class="section level3">
-<h3>Loading libraries</h3>
+<div id="rna-cormotif" class="section level2">
+<h2>RNA Cormotif</h2>
+<div id="setting-up-the-environment" class="section level3">
+<h3>Setting up the environment</h3>
+<div id="loading-libraries" class="section level4">
+<h4>Loading libraries</h4>
 <pre class="r"><code>####Library Loading####
 library(&quot;edgeR&quot;)
 library(&quot;ggplot2&quot;)
@@ -749,8 +779,8 @@ ann_colors &lt;- readRDS(&quot;data/Raw_Data/concat/ann_colors.RDS&quot;)
 ann_colors_No4 &lt;- readRDS(&quot;data/QC/concat/ann_colors_No4.RDS&quot;)
 ann_colors_No5 &lt;-readRDS(&quot;data/QC/concat/ann_colors_No5.RDS&quot;)</code></pre>
 </div>
-<div id="defining-functions" class="section level3">
-<h3>Defining Functions</h3>
+<div id="defining-functions" class="section level4">
+<h4>Defining Functions</h4>
 <pre class="r"><code>#Run the Function corMotifcustom.R
 
 #Check_Overlap Function
@@ -993,14 +1023,10 @@ plot_cluster_absfc_sig_species &lt;- function(gene_vector, cluster_name, top_tab
 }</code></pre>
 </div>
 </div>
-<div id="no-day-4" class="section level2">
-<h2>No Day 4</h2>
-<div id="trajectory" class="section level3">
-<h3>Trajectory</h3>
-<div id="modeling-on-laptop" class="section level4">
-<h4>Modeling on Laptop</h4>
-<div id="data-preparation" class="section level5">
-<h5>Data Preparation</h5>
+<div id="modeling-on-laptop" class="section level3">
+<h3>Modeling on Laptop</h3>
+<div id="data-preparation" class="section level4">
+<h4>Data Preparation</h4>
 <pre class="r"><code>counts &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
 metadata &lt;- readRDS(&quot;data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS&quot;)
 
@@ -1054,12 +1080,51 @@ compid &lt;- rbind(
 # 
 # saveRDS(motif.fitted,&quot;data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS&quot;)</code></pre>
 </div>
-<div id="graphing" class="section level5">
-<h5>Graphing</h5>
+<div id="graphing" class="section level4">
+<h4>Graphing</h4>
 <pre class="r"><code>motif.fit &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS&quot;)
 
 plotIC(motif.fit)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-1">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotMotif(motif.fit)
 cols &lt;- gray(seq(1, 0, length.out = 6))
 
@@ -1070,14 +1135,53 @@ legend(
   border = &quot;black&quot;,
   title = &quot;Posterior probability&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-2.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-2">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#  Studies Human Day0 - 1. HDay2, 2. HDay5, 3. HDay15, 4. HDay30
 #          Chimp Day0 - 5. CDay2, 6. CDay5, 7. CDay15, 8. CDay30</code></pre>
 </div>
 </div>
-<div id="modeling-on-tacc" class="section level4">
-<h4>Modeling on TACC</h4>
-<div id="rscript" class="section level5">
-<h5>RScript</h5>
+<div id="modeling-on-tacc" class="section level3">
+<h3>Modeling on TACC</h3>
+<div id="rscript" class="section level4">
+<h4>RScript</h4>
 <pre class="r"><code># ## --- Load required libraries ---
 # suppressPackageStartupMessages({
 #         library(edgeR)
@@ -1162,12 +1266,50 @@ legend(
 # 
 # cat(&quot;&gt;&gt;&gt; Finished seed_No4_TMM: 8&quot;)</code></pre>
 </div>
-<div id="graphing-1" class="section level5">
-<h5>Graphing</h5>
+<div id="graphing-1" class="section level4">
+<h4>Graphing</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
 
 plotIC(motif.fitted)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-1">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotMotif(motif.fitted)
 cols &lt;- gray(seq(1, 0, length.out = 6))
 
@@ -1178,9 +1320,47 @@ legend(
   border = &quot;black&quot;,
   title = &quot;Posterior probability&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-2.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-2">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_plot-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="ppost" class="section level5">
-<h5>PPost</h5>
+</div>
+</div>
+<div id="ppost" class="section level4">
+<h4>PPost</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
 
 counts &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
@@ -1222,6 +1402,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V1&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-1">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V2))+
@@ -1229,6 +1447,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V2&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-2">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V3))+
@@ -1236,6 +1492,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V3&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-3">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V4))+
@@ -1243,6 +1537,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V4&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-4">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V5))+
@@ -1250,6 +1582,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V5&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-5">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V6))+
@@ -1257,6 +1627,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V6&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-6">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V7))+
@@ -1264,6 +1672,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V7&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-7">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V8))+
@@ -1271,9 +1717,47 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V8&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-8">
+Past versions of RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="cluster-assignments" class="section level5">
-<h5>Cluster Assignments</h5>
+</div>
+</div>
+<div id="cluster-assignments" class="section level4">
+<h4>Cluster Assignments</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
 
 counts &lt;- readRDS(&quot;data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS&quot;)
@@ -1675,7 +2159,486 @@ P value adjustment method: BH </code></pre>
 <pre class="r"><code>for (p in cluster_plots) {
   if (!is.null(p)) print(p)
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-10.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-11.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-12.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># AbsFC plots
 cluster_plots &lt;- lapply(names(clust_names_list), function(clust_name) {
    plot_cluster_absfc_sig(
@@ -1879,7 +2842,486 @@ P value adjustment method: BH </code></pre>
 <pre class="r"><code>for (p in cluster_plots) {
   if (!is.null(p)) print(p)
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-13.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-14.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-15.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-16.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-17.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-18.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-19.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-20.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-21.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-22.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-23.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24">
+Past versions of
+RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign-24.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>clust_names_list &lt;- list(
  clust1_RNA,
  clust2_RNA,
@@ -1970,8 +3412,8 @@ $clust12
 clust11 clust12 
       0      NA </code></pre>
 </div>
-<div id="enrichgo" class="section level5">
-<h5>EnrichGo</h5>
+<div id="enrichgo" class="section level4">
+<h4>EnrichGo</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds&quot;)
 TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
@@ -2063,7 +3505,6 @@ all_genes &lt;- unique(TopTable$Gene)
 # write.csv(gost_export,
 #           &quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.csv&quot;,
 #           row.names = FALSE)</code></pre>
-</div>
 <div id="enrichgo-plotting" class="section level5">
 <h5>EnrichGo Plotting</h5>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
@@ -2095,7 +3536,474 @@ for (clust_name in names(cluster_list)) {
   print(p)   # display in RStudio
   
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-10.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-11.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-12.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 
@@ -2134,6 +4042,44 @@ ggplot(top_terms,
     panel.grid = element_blank()
   )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-13">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-13.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-13"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBP-13.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
 
 
@@ -2185,6 +4131,45 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 6))</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-1">
+Past versions of
+RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
 
 library(dplyr)
@@ -2231,6 +4216,45 @@ pheatmap(
   number_color = &quot;black&quot;
 )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-2">
+Past versions of
+RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_GOBPCombined-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
 
 top_terms &lt;- gost_combined %&gt;%
@@ -2260,7 +4284,474 @@ for (clust_name in names(cluster_list)) {
   print(p)   # display in RStudio
   
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-10.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-11.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-12.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 
@@ -2299,6 +4790,44 @@ ggplot(top_terms,
     panel.grid = element_blank()
   )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-13">
+Past versions of RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-13.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-13"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGG-13.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
 
 library(dplyr)
@@ -2348,6 +4877,45 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 6))</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-1">
+Past versions of
+RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_No4_NoRep.RDS&quot;)
 
 library(dplyr)
@@ -2393,11 +4961,53 @@ pheatmap(
   display_numbers = sig_matrix,
   number_color = &quot;black&quot;
 )</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2.png" alt="" width="672" style="display: block; margin: auto;" />
-#### TMM on TACC</p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2">
+Past versions of
+RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_Trajectory_TACC_GProfiler_KEGGCombined-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="rscript-1" class="section level5">
-<h5>RScript</h5>
+</div>
+</div>
+</div>
+</div>
+<div id="tmm-on-tacc" class="section level3">
+<h3>TMM on TACC</h3>
+<div id="rscript-1" class="section level4">
+<h4>RScript</h4>
 <pre class="r"><code># # --- Load required libraries ---
 # suppressPackageStartupMessages({
 #         library(edgeR)
@@ -2499,12 +5109,50 @@ pheatmap(
 #   border = &quot;black&quot;,
 #   title = &quot;Posterior probability&quot;)</code></pre>
 </div>
-<div id="graphing-2" class="section level5">
-<h5>Graphing</h5>
+<div id="graphing-2" class="section level4">
+<h4>Graphing</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
 
 plotIC(motif.fitted)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-1">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotMotif(motif.fitted)
 cols &lt;- gray(seq(1, 0, length.out = 6))
 
@@ -2515,9 +5163,47 @@ legend(
   border = &quot;black&quot;,
   title = &quot;Posterior probability&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-2.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-2">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="ppost-1" class="section level5">
-<h5>PPost</h5>
+</div>
+</div>
+<div id="ppost-1" class="section level4">
+<h4>PPost</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
 
 log2cpm &lt;- readRDS(&quot;data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS&quot;)
@@ -2553,6 +5239,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V1&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-1">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V2))+
@@ -2560,6 +5284,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V2&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-2">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V3))+
@@ -2567,6 +5329,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V3&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-3">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V4))+
@@ -2574,6 +5374,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V4&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-4">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V5))+
@@ -2581,6 +5419,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V5&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-5">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V5))+
@@ -2588,6 +5464,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V5&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-6">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V6))+
@@ -2595,6 +5509,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V6&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-7">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V7))+
@@ -2602,6 +5554,44 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V7&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-8">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gene_prob_ppost %&gt;%
   as.data.frame() %&gt;%
   ggplot(., aes(x = V8))+
@@ -2609,9 +5599,47 @@ gene_prob_ppost %&gt;%
   xlim(0,1)+
   ggtitle(&quot;Cormtif p.post RNA V8&quot;)</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-9">
+Past versions of RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="cluster-assignments-1" class="section level5">
-<h5>Cluster Assignments</h5>
+</div>
+</div>
+<div id="cluster-assignments-1" class="section level4">
+<h4>Cluster Assignments</h4>
 <pre class="r"><code>motif.fit &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
 
 log2cpm &lt;- readRDS(&quot;data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS&quot;)
@@ -3025,7 +6053,486 @@ P value adjustment method: BH </code></pre>
 <pre class="r"><code>for (p in cluster_plots) {
   if (!is.null(p)) print(p)
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-10.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-11.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-12.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># AbsFC plots
 cluster_plots &lt;- lapply(names(clust_names_list), function(clust_name) {
    plot_cluster_absfc_sig(
@@ -3229,7 +6736,486 @@ P value adjustment method: BH </code></pre>
 <pre class="r"><code>for (p in cluster_plots) {
   if (!is.null(p)) print(p)
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-13.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-14.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-15.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-16.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-17.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-18.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-19.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-20.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-21.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-22.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-23.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24">
+Past versions of
+RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign-24.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>clust_names_list &lt;- list(
  clust1_RNA,
  clust2_RNA,
@@ -3320,8 +7306,8 @@ $clust12
 clust11 clust12 
       0      NA </code></pre>
 </div>
-<div id="enrichgo-1" class="section level5">
-<h5>EnrichGo</h5>
+<div id="enrichgo-1" class="section level4">
+<h4>EnrichGo</h4>
 <pre class="r"><code>motif.fitted &lt;- readRDS(&quot;data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds&quot;)
 TopTable &lt;- readRDS(&quot;data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS&quot;)
 
@@ -3413,7 +7399,6 @@ all_genes &lt;- unique(TopTable$Gene)
 # write.csv(gost_export,
 #           &quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.csv&quot;,
 #           row.names = FALSE)</code></pre>
-</div>
 <div id="enrichgo-plotting-1" class="section level5">
 <h5>EnrichGo Plotting</h5>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
@@ -3445,7 +7430,474 @@ for (clust_name in names(cluster_list)) {
   print(p)   # display in RStudio
   
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-10.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-11.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-12.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 
@@ -3484,6 +7936,44 @@ ggplot(top_terms,
     panel.grid = element_blank()
   )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-13">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-13.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-13"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP-13.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
 
 
@@ -3535,6 +8025,46 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 6))</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined%20-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined--1">
+Past versions of "RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined
+-1.png"
+</button>
+</p>
+<div
+id="fig-no-spaces-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined--1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined -1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
 
 library(dplyr)
@@ -3581,6 +8111,46 @@ pheatmap(
   number_color = &quot;black&quot;
 )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined%20-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined--2">
+Past versions of "RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined
+-2.png"
+</button>
+</p>
+<div
+id="fig-no-spaces-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined--2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined -2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
 
 top_terms &lt;- gost_combined %&gt;%
@@ -3610,7 +8180,474 @@ for (clust_name in names(cluster_list)) {
   print(p)   # display in RStudio
   
 }</code></pre>
-<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-3.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-4.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-5.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-6.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-7.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-8.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-9.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-10.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-11.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-12.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 
@@ -3649,6 +8686,44 @@ ggplot(top_terms,
     panel.grid = element_blank()
   )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-13">
+Past versions of RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-13.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-13"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG-13.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>gost_combined &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
 
 library(dplyr)
@@ -3698,6 +8773,45 @@ ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 6))</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-1">
+Past versions of
+RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-1.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-1.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>heatmap_wide &lt;- readRDS(&quot;data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS&quot;)
 
 library(dplyr)
@@ -3744,6 +8858,45 @@ pheatmap(
   number_color = &quot;black&quot;
 )</code></pre>
 <p><img src="figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-2">
+Past versions of
+RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-2.png
+</button>
+</p>
+<div id="fig-RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2d93066aba4c97d70cd3c72e1dfb537143a1e86e/docs/figure/RNA_Cormotif_Trajectory.Rmd/RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined-2.png" target="_blank">2d93066</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
 wflow_publish(&quot;analysis/RNA_Cormotif_Trajectory.Rmd&quot;)</code></pre>
@@ -3854,7 +9007,6 @@ loaded via a namespace (and not attached):
 [148] tidydr_0.0.6            later_1.4.8             viridisLite_0.4.3      
 [151] aplot_0.3.1             memoise_2.0.1           cluster_2.1.8.2        
 [154] timechange_0.4.0       </code></pre>
-</div>
 </div>
 </div>
 </div>

@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree504d478ac3660fe281b4617a910cf27757670c5btargetblank504d478a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree8fb42b09f6feb112cecddb7ecf34121b887eedb4targetblank8fb42b0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/504d478ac3660fe281b4617a910cf27757670c5b" target="_blank">504d478</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/8fb42b09f6feb112cecddb7ecf34121b887eedb4" target="_blank">8fb42b0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree504d478ac3660fe281b4617a910cf27757670c5btargetblank504d478a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree8fb42b09f6feb112cecddb7ecf34121b887eedb4targetblank8fb42b0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/504d478ac3660fe281b4617a910cf27757670c5b" target="_blank">504d478</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/8fb42b09f6feb112cecddb7ecf34121b887eedb4" target="_blank">8fb42b0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -600,6 +600,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/8fb42b09f6feb112cecddb7ecf34121b887eedb4/analysis/RNA_PCA_Ensemble.Rmd" target="_blank">8fb42b0</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+PCA Plotting
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/42d6980a335830b5282305c61f051cdec4ac5107/docs/RNA_PCA_Ensemble.html" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1134,7 +1168,8 @@ Finalizing CorHeatMap
 </div>
 </div>
 </div>
-<p>####Unfiltered</p>
+<div id="unfiltered" class="section level4">
+<h4>Unfiltered</h4>
 <pre class="r"><code>prcomp_RNA &lt;- prcomp(t(RNA_log2cpm), scale=FALSE, center = TRUE)
 prcomp_RNA_meta &lt;- prcomp_RNA$x %&gt;% cbind(., RNA_Metadata)
 #PCA checks
@@ -1178,6 +1213,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_Unfiltered_PCA_PC1_PC2-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_Unfiltered_PCA_PC1_PC2-1.png" target="_blank">2101510</a>
@@ -1292,7 +1338,11 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>####lcpm_G1_SpTp #####All</p>
+</div>
+<div id="lcpm_g1_sptp" class="section level4">
+<h4>lcpm_G1_SpTp</h4>
+<div id="all" class="section level5">
+<h5>All</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata &lt;- RNA_Metadata
 
@@ -1341,6 +1391,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA-1.png" target="_blank">2101510</a>
@@ -1428,6 +1489,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -1513,6 +1585,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -1559,7 +1642,9 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>#####No4</p>
+</div>
+<div id="no4" class="section level5">
+<h5>No4</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4
 metadata &lt;- RNA_Metadata_No4
 
@@ -1610,6 +1695,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4-1.png" target="_blank">2101510</a>
@@ -1699,6 +1795,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -1786,6 +1893,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -1832,7 +1950,9 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>#####No4 - scale</p>
+</div>
+<div id="no4---scale" class="section level5">
+<h5>No4 - scale</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4
 metadata &lt;- RNA_Metadata_No4
 
@@ -1860,6 +1980,45 @@ Filtered RNA-Seq Log2CPM (D5 CMeso)
 log2cpm &gt;1 in 3 or more SpTp
 Scale = TRUE&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-1">
+Past versions of
+RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-1.png
+</button>
+</p>
+<div id="fig-RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
                   colour = &quot;Timepoint&quot;,
@@ -1876,6 +2035,45 @@ Filtered RNA-Seq Log2CPM (D5 CMeso)
 log2cpm &gt;1 in 3 or more SpTp
 Scale = TRUE&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-2.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-2">
+Past versions of
+RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-2.png
+</button>
+</p>
+<div id="fig-RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
                   colour = &quot;Timepoint&quot;,
@@ -1892,7 +2090,48 @@ Filtered RNA-Seq Log2CPM (D5 CMeso)
 log2cpm &gt;1 in 3 or more SpTp
 Scale = TRUE&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-3.png" alt="" width="768" style="display: block; margin: auto;" /></p>
-<p>#####No5</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-3">
+Past versions of
+RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-3.png
+</button>
+</p>
+<div id="fig-RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="no5" class="section level5">
+<h5>No5</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm_No5
 metadata &lt;- RNA_Metadata_No5
 
@@ -1942,6 +2181,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5-1.png" target="_blank">2101510</a>
@@ -2030,6 +2280,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2116,6 +2377,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2162,8 +2434,12 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>####FilterByExp</p>
-<p>#####All</p>
+</div>
+</div>
+<div id="filterbyexp" class="section level4">
+<h4>FilterByExp</h4>
+<div id="all-1" class="section level5">
+<h5>All</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_FilterByExpression_RNA_log2cpm
 metadata &lt;- RNA_Metadata
 
@@ -2212,6 +2488,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA-1.png" target="_blank">2101510</a>
@@ -2299,6 +2586,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2384,6 +2682,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2430,7 +2739,9 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>#####No4</p>
+</div>
+<div id="no4-1" class="section level5">
+<h5>No4</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_FilterByExpression_RNA_log2cpm_No4
 metadata &lt;- RNA_Metadata_No4
 
@@ -2479,6 +2790,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No4-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No4-1.png" target="_blank">2101510</a>
@@ -2566,6 +2888,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No4-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No4-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2651,6 +2984,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No4-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No4-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2697,7 +3041,9 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>#####No5</p>
+</div>
+<div id="no5-1" class="section level5">
+<h5>No5</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_FilterByExpression_RNA_log2cpm_No5
 metadata &lt;- RNA_Metadata_No5
 
@@ -2746,6 +3092,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No5-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No5-1.png" target="_blank">2101510</a>
@@ -2833,6 +3190,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No5-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No5-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2918,6 +3286,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No5-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_FilterByExpression_PCA_No5-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -2964,8 +3343,12 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>####RMG0</p>
-<p>#####All</p>
+</div>
+</div>
+<div id="rmg0" class="section level4">
+<h4>RMG0</h4>
+<div id="all-2" class="section level5">
+<h5>All</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_RMG0_RNA_log2cpm
 metadata &lt;- RNA_Metadata
 
@@ -3014,6 +3397,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA-1.png" target="_blank">2101510</a>
@@ -3101,6 +3495,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -3186,6 +3591,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -3232,7 +3648,9 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>#####No4</p>
+</div>
+<div id="no4-2" class="section level5">
+<h5>No4</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_RMG0_RNA_log2cpm_No4
 metadata &lt;- RNA_Metadata_No4
 
@@ -3281,6 +3699,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No4-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No4-1.png" target="_blank">2101510</a>
@@ -3368,6 +3797,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No4-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No4-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -3453,6 +3893,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No4-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No4-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -3499,7 +3950,9 @@ John D. Hurley
 </table>
 </div>
 </div>
-<p>#####No5</p>
+</div>
+<div id="no5-2" class="section level5">
+<h5>No5</h5>
 <pre class="r"><code>log2cpm &lt;- Filt_RMG0_RNA_log2cpm_NoD5
 metadata &lt;- RNA_Metadata_No5
 
@@ -3548,6 +4001,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No5-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No5-1.png" target="_blank">2101510</a>
@@ -3635,6 +4099,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No5-2.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No5-2.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -3720,6 +4195,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No5-3.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/2101510dacdbdc26636e00f285f746565af99d4c/docs/figure/RNA_PCA_Ensemble.Rmd/RNA_RowMean_G0_PCA_No5-3.png" target="_blank">2101510</a>
 </td>
 <td>
@@ -3793,6 +4279,43 @@ ggplot2::autoplot(prcomp_log2cpm ,
 Filtered RNA-Seq Log2CPM 
 l0g2cpm &gt;1 in 3 or more SpTp Scale = FALSE&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/unnamed-chunk-1-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/unnamed-chunk-1-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata &lt;- RNA_Metadata
 
@@ -3819,6 +4342,43 @@ ggplot2::autoplot(prcomp_log2cpm ,
 Filtered RNA-Seq Log2CPM 
 l0g2cpm &gt;1 in 3 or more SpTp Scale = FALSE&quot;)</code></pre>
 <p><img src="figure/RNA_PCA_Ensemble.Rmd/unnamed-chunk-2-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/42d6980a335830b5282305c61f051cdec4ac5107/docs/figure/RNA_PCA_Ensemble.Rmd/unnamed-chunk-2-1.png" target="_blank">42d6980</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
 wflow_publish(&quot;analysis/RNA_PCA_Ensemble.Rmd&quot;)</code></pre>
@@ -3913,6 +4473,8 @@ loaded via a namespace (and not attached):
 [106] bitops_1.0-9           pwalign_1.8.0          scales_1.4.0          
 [109] crayon_1.5.3           GetoptLong_1.1.1       rlang_1.3.0           
 [112] KEGGREST_1.52.2       </code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

@@ -16,11 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-# RNA Cormotif
+## RNA Cormotif
 
-## Setting up the environment
+### Setting up the environment
 
-### Loading libraries
+#### Loading libraries
 ```{r Setting_Up_Enviroment, warning=FALSE, message=FALSE}
 
 ####Library Loading####
@@ -54,7 +54,7 @@ ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_No5.RDS")
 
 ```
 
-### Defining Functions
+#### Defining Functions
 ```{r Load_CorMotif_Functions, warning=FALSE, message=FALSE}
 #Run the Function corMotifcustom.R
 
@@ -300,13 +300,10 @@ plot_cluster_absfc_sig_species <- function(gene_vector, cluster_name, top_table)
 
 ```
 
-## No Day 4
 
-### Trajectory
+### Modeling on Laptop
 
-#### Modeling on Laptop
-
-##### Data Preparation
+#### Data Preparation
 ```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer,fig.height=8,fig.width=15}
 counts <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
@@ -362,7 +359,7 @@ compid <- rbind(
 # saveRDS(motif.fitted,"data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS")
 ```
 
-##### Graphing
+#### Graphing
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_Modeling_computer_plot,fig.height=8,fig.width=15}
 motif.fit <- readRDS("data/Cormotif/Trajectory/TrajectoryMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS")
@@ -383,9 +380,9 @@ legend(
 
 ```
 
-#### Modeling on TACC
+### Modeling on TACC
 
-##### RScript
+#### RScript
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_Rscript,fig.height=8,fig.width=15}
 
@@ -475,7 +472,7 @@ legend(
 
 ```
 
-##### Graphing
+#### Graphing
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
@@ -494,7 +491,7 @@ legend(
 
 ```
 
-##### PPost
+#### PPost
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_PPost}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
@@ -591,7 +588,7 @@ gene_prob_ppost %>%
 
 ```
 
-##### Cluster Assignments
+#### Cluster Assignments
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_No4.rds")
@@ -771,7 +768,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 
-##### EnrichGo
+#### EnrichGo
 
 ```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_GoProfiler}
 
@@ -1220,9 +1217,9 @@ pheatmap(
 
 
 ```
-#### TMM on TACC
+### TMM on TACC
 
-##### RScript
+#### RScript
 
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_Rscript,fig.height=8,fig.width=15}
 
@@ -1332,7 +1329,7 @@ pheatmap(
 
 ```
 
-##### Graphing
+#### Graphing
 
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
@@ -1351,7 +1348,7 @@ legend(
 
 ```
 
-##### PPost
+#### PPost
 
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_PPost}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
@@ -1448,7 +1445,7 @@ gene_prob_ppost %>%
 
 ```
 
-##### Cluster Assignments
+#### Cluster Assignments
 
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign}
 motif.fit <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
@@ -1640,7 +1637,7 @@ print(overlap_matirx <- check_overlap(clust_names_list))
 
 ```
 
-##### EnrichGo
+#### EnrichGo
 
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler2}
 

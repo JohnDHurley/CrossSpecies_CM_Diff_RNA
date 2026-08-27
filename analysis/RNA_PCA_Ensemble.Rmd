@@ -1,6 +1,9 @@
 ---
 title: "RNA_PCA"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 date: "2026-01-22"
 ---
 
@@ -66,7 +69,7 @@ Filt_FilterByExpression_RNA_log2cpm_No5 <-readRDS("data/QC/concat/Filt_FilterByE
 
 ```
 
-####Unfiltered
+#### Unfiltered
 
 ```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
 prcomp_RNA <- prcomp(t(RNA_log2cpm), scale=FALSE, center = TRUE)
@@ -92,8 +95,10 @@ Unfiltered RNA-Seq Log2CPM")
 
 ```
 
-####lcpm_G1_SpTp
-#####All
+#### lcpm_G1_SpTp
+
+##### All
+
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm
@@ -154,7 +159,7 @@ l0g2cpm >1 in 3 or more SpTp")
 
 ```
 
-#####No4
+##### No4
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No4
@@ -218,7 +223,7 @@ Scale = FALSE")
 
 ```
 
-#####No4 - scale
+##### No4 - scale
 
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_scaleTRUE, fig.height=6,fig.width=8}
 
@@ -283,7 +288,7 @@ Scale = TRUE")
 
 ```
 
-#####No5
+##### No5
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5, fig.height=6,fig.width=8}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm_No5
@@ -343,9 +348,9 @@ Filtered RNA-Seq Log2CPM (D4 CMeso)
 l0g2cpm >1 in 3 or more SpTp")
 ```
 
-####FilterByExp
+#### FilterByExp
 
-#####All
+##### All
 
 ```{r RNA_FilterByExpression_PCA, fig.height=6,fig.width=8}
 
@@ -407,7 +412,7 @@ EdgeR FilterByExpression")
 
 ```
 
-#####No4
+##### No4
 
 ```{r RNA_FilterByExpression_PCA_No4, fig.height=6,fig.width=8}
 
@@ -470,7 +475,7 @@ EdgeR FilterByExpression - Day 5 CMeso")
 ```
 
 
-#####No5
+##### No5
 
 ```{r RNA_FilterByExpression_PCA_No5, fig.height=6,fig.width=8}
 
@@ -533,9 +538,9 @@ EdgeR FilterByExpression - Day 4 CMeso")
 
 ```
 
-####RMG0
+#### RMG0
 
-#####All
+##### All
 
 ```{r RNA_RowMean_G0_PCA, fig.height=6,fig.width=8}
 
@@ -597,7 +602,7 @@ RMG0")
 
 ```
 
-#####No4
+##### No4
 
 ```{r RNA_RowMean_G0_PCA_No4, fig.height=6,fig.width=8}
 
@@ -660,7 +665,7 @@ RMG0 - Day 5 CMeso")
 ```
 
 
-#####No5
+##### No5
 
 ```{r RNA_RowMean_G0_PCA_No5, fig.height=6,fig.width=8}
 

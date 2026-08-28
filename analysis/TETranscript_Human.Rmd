@@ -1,5 +1,5 @@
 ---
-title: "TETranscript"
+title: "TETranscript_Human"
 output:
   html_document:
     toc: true
@@ -3154,6 +3154,6 @@ pheatmap(
 
 # git -> commit all changes
 # git -> push
-wflow_publish("analysis/TETranscript.Rmd")
+wflow_publish("analysis/TETranscript_Human.Rmd")
 
 ```

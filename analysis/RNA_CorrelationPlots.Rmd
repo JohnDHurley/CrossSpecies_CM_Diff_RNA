@@ -2053,7 +2053,7 @@ trajectory_comparisons <- c(
 matched_DEGs <- get_matched_degs(
   TopTable = TopTable,
   transitions = trajectory_comparisons,
-  genes_to_include =  TF_list
+  genes_to_include =  KZFPs_list
 )
 
 saveRDS(matched_DEGs,"data/DGE/KZFP_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")

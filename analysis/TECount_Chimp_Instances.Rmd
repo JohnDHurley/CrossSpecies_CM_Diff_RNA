@@ -1,0 +1,2003 @@
+---
+title: "TECount_Chimp_Instances"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+date: "2026-08-18"
+---
+
+
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+## TE Expression
+
+### Setting environment
+
+#### Loading libraries
+
+```{r Enviroment Set Up, }
+#loading libraries
+library("tidyverse")
+library("rmarkdown")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+library("ggalluvial")
+library("tibble")
+library("pheatmap")
+library("Cormotif")
+library("workflowr")
+library("ComplexHeatmap")
+
+# BiocManager::install("ggalluvial")
+
+```
+
+#### Defining functions
+
+```{r FischerTest_OddsRation_plotting}
+plot_OR <- function(results, group_to_plot, ylim = c(-2, 2)) {
+
+  plot_data <- results %>%
+    filter(Comparison_Group %in% group_to_plot) %>%
+    mutate(
+      label = ifelse(FDR < 0.05, "*", ""),
+      log2_OR = log2(Odds_Ratio)
+    )
+
+  ggplot(plot_data, aes(Comparison, Odds_Ratio)) +
+    geom_point(size = 3) +
+    geom_text(
+      aes(label = label),
+      vjust = -1
+    ) +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    coord_cartesian(ylim = ylim) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+}
+
+#FischerTest_fate_OddsRation_plotting
+
+plot_Fate_OR <- function(results, ylim = c(0, 2)) {
+
+  plot_data <- results %>%
+    mutate(
+      label = ifelse(FDR < 0.05, "*", ""),
+      log2_OR = log2(Odds_Ratio)
+    )
+
+  ggplot(plot_data, aes(x = Comparison, y = Odds_Ratio)) +
+    geom_point(size = 3) +
+    geom_text(
+      aes(label = label),
+      vjust = -1
+    ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed"
+    ) +
+    facet_wrap(~Fate) +
+    coord_cartesian(ylim = ylim) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    ) +
+    labs(
+      x = "HvC developmental comparison",
+      y = "Odds Ratio",
+      title = "KZFP enrichment by HvC DEG fate"
+    )
+}
+
+#Volcano_Plot_Function
+
+generate_volcano_plot <- function(toptable, title) {
+  
+  # #check for entrezid 
+  # if(!"Entrez_ID" %in% colnames(toptable)) stop("Entrez_ID col not present")
+  # 
+  #make significance labels
+  
+  toptable <- toptable %>% 
+    mutate(Significance = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE  ~ "Not Significant"
+    ))
+  
+  #factor significance
+  toptable$Significance <- factor(
+    toptable$Significance, 
+    levels = c("Upregulated", 
+               "Not Significant", 
+               "Downregulated")
+  )
+  
+  #count genes in each category
+  upgenes <- sum(toptable$Significance == "Upregulated")
+  nsgenes <- sum(toptable$Significance == "Not Significant")
+  downgenes <- sum(toptable$Significance == "Downregulated")
+  
+  
+  #labels for legend
+  legend_lab <- c(
+    paste0("Upregulated: ", upgenes),
+    paste0("Not Significant: ", nsgenes),
+    paste0("Downregulated: ", downgenes)
+  )
+  
+  #colors 
+  color_map <- c("Upregulated" = "blue",
+                 "Not Significant" = "grey30",
+                 "Downregulated" = "red")
+  
+  #generate volcano plots
+  p <- ggplot(toptable, aes(x = logFC, 
+                            y = -log10(P.Value),
+                            color = Significance)) +
+    geom_point_rast(alpha = 0.8, size = 3) +
+    scale_color_manual(values = color_map, 
+                       labels = legend_lab,
+                       breaks = c("Upregulated",
+                                  "Not Significant", 
+                                  "Downregulated"))  +
+    xlim(-20,20) +
+    labs(title = title, 
+         x = expression("log"[2]*"FC"),
+         y = expression("-log"[10]*"p-value")) +
+    # theme_custom() +
+    theme(legend.position = "right")
+  
+  return(p)
+}
+
+#FC_Plot_Function_sig_trajectory
+
+plot_cluster_fc_sig_trajectory <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day4_vs_Day2","Day5_vs_Day4","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#FC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_fc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(logFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$logFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = logFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("logFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG FC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(-2, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#absFC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_absfc_sig_trajectory <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day4_vs_Day2","Day5_vs_Day4","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(absFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("absFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG absFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+#absFC_Plot_Function_sig_trajectory_No4
+
+plot_cluster_absfc_sig_trajectory_No4 <- function(gene_vector, cluster_name, top_table) {
+
+  df <- top_table %>%
+    dplyr::filter(Gene %in% gene_vector) %>%
+    mutate(Comparisons = factor(Comparisons, levels = c(
+      "Day2_vs_Day0","Day5_vs_Day2","Day15_vs_Day5","Day30_vs_Day15"
+    )))
+
+  cat(cluster_name, ":", nrow(df), "rows,",
+      length(unique(df$Gene)), "unique genes\n")
+
+  # ✅ Skip if no data
+  if (nrow(df) == 0) {
+    message(cluster_name, ": no data — skipping")
+    return(NULL)
+  }
+
+  # ✅ Skip if only one comparison present
+  if (length(unique(df$Comparisons)) < 2) {
+    message(cluster_name, ": only one comparison — skipping stats")
+    return(NULL)
+  }
+
+  # Stats
+  kw <- kruskal.test(absFC ~ Comparisons, data = df)
+
+  pw_kw <- pairwise.wilcox.test(
+    df$absFC,
+    df$Comparisons,
+    p.adjust.method = "BH"
+  )
+
+  print(pw_kw)
+
+  p <- ggplot(df, aes(x = Comparisons, y = absFC)) +
+    geom_boxplot(aes(fill = Comparisons)) +
+    theme_bw() +
+    xlab(" ") +
+    ylab("absFC") +
+    ggtitle(
+      paste0(
+        cluster_name,
+        " Trajectroy DEG absFC Comparisons\nKruskal–Wallis p = ",
+        signif(kw$p.value, 3)
+      )
+    ) +
+    coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      plot.title = element_text(size = rel(1.3), hjust = 0.5),
+      axis.title = element_text(size = 15),
+      axis.text.x = element_text(size = 8, angle = 15)
+    )
+
+  return(p)
+}
+
+
+#get_directional_genes_HvC1
+
+get_fc_directions <- function(traj_label, coef_name, comparison_label,
+                                 top_table_all, fit_obj, p_cutoff = 0.05) {
+
+  # ---------------------------
+  # DE genes
+  # ---------------------------
+  tt <- topTable(fit_obj, coef = coef_name, number = Inf)
+
+  sig_tt <- tt %>%
+    dplyr::filter(adj.P.Val < p_cutoff) %>%
+    tibble::rownames_to_column("Gene") %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # Trajcetory FC data
+  # ---------------------------
+  df_fc <- top_table_all %>%
+    dplyr::filter(Comparisons == comparison_label) %>%
+    dplyr::distinct(Gene, .keep_all = TRUE)
+
+  # ---------------------------
+  # classify direction
+  # ---------------------------
+  df_combo <- df_fc %>%
+  dplyr::inner_join(sig_tt, by = "Gene") %>%
+  dplyr::mutate(
+    direction = dplyr::case_when(
+      logFC.x > 0 ~ "Increased",
+      logFC.x < 0 ~ "Decreased",
+      TRUE ~ "No_Change"
+    ),
+    magnitude = abs(logFC.x)
+  )
+
+  # ---------------------------
+  # output
+  # ---------------------------
+  list(
+    all = df_combo,
+    Increased = dplyr::filter(df_combo, direction == "Increased"),
+    Decreased = dplyr::filter(df_combo, direction == "Decreased"),
+    n_sig = nrow(sig_tt)
+  )
+}
+```
+
+#### Data Upload
+
+```{r TopTable_Symbols}
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+# Extract Ensembl IDs for every row
+ens_ids <- sub("\\..*$", "", TopTable$Gene)
+
+# Make a lookup table
+symbol_map <- mapIds(
+    org.Hs.eg.db,
+    keys = unique(ens_ids),
+    column = "SYMBOL",
+    keytype = "ENSEMBL",
+    multiVals = "first"
+)
+
+TopTable$Symbol <- unname(symbol_map[ens_ids])
+
+# saveRDS(TopTable,"data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+```
+
+### Instances_Table
+
+#### Count Tables
+
+```{r Chimp_TE_Instances_Expression_Data_Upload}
+sample_names <- readLines("data/TEs/TECount_Instances/chimp_samples.txt")
+
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- RNA_Metadata %>%
+  filter(Species == "C")
+
+# Read all TEinstance files
+count_tables <- lapply(sample_names, function(sample) {
+
+  counts <- read.table(
+    paste0(
+      "data/TEs/TECount_Instances/",
+      sample,
+      ".TEinstance_counts.txt"
+    ),
+    header = TRUE,
+    row.names = 1,
+    check.names = FALSE
+  )
+
+  # Keep annotations + count
+  counts <- counts[, 1:5, drop = FALSE]
+
+  # Rename the count column to the sample name
+  colnames(counts)[5] <- sample
+
+  counts
+})
+
+# Start with annotations + first sample
+combined_counts_Chimp_annotated <- count_tables[[1]]
+
+# Add only the count column from each remaining sample
+for (i in 2:length(count_tables)) {
+
+  combined_counts_Chimp_annotated <- merge(
+    combined_counts_Chimp_annotated,
+    count_tables[[i]][, 5, drop = FALSE],
+    by = "row.names",
+    all = TRUE
+  )
+
+  rownames(combined_counts_Chimp_annotated) <- combined_counts_Chimp_annotated$Row.names
+  combined_counts_Chimp_annotated$Row.names <- NULL
+}
+
+saveRDS(combined_counts_Chimp_annotated,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+
+
+dim(combined_counts_Chimp_annotated)
+head(combined_counts_Chimp_annotated)
+colnames(combined_counts_Chimp_annotated)
+
+setequal(
+  colnames(combined_counts_Chimp_annotated)[5:ncol(combined_counts_Chimp_annotated)],
+  sample_names
+)
+
+
+```
+
+
+#### Filtering Steps
+
+##### Log2cpm G1 >= 4 individuals in >= 1SpTp
+
+```{r Chimp_TECount_Instances_Filtering}
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata_full <- metadata_combined  %>% 
+    filter(Species == "C")
+
+fc_full <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+
+print("Number of Repeats")
+length(unique(rownames(fc_full)))
+
+##---------------------##
+##---------tes---------##
+##---------------------##
+
+fc <- fc_full %>%
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
+  dplyr::select(-matches("gene_id|family_id|class_id|strand"))
+
+fc_annotated <- fc_full %>%
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id))
+
+colnames(fc)[match(metadata_full$Library_ID, colnames(fc))] <-metadata_full$SampleName
+
+saveRDS(fc,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+
+print("Number of TEs (LINE|SINE|LTR|DNA|Retroposon)")
+length(unique(rownames(fc)))
+
+fc_filtering <- fc %>%
+  dplyr::select(-contains("R"))
+
+cpm_values <- edgeR::cpm(
+  fc_filtering,
+  log = FALSE
+)
+
+metadata <- metadata_full %>%
+    dplyr::select(-contains("R"))
+
+group <- metadata$Cond
+
+keep <- apply(cpm_values > 2, 1, function(x) {
+  any(tapply(x, group, sum) >= 4)
+})
+
+fc_filtered <- fc_annotated[keep, ]
+
+saveRDS(fc_filtered,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+
+fc_filtered <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+
+print("Number of TEs after expression filtering")
+length(unique(rownames(fc_filtered)))
+
+##---------------------##
+##-------tes_no4-------##
+##---------------------##
+
+
+metadata <- metadata_full %>%
+    filter(Timepoint != "Day4")
+
+fc <- fc_full %>%
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
+  dplyr::select(-matches("gene_id|family_id|class_id|strand")) %>%
+  dplyr::select(-contains("_Day4"))
+
+fc_annotated <- fc_full %>%
+  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
+  dplyr::select(-contains("_Day4"))
+
+colnames(fc)[match(metadata_full$Library_ID, colnames(fc))] <-metadata_full$SampleName
+
+colnames(fc_annotated)[match(metadata_full$Library_ID, colnames(fc_annotated))] <-metadata_full$SampleName
+
+saveRDS(fc_annotated,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_No4_annotated.RDS")
+
+fc_annotated <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_No4_annotated.RDS")
+
+print("Number of TEs (LINE|SINE|LTR|DNA|Retroposon) No Day 4")
+length(unique(rownames(fc_annotated)))
+
+fc_filtering <- fc %>%
+  dplyr::select(-contains("R"))
+
+cpm_values <- edgeR::cpm(
+  fc_filtering,
+  log = FALSE
+)
+
+metadata <- metadata_full %>%
+    dplyr::select(-contains("R"))
+
+group <- metadata$Cond
+
+keep <- apply(cpm_values > 2, 1, function(x) {
+  any(tapply(x, group, sum) >= 4)
+})
+
+fc_filtered <- fc_annotated[keep, ]
+
+saveRDS(fc_filtered,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered_annotated.RDS")
+
+fc_filtered <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered_annotated.RDS")
+
+print("Number of TEs after expression filtering excluding day 4")
+length(unique(rownames(fc_filtered)))
+
+```
+
+#### TEs
+
+##### Stats
+
+###### All days
+
+```{r Chimp_TECount_Instances_Filtering_3}
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+length(rownames(fc))
+
+cpm <- cpm(fc,log=FALSE)
+
+log2cpm <- cpm(fc,log=TRUE)
+
+col_labels <- metadata$SampleName
+
+boxplot(fc, main = "Boxplots of Chimp count of TE RepNames",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(cpm, main = "Boxplots of Chimp cpm of TE RepNames",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(log2cpm, main = "Boxplots of Chimp Log2cpm of TE RepNames",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+```
+
+###### All filtered
+
+```{r Chimp_TECount_Instances_Filtering_3}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+fc <- fc %>% 
+  dplyr::select(-matches("gene_id|family_id|class_id|strand"))
+  
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+cpm <- cpm(fc,log=FALSE)
+
+log2cpm <- cpm(fc,log=TRUE)
+
+col_labels <- metadata$SampleName
+
+boxplot(fc, main = "Boxplots of Chimp count of TE RepNames\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(cpm, main = "Boxplots of Chimp cpm of TE RepNames\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(log2cpm, main = "Boxplots of Chimp Log2cpm of TE RepNames\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+###### No day 4
+
+```{r Chimp_TECount_Instances_Filtering_3}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4.RDS")
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C") %>% 
+    filter(Timepoint != "Day4")
+
+cpm <- cpm(fc,log=FALSE)
+
+log2cpm <- cpm(fc,log=TRUE)
+
+col_labels <- metadata$SampleName
+
+boxplot(fc, main = "Boxplots of Chimp count of TE RepName\nNo Day4",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(cpm, main = "Boxplots of Chimp cpm of TE RepNames\nNo Day4",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(log2cpm, main = "Boxplots of Chimp Log2cpm of TE RepNames\nNo Day4",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames\nNo Day4",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+###### No 4 filtered
+
+```{r Chimp_TECount_Instances_Filtering_3}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered_annotated.RDS")
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+
+fc <- fc %>% 
+  dplyr::select(-matches("gene_id|family_id|class_id|strand"))
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C") %>% 
+    filter(Timepoint != "Day4")
+
+cpm <- cpm(fc,log=FALSE)
+
+log2cpm <- cpm(fc,log=TRUE)
+
+col_labels <- metadata$SampleName
+
+boxplot(fc, main = "Boxplots of Chimp count of TE RepNames\nNo Day4\ - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp",xaxt = "n", xlab= "", ylim = c(0,1000))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+boxplot(cpm, main = "Boxplots of Chimp cpm of TE RepNames\nNo Day4 - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp",xaxt = "n", xlab= "", ylim = c(0,500))
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+boxplot(log2cpm, main = "Boxplots of Chimp Log2cpm of TE RepNames\nNo Day4 - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames\nNo Day4 - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+```
+
+##### Cor_HeatMap
+
+###### All days
+
+```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+colnames(fc) <- metadata$SampleName[
+  match(colnames(fc), metadata$Library_ID)
+]
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TE Instances Sample-Sample Correlation"
+)
+
+```
+
+###### All filtered
+
+```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+
+fc <- fc %>% 
+  dplyr::select(-matches("gene_id|family_id|class_id|strand"))
+
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+colnames(fc) <- metadata$SampleName[
+  match(colnames(fc), metadata$Library_ID)
+]
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp TE Instances Sample-Sample Correlation\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp"
+)
+
+```
+
+###### No day 4
+
+```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_No4.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C") %>% 
+    filter(Timepoint != "Day4")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+colnames(fc) <- metadata$SampleName[
+  match(colnames(fc), metadata$Library_ID)
+]
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp Repname TEs Sample-Sample Correlation\nNo Day4"
+)
+
+```
+
+###### No 4 filtered
+
+```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C") %>% 
+    filter(Timepoint != "Day4")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+colnames(fc) <- metadata$SampleName[
+  match(colnames(fc), metadata$Library_ID)
+]
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+library(RColorBrewer)
+
+my_breaks <- seq(0.9, 1, length.out = 101)
+my_colors <- colorRampPalette(c("darkblue","blue","lightblue", "white","salmon","red","darkred"))(100)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  color = my_colors,
+  breaks = my_breaks,
+  main = "Chimp Repname TEs Sample-Sample Correlation\nNo Day4 - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp"
+)
+
+```
+
+
+##### PCA
+
+###### All days
+
+```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(fc)) %>%
+  dplyr::slice(match(colnames(fc), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+##NoScale
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+
+
+##Scale
+
+prcomp <- prcomp(t(log2cpm), scale=TRUE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nScaled"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+###### All filtered
+
+```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(fc)) %>%
+  dplyr::slice(match(colnames(fc), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+##NoScale
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+
+
+##Scale
+
+prcomp <- prcomp(t(log2cpm), scale=TRUE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nScaled\nFiltered Log2cpm > 1\n4 Ind at least 1 SpTp"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+###### No day 4
+
+```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(fc)) %>%
+  dplyr::slice(match(colnames(fc), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+##NoScale
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nNo day 4"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+
+
+##Scale
+
+prcomp <- prcomp(t(log2cpm), scale=TRUE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nScaled\nNo day 4"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+###### No 4 filtered
+ 
+```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered.RDS")
+ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
+time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+metadata <- metadata_combined  %>% 
+    filter(Species == "C")
+
+log2cpm <- cpm(fc,log=TRUE)
+
+ann_colors$timepoint_cor <- ann_colors$timepoint_cor[time_order]
+
+metadata <- metadata %>%
+  dplyr::filter(SampleName %in% colnames(fc)) %>%
+  dplyr::slice(match(colnames(fc), SampleName)) %>%
+  dplyr::mutate(
+    Timepoint = factor(Timepoint, levels = time_order)
+  )
+
+##NoScale
+
+prcomp <- prcomp(t(log2cpm), scale=FALSE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nNo day 4 - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+
+
+##Scale
+
+prcomp <- prcomp(t(log2cpm), scale=TRUE, center=TRUE)
+prcomp_meta <- prcomp$x %>% cbind(., metadata)
+#PCA checks
+#k=1
+
+ggplot2::autoplot(
+    prcomp,
+    data = prcomp_meta,
+    colour = "Timepoint",
+    shape  = "Species",
+    size   = 4,
+    x = 1,
+    y = 2
+) +
+  scale_y_reverse() +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
+  ggrepel::geom_text_repel(
+    label = prcomp_meta$CellLine,
+    vjust = -0.5,
+    max.overlaps = 50
+  ) +
+  ggtitle(
+  "Chimp TE Expression PC1–PC2\nScaled\nNo day 4 - Filtered Log2cpm > 1\n4 Ind at least 1 SpTp"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+##### DGE
+
+```{r Chimp_TE_DGE_Differential_Data}
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered.RDS")
+
+metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+
+# counts_norep <- fc %>%
+#   dplyr::select(-(contains("R")))
+# 
+# metadata <- metadata_combined %>% 
+#   filter(Species == "C") %>%
+#   filter(Individual != "H4R")
+#   
+# 
+# metadata$dgelist <- c(rep(c("Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+# 
+# #create DGEList object
+# dge <- DGEList(counts = counts_norep)
+# dge$samples$group <- factor(metadata$dgelist)
+# dge <- calcNormFactors(dge, method = "TMM")
+# dge$samples
+# 
+saveRDS(dge,"data/TEs/TECount_Instances/Chimp/dge_chimp_TEInstances.RDS")
+
+dge <- readRDS("data/TEs/TECount_Instances/Chimp/dge_chimp_TEInstances.RDS")
+
+# dim(dge)
+# dge$samples
+# 
+# metadata$Timepoint <- factor(
+#   metadata$Timepoint,
+#   levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+# )
+# 
+# design_int <- model.matrix(
+#   ~ Timepoint,
+#   data = metadata
+# )
+# 
+# colnames(design_int)
+# colnames(design_int) <- make.names(colnames(design_int))
+# 
+saveRDS(design_int,"data/TEs/TECount_Instances/Chimp/design_chimp_TEInstances.RDS")
+
+design_int <- readRDS("data/TEs/TECount_Instances/Chimp/design_chimp_TEInstances.RDS")
+
+# # Step 1: voom first
+# v1 <- voom(dge, design_int, plot = TRUE)
+# 
+saveRDS(v1,"data/TEs/TECount_Instances/Chimp/v1_chimp_TEInstances.RDS")
+# 
+# # Step 2: estimate duplicate correlation on voom-transformed data
+# corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
+# corfit.correlation <- corfit$consensus.correlation
+# 
+# # Step 3: voom again including correlation
+# v2 <- voom(dge, design_int, plot = TRUE,
+#            block = metadata$Individual,
+#            correlation = corfit.correlation)
+# 
+saveRDS(v2,"data/TEs/TECount_Instances/Chimp/v2_chimp_TEInstances.RDS")
+# 
+# # Step 4: fit linear model
+# fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
+# fit <- eBayes(fit)
+# 
+saveRDS(fit,"data/TEs/TECount_Instances/Chimp/fit_chimp_TEInstances.RDS")
+
+v1 <- readRDS("data/TEs/TECount_Instances/Chimp/v1_chimp_TEInstances.RDS")
+
+v2 <- readRDS("data/TEs/TECount_Instances/Chimp/v2_chimp_TEInstances.RDS")
+
+fit <- readRDS("data/TEs/TECount_Instances/Chimp/fit_chimp_TEInstances.RDS")
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+day <- metadata$Timepoint
+plotDensities(v2, col = pal[as.numeric(day)], legend = FALSE)
+
+chimp_idx <- metadata$Species == "C"
+
+pal <- rainbow(length(unique(metadata$Timepoint)))
+
+
+# Chimp
+plotDensities(
+  v2[, chimp_idx],
+  col = pal[as.numeric(as.factor(metadata$Timepoint[chimp_idx]))],
+  main = "",
+  legend = FALSE,
+  axes = FALSE
+)
+
+axis(1)
+axis(2)
+mtext("log2 CPM", side = 1, line = 2)
+
+title("Chimp")
+  legend(
+      "right",
+      legend = metadata$Individual[chimp_idx],  # or Timepoint, etc.
+      col = rainbow(sum(chimp_idx)),
+      lty = 1,
+     cex = 0.7
+    )
+
+species_levels <- unique(metadata$Species)
+day_levels <- unique(metadata$Timepoint)
+
+for (sp in species_levels) {
+  for (day in day_levels) {
+
+    idx <- metadata$Species == sp &
+           metadata$Timepoint == day
+
+    if (sum(idx) > 0) {
+
+      cols <- rainbow(sum(idx))
+
+      plotDensities(
+        v2[, idx],
+        col = cols,
+        main = paste(sp, day),
+        legend = FALSE,
+        axes = FALSE
+      )
+
+      axis(1)
+      axis(2)
+      mtext("log2 CPM", side = 1, line = 2)
+
+      legend(
+        "right",
+        legend = metadata$Individual[idx],
+        col = cols,
+        lty = 1,
+        cex = 0.7
+      )
+    }
+  }
+}
+
+
+```
+
+```{r Chimp_TECount_Instances_Mode}
+fit <- readRDS("data/TEs/TECount_Instances/Chimp/fit_chimp_TEInstances.RDS")
+design_int <- readRDS("data/TEs/TECount_Instances/Chimp/design_chimp_TEInstances.RDS")
+
+
+contrast_matrix <- makeContrasts(
+  Day2_vs_Day0 = TimepointDay2,
+  Day4_vs_Day2 = TimepointDay4 - TimepointDay2,
+  Day5_vs_Day4 = TimepointDay5 - TimepointDay4,
+  Day15_vs_Day5 = TimepointDay15 - TimepointDay5,
+  Day30_vs_Day15 = TimepointDay30 - TimepointDay15,
+  levels = design_int
+)
+
+fit2 <- contrasts.fit(fit, contrast_matrix)
+fit2 <- eBayes(fit2)
+
+plotSA(fit2, main = "RNA Model")
+
+results_summary <- decideTests(fit2,
+                               adjust.method = "BH",
+                               p.value = 0.05)
+summary(results_summary)
+
+saveRDS(fit2,"data/TEs/TECount_Instances/Chimp/fit2_chimp_TEInstances.RDS")
+```
+
+```{r Chimp_TECount_Instances_TopTable}
+fit2 <- readRDS("data/TEs/TECount_Instances/Chimp/fit2_chimp_TEInstances.RDS")
+
+TopTables_names <- colnames(fit2$coefficients) 
+
+TopTable <- do.call(
+  rbind,
+  lapply(TopTables_names,function(ct) {
+    
+    tt <- topTable(
+      fit2,
+      coef = ct,
+      number = Inf,
+      sort.by = "p"
+    )
+    
+    #add identifiers
+    tt$Gene <- rownames(tt)
+    tt$Comparisons <- ct
+    
+    tt
+  })
+)
+
+ComparisonNames <- unique(TopTable$Comparisons)
+
+saveRDS(TopTable,"data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
+saveRDS(ComparisonNames,"data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+
+head(TopTable)
+```
+
+```{r Chimp_TECount_Instances_VolcancoPlots}
+
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+
+# Calculate global axis limits
+x_limits <- range(TopTable$logFC, na.rm = TRUE)
+y_limits <- range(-log10(TopTable$P.Value), na.rm = TRUE)
+
+plot <- list()
+
+for (n in ComparisonNames) {
+  data_n <- TopTable %>% 
+    dplyr::filter(Comparisons == n)
+  
+  plot[[n]] <- generate_volcano_plot(data_n, n) +
+    ggplot2::xlim(x_limits) +
+    ggplot2::ylim(y_limits)
+}
+
+# Print plots
+for (n in ComparisonNames) {
+  print(plot[[n]])
+}
+```
+
+```{r Chimp_TECount_Instances_Subsetting0.05}
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+
+RNA_sets <- map(
+  ComparisonNames,
+  ~ {
+    df <- TopTable %>%
+      filter(Comparisons == paste0(.x))
+
+    list(
+      DEGs = df %>% filter(adj.P.Val < 0.05),
+      NonDEGs = df %>% filter(adj.P.Val >= 0.05)
+    )
+  }
+)
+
+
+names(RNA_sets) <- paste0(ComparisonNames)
+
+saveRDS(RNA_sets, "data/TEs/TECount_Instances/Chimp/RNASets_chimp_TEInstances.RDS")
+```
+
+```{r Chimp_TECount_Instances_FC, fig.height=6, fig.width=10}
+
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+RNA_sets <- readRDS("data/TEs/TECount_Instances/Chimp/RNASets_chimp_TEInstances.RDS")
+
+TopTable$absFC <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Day2_vs_Day0","Day4_vs_Day2","Day5_vs_Day4","Day15_vs_Day5","Day30_vs_Day15"
+  ))
+
+Traj02_genes <- RNA_sets$Day2_vs_Day0$DEGs$Gene
+Traj24_genes <- RNA_sets$Day4_vs_Day2$DEGs$Gene
+Traj45_genes <- RNA_sets$Day5_vs_Day4$DEGs$Gene
+Traj515_genes <- RNA_sets$Day15_vs_Day5$DEGs$Gene
+Traj1530_genes <- RNA_sets$Day30_vs_Day15$DEGs$Gene
+all_exp_TEs <- unique(TopTable$Gene)
+
+length(Traj02_genes)
+length(Traj24_genes)
+length(Traj45_genes)
+length(Traj515_genes)
+length(Traj1530_genes)
+length(all_exp_TEs)
+
+cluster_lists <- list(
+ Traj02_genes  = Traj02_genes,
+  Traj24_genes  = Traj24_genes,
+  Traj45_genes  = Traj45_genes,
+  Traj515_genes  = Traj515_genes,
+  Traj1530_genes  = Traj1530_genes,
+  all_exp_TEs = all_exp_TEs
+)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_absfc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+```
+
+
+```{r Chimp_TECount_Instances_Directionality}
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+RNA_sets <- readRDS("data/TEs/TECount_Instances/Chimp/RNASets_chimp_TEInstances.RDS")
+fit2 <- readRDS("data/TEs/TECount_Instances/Chimp/fit2_chimp_TEInstances.RDS")
+
+traj_info <- list(
+  Traj02_genes = list(coef = "Day2_vs_Day0", comp = "Day2_vs_Day0"),
+  Traj24_genes = list(coef = "Day4_vs_Day2", comp = "Day4_vs_Day2"),
+  Traj24_genes = list(coef = "Day5_vs_Day4", comp = "Day5_vs_Day4"),
+  Traj515_genes = list(coef ="Day15_vs_Day5", comp = "Day15_vs_Day5"),
+Traj1530_genes = list(coef = "Day30_vs_Day15", comp = "Day30_vs_Day15")
+)
+
+direction_results <- setNames(
+  lapply(names(traj_info), function(name) {
+
+    info <- traj_info[[name]]
+
+    get_fc_directions(
+      traj_label = name,
+      coef_name = info$coef,
+      comparison_label = info$comp,
+      top_table_all = TopTable,
+      fit_obj = fit2
+    )
+
+  }),
+  names(traj_info)
+)
+
+saveRDS(direction_results, "data/TEs/TECount_Instances/Directions_chimp_TEInstances.RDS")
+
+```
+
+```{r Chimp_TECount_Instances_Directionality}
+
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+direction_results <- readRDS("data/TEs/TECount_Instances/Directions_chimp_TEInstances.RDS")
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Traj <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "Day2_vs_Day0","Day4_vs_Day2","Day5_vs_Day4","Day15_vs_Day5","Day30_vs_Day15"
+  ))
+
+aa <- unique(direction_results$Traj02_genes$all$Gene)
+ab <- unique(direction_results$Traj02_genes$Increased$Gene)
+ac <- unique(direction_results$Traj02_genes$Decreased$Gene)
+
+
+ba <- unique(direction_results$Traj24_genes$all$Gene)
+bb <- unique(direction_results$Traj24_genes$Increased$Gene)
+bc <- unique(direction_results$Traj24_genes$Decreased$Gene)
+
+ca <- unique(direction_results$Traj45_genes$all$Gene)
+cb <- unique(direction_results$Traj45_genes$Increased$Gene)
+cc <- unique(direction_results$Traj45_genes$Decreased$Gene)
+
+da <- unique(direction_results$Traj515_genes$all$Gene)
+db <- unique(direction_results$Traj515_genes$Increased$Gene)
+dc <- unique(direction_results$Traj515_genes$Decreased$Gene)
+
+
+
+ea <- unique(direction_results$Traj1530_genes$all$Gene)
+eb <- unique(direction_results$Traj1530_genes$Increased$Gene)
+ec <- unique(direction_results$Traj1530_genes$Decreased$Gene)
+
+
+cluster_lists <- list(
+  Traj02_All = aa,
+  Traj02_Increased = ab,
+  Traj02_Decrease = ac,
+
+  
+  Traj24_All = ba,
+  Traj24_Increased = bb,
+  Traj24_Decrease = bc,
+
+  Traj45_All = ca,
+  Traj45_Increased = cb,
+  Traj45_Decrease = cc,
+  
+  Traj515_All = da,
+  Traj515_HumanPos = db,
+  Traj515_Decrease = dc,
+
+ 
+  Traj1530_All = ea,
+  Traj1530_Increased = eb,
+  Traj1530_Decrease = ec
+
+)
+
+
+cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+  plot_cluster_fc_sig_trajectory(cluster_lists[[clust_name]], clust_name, TopTable_Traj)
+})
+
+names(cluster_plots) <- names(cluster_lists)
+
+for (p in cluster_plots) print(p)
+
+
+```
+
+```{r Chimp_TECount_Instances_Directionality_results}
+
+direction_results <- readRDS("data/TEs/TECount_Instances/Directions_chimp_TEInstances.RDS")
+
+direction_results <- lapply(direction_results, function(x) {
+  
+  x[c("all", "Increased", "Decreased")] <- lapply(
+    x[c("all", "Increased", "Decreased")],
+    function(df) {
+      tidyr::separate(
+        df,
+        Gene,
+        into = c("TE_Name", "TE_Family", "TE_Class"),
+        sep = ":",
+        remove = FALSE
+      )
+    }
+  )
+  
+  x
+})
+
+
+direction_all <- lapply(direction_results, `[[`, "all")
+
+direction_all <- dplyr::bind_rows(
+  direction_all,
+  .id = "Trajectory"
+)
+
+class_proportions_all <- direction_all %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj24_genes",
+        "Traj45_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions_all,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+
+class_proportions <- direction_all %>%
+  filter(direction == "Increased") %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj24_genes",
+        "Traj45_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of Increased TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+
+
+class_proportions <- direction_all %>%
+  filter(direction == "Decreased") %>%
+  dplyr::count(Trajectory, TE_Class) %>%
+  group_by(Trajectory) %>%
+  mutate(Proportion = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Trajectory = factor(
+      Trajectory,
+      levels = c(
+        "Traj02_genes",
+        "Traj24_genes",
+        "Traj45_genes",
+        "Traj515_genes",
+        "Traj1530_genes"
+      )
+    )
+  )
+
+ggplot(class_proportions,
+       aes(x = Trajectory, y = Proportion, fill = TE_Class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of Decreased TE DEGs",
+    fill = "TE Class"
+  ) +
+  theme_classic()
+```
+
+
+```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/TECount_Chimp_Instances.Rmd")
+
+```

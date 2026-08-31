@@ -4825,11 +4825,20 @@ library(ggplot2)
 traj <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
           "C_Day02","C_Day25","C_Day515","C_Day1530")
 
+Trajectory_degs <- TopTable %>%
+  filter(Comparisons %in% traj) %>%
+  filter(adj.P.Val < 0.05)
+
+Trajectory_degs_list <- unique(Trajectory_degs$Gene)
+
+
+  
 # ----------------------------
 # 2. Prepare long data
 # ----------------------------
 df <- TopTable %>%
   filter(Comparisons %in% traj) %>%
+  filter(Gene %in% Trajectory_degs_list) %>% 
   mutate(
     Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
     Stage = str_extract(Comparisons, "Day[0-9]+"),
@@ -4867,13 +4876,100 @@ plot_df <- df_deg %>%
 ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
   geom_boxplot(fill = "grey80", color = "black") +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  coord_cartesian(ylim = c(0, 2)) +
+  coord_cartesian(ylim = c(0, 1.5)) +
   theme_bw() +
   labs(
     x = "Developmental Stage",
     y = "|H logFC − C logFC|",
     title = "Species divergence across all Trajectory DEGs"
   )
+
+# ----------------------------
+# 4. KEEP ALL DEGs (union)
+# ----------------------------
+df_deg <- df_wide %>%
+  filter(DEG_Human & DEG_Chimp)
+
+# ----------------------------
+# 5. Compute divergence
+# ----------------------------
+plot_df <- df_deg %>%
+  mutate(
+    diff_logFC = abs(logFC_Human - logFC_Chimp),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+# ----------------------------
+# 6. Plot
+# ----------------------------
+ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
+  geom_boxplot(fill = "grey80", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(0, 1.5)) +
+  theme_bw() +
+  labs(
+    x = "Developmental Stage",
+    y = "|H logFC − C logFC|",
+    title = "Species divergence across Shared Trajectory DEGs"
+  )
+
+# ----------------------------
+# 4. KEEP ALL DEGs (union)
+# ----------------------------
+df_deg <- df_wide %>%
+  filter((DEG_Human & !DEG_Chimp) | (!DEG_Human & DEG_Chimp))
+
+# ----------------------------
+# 5. Compute divergence
+# ----------------------------
+plot_df <- df_deg %>%
+  mutate(
+    diff_logFC = abs(logFC_Human - logFC_Chimp),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+# ----------------------------
+# 6. Plot
+# ----------------------------
+ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
+  geom_boxplot(fill = "grey80", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(0, 1.5)) +
+  theme_bw() +
+  labs(
+    x = "Developmental Stage",
+    y = "|H logFC − C logFC|",
+    title = "Species divergence across Specific Trajectory DEGs"
+  )
+
+# ----------------------------
+# 4. KEEP ALL DEGs (union)
+# ----------------------------
+df_deg <- df_wide 
+
+# ----------------------------
+# 5. Compute divergence
+# ----------------------------
+plot_df <- df_deg %>%
+  mutate(
+    diff_logFC = abs(logFC_Human - logFC_Chimp),
+    Stage = factor(Stage, levels = c("Day02","Day25","Day515","Day1530"))
+  )
+
+# ----------------------------
+# 6. Plot
+# ----------------------------
+ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
+  geom_boxplot(fill = "grey80", color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(0, 1.5)) +
+  theme_bw() +
+  labs(
+    x = "Developmental Stage",
+    y = "|H logFC − C logFC|",
+    title = "Species divergence across All Expressed"
+  )
+
 ```
 
 ```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_Divergence_RLCOMP_G1_4SpTp_No4}
@@ -6060,6 +6156,42 @@ timepoints <- c("Day02","Day25","Day515","Day1530")
 
 df <- TopTable %>%
   filter(str_detect(Comparisons, "^H_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.05
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day02  = df %>% filter(Time == "Day02")  %>% pull(Gene) %>% unique(),
+  Day25  = df %>% filter(Time == "Day25")  %>% pull(Gene) %>% unique(),
+  Day515  = df %>% filter(Time == "Day515")  %>% pull(Gene) %>% unique(),
+  Day1530 = df %>% filter(Time == "Day1530") %>% pull(Gene) %>% unique()
+)
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day02","Day25","Day515","Day1530")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^C_Day")) %>%
   mutate(
     Time = str_extract(Comparisons, "Day[0-9]+"),
     DEG = adj.P.Val < 0.05

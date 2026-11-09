@@ -2625,12 +2625,46 @@ for (p in cluster_plots) print(p)
 
 ###### Proportion Plots
 
-```{r Chimp_TE_Expression_Directionality_results}
+###### Proportion Plots
 
-class_plot <- plot_TE_proportions( "data/TEs/TE_Expression/Chimp/Directions_Chimp_tes_no4.RDS", level = "TE_Class" ) 
+```{r Human_TE_Expression_Directionality_results}
 
-class_plot
+direction_TEs <- readRDS("data/TEs/TE_Expression/Chimp/Directions_Chimp_tes_no4.RDS") 
 
+colors <- c("DNA" ="darkblue" ,
+            "DNA?" = "lightblue",
+            "LINE" = "red",
+            "LTR" = "darkgreen",
+            "LTR?" = "lightgreen",
+            "Retrposon" = "yellow",
+            "SINE" = "purple")
+```
+
+```{r Human_TE_Expression_Directionality_results}
+plot_TE_proportions(
+  "data/TEs/TE_Expression/Chimp/Directions_Chimp_tes_no4.RDS",
+  TE_level = "TE_Class",
+  direction = c("Increased","Decreased"),
+  y_label = "Proportion of TE DEGs"
+)
+```
+
+```{r Human_TE_Expression_Directionality_results}
+plot_TE_proportions(
+  "data/TEs/TE_Expression/Chimp/Directions_Chimp_tes_no4.RDS",
+  TE_level = "TE_Class",
+  direction = "Increased",
+  y_label = "Proportion of Increased TE DEGs"
+)
+```
+
+```{r Human_TE_Expression_Directionality_results}
+plot_TE_proportions(
+  "data/TEs/TE_Expression/Chimp/Directions_Chimp_tes_no4.RDS",
+  TE_level = "TE_Class",
+  direction = "Decreased",
+  y_label = "Proportion of Decreased TE DEGs"
+)
 ```
 
 

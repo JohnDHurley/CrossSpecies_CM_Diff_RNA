@@ -1,0 +1,617 @@
+---
+title: "Timeline_qPCR"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+date: "2026-03-03"
+---
+
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+# Correlation Plotting
+
+## Setting up the environment
+
+### Loading libraries
+```{r library loading, include=FALSE, warning = FALSE, message=FALSE}
+
+#loading libraries
+library("tidyverse")
+library("readxl")
+library("readr")
+library("ggrepel")
+library("ggfortify")
+library("patchwork")
+library("eulerr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("ggVennDiagram")
+library("ggrastr")
+library("edgeR")
+library("limma")
+library("ggsignif")
+library("dplyr")
+library("purrr")
+library("ggplot2")
+library("tidyr")
+# install.packages(c("knitr", "BiocManager"))
+# BiocManager::install("org.Hs.eg.db")
+
+
+
+#Loading R Objects Other WorkflowR
+
+```
+
+### Defining functions
+
+```{r Functions, include=FALSE, warning = FALSE, message=FALSE}
+# ---------------------------------------------------------
+    # Setting up function variables
+    # ---------------------------------------------------------
+
+
+```
+
+### Importing Data
+
+```{r Data Upload, include=FALSE, warning = FALSE, message=FALSE}
+
+# qPCR_df <- read_excel("C:/Users/jdhurley/Desktop/qPCR_df.xlsx")
+# 
+# saveRDS(qPCR_df,"data/Raw_Data/qpcr_df.RDS")
+
+```
+
+## Differentiation Timeline
+
+### qPCR
+
+```{r qPCR_results, fig.width=7, fig.height=5}
+library(dplyr)
+library(ggplot2)
+
+plot_df <- qPCR_df %>%
+  mutate(
+    Species = case_when(
+      celllines == "h21792" ~ "Human",
+      celllines == "C3647" ~ "Chimpanzee"
+    ),
+    timepoint = factor(
+      timepoint,
+      levels = c("Day0", "Day1", "Day2", "Day3", "Day4", "Day5", "Day7", "Day10", "Day15")
+    )
+  )
+
+summary_df <- plot_df %>%
+  group_by(stage, gene, Species, timepoint) %>%
+  summarise(
+    mean = mean(normalization, na.rm = TRUE),
+    sem = sd(normalization, na.rm = TRUE) / sqrt(sum(!is.na(normalization))),
+    .groups = "drop"
+  )
+
+ggplot(summary_df %>% filter(stage == "pluripotency"),
+       aes(x = timepoint, y = mean,
+           color = gene,
+           linetype = Species,
+           group = interaction(gene, Species))) +
+  
+  geom_line(linewidth = 1) +
+  
+  geom_point(size = 3) +
+  
+  geom_errorbar(
+    aes(ymin = mean - sem,
+        ymax = mean + sem),
+    width = 0.1
+  ) +
+  
+  scale_linetype_manual(
+    values = c(
+      "Human" = "solid",
+      "Chimpanzee" = "dotted"
+    )
+  ) +
+  
+  labs(
+    x = "Timepoint",
+    y = expression(2^{-Delta*Delta*Cq}),
+    color = "Gene",
+    linetype = "Species"
+  ) +
+  
+  theme_classic()
+
+```
+
+```{r qPCR_results, fig.width=7, fig.height=5}
+library(dplyr)
+library(ggplot2)
+
+plot_df <- qPCR_df %>%
+  mutate(
+    Species = case_when(
+      celllines == "h21792" ~ "Human",
+      celllines == "C3647" ~ "Chimpanzee"
+    ),
+    timepoint = factor(
+      timepoint,
+      levels = c("Day0", "Day1", "Day2", "Day3", "Day4", "Day5", "Day7", "Day10", "Day15")
+    )
+  )
+
+summary_df <- plot_df %>%
+  group_by(stage, gene, Species, timepoint) %>%
+  summarise(
+    mean = mean(normalization, na.rm = TRUE),
+    sem = sd(normalization, na.rm = TRUE) / sqrt(sum(!is.na(normalization))),
+    .groups = "drop"
+  )
+
+ggplot(summary_df %>% filter(stage == "meso"),
+       aes(x = timepoint, y = mean,
+           color = gene,
+           linetype = Species,
+           group = interaction(gene, Species))) +
+  
+  geom_line(linewidth = 1) +
+  
+  geom_point(size = 3) +
+  
+  geom_errorbar(
+    aes(ymin = mean - sem,
+        ymax = mean + sem),
+    width = 0.1
+  ) +
+  
+  scale_linetype_manual(
+    values = c(
+      "Human" = "solid",
+      "Chimpanzee" = "dotted"
+    )
+  ) +
+  
+  labs(
+    x = "Timepoint",
+    y = expression(2^{-Delta*Delta*Cq}),
+    color = "Gene",
+    linetype = "Species"
+  ) +
+  
+  theme_classic()
+
+```
+
+
+```{r qPCR_results, fig.width=7, fig.height=5}
+library(dplyr)
+library(ggplot2)
+
+plot_df <- qPCR_df %>%
+  mutate(
+    Species = case_when(
+      celllines == "h21792" ~ "Human",
+      celllines == "C3647" ~ "Chimpanzee"
+    ),
+    timepoint = factor(
+      timepoint,
+      levels = c("Day0", "Day1", "Day2", "Day3", "Day4", "Day5", "Day7", "Day10", "Day15")
+    )
+  )
+
+summary_df <- plot_df %>%
+  group_by(stage, gene, Species, timepoint) %>%
+  summarise(
+    mean = mean(normalization, na.rm = TRUE),
+    sem = sd(normalization, na.rm = TRUE) / sqrt(sum(!is.na(normalization))),
+    .groups = "drop"
+  )
+
+ggplot(summary_df %>% filter(stage == "cmeso"),
+       aes(x = timepoint, y = mean,
+           color = gene,
+           linetype = Species,
+           group = interaction(gene, Species))) +
+  
+  geom_line(linewidth = 1) +
+  
+  geom_point(size = 3) +
+  
+  geom_errorbar(
+    aes(ymin = mean - sem,
+        ymax = mean + sem),
+    width = 0.1
+  ) +
+  
+  scale_linetype_manual(
+    values = c(
+      "Human" = "solid",
+      "Chimpanzee" = "dotted"
+    )
+  ) +
+  
+  labs(
+    x = "Timepoint",
+    y = expression(2^{-Delta*Delta*Cq}),
+    color = "Gene",
+    linetype = "Species"
+  ) +
+  
+  theme_classic()
+
+```
+
+
+```{r qPCR_results, fig.width=7, fig.height=5}
+library(dplyr)
+library(ggplot2)
+
+plot_df <- qPCR_df %>%
+  mutate(
+    Species = case_when(
+      celllines == "h21792" ~ "Human",
+      celllines == "C3647" ~ "Chimpanzee"
+    ),
+    timepoint = factor(
+      timepoint,
+      levels = c("Day0", "Day1", "Day2", "Day3", "Day4", "Day5", "Day7", "Day10", "Day15")
+    )
+  )
+
+summary_df <- plot_df %>%
+  group_by(stage, gene, Species, timepoint) %>%
+  summarise(
+    mean = mean(normalization, na.rm = TRUE),
+    sem = sd(normalization, na.rm = TRUE) / sqrt(sum(!is.na(normalization))),
+    .groups = "drop"
+  )
+
+ggplot(summary_df %>% filter(stage == "cardiomyocytes"),
+       aes(x = timepoint, y = mean,
+           color = gene,
+           linetype = Species,
+           group = interaction(gene, Species))) +
+  
+  geom_line(linewidth = 1) +
+  
+  geom_point(size = 3) +
+  
+  geom_errorbar(
+    aes(ymin = mean - sem,
+        ymax = mean + sem),
+    width = 0.1
+  ) +
+  
+  scale_linetype_manual(
+    values = c(
+      "Human" = "solid",
+      "Chimpanzee" = "dotted"
+    )
+  ) +
+  
+  labs(
+    x = "Timepoint",
+    y = expression(2^{-Delta*Delta*Cq}),
+    color = "Gene",
+    linetype = "Species"
+  ) +
+  
+  theme_classic()
+```
+
+
+```{r qPCR_results, fig.width=7, fig.height=5}
+library(dplyr)
+library(tidyr)
+library(ComplexHeatmap)
+library(circlize)
+library(grid)
+
+# -----------------------------
+# 1. Prepare the data
+# -----------------------------
+
+heatmap_df <- qPCR_df %>%
+  mutate(
+    Species = case_when(
+      celllines == "h21792" ~ "Human",
+      celllines == "C3647" ~ "Chimpanzee",
+      TRUE ~ NA_character_
+    ),
+    timepoint = factor(
+      timepoint,
+      levels = c(
+        "Day0", "Day1", "Day2", "Day3", "Day4",
+        "Day5", "Day7", "Day10", "Day15"
+      )
+    ),
+    stage = factor(
+      stage,
+      levels = c(
+        "pluripotency",
+        "meso",
+        "cmeso",
+        "cardiomyocytes"
+      )
+    )
+  ) %>%
+  filter(!is.na(Species), !is.na(stage))
+
+
+# -----------------------------
+# 2. Average biological replicates
+# -----------------------------
+
+heatmap_mean <- heatmap_df %>%
+  group_by(stage, gene, Species, timepoint) %>%
+  summarise(
+    normalization = mean(normalization, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+# -----------------------------
+# 3. Create H/C paired columns
+# -----------------------------
+
+heatmap_wide <- heatmap_mean %>%
+  mutate(
+    Species = recode(
+      Species,
+      "Human" = "H",
+      "Chimpanzee" = "C"
+    ),
+    column = paste(Species, timepoint)
+  ) %>%
+  dplyr::select(stage, gene, column, normalization) %>%
+  pivot_wider(
+    names_from = column,
+    values_from = normalization
+  )
+
+
+# -----------------------------
+# 4. Define desired column order
+# -----------------------------
+
+column_order <- c(
+  "H Day0",  "C Day0",
+  "H Day1",  "C Day1",
+  "H Day2",  "C Day2",
+  "H Day3",  "C Day3",
+  "H Day4",  "C Day4",
+  "H Day5",  "C Day5",
+  "H Day7",  "C Day7",
+  "H Day10", "C Day10",
+  "H Day15", "C Day15"
+)
+
+heatmap_wide <- heatmap_wide %>%
+  dplyr::select(stage, gene, all_of(column_order))
+
+
+# -----------------------------
+# 5. Create matrix
+# -----------------------------
+
+heatmap_matrix <- heatmap_wide %>%
+  dplyr::select(-stage, -gene) %>%
+  as.matrix()
+
+rownames(heatmap_matrix) <- heatmap_wide$gene
+
+
+# -----------------------------
+# 6. Row annotations
+# -----------------------------
+
+row_stage <- heatmap_wide$stage
+
+
+# -----------------------------
+# 7. Column annotations
+# -----------------------------
+
+column_species <- rep(
+  c("Human", "Chimpanzee"),
+  9
+)
+
+column_time <- rep(
+  c(
+    "Day0", "Day1", "Day2", "Day3", "Day4",
+    "Day5", "Day7", "Day10", "Day15"
+  ),
+  each = 2
+)
+
+top_annotation <- HeatmapAnnotation(
+  Species = column_species,
+  Timepoint = column_time
+)
+
+
+# -----------------------------
+# 8. Draw heatmap
+# -----------------------------
+
+ht <- Heatmap(
+  heatmap_matrix,
+
+  name = "Expression",
+
+  top_annotation = top_annotation,
+
+  row_split = row_stage,
+
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+
+  column_names_rot = 45,
+
+  col = colorRamp2(
+    c(0, 0.5, 1),
+    c("blue", "white", "red")
+  ),
+
+  border = TRUE,
+
+  row_title = NULL,
+
+  heatmap_legend_param = list(
+    title = "Normalized expression",
+    at = c(0, 0.5, 1),
+    labels = c("0", "0.5", "1")
+  )
+)
+
+draw(ht)
+
+pdf(
+  "qPCR_heatmap_D0_then_D2.pdf",
+  width = 12,
+  height = 10
+)
+
+draw(ht)
+
+dev.off()
+```
+
+```{r}
+# -----------------------------
+# 4. Define desired column order
+# -----------------------------
+
+column_order <- c(
+  "H Day0",
+  "H Day1",
+  "H Day2",
+  "H Day3",
+  "H Day4",
+  "H Day5",
+  "H Day7",
+  "H Day10",
+  "H Day15",
+  "C Day0",
+  "C Day1",
+  "C Day2",
+  "C Day3",
+  "C Day4",
+  "C Day5",
+  "C Day7",
+  "C Day10",
+  "C Day15"
+)
+
+heatmap_wide <- heatmap_wide %>%
+  dplyr::select(stage, gene, all_of(column_order))
+
+# -----------------------------
+# 5. Create matrix
+# -----------------------------
+
+heatmap_matrix <- heatmap_wide %>%
+  dplyr::select(-stage, -gene) %>%
+  as.matrix()
+
+rownames(heatmap_matrix) <- make.unique(
+  as.character(heatmap_wide$gene)
+)
+
+# -----------------------------
+# 6. Row annotations
+# -----------------------------
+
+row_stage <- heatmap_wide$stage
+
+# -----------------------------
+# 7. Column annotations
+# -----------------------------
+
+column_species <- c(
+  rep("Human", 9),
+  rep("Chimpanzee", 9)
+)
+
+column_time <- c(
+  c(
+    "Day0", "Day1", "Day2", "Day3", "Day4",
+    "Day5", "Day7", "Day10", "Day15"
+  ),
+  c(
+    "Day0", "Day1", "Day2", "Day3", "Day4",
+    "Day5", "Day7", "Day10", "Day15"
+  )
+)
+
+top_annotation <- HeatmapAnnotation(
+  Species = column_species,
+  Timepoint = column_time
+)
+
+# -----------------------------
+# 8. Draw heatmap
+# -----------------------------
+
+ht <- Heatmap(
+  heatmap_matrix,
+  name = "Expression",
+  top_annotation = top_annotation,
+  row_split = row_stage,
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  column_names_rot = 45,
+  col = colorRamp2(
+    c(0, 0.5, 1),
+    c("blue", "white", "red")
+  ),
+  border = TRUE,
+  row_title = NULL,
+  heatmap_legend_param = list(
+    title = "Normalized expression",
+    at = c(0, 0.5, 1),
+    labels = c("0", "0.5", "1")
+  )
+)
+
+draw(ht)
+
+pdf(
+  "qPCR_heatmap_H_then_C.pdf",
+  width = 12,
+  height = 10
+)
+
+draw(ht)
+
+dev.off()
+```
+
+
+
+
+
+
+
+```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/Timeline_qPCR.Rmd")
+
+```

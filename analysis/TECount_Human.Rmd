@@ -2813,22 +2813,23 @@ plot_TE_proportions <- function(
     )
   
   # Plot
-  ggplot(
-    class_proportions,
-    aes(
-      x = Trajectory,
-      y = Proportion,
-      fill = .data[[TE_level]]
-    )
+ggplot(
+  class_proportions,
+  aes(
+    x = Trajectory,
+    y = Proportion,
+    fill = .data[[TE_level]]
+  )
+) +
+  geom_col() +
+  scale_fill_manual(values = colors) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = y_label,
+    fill = TE_level
   ) +
-    geom_col() +
-    scale_y_continuous(labels = scales::percent) +
-    labs(
-      x = NULL,
-      y = y_label,
-      fill = TE_level
-    ) +
-    theme_classic()
+  theme_classic()
 }
 ```
 
@@ -2836,10 +2837,42 @@ plot_TE_proportions <- function(
 
 ```{r Human_TE_Expression_Directionality_results}
 
-class_plot <- plot_TE_proportions( "data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS", level = "TE_Class" ) 
+direction_TEs <- readRDS("data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS") 
 
-class_plot
+colors <- c("DNA" ="darkblue" ,
+            "DNA?" = "lightblue",
+            "LINE" = "red",
+            "LTR" = "darkgreen",
+            "LTR?" = "lightgreen",
+            "Retrposon" = "yellow",
+            "SINE" = "purple")
+```
 
+```{r Human_TE_Expression_Directionality_results}
+plot_TE_proportions(
+  "data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS",
+  TE_level = "TE_Class",
+  direction = c("Increased","Decreased"),
+  y_label = "Proportion of TE DEGs"
+)
+```
+
+```{r Human_TE_Expression_Directionality_results}
+plot_TE_proportions(
+  "data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS",
+  TE_level = "TE_Class",
+  direction = "Increased",
+  y_label = "Proportion of Increased TE DEGs"
+)
+```
+
+```{r Human_TE_Expression_Directionality_results}
+plot_TE_proportions(
+  "data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS",
+  TE_level = "TE_Class",
+  direction = "Decreased",
+  y_label = "Proportion of Decreased TE DEGs"
+)
 ```
 
 
@@ -2855,7 +2888,6 @@ for (p in family_plots) {
 }
 ```
 
-
 ```{r Human_TE_Expression_Directionality_results, fig.width=10, fig.height=10}
 name_plots <- plot_TE_proportions(
   "data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS",
@@ -2865,16 +2897,6 @@ name_plots <- plot_TE_proportions(
 for (p in name_plots) {
   print(p)
 }
-```
-
-
-```{r Human_TE_Expression_Directionality_results}
-plot_TE_proportions(
-  "data/TEs/TE_Expression/Human/Directions_Human_tes_no4.RDS",
-  TE_level = "TE_Class",
-  direction = "Increased",
-  y_label = "Proportion of Increased TE DEGs"
-)
 ```
 
 #### Genes

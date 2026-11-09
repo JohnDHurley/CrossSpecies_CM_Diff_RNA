@@ -493,57 +493,57 @@ RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 metadata <- RNA_Metadata %>%
   filter(Species == "C")
 
-# Read all TEinstance files
-count_tables <- lapply(sample_names, function(sample) {
-
-  counts <- read.table(
-    paste0(
-      "data/TEs/TECount_Instances/",
-      sample,
-      ".TEinstance_counts.txt"
-    ),
-    header = TRUE,
-    row.names = 1,
-    check.names = FALSE
-  )
-
-  # Keep annotations + count
-  counts <- counts[, 1:5, drop = FALSE]
-
-  # Rename the count column to the sample name
-  colnames(counts)[5] <- sample
-
-  counts
-})
-
-# Start with annotations + first sample
-combined_counts_Chimp_annotated <- count_tables[[1]]
-
-# Add only the count column from each remaining sample
-for (i in 2:length(count_tables)) {
-
-  combined_counts_Chimp_annotated <- merge(
-    combined_counts_Chimp_annotated,
-    count_tables[[i]][, 5, drop = FALSE],
-    by = "row.names",
-    all = TRUE
-  )
-
-  rownames(combined_counts_Chimp_annotated) <- combined_counts_Chimp_annotated$Row.names
-  combined_counts_Chimp_annotated$Row.names <- NULL
-}
-
-saveRDS(combined_counts_Chimp_annotated,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
-
-
-dim(combined_counts_Chimp_annotated)
-head(combined_counts_Chimp_annotated)
-colnames(combined_counts_Chimp_annotated)
-
-setequal(
-  colnames(combined_counts_Chimp_annotated)[5:ncol(combined_counts_Chimp_annotated)],
-  sample_names
-)
+# # Read all TEinstance files
+# count_tables <- lapply(sample_names, function(sample) {
+# 
+#   counts <- read.table(
+#     paste0(
+#       "data/TEs/TECount_Instances/",
+#       sample,
+#       ".TEinstance_counts.txt"
+#     ),
+#     header = TRUE,
+#     row.names = 1,
+#     check.names = FALSE
+#   )
+# 
+#   # Keep annotations + count
+#   counts <- counts[, 1:5, drop = FALSE]
+# 
+#   # Rename the count column to the sample name
+#   colnames(counts)[5] <- sample
+# 
+#   counts
+# })
+# 
+# # Start with annotations + first sample
+# combined_counts_Chimp_annotated <- count_tables[[1]]
+# 
+# # Add only the count column from each remaining sample
+# for (i in 2:length(count_tables)) {
+# 
+#   combined_counts_Chimp_annotated <- merge(
+#     combined_counts_Chimp_annotated,
+#     count_tables[[i]][, 5, drop = FALSE],
+#     by = "row.names",
+#     all = TRUE
+#   )
+# 
+#   rownames(combined_counts_Chimp_annotated) <- combined_counts_Chimp_annotated$Row.names
+#   combined_counts_Chimp_annotated$Row.names <- NULL
+# }
+# 
+# saveRDS(combined_counts_Chimp_annotated,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+# 
+# 
+# dim(combined_counts_Chimp_annotated)
+# head(combined_counts_Chimp_annotated)
+# colnames(combined_counts_Chimp_annotated)
+# 
+# setequal(
+#   colnames(combined_counts_Chimp_annotated)[5:ncol(combined_counts_Chimp_annotated)],
+#   sample_names
+# )
 
 
 ```
@@ -565,102 +565,103 @@ fc_full <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
 print("Number of Repeats")
 length(unique(rownames(fc_full)))
 
-##---------------------##
-##---------tes---------##
-##---------------------##
+# ##---------------------##
+# ##---------tes---------##
+# ##---------------------##
+# 
+# fc <- fc_full %>%
+#   filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
+#   dplyr::select(-matches("gene_id|family_id|class_id|strand"))
+# 
+# fc_annotated <- fc_full %>%
+#   filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id))
+# 
+# colnames(fc)[match(metadata_full$Library_ID, colnames(fc))] <-metadata_full$SampleName
+# 
+# saveRDS(fc,"data/TEs/TECount_Instances/Chimp/chimp_tes_fc.RDS")
+# saveRDS(fc_annotated,"data/TEs/TECount_Instances/Chimp/chimp_tes_fc_annotated.RDS")
 
-fc <- fc_full %>%
-  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
-  dplyr::select(-matches("gene_id|family_id|class_id|strand"))
-
-fc_annotated <- fc_full %>%
-  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id))
-
-colnames(fc)[match(metadata_full$Library_ID, colnames(fc))] <-metadata_full$SampleName
-
-saveRDS(fc,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
-
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc.RDS")
 
 print("Number of TEs (LINE|SINE|LTR|DNA|Retroposon)")
 length(unique(rownames(fc)))
 
-fc_filtering <- fc %>%
-  dplyr::select(-contains("R"))
+# fc_filtering <- fc %>%
+#   dplyr::select(-contains("R"))
+# 
+# cpm_values <- edgeR::cpm(
+#   fc_filtering,
+#   log = FALSE
+# )
+# 
+# metadata <- metadata_full %>%
+#     dplyr::select(-contains("R"))
+# 
+# group <- metadata$Cond
+# 
+# keep <- apply(cpm_values > 2, 1, function(x) {
+#   any(tapply(x, group, sum) >= 4)
+# })
+# 
+# fc_filtered <- fc_annotated[keep, ]
+# 
+# saveRDS(fc_filtered,"data/TEs/TECount_Instances/Chimp/chimp_tes_fc_filtered_annotated.RDS")
 
-cpm_values <- edgeR::cpm(
-  fc_filtering,
-  log = FALSE
-)
-
-metadata <- metadata_full %>%
-    dplyr::select(-contains("R"))
-
-group <- metadata$Cond
-
-keep <- apply(cpm_values > 2, 1, function(x) {
-  any(tapply(x, group, sum) >= 4)
-})
-
-fc_filtered <- fc_annotated[keep, ]
-
-saveRDS(fc_filtered,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
-
-fc_filtered <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+fc_filtered <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_filtered_annotated.RDS")
 
 print("Number of TEs after expression filtering")
 length(unique(rownames(fc_filtered)))
 
-##---------------------##
-##-------tes_no4-------##
-##---------------------##
+# ##---------------------##
+# ##-------tes_no4-------##
+# ##---------------------##
+# 
+# 
+# metadata <- metadata_full %>%
+#     filter(Timepoint != "Day4")
+# 
+# fc <- fc_full %>%
+#   filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
+#   dplyr::select(-matches("gene_id|family_id|class_id|strand")) %>%
+#   dplyr::select(-contains("_Day4"))
+# 
+# fc_annotated <- fc_full %>%
+#   filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
+#   dplyr::select(-contains("_Day4"))
+# 
+# colnames(fc)[match(metadata_full$Library_ID, colnames(fc))] <-metadata_full$SampleName
+# 
+# colnames(fc_annotated)[match(metadata_full$Library_ID, colnames(fc_annotated))] <-metadata_full$SampleName
+# 
+# saveRDS(fc_annotated,"data/TEs/TECount_Instances/Chimp/chimp_tes_fc_No4_annotated.RDS")
 
-
-metadata <- metadata_full %>%
-    filter(Timepoint != "Day4")
-
-fc <- fc_full %>%
-  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
-  dplyr::select(-matches("gene_id|family_id|class_id|strand")) %>%
-  dplyr::select(-contains("_Day4"))
-
-fc_annotated <- fc_full %>%
-  filter(grepl("LINE|SINE|LTR|DNA|Retroposon", class_id)) %>%
-  dplyr::select(-contains("_Day4"))
-
-colnames(fc)[match(metadata_full$Library_ID, colnames(fc))] <-metadata_full$SampleName
-
-colnames(fc_annotated)[match(metadata_full$Library_ID, colnames(fc_annotated))] <-metadata_full$SampleName
-
-saveRDS(fc_annotated,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_No4_annotated.RDS")
-
-fc_annotated <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_No4_annotated.RDS")
+fc_annotated <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_No4_annotated.RDS")
 
 print("Number of TEs (LINE|SINE|LTR|DNA|Retroposon) No Day 4")
 length(unique(rownames(fc_annotated)))
 
-fc_filtering <- fc %>%
-  dplyr::select(-contains("R"))
+# fc_filtering <- fc %>%
+#   dplyr::select(-contains("R"))
+# 
+# cpm_values <- edgeR::cpm(
+#   fc_filtering,
+#   log = FALSE
+# )
+# 
+# metadata <- metadata_full %>%
+#     dplyr::select(-contains("R"))
+# 
+# group <- metadata$Cond
+# 
+# keep <- apply(cpm_values > 2, 1, function(x) {
+#   any(tapply(x, group, sum) >= 4)
+# })
+# 
+# fc_filtered <- fc_annotated[keep, ]
+# 
+# saveRDS(fc_filtered,"data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4_filtered_annotated.RDS")
 
-cpm_values <- edgeR::cpm(
-  fc_filtering,
-  log = FALSE
-)
-
-metadata <- metadata_full %>%
-    dplyr::select(-contains("R"))
-
-group <- metadata$Cond
-
-keep <- apply(cpm_values > 2, 1, function(x) {
-  any(tapply(x, group, sum) >= 4)
-})
-
-fc_filtered <- fc_annotated[keep, ]
-
-saveRDS(fc_filtered,"data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered_annotated.RDS")
-
-fc_filtered <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered_annotated.RDS")
+fc_filtered <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4_filtered_annotated.RDS")
 
 print("Number of TEs after expression filtering excluding day 4")
 length(unique(rownames(fc_filtered)))
@@ -674,7 +675,7 @@ length(unique(rownames(fc_filtered)))
 ###### All days
 
 ```{r Chimp_TECount_Instances_Filtering_3}
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc.RDS")
 
 metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
@@ -719,7 +720,7 @@ hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames",
 
 ```{r Chimp_TECount_Instances_Filtering_3}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_filtered_annotated.RDS")
 
 metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
@@ -767,7 +768,7 @@ hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames\nFiltered Log2cp
 
 ```{r Chimp_TECount_Instances_Filtering_3}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4.RDS")
 
 metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
@@ -813,7 +814,7 @@ hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames\nNo Day4",
 
 ```{r Chimp_TECount_Instances_Filtering_3}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered_annotated.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4_filtered_annotated.RDS")
 
 metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
@@ -864,7 +865,7 @@ hist(log2cpm, main = "Histogram of Chimp Log2cpm of TE RepNames\nNo Day4 - Filte
 
 ```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
 
@@ -924,7 +925,7 @@ pheatmap(
 
 ```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered_annotated.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_filtered_annotated.RDS")
 
 fc <- fc %>% 
   dplyr::select(-matches("gene_id|family_id|class_id|strand"))
@@ -983,7 +984,7 @@ pheatmap(
 
 ```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_No4.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_No4.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day5", "Day15", "Day30")
 
@@ -1044,7 +1045,7 @@ pheatmap(
 
 ```{r Chimp_TECount_Instances_Cor, fig.height=10,fig.width=10}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4_filtered.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day5", "Day15", "Day30")
 
@@ -1108,7 +1109,7 @@ pheatmap(
 
 ```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
 
@@ -1197,7 +1198,7 @@ ggplot2::autoplot(
 
 ```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_filtered.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
 
@@ -1285,7 +1286,7 @@ ggplot2::autoplot(
 
 ```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
 
@@ -1373,7 +1374,7 @@ ggplot2::autoplot(
  
 ```{r Chimp_TECount_Instances_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_no4_filtered.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_no4_filtered.RDS")
 ann_colors <- readRDS("data/Raw_Data/concat/ann_Colors.RDS")
 time_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
 
@@ -1460,7 +1461,7 @@ ggplot2::autoplot(
 ##### DGE
 
 ```{r Chimp_TE_DGE_Differential_Data}
-fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_TEInstances_fc_filtered.RDS")
+fc <- readRDS("data/TEs/TECount_Instances/Chimp/chimp_tes_fc_filtered.RDS")
 
 metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 
@@ -1480,9 +1481,9 @@ metadata_combined <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
 # dge <- calcNormFactors(dge, method = "TMM")
 # dge$samples
 # 
-saveRDS(dge,"data/TEs/TECount_Instances/Chimp/dge_chimp_TEInstances.RDS")
+saveRDS(dge,"data/TEs/TECount_Instances/Chimp/dge_chimp_tes.RDS")
 
-dge <- readRDS("data/TEs/TECount_Instances/Chimp/dge_chimp_TEInstances.RDS")
+dge <- readRDS("data/TEs/TECount_Instances/Chimp/dge_chimp_tes.RDS")
 
 # dim(dge)
 # dge$samples
@@ -1500,14 +1501,14 @@ dge <- readRDS("data/TEs/TECount_Instances/Chimp/dge_chimp_TEInstances.RDS")
 # colnames(design_int)
 # colnames(design_int) <- make.names(colnames(design_int))
 # 
-saveRDS(design_int,"data/TEs/TECount_Instances/Chimp/design_chimp_TEInstances.RDS")
+saveRDS(design_int,"data/TEs/TECount_Instances/Chimp/design_chimp_tes.RDS")
 
-design_int <- readRDS("data/TEs/TECount_Instances/Chimp/design_chimp_TEInstances.RDS")
+design_int <- readRDS("data/TEs/TECount_Instances/Chimp/design_chimp_tes.RDS")
 
 # # Step 1: voom first
 # v1 <- voom(dge, design_int, plot = TRUE)
 # 
-saveRDS(v1,"data/TEs/TECount_Instances/Chimp/v1_chimp_TEInstances.RDS")
+saveRDS(v1,"data/TEs/TECount_Instances/Chimp/v1_chimp_tes.RDS")
 # 
 # # Step 2: estimate duplicate correlation on voom-transformed data
 # corfit <- duplicateCorrelation(v1, design_int, block = metadata$Individual)
@@ -1518,19 +1519,19 @@ saveRDS(v1,"data/TEs/TECount_Instances/Chimp/v1_chimp_TEInstances.RDS")
 #            block = metadata$Individual,
 #            correlation = corfit.correlation)
 # 
-saveRDS(v2,"data/TEs/TECount_Instances/Chimp/v2_chimp_TEInstances.RDS")
+saveRDS(v2,"data/TEs/TECount_Instances/Chimp/v2_chimp_tes.RDS")
 # 
 # # Step 4: fit linear model
 # fit <- lmFit(v2, design_int, block = metadata$Individual, correlation = corfit.correlation)
 # fit <- eBayes(fit)
 # 
-saveRDS(fit,"data/TEs/TECount_Instances/Chimp/fit_chimp_TEInstances.RDS")
+saveRDS(fit,"data/TEs/TECount_Instances/Chimp/fit_chimp_tes.RDS")
 
-v1 <- readRDS("data/TEs/TECount_Instances/Chimp/v1_chimp_TEInstances.RDS")
+v1 <- readRDS("data/TEs/TECount_Instances/Chimp/v1_chimp_tes.RDS")
 
-v2 <- readRDS("data/TEs/TECount_Instances/Chimp/v2_chimp_TEInstances.RDS")
+v2 <- readRDS("data/TEs/TECount_Instances/Chimp/v2_chimp_tes.RDS")
 
-fit <- readRDS("data/TEs/TECount_Instances/Chimp/fit_chimp_TEInstances.RDS")
+fit <- readRDS("data/TEs/TECount_Instances/Chimp/fit_chimp_tes.RDS")
 
 pal <- rainbow(length(unique(metadata$Timepoint)))
 day <- metadata$Timepoint
@@ -1603,8 +1604,8 @@ for (sp in species_levels) {
 ```
 
 ```{r Chimp_TECount_Instances_Mode}
-fit <- readRDS("data/TEs/TECount_Instances/Chimp/fit_chimp_TEInstances.RDS")
-design_int <- readRDS("data/TEs/TECount_Instances/Chimp/design_chimp_TEInstances.RDS")
+fit <- readRDS("data/TEs/TECount_Instances/Chimp/fit_chimp_tes.RDS")
+design_int <- readRDS("data/TEs/TECount_Instances/Chimp/design_chimp_tes.RDS")
 
 
 contrast_matrix <- makeContrasts(
@@ -1626,11 +1627,11 @@ results_summary <- decideTests(fit2,
                                p.value = 0.05)
 summary(results_summary)
 
-saveRDS(fit2,"data/TEs/TECount_Instances/Chimp/fit2_chimp_TEInstances.RDS")
+saveRDS(fit2,"data/TEs/TECount_Instances/Chimp/fit2_chimp_tes.RDS")
 ```
 
 ```{r Chimp_TECount_Instances_TopTable}
-fit2 <- readRDS("data/TEs/TECount_Instances/Chimp/fit2_chimp_TEInstances.RDS")
+fit2 <- readRDS("data/TEs/TECount_Instances/Chimp/fit2_chimp_tes.RDS")
 
 TopTables_names <- colnames(fit2$coefficients) 
 
@@ -1655,16 +1656,16 @@ TopTable <- do.call(
 
 ComparisonNames <- unique(TopTable$Comparisons)
 
-saveRDS(TopTable,"data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
-saveRDS(ComparisonNames,"data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+saveRDS(TopTable,"data/TEs/TECount_Instances/Chimp/TopTable_chimp_tes.RDS")
+saveRDS(ComparisonNames,"data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_tes.RDS")
 
 head(TopTable)
 ```
 
 ```{r Chimp_TECount_Instances_VolcancoPlots}
 
-TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
-ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_tes.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_tes.RDS")
 
 # Calculate global axis limits
 x_limits <- range(TopTable$logFC, na.rm = TRUE)
@@ -1688,8 +1689,8 @@ for (n in ComparisonNames) {
 ```
 
 ```{r Chimp_TECount_Instances_Subsetting0.05}
-TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
-ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_tes.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_tes.RDS")
 
 RNA_sets <- map(
   ComparisonNames,
@@ -1707,14 +1708,14 @@ RNA_sets <- map(
 
 names(RNA_sets) <- paste0(ComparisonNames)
 
-saveRDS(RNA_sets, "data/TEs/TECount_Instances/Chimp/RNASets_chimp_TEInstances.RDS")
+saveRDS(RNA_sets, "data/TEs/TECount_Instances/Chimp/RNASets_chimp_tes.RDS")
 ```
 
 ```{r Chimp_TECount_Instances_FC, fig.height=6, fig.width=10}
 
-TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
-ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
-RNA_sets <- readRDS("data/TEs/TECount_Instances/Chimp/RNASets_chimp_TEInstances.RDS")
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_tes.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_tes.RDS")
+RNA_sets <- readRDS("data/TEs/TECount_Instances/Chimp/RNASets_chimp_tes.RDS")
 
 TopTable$absFC <- abs(TopTable$logFC)
 
@@ -1764,10 +1765,10 @@ for (p in cluster_plots) print(p)
 
 
 ```{r Chimp_TECount_Instances_Directionality}
-TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
-ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
-RNA_sets <- readRDS("data/TEs/TECount_Instances/Chimp/RNASets_chimp_TEInstances.RDS")
-fit2 <- readRDS("data/TEs/TECount_Instances/Chimp/fit2_chimp_TEInstances.RDS")
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_tes.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_tes.RDS")
+RNA_sets <- readRDS("data/TEs/TECount_Instances/Chimp/RNASets_chimp_tes.RDS")
+fit2 <- readRDS("data/TEs/TECount_Instances/Chimp/fit2_chimp_tes.RDS")
 
 traj_info <- list(
   Traj02_genes = list(coef = "Day2_vs_Day0", comp = "Day2_vs_Day0"),
@@ -1794,15 +1795,15 @@ direction_results <- setNames(
   names(traj_info)
 )
 
-saveRDS(direction_results, "data/TEs/TECount_Instances/Directions_chimp_TEInstances.RDS")
+saveRDS(direction_results, "data/TEs/TECount_Instances/Directions_chimp_tes.RDS")
 
 ```
 
 ```{r Chimp_TECount_Instances_Directionality}
 
-TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_TEInstances.RDS")
-ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_TEInstances.RDS")
-direction_results <- readRDS("data/TEs/TECount_Instances/Directions_chimp_TEInstances.RDS")
+TopTable <- readRDS("data/TEs/TECount_Instances/Chimp/TopTable_chimp_tes.RDS")
+ComparisonNames <- readRDS("data/TEs/TECount_Instances/Chimp/ComparisonNames_chimp_tes.RDS")
+direction_results <- readRDS("data/TEs/TECount_Instances/Directions_chimp_tes.RDS")
 
 TopTable$absfc <- abs(TopTable$logFC)
 
@@ -1874,7 +1875,7 @@ for (p in cluster_plots) print(p)
 
 ```{r Chimp_TECount_Instances_Directionality_results}
 
-direction_results <- readRDS("data/TEs/TECount_Instances/Directions_chimp_TEInstances.RDS")
+direction_results <- readRDS("data/TEs/TECount_Instances/Directions_chimp_tes.RDS")
 
 direction_results <- lapply(direction_results, function(x) {
   

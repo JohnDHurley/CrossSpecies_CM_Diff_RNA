@@ -44,6 +44,9 @@ library("clusterProfiler")
 library("enrichplot")
 library("gprofiler2")
 library("Cormotif")
+library("ggalluvial")
+library("rstatix")
+library("ggpubr")
 
 # BiocManager::install("SummarizedExperiment")
 
@@ -691,6 +694,7 @@ clust12_RNA <- motif_prob %>%
  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5 & V12 > 0.5) %>%
   rownames()
 
+
 # Cluster list
 clust_names_list <- list(
   clust1 = clust1_RNA,
@@ -741,6 +745,303 @@ cluster_plots <- lapply(names(clust_names_list), function(clust_name) {
 for (p in cluster_plots) {
   if (!is.null(p)) print(p)
 }
+```
+
+
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign}
+
+# ============================================================
+# CorMotif posterior probability / gene assignment analysis
+# ============================================================
+
+library(dplyr)
+
+# ------------------------------------------------------------
+# 1. Maximum posterior probability for each gene
+# ------------------------------------------------------------
+
+max_prob <- apply(motif_prob, 1, max)
+
+# Basic summary
+summary(max_prob)
+
+quantile(
+  max_prob,
+  probs = c(
+    0, 0.10, 0.25, 0.50, 0.75,
+    0.90, 0.95, 0.99, 1
+  )
+)
+
+# Histogram
+hist(
+  max_prob,
+  breaks = 50,
+  xlab = "Maximum CorMotif posterior probability",
+  main = "Maximum posterior probability per gene"
+)
+
+abline(v = 0.5, lty = 2)
+
+
+# ------------------------------------------------------------
+# 2. Check that CorMotif probabilities sum to ~1
+# ------------------------------------------------------------
+
+prob_sums <- rowSums(motif_prob)
+
+summary(prob_sums)
+
+# Optional stricter check
+all(abs(prob_sums - 1) < 1e-6)
+
+
+# ------------------------------------------------------------
+# 3. Sort posterior probabilities for each gene
+#    This gives the top and second-best cluster
+# ------------------------------------------------------------
+
+posterior_sorted <- t(
+  apply(
+    motif_prob,
+    1,
+    sort,
+    decreasing = TRUE
+  )
+)
+
+
+# ------------------------------------------------------------
+# 4. Create one complete gene-assignment table
+# ------------------------------------------------------------
+
+motif_assignment <- data.frame(
+  Gene = rownames(motif_prob),
+  MaxProb = posterior_sorted[, 1],
+  SecondProb = posterior_sorted[, 2],
+  Cluster = apply(motif_prob, 1, which.max)
+) %>%
+  mutate(
+    Margin = MaxProb - SecondProb,
+
+    Assignment = ifelse(
+      MaxProb > 0.5,
+      paste0("Cluster_", Cluster),
+      "Unassigned"
+    ),
+
+    Confidence = case_when(
+      MaxProb > 0.7 ~ "High",
+      MaxProb > 0.5 ~ "Moderate",
+      MaxProb > 0.4 ~ "Low",
+      TRUE ~ "Unassigned"
+    )
+  )
+
+
+# ------------------------------------------------------------
+# 5. Number and percentage assigned at different thresholds
+# ------------------------------------------------------------
+
+thresholds <- c(
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9
+)
+
+threshold_summary <- data.frame(
+  Threshold = thresholds,
+  N_assigned = sapply(
+    thresholds,
+    function(x) sum(max_prob > x)
+  )
+) %>%
+  mutate(
+    Percent_assigned =
+      100 * N_assigned / length(max_prob),
+
+    N_unassigned =
+      length(max_prob) - N_assigned,
+
+    Percent_unassigned =
+      100 * N_unassigned / length(max_prob)
+  )
+
+threshold_summary
+
+
+# ------------------------------------------------------------
+# 6. Number of genes in each current assignment
+# ------------------------------------------------------------
+
+table(motif_assignment$Assignment)
+
+prop.table(
+  table(motif_assignment$Assignment)
+) * 100
+
+
+# ------------------------------------------------------------
+# 7. Posterior probability / margin summary
+# ------------------------------------------------------------
+
+summary(motif_assignment$Margin)
+
+quantile(
+  motif_assignment$Margin,
+  probs = c(
+    0, 0.10, 0.25, 0.50, 0.75,
+    0.90, 0.95, 0.99, 1
+  )
+)
+
+
+# ------------------------------------------------------------
+# 8. Examine genes that are just below the 0.5 cutoff
+# ------------------------------------------------------------
+
+genes_near_cutoff <- motif_assignment %>%
+  filter(
+    MaxProb >= 0.44,
+    MaxProb <= 0.50
+  ) %>%
+  arrange(desc(MaxProb))
+
+head(
+  genes_near_cutoff,
+  20
+)
+
+
+# ------------------------------------------------------------
+# 9. Examine the posterior probabilities for genes
+#    that are unassigned at the 0.5 threshold
+# ------------------------------------------------------------
+
+unassigned_genes <- motif_assignment %>%
+  filter(MaxProb <= 0.5) %>%
+  arrange(desc(MaxProb))
+
+head(
+  unassigned_genes,
+  20
+)
+
+# Full CorMotif posterior probabilities for the first
+# 20 unassigned genes
+motif_prob[
+  unassigned_genes$Gene[1:min(20, nrow(unassigned_genes))],
+  ,
+  drop = FALSE
+]
+
+
+# ------------------------------------------------------------
+# 10. Summary of assigned vs unassigned genes
+# ------------------------------------------------------------
+
+motif_assignment %>%
+  mutate(
+    Assigned = MaxProb > 0.5
+  ) %>%
+  group_by(Assigned) %>%
+  summarise(
+    N = n(),
+
+    Percent = 100 * N / nrow(motif_assignment),
+
+    Mean_MaxProb = mean(MaxProb),
+
+    Median_MaxProb = median(MaxProb),
+
+    Mean_SecondProb = mean(SecondProb),
+
+    Median_SecondProb = median(SecondProb),
+
+    Mean_Margin = mean(Margin),
+
+    Median_Margin = median(Margin),
+
+    .groups = "drop"
+  )
+
+
+# ------------------------------------------------------------
+# 11. Specifically characterize the unassigned genes
+# ------------------------------------------------------------
+
+unassigned_summary <- motif_assignment %>%
+  filter(MaxProb <= 0.5) %>%
+  summarise(
+    N = n(),
+
+    Percent_of_genes =
+      100 * N / nrow(motif_assignment),
+
+    Mean_MaxProb =
+      mean(MaxProb),
+
+    Median_MaxProb =
+      median(MaxProb),
+
+    Mean_SecondProb =
+      mean(SecondProb),
+
+    Median_SecondProb =
+      median(SecondProb),
+
+    Mean_Margin =
+      mean(Margin),
+
+    Median_Margin =
+      median(Margin)
+  )
+
+unassigned_summary
+
+
+# ------------------------------------------------------------
+# 12. Check how many genes have a very clear preferred
+#     cluster despite being below the 0.5 cutoff
+# ------------------------------------------------------------
+
+unassigned_genes %>%
+  mutate(
+    Clear_preference = case_when(
+      Margin >= 0.30 ~ "Large margin >=0.3",
+      Margin >= 0.20 ~ "Moderate margin >=0.2",
+      Margin >= 0.10 ~ "Small margin >=0.1",
+      TRUE ~ "Highly ambiguous"
+    )
+  ) %>%
+  dplyr::count(Clear_preference) %>%
+  mutate(
+    Percent =
+      100 * n / sum(n)
+  )
+
+
+# ------------------------------------------------------------
+# 13. Final cluster sizes using the 0.5 threshold
+# ------------------------------------------------------------
+
+cluster_summary <- motif_assignment %>%
+  filter(MaxProb > 0.5) %>%
+  dplyr::count(Cluster, name = "N_genes") %>%
+  mutate(
+    Percent_of_assigned =
+      100 * N_genes / sum(N_genes),
+
+    Percent_of_all_genes =
+      100 * N_genes / nrow(motif_assignment)
+  ) %>%
+  arrange(Cluster)
+
+cluster_summary
 
 
 ```
@@ -765,6 +1066,7 @@ clust_names_list <- list(
 names(clust_names_list) <- paste0("clust", 1:12)
 
 print(overlap_matirx <- check_overlap(clust_names_list))
+
 
 ```
 
@@ -1331,6 +1633,9 @@ pheatmap(
 
 #### Graphing
 
+
+
+
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 
@@ -1344,6 +1649,7 @@ legend(
   fill = cols,
   border = "black",
   title = "Posterior probability")
+
 
 
 ```
@@ -1362,7 +1668,7 @@ TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
 #extract the posterior probability that these genes belong to motifs
 gene_prob_ppost <- motif.fit$bestmotif$p.post
 rownames(gene_prob_ppost) <- rownames(log2cpm)
-saveRDS(gene_prob_ppost,"data/Cormotif/Trajectory/RNA_TMM_gene_prob_ppost_Trajectory.RDS")
+# saveRDS(gene_prob_ppost,"data/Cormotif/Trajectory/RNA_TMM_gene_prob_ppost_Trajectory.RDS")
 
 #assign each gene to a motif with max post prob
 assigned_motifs <- apply(gene_prob_ppost, 1, which.max)
@@ -1449,6 +1755,7 @@ gene_prob_ppost %>%
 
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterAssign}
 motif.fit <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
+gene_prob_ppost <- readRDS("data/Cormotif/Trajectory/RNA_TMM_gene_prob_ppost_Trajectory.RDS")
 
 log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
 
@@ -1540,21 +1847,41 @@ clust12_RNA <- motif_prob %>%
  filter(V1 < 0.5 & V2 < 0.5 & V3 < 0.5 & V4 < 0.5 & V5 < 0.5 & V6 < 0.5 & V7 < 0.5 & V8 < 0.5 & V9 < 0.5 & V10 < 0.5 & V11 < 0.5 & V12 > 0.5) %>%
   rownames()
 
+Allassigned_RNA <- c(clust1_RNA,
+                     clust2_RNA,
+                     clust3_RNA,
+                     clust4_RNA,
+                     clust5_RNA,
+                     clust6_RNA,
+                     clust7_RNA,
+                     clust8_RNA,
+                     clust9_RNA,
+                     clust10_RNA,
+                     clust11_RNA,
+                     clust12_RNA)
+
+Allgenes<- unique(TopTable$Gene)
+
+clust13_RNA <- setdiff(Allgenes,Allassigned_RNA)
+
 # Cluster list
 clust_names_list <- list(
-  clust1 = clust1_RNA,
-  clust2 = clust2_RNA,
-  clust3 = clust3_RNA,
-  clust4 = clust4_RNA,
-  clust5 = clust5_RNA,
-  clust6 = clust6_RNA,
-  clust7 = clust7_RNA,
-  clust8 = clust8_RNA,
-  clust9 = clust9_RNA,
-  clust10 = clust10_RNA,
-  clust11 = clust11_RNA,
-  clust12 = clust12_RNA
+  "1" = clust1_RNA,
+  "2" = clust2_RNA,
+  "3" = clust3_RNA,
+  "4" = clust4_RNA,
+  "5" = clust5_RNA,
+  "6" = clust6_RNA,
+  "7" = clust7_RNA,
+  "8" = clust8_RNA,
+  "9" = clust9_RNA,
+  "10" = clust10_RNA,
+  "11" = clust11_RNA,
+  "12" = clust12_RNA,
+  "13" = clust13_RNA
 )
+
+saveRDS(clust_names_list,"data/Cormotif/Trajectory/RNA_TMM_clust_names_list_Trajectory.RDS")
 
 # Check sizes
 sapply(clust_names_list, length)
@@ -1579,7 +1906,8 @@ cluster_annotation <- c(
   setNames(rep("cluster9", length(clust9_RNA)), clust9_RNA),
   setNames(rep("cluster10", length(clust10_RNA)), clust10_RNA),
   setNames(rep("cluster11", length(clust11_RNA)), clust11_RNA),
-  setNames(rep("cluster12", length(clust12_RNA)), clust12_RNA)
+  setNames(rep("cluster12", length(clust12_RNA)), clust12_RNA),
+  setNames(rep("unassigned", length(clust13_RNA)), clust13_RNA)
 )
 
 saveRDS(cluster_annotation, "data/Cormotif/Trajectory/TrajectoryClusterAnnotation_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
@@ -1614,27 +1942,606 @@ for (p in cluster_plots) {
 
 ```
 
-```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterOverlapChecks}
+```{r}
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(ggplot2)
 
-clust_names_list <- list(
- clust1_RNA,
- clust2_RNA,
-  clust3_RNA,
- clust4_RNA,
- clust5_RNA,
- clust6_RNA,
- clust7_RNA,
- clust8_RNA,
-  clust9_RNA,
- clust10_RNA,
-  clust11_RNA,
-  clust12_RNA
+# Use your existing normalized log2CPM matrix
+log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
+
+# Metadata: one row per sample
+meta <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
+
+meta <- meta[ match(colnames(log2cpm), meta$SampleName), ]
+
+# Keep the five developmental stages
+stages <- c("Day0", "Day2", "Day5", "Day15", "Day30")
+
+# Adjust these column names if needed
+meta <- meta %>%
+  filter(
+    Timepoint %in% stages,
+    Species %in% c("H", "C")
+  )
+
+# Long-format expression matrix
+expr_long <- as.data.frame(log2cpm) %>%
+  rownames_to_column("Gene") %>%
+  pivot_longer(
+    cols = -Gene,
+    names_to = "SampleName",
+    values_to = "log2CPM"
+  ) %>%
+  inner_join(meta, by = "SampleName")
+
+# Mean expression per gene, species, and stage
+mean_expr <- expr_long %>%
+  group_by(Gene, Species, Timepoint) %>%
+  summarise(
+    Mean_log2CPM = mean(log2CPM, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Consecutive developmental transitions
+transitions <- tibble(
+  From = stages[-length(stages)],
+  To = stages[-1]
 )
 
-names(clust_names_list) <- paste0("clust", 1:12)
+# Calculate changes for each gene and species
+changes <- mean_expr %>%
+  arrange(Gene, Species, match(Timepoint, stages)) %>%
+  group_by(Gene, Species) %>%
+  mutate(
+    From = Timepoint,
+    To = lead(Timepoint),
+    Delta = lead(Mean_log2CPM) - Mean_log2CPM
+  ) %>%
+  filter(
+    !is.na(To),
+    match(To, stages) == match(From, stages) + 1
+  ) %>%
+  ungroup() %>%
+  select(Gene, Species, From, To, Delta)
+```
+
+
+```{r}
+change_compare <- changes %>%
+  pivot_wider(
+    names_from = Species,
+    values_from = Delta
+  ) %>%
+  filter(is.finite(H), is.finite(C))
+
+cor_results <- change_compare %>%
+  group_by(From, To) %>%
+  summarise(
+    N_genes = n(),
+    Spearman = cor(H, C, method = "spearman"),
+    Same_direction = mean(sign(H) == sign(C)),
+    .groups = "drop"
+  )
+
+cor_results
+
+ggplot(change_compare, aes(x = H, y = C)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~ From + To, scales = "free") +
+  labs(
+    x = "Human change in mean log2CPM",
+    y = "Chimpanzee change in mean log2CPM",
+    title = "Concordance of developmental expression changes"
+  ) +
+  theme_classic()
+
+clust_names_list <- readRDS("data/Cormotif/Trajectory/RNA_TMM_clust_names_list_Trajectory.RDS")
+
+library(purrr)
+
+# Add CorMotif cluster membership to the expression-change data
+cluster_changes <- imap_dfr(
+  clust_names_list,
+  ~ change_compare %>%
+    filter(Gene %in% .x) %>%
+    mutate(Cluster = .y)
+)
+
+# Calculate concordance for each cluster and transition
+cluster_cor_results <- cluster_changes %>%
+  group_by(Cluster, From, To) %>%
+  summarise(
+    N_genes = n(),
+    Spearman = cor(H, C, method = "spearman"),
+    Same_direction = mean(sign(H) == sign(C)),
+    .groups = "drop"
+  ) %>%
+  arrange(Cluster, From)
+
+cluster_cor_results
+
+transition_order <- c(
+  "Day0-Day2",
+  "Day2-Day5",
+  "Day5-Day15",
+  "Day15-Day30"
+)
+
+cluster_cor_results <- cluster_cor_results %>%
+  mutate(
+    Transition = factor(
+      paste(From, To, sep = "-"),
+      levels = transition_order
+    )
+  )
+
+# ggplot(
+#   cluster_cor_results,
+#   aes(x = Transition, y = Spearman,
+#       group = Cluster, color = Cluster)
+# ) +
+#   geom_point(size = 2) +
+#   geom_line(aes(group = Cluster)) +
+#   labs(
+#     x = "Developmental transition",
+#     y = "Human–chimpanzee Spearman correlation",
+#     title = "Concordance of expression changes by CorMotif cluster"
+#   ) +
+#   theme_classic()
+# 
+# for (clust in unique(cluster_cor_results$Cluster)) {
+# 
+#   p <- ggplot(
+#     filter(cluster_cor_results, Cluster == clust),
+#     aes(x = Transition, y = Spearman, group = 1)
+#   ) +
+#     geom_hline(yintercept = 0, linetype = "dashed", color = "grey60") +
+#     geom_line() +
+#     geom_point(size = 3) +
+#     scale_y_continuous(limits = c(-1, 1)) +
+#     labs(
+#       title = paste("CorMotif Cluster", clust),
+#       x = "Developmental transition",
+#       y = "Human–chimpanzee Spearman correlation"
+#     ) +
+#     theme_classic() +
+#     theme(
+#       axis.text.x = element_text(angle = 45, hjust = 1)
+#     )
+# 
+#   print(p)
+# }
+
+cluster_response_results <- cluster_changes %>%
+  mutate(
+    Transition = factor(
+      paste(From, To, sep = "-"),
+      levels = c(
+        "Day0-Day2",
+        "Day2-Day5",
+        "Day5-Day15",
+        "Day15-Day30"
+      ),
+      ordered = TRUE
+    ),
+    Difference = H - C,
+    Absolute_Difference = abs(Difference)
+  ) %>%
+  group_by(Cluster, From, To, Transition) %>%
+  summarise(
+    N_genes = n(),
+    Median_Abs_Difference = median(Absolute_Difference, na.rm = TRUE),
+    Median_Difference = median(Difference, na.rm = TRUE),
+    Same_direction = mean(sign(H) == sign(C)),
+    Spearman = cor(H, C, method = "spearman"),
+    .groups = "drop"
+  ) %>%
+  arrange(Cluster, Transition)
+
+cluster_response_results
+
+
+```
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Set the developmental transition order
+transition_levels <- c(
+  "Day0-Day2",
+  "Day2-Day5",
+  "Day5-Day15",
+  "Day15-Day30"
+)
+
+plot_data <- cluster_response_results %>%
+  mutate(
+    Cluster = factor(Cluster, levels = as.character(1:13)),
+    Transition = factor(
+      paste(From, To, sep = "-"),
+      levels = transition_levels
+    )
+  )
+
+# Helper function to create a heatmap
+make_response_heatmap <- function(data, metric, legend_title,
+                                  low, mid, high, midpoint = NULL) {
+
+  p <- ggplot(
+    data,
+    aes(x = Transition, y = Cluster, fill = .data[[metric]])
+  ) +
+    geom_tile(color = "white", linewidth = 0.4) +
+    geom_text(
+      aes(label = sprintf("%.2f", .data[[metric]])),
+      size = 3
+    ) +
+    scale_fill_gradient2(
+      low = low,
+      mid = mid,
+      high = high,
+      midpoint = midpoint,
+      name = legend_title
+    ) +
+    labs(x = "Developmental transition", y = "CorMotif cluster") +
+    theme_minimal(base_size = 11) +
+    theme(
+      panel.grid = element_blank(),
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      axis.title = element_text(face = "bold"),
+      legend.title = element_text(face = "bold")
+    )
+
+  p
+}
+
+# A. Spearman correlation of expression changes
+p_spearman <- make_response_heatmap(
+  plot_data,
+  metric = "Spearman",
+  legend_title = "Spearman\ncorrelation",
+  low = "#B2182B",
+  mid = "white",
+  high = "#2166AC",
+  midpoint = 0
+)
+
+# B. Proportion of genes changing in the same direction
+p_direction <- make_response_heatmap(
+  plot_data,
+  metric = "Same_direction",
+  legend_title = "Same direction",
+  low = "#B2182B",
+  mid = "white",
+  high = "#2166AC",
+  midpoint = 0.5
+)
+
+# C. Median absolute difference in expression changes
+p_difference <- ggplot(
+  plot_data,
+  aes(x = Transition, y = Cluster, fill = Median_Abs_Difference)
+) +
+  geom_tile(color = "white", linewidth = 0.4) +
+  geom_text(
+    aes(label = sprintf("%.2f", Median_Abs_Difference)),
+    size = 3
+  ) +
+  scale_fill_gradient(
+    low = "white",
+    high = "#762A83",
+    name = "Median absolute\ndifference"
+  ) +
+  labs(x = "Developmental transition", y = "CorMotif cluster") +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_text(face = "bold"),
+    legend.title = element_text(face = "bold")
+  )
+
+# Display
+p_spearman
+p_direction
+p_difference
+
+# Save high-resolution figures
+ggsave("Cluster_Spearman_heatmap.pdf", p_spearman, width = 7, height = 5)
+ggsave("Cluster_Direction_heatmap.pdf", p_direction, width = 7, height = 5)
+ggsave("Cluster_Magnitude_heatmap.pdf", p_difference, width = 7, height = 5)
+```
+
+
+
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign}
+
+library(dplyr)
+library(ggplot2)
+
+prob_cols <- paste0("V", 1:12)
+
+# =========================================================
+# Calculate max probability, second-highest probability,
+# and margin for every gene
+# =========================================================
+
+motif_margin <- motif_prob %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Gene") %>%
+  rowwise() %>%
+  mutate(
+    MaxProb = max(c_across(all_of(prob_cols))),
+    
+    SecondProb = sort(
+      c_across(all_of(prob_cols)),
+      decreasing = TRUE
+    )[2],
+    
+    MaxCluster = which.max(
+      c_across(all_of(prob_cols))
+    ),
+    
+    Margin = MaxProb - SecondProb
+  ) %>%
+  ungroup()
+
+
+# =========================================================
+# Assign genes using YOUR ORIGINAL RULE
+#
+# One cluster must have >0.5 AND all other clusters <0.5
+# =========================================================
+
+motif_margin <- motif_margin %>%
+  rowwise() %>%
+  mutate(
+    N_above_05 = sum(
+      c_across(all_of(prob_cols)) > 0.5
+    ),
+    
+    Assigned = N_above_05 == 1,
+    
+    Cluster = ifelse(
+      Assigned,
+      paste0("clust", MaxCluster),
+      "Unassigned"
+    )
+  ) %>%
+  ungroup()
+
+
+# =========================================================
+# Check assignment numbers
+# =========================================================
+
+assignment_summary <- motif_margin %>%
+  dplyr::count(Cluster) %>%
+  mutate(
+    Percent = 100 * n / sum(n)
+  )
+
+assignment_summary
+
+
+# =========================================================
+# Margin statistics by group
+# Includes Unassigned
+# =========================================================
+
+margin_stats <- motif_margin %>%
+  group_by(Cluster) %>%
+  summarise(
+    N = n(),
+    Mean = mean(Margin),
+    Median = median(Margin),
+    SD = sd(Margin),
+    Min = min(Margin),
+    Q1 = quantile(Margin, 0.25),
+    Q3 = quantile(Margin, 0.75),
+    Max = max(Margin),
+    .groups = "drop"
+  )
+
+margin_stats
+
+
+# =========================================================
+# Set cluster order
+# =========================================================
+
+cluster_order <- c(
+  paste0("clust", 1:12),
+  "Unassigned"
+)
+
+motif_margin$Cluster <- factor(
+  motif_margin$Cluster,
+  levels = cluster_order
+)
+
+
+# =========================================================
+# Plot margin distributions
+# =========================================================
+
+ggplot(
+  motif_margin,
+  aes(
+    x = Cluster,
+    y = Margin
+  )
+) +
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.25,
+    size = 1
+  ) +
+  labs(
+    x = "CorMotif group",
+    y = "Margin (maximum posterior − second-highest posterior)"
+  ) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+
+
+# =========================================================
+# Optional: categorize the margins
+# =========================================================
+
+motif_margin <- motif_margin %>%
+  mutate(
+    Margin_Category = case_when(
+      Margin >= 0.30 ~ "Large margin > 0.3",
+      Margin >= 0.20 & Margin < 0.30 ~ "Moderate margin 0.2 - 0.3",
+      Margin >= 0.10 & Margin < 0.20 ~ "Small margin 0.1 - 0.2",
+      Margin < 0.10 ~ "Unclear < 0.1"
+    )
+  )
+
+
+# =========================================================
+# Margin-category statistics by CorMotif group
+# Includes Unassigned
+# =========================================================
+
+margin_category_stats <- motif_margin %>%
+  dplyr::count(Cluster, Margin_Category, name = "N") %>%
+  group_by(Cluster) %>%
+  mutate(
+    Percent = 100 * N / sum(N)
+  ) %>%
+  ungroup()
+
+margin_category_stats
+
+# =========================================================
+# 100% stacked bar plot of margin categories
+# =========================================================
+
+ggplot(
+  margin_category_stats,
+  aes(
+    x = Cluster,
+    y = Percent,
+    fill = Margin_Category
+  )
+) +
+  geom_col(
+    position = "stack",
+    width = 0.8
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, 20),
+    expand = c(0, 0)
+  ) +
+  labs(
+    x = "CorMotif group",
+    y = "Genes (%)",
+    fill = "Margin"
+  ) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+```
+
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_ClusterOverlapChecks}
+
+clust_names_list <- readRDS("data/Cormotif/Trajectory/RNA_TMM_clust_names_list_Trajectory.RDS")
+
+names(clust_names_list) <- paste0("clust", 1:13)
 
 print(overlap_matirx <- check_overlap(clust_names_list))
 
+```
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
+RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
+clust_names_list <- readRDS("data/Cormotif/Trajectory/RNA_TMM_clust_names_list_Trajectory.RDS")
+
+
+Traj_levels <- c("Day02", "Day25", "Day515", "Day1530")
+
+library(stringr)
+
+TopTable <- TopTable %>%
+  mutate(
+    Species = str_extract(Comparisons, "^[A-Za-z]+"),
+    Day     = str_extract(Comparisons, "Day\\d+")
+  ) 
+  
+
+make_alluvial_plots <- function(genes, testing, TopTable, Traj_levels) {
+
+  df <- TopTable %>%
+    filter(Day %in% Traj_levels, Gene %in% genes) %>%
+    mutate(Day = factor(Day, levels = Traj_levels)) %>%
+    mutate(Species = factor(Species, levels = c("H", "C"))) %>%
+    mutate(
+  Direction = case_when(
+      logFC > 0 & adj.P.Val < 0.05  ~ "Sig - UP",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Sig - Down",
+      adj.P.Val > 0.05       ~ "NS"
+    )) %>% 
+  mutate(
+    Direction = factor(Direction, levels = c("Sig - UP", "NS", "Sig - Down")
+))
+
+  fill_scale <- scale_fill_manual(values = c("Sig - UP" = "red", "Sig - Down" = "blue", "NS" = "grey80"))
+
+  p_facet <- ggplot(
+    df,
+    aes(x = Day, stratum = Direction, alluvium = Gene, y = 1, fill = Direction)
+  ) +
+    geom_flow(aes.bind = "flows", stat = "alluvium", decreasing = NA, reverse = TRUE) + 
+    geom_stratum(decreasing = NA, reverse = TRUE) + 
+    facet_wrap(~ Species) +
+    fill_scale +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = NULL, y = "Number of genes", title = paste0("Cluster ", testing))
+
+  p_combined <- ggplot(
+    df,
+    aes(x = Day, stratum = Direction, alluvium = interaction(Gene, Species), y = 1, fill = Direction)
+  ) +
+    geom_flow(aes.bind = "flows", stat = "alluvium", decreasing = NA, reverse = FALSE) + 
+    geom_stratum(decreasing = NA, reverse = FALSE) + 
+    fill_scale +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = NULL, y = "Number of genes", title = paste0("Cluster ", testing))
+
+  list(facet = p_facet, combined = p_combined)
+}
+
+all_alluvial_plots <- imap(clust_names_list, ~ make_alluvial_plots(.x, .y, TopTable, Traj_levels))
+
+walk(all_alluvial_plots, ~ print(.x$facet))
 ```
 
 #### EnrichGo
@@ -1645,106 +2552,123 @@ motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 
+clust_names_list <- list(
+  "1" = clust1_RNA,
+  "2" = clust2_RNA,
+  "3" = clust3_RNA,
+  "4" = clust4_RNA,
+  "5" = clust5_RNA,
+  "6" = clust6_RNA,
+  "7" = clust7_RNA,
+  "8" = clust8_RNA,
+  "9" = clust9_RNA,
+  "10" = clust10_RNA,
+  "11" = clust11_RNA,
+  "12" = clust12_RNA,
+  "13" = clust13_RNA
+)
+
 all_genes <- unique(TopTable$Gene)
 
 
-# convert_to_entrez_df <- function(genes) {
-# 
-#   genes <- sub("\\..*", "", genes)
-# 
-#   bitr(
-#     genes,
-#     fromType = "ENSEMBL",
-#     toType   = "ENTREZID",
-#     OrgDb    = org.Hs.eg.db
-#   ) %>% distinct()
-# }
-# 
-# background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
-# 
-# gost_results <- setNames(
-# 
-#   lapply(names(clust_names_list), function(clust_name) {
-# 
-#     genes <- clust_names_list[[clust_name]]
-# 
-#     entrez_df <- convert_to_entrez_df(genes)
-# 
-#     if (nrow(entrez_df) == 0) return(NULL)
-# 
-#     gost(
-#       query = entrez_df$ENTREZID,
-# 
-#       organism = "hsapiens",
-# 
-#       significant = FALSE,
-#       ordered_query = FALSE,         # TRUE only if ranked
-#       domain_scope = "custom",
-# 
-#       measure_underrepresentation = FALSE,
-#       evcodes = FALSE,
-# 
-#       numeric_ns = "ENTREZGENE",
-# 
-#       user_threshold = 0.05,
-#       correction_method = "fdr",
-# 
-#       custom_bg = background_entrez,
-# 
-#       sources = c("GO:BP", "KEGG")
-#     )
-#   }),
-# 
-#   names(clust_names_list)
-# )
-# 
-# saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
-# 
-# gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
-# 
-# gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
-# 
-#   res <- gost_results[[clust_name]]
-# 
-#   if (is.null(res)) return(NULL)
-# 
-#   df <- res$result
-#   df$Cluster <- clust_name
-#   df
-# }))
-# 
-# saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
-# 
-# gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
-# 
-# gost_export <- gost_combined
-# 
-# gost_export[] <- lapply(gost_export, function(col) {
-# 
-#   if (is.list(col)) {
-#     sapply(col, paste, collapse = ";")
-#   } else {
-#     col
-#   }
-# 
-# })
-# 
-# write.csv(gost_export,
-#           "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.csv",
-#           row.names = FALSE)
+convert_to_entrez_df <- function(genes) {
+
+  genes <- sub("\\..*", "", genes)
+
+  bitr(
+    genes,
+    fromType = "ENSEMBL",
+    toType   = "ENTREZID",
+    OrgDb    = org.Hs.eg.db
+  ) %>% distinct()
+}
+
+background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
+
+gost_results <- setNames(
+
+  lapply(names(clust_names_list), function(clust_name) {
+
+    genes <- clust_names_list[[clust_name]]
+
+    entrez_df <- convert_to_entrez_df(genes)
+
+    if (nrow(entrez_df) == 0) return(NULL)
+
+    gost(
+      query = entrez_df$ENTREZID,
+
+      organism = "hsapiens",
+
+      significant = FALSE,
+      ordered_query = FALSE,         # TRUE only if ranked
+      domain_scope = "custom",
+
+      measure_underrepresentation = FALSE,
+      evcodes = FALSE,
+
+      numeric_ns = "ENTREZGENE",
+
+      user_threshold = 0.05,
+      correction_method = "fdr",
+
+      custom_bg = background_entrez,
+
+      sources = c("GO:BP", "KEGG")
+    )
+  }),
+
+  names(clust_names_list)
+)
+
+saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
+
+  res <- gost_results[[clust_name]]
+
+  if (is.null(res)) return(NULL)
+
+  df <- res$result
+  df$Cluster <- clust_name
+  df
+}))
+
+saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+gost_export <- gost_combined
+
+gost_export[] <- lapply(gost_export, function(col) {
+
+  if (is.list(col)) {
+    sapply(col, paste, collapse = ";")
+  } else {
+    col
+  }
+
+})
+
+write.csv(gost_export,
+          "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.csv",
+          row.names = FALSE)
 
 ```
 
 ##### EnrichGo Plotting
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP,fig.height=3, fig.width=7}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP, fig.width=10 ,fig.height=10}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 top_terms <- gost_combined %>%
   filter(source == "GO:BP") %>%        # keep only BP terms
+  filter(significant == "TRUE") %>% 
   group_by(Cluster) %>%
-  slice_min(p_value, n = 10) %>%       # top 10 per cluster
+  slice_min(p_value, n = 50) %>%       # top 10 per cluster
   ungroup()
 
 cluster_list <- split(top_terms, top_terms$Cluster)
@@ -1776,7 +2700,7 @@ top_terms <- gost_combined %>%
   filter(source == "GO:BP",
          p_value < 0.05) %>%
   group_by(Cluster) %>%
-  slice_min(p_value, n = 3, with_ties = FALSE) %>%
+  slice_min(p_value, n = 5, with_ties = FALSE) %>%
   ungroup() %>%
   mutate(
     Cluster_num = as.numeric(gsub("clust", "", Cluster)),
@@ -1794,7 +2718,7 @@ ggplot(top_terms,
            y = term_label,
            fill = -log10(p_value))) +
   geom_tile(color = "white", width = 0.8) +
-  geom_text(aes(label = Cluster), size = 3) +
+  geom_text(aes(label = Cluster), size = 5) +
   scale_fill_gradient(low = "grey90", high = "firebrick") +
   labs(fill = "-log10(p-value)",
        x = NULL,
@@ -1810,7 +2734,7 @@ ggplot(top_terms,
 
 
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined ,fig.height=5}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined, fig.width=7 ,fig.height=7}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -1899,7 +2823,7 @@ pheatmap(
   heatmap_matrix,
   color = colorRampPalette(c("grey90", "firebrick"))(100),
   cluster_rows = TRUE,
-  cluster_cols = TRUE,
+  cluster_cols = FALSE,
   show_rownames = TRUE,
   show_colnames = TRUE,
   fontsize_row = 6,
@@ -1986,7 +2910,6 @@ ggplot(top_terms,
 ```
 
 ```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined, fig.height=5}
-
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 library(dplyr)
@@ -2081,9 +3004,1113 @@ pheatmap(
   display_numbers = sig_matrix,
   number_color = "black"
 )
+```
+
+#### Subsetting 
+
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler2}
+motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Traj_levels <- c("Day02", "Day25", "Day515", "Day1530")
+
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# 1. Process your TopTable and make a clean descriptive column for each comparison
+processed_table <- TopTable %>%
+  mutate(
+    Species = str_extract(Comparisons, "^[A-Za-z]+"),
+    Day     = str_extract(Comparisons, "Day\\d+")
+  ) %>%
+  filter(Day %in% Traj_levels) %>%
+  mutate(
+    Day = factor(Day, levels = Traj_levels),
+    Species = factor(Species, levels = c("H", "C")),
+    Direction = case_when(
+      logFC > 0 & adj.P.Val < 0.05 ~ "Sig - UP",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Sig - Down",
+      TRUE ~ "NS" # Clean fallback catch-all
+    ),
+    Direction = factor(Direction, levels = c("Sig - UP", "NS", "Sig - Down")),
+    
+    # Create a unified name for each specific column (e.g., "H_Day15")
+    Comp_Label = paste(Species, Day, sep = "_")
+  ) %>% 
+  filter(Gene %in% clust8_RNA)
+
+# 2. Pivot wide and count the unique combination intersections
+combination_counts <- processed_table %>%
+  dplyr::select(Gene, Comp_Label, Direction) %>%
+  
+  # Reshape so every H/C Day condition is its own column
+  pivot_wider(
+    names_from = Comp_Label, 
+    values_from = Direction, 
+    values_fill = "NS" # If a gene isn't listed for a timepoint, it defaults to Not Significant
+  ) %>%
+  
+  # Count how many genes share the exact same up/down grid pattern
+  # The "..." tells R to count using every column except the 'Gene' column
+  dplyr::count(across(-Gene), sort = TRUE)
+
+# View the output table
+print(n=30,combination_counts)
 
 
 ```
+
+
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler2}
+motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
+TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+Traj_levels <- c("Day02", "Day25", "Day515", "Day1530")
+
+clust12_RNA_UP <- TopTable %>%
+  mutate(
+    Species = str_extract(Comparisons, "^[A-Za-z]+"),
+    Day     = str_extract(Comparisons, "Day\\d+")
+  ) %>%
+  filter(Day %in% Traj_levels) %>%
+  mutate(Day = factor(Day, levels = Traj_levels)) %>%
+  mutate(Species = factor(Species, levels = c("H", "C"))) %>%
+  mutate(
+  Direction = case_when(
+      logFC > 0 & adj.P.Val < 0.05  ~ "Sig - UP",
+      logFC < 0 & adj.P.Val < 0.05 ~ "Sig - Down",
+      adj.P.Val > 0.05       ~ "NS"
+    )) %>%
+  mutate(
+    Direction = factor(Direction, levels = c("Sig - UP", "NS", "Sig - Down")
+)) %>%
+  filter(Gene %in% clust12_RNA, Day == "Day02", Direction == "Sig - UP") %>%
+  pull(Gene) %>%
+  unique()
+
+clust_names_list_Subsetting <- list(
+  "1" = clust1_RNA,
+  
+  "2" = clust2_RNA,
+  "2U" = clust2_RNA_UP,
+  "2D" = clust2_RNA_DOWN,
+  
+  "3" = clust3_RNA,
+  
+  "4" = clust4_RNA,
+  "4U" = clust4_RNA_UP,
+  "4D" = clust4_RNA_DOWN,
+  
+  "5" = clust5_RNA,
+  "5U" = clust5_RNA_UP,
+  "4D" = clust5_RNA_DOWN,
+  
+  "6" = clust6_RNA,
+  "6U" = clust6_RNA_UP,
+  "6D" = clust6_RNA_DOWN,
+  
+  "7" = clust7_RNA,
+  "7U" = clust7_RNA_UP,
+  "7D" = clust7_RNA_DOWN,
+  
+  "8" = clust8_RNA,
+  "8U" = clust8_RNA_UP,
+  "8D" = clust8_RNA_DOWN,
+  
+  "9" = clust9_RNA,
+  "9U" = clust9_RNA_UP,
+  "9D" = clust9_RNA_DOWN,
+  
+  "10" = clust10_RNA,
+  "10U" = clust10_RNA_UP,
+  "10D" = clust10_RNA_DOWN,
+  
+  "11" = clust11_RNA,
+  "11U" = clust11_RNA_UP,
+  "11D" = clust11_RNA_DOWN,
+  
+  "12" = clust12_RNA,
+  "12U" = clust12_RNA_UP,
+  "12D" = clust12_RNA_DOWN,
+  
+  "13" = clust13_RNA
+)
+
+all_genes <- unique(TopTable$Gene)
+
+
+convert_to_entrez_df <- function(genes) {
+
+  genes <- sub("\\..*", "", genes)
+
+  bitr(
+    genes,
+    fromType = "ENSEMBL",
+    toType   = "ENTREZID",
+    OrgDb    = org.Hs.eg.db
+  ) %>% distinct()
+}
+
+background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
+
+gost_results <- setNames(
+
+  lapply(names(clust_names_list_Subsetting), function(clust_name) {
+
+    genes <- clust_names_list_Subsetting[[clust_name]]
+
+    entrez_df <- convert_to_entrez_df(genes)
+
+    if (nrow(entrez_df) == 0) return(NULL)
+
+    gost(
+      query = entrez_df$ENTREZID,
+
+      organism = "hsapiens",
+
+      significant = FALSE,
+      ordered_query = FALSE,         # TRUE only if ranked
+      domain_scope = "custom",
+
+      measure_underrepresentation = FALSE,
+      evcodes = FALSE,
+
+      numeric_ns = "ENTREZGENE",
+
+      user_threshold = 0.05,
+      correction_method = "fdr",
+
+      custom_bg = background_entrez,
+
+      sources = c("GO:BP", "KEGG")
+    )
+  }),
+
+  names(clust_names_list)
+)
+
+saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
+gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
+gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
+
+  res <- gost_results[[clust_name]]
+
+  if (is.null(res)) return(NULL)
+
+  df <- res$result
+  df$Cluster <- clust_name
+  df
+}))
+
+saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
+gost_export <- gost_combined
+
+gost_export[] <- lapply(gost_export, function(col) {
+
+  if (is.list(col)) {
+    sapply(col, paste, collapse = ";")
+  } else {
+    col
+  }
+
+})
+
+```
+
+
+```{r KZFP_Species_FC_lineplot}
+
+log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
+
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+# 1. Reshape wide log2cpm data into long format
+log2cpm_long <- log2cpm %>%
+  # Make the rownames an explicit column first
+  as.data.frame() %>% 
+  rownames_to_column(var = "Gene") %>%
+  # Pivot all sample columns down
+  pivot_longer(
+    cols = -Gene, 
+    names_to = "Sample", 
+    values_to = "Expression"
+  ) %>%
+  
+  # 2. Parse out strings using the constant "_Day" anchor
+  mutate(
+    # Extract the very first letter (H or C)
+    Species = str_extract(Sample, "^[HC]"),
+    
+    # Split "H21792_Day15" on "_Day" -> returns a matrix with ["H21792", "15"]
+    # We grab the second column to get the raw timepoint number cleanly
+    Day_num = str_split_fixed(Sample, "_Day", 2)[, 2],
+    
+    # Reassemble back into "DayX" format (e.g., "Day15")
+    Day = paste0("Day", Day_num)
+  ) %>%
+  
+  # 3. Factorize your time column to match your tracking trajectory order
+  mutate(
+    Day = factor(Day, levels = day_levels)
+  ) %>%
+  
+  # Drop the intermediate cleaning column
+  select(-Day_num)
+
+
+library(ggplot2)
+
+# Filter and add tracking metadata
+plot_data <- log2cpm_long %>%
+  # Keep only the genes in your cluster (e.g., clust2_RNA)
+  filter(Gene %in% clust2_RNA_UP) %>%
+  mutate(
+    Species_label = stringr::str_extract(Species, "^[HC]")
+  )
+
+
+ggplot(
+  plot_data,
+  aes(
+    x = Day,
+    y = Expression,
+    group = Gene
+  )
+) +
+  geom_line(alpha = 0.4) +
+  geom_point(size = 1) +
+  
+  # Split the plot side-by-side or stacked to cleanly contrast Human vs Chimp trajectories
+  facet_wrap(~ Species_label) + 
+  
+  theme_bw() +
+  labs(
+    x = "Timepoint",
+    y = "Expression (log2 CPM)",
+    title = "Human vs. Chimpanzee Cluster Expression Trajectories"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 11)
+  )
+
+library(dplyr)
+
+plot_means_data <- log2cpm_long %>%
+  # 1. Filter for only your cluster's genes
+  filter(Gene %in% clust2_RNA_UP) %>%
+  
+  # 2. Collapse individual replicates into a mean value per condition
+  group_by(Gene, Species, Day) %>%
+  summarise(
+    Mean_Expression = mean(Expression, na.rm = TRUE), 
+    .groups = "drop"
+  ) %>%
+  
+  # 3. Create descriptive labels for the side-by-side plot layout
+  mutate(
+    Species_label = if_else(Species == "H", "Human", "Chimpanzee")
+  )
+
+library(ggplot2)
+
+ggplot(
+  plot_means_data,
+  aes(
+    x = Day,
+    y = Mean_Expression,
+    group = Gene # Keeps each gene as a separate line
+  )
+) +
+  # Single color for all lines to view global trajectory patterns
+  geom_line(color = "steelblue", alpha = 0.4, linewidth = 0.5) +
+  geom_point(color = "steelblue", size = 1, alpha = 0.6) +
+  
+  # Facet side-by-side by species
+  facet_wrap(~ Species_label) + 
+  
+  theme_bw() +
+  labs(
+    x = "Timepoint",
+    y = "Mean Expression (log2 CPM)",
+    title = "Human vs. Chimpanzee Cluster Expression Trajectories",
+    subtitle = "Data averaged across biological replicates"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 12),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+
+
+
+
+# Filter and add tracking metadata
+plot_data <- log2cpm_long %>%
+  # Keep only the genes in your cluster (e.g., clust2_RNA)
+  filter(Gene %in% clust2_RNA_DOWN) %>%
+  mutate(
+    Species_label = stringr::str_extract(Species, "^[HC]")
+  )
+
+
+ggplot(
+  plot_data,
+  aes(
+    x = Day,
+    y = Expression,
+    group = Gene
+  )
+) +
+  geom_line(alpha = 0.4) +
+  geom_point(size = 1) +
+  
+  # Split the plot side-by-side or stacked to cleanly contrast Human vs Chimp trajectories
+  facet_wrap(~ Species_label) + 
+  
+  theme_bw() +
+  labs(
+    x = "Timepoint",
+    y = "Expression (log2 CPM)",
+    title = "Human vs. Chimpanzee Cluster Expression Trajectories"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 11)
+  )
+
+library(dplyr)
+
+plot_means_data <- log2cpm_long %>%
+  # 1. Filter for only your cluster's genes
+  filter(Gene %in% clust2_RNA_DOWN) %>%
+  
+  # 2. Collapse individual replicates into a mean value per condition
+  group_by(Gene, Species, Day) %>%
+  summarise(
+    Mean_Expression = mean(Expression, na.rm = TRUE), 
+    .groups = "drop"
+  ) %>%
+  
+  # 3. Create descriptive labels for the side-by-side plot layout
+  mutate(
+    Species_label = if_else(Species == "H", "Human", "Chimpanzee")
+  )
+
+library(ggplot2)
+
+ggplot(
+  plot_means_data,
+  aes(
+    x = Day,
+    y = Mean_Expression,
+    group = Gene # Keeps each gene as a separate line
+  )
+) +
+  # Single color for all lines to view global trajectory patterns
+  geom_line(color = "steelblue", alpha = 0.4, linewidth = 0.5) +
+  geom_point(color = "steelblue", size = 1, alpha = 0.6) +
+  
+  # Facet side-by-side by species
+  facet_wrap(~ Species_label) + 
+  
+  theme_bw() +
+  labs(
+    x = "Timepoint",
+    y = "Mean Expression (log2 CPM)",
+    title = "Human vs. Chimpanzee Cluster Expression Trajectories",
+    subtitle = "Data averaged across biological replicates"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 12),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+```
+
+
+##### EnrichGo Plotting
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP, fig.width=5 ,fig.height=5}
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
+top_terms <- gost_combined %>%
+  filter(source == "GO:BP") %>%        # keep only BP terms
+  filter(significant == "TRUE") %>% 
+  group_by(Cluster) %>%
+  slice_min(p_value, n = 10) %>%       # top 10 per cluster
+  ungroup()
+
+cluster_list <- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df <- cluster_list[[clust_name]]
+  
+  p <- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = "white") +
+    scale_fill_gradient(low = "grey90", high = "firebrick") +
+    labs(fill = "-log10(p-value)",
+         x = "Cluster",
+         y = "GO Term") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+}
+```
+
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP, fig.width=10 ,fig.height=20}
+library(dplyr)
+library(ggplot2)
+
+library(dplyr)
+library(stringr)
+
+top_terms <- gost_combined %>%
+  filter(
+    source == "GO:BP",
+    p_value < 0.05
+  ) %>%
+  group_by(Cluster) %>%
+  slice_min(p_value, n = 10, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(
+    # Keep Cluster clean, but strip "clust" for sorting
+    Cluster_clean = gsub("clust", "", Cluster),
+    term_label = paste0(Cluster, " : ", term_name)
+  ) %>%
+  # Safely drops exact duplicate labels within the same cluster
+  distinct(term_label, .keep_all = TRUE) %>% 
+  # Sort naturally (e.g., 12U -> 12D -> 12 -> 11U...)
+  arrange(desc(gtools::mixedorder(Cluster_clean)), p_value) %>% 
+  # Safely convert to a factor based on this exact row order
+  mutate(term_label = forcats::fct_rev(forcats::fct_inorder(term_label)))
+
+
+ggplot(top_terms,
+       aes(x = 1,
+           y = term_label,
+           fill = -log10(p_value))) +
+  geom_tile(color = "white", width = 0.8) +
+  geom_text(aes(label = Cluster), size = 5) +
+  scale_fill_gradient(low = "grey90", high = "firebrick") +
+  labs(fill = "-log10(p-value)",
+       x = NULL,
+       y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank()
+  )
+```
+
+
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined, fig.width=7 ,fig.height=10}
+
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
+
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh <- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster <- gost_combined %>%
+  filter(source == "GO:BP") %>%
+  group_by(Cluster) %>%
+  filter(p_value < sig_thresh) %>%                    
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %>%  
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms <- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter and DEDUPLICATE by taking the max significance
+heatmap_data <- gost_combined %>%
+  filter(source == "GO:BP", term_name %in% unique_terms) %>%
+  mutate(logp = -log10(p_value)) %>%
+  select(Cluster, term_name, logp) %>%
+  # NEW STEP: If a term appears twice in a cluster, keep the highest -log10(p-value)
+  group_by(Cluster, term_name) %>%
+  summarise(logp = max(logp, na.rm = TRUE), .groups = "drop")
+
+# 4. Pivot to wide format (will now cleanly yield a numeric matrix instead of lists)
+heatmap_wide <- heatmap_data %>%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+# 5. Convert to long format for ggplot (logp will now be a proper numeric vector)
+heatmap_long <- heatmap_wide %>%
+  pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
+
+saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey90", high = "firebrick", na.value = "white") +
+  labs(fill = "-log10(p-value)", x = "Cluster", y = "GO Term") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))
+
+
+heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix <- heatmap_wide %>%
+  column_to_rownames(var = "term_name") %>%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] <- 0
+
+sig_matrix <- gost_combined %>%
+  filter(
+    source == "GO:BP",
+    term_name %in% unique_terms
+  ) %>%
+  mutate(
+    sig = ifelse(p_value < 0.05, "*", "")
+  ) %>%
+  select(Cluster, term_name, sig) %>%
+  # NEW STEP: Deduplicate rows. If there's a "*" in any duplicate row, pick it.
+  group_by(Cluster, term_name) %>%
+  summarise(
+    sig = if_else(any(sig == "*"), "*", ""), 
+    .groups = "drop"
+  ) %>%
+  # Pivot will now run flawlessly
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = ""
+  ) %>%
+  column_to_rownames("term_name") %>%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c("grey90", "firebrick"))(100),
+  cluster_rows = TRUE,
+  cluster_cols = FALSE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = "GO:BP Enrichment Heatmap",
+  display_numbers = sig_matrix,
+  number_color = "black"
+)
+
+
+
+
+```
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG, fig.height=3, fig.width=7}
+
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+top_terms <- gost_combined %>%
+  filter(source == "KEGG") %>%        # keep only BP terms
+  group_by(Cluster) %>%
+  slice_min(p_value, n = 10) %>%       # top 10 per cluster
+  ungroup()
+
+cluster_list <- split(top_terms, top_terms$Cluster)
+
+library(ggplot2)
+
+for (clust_name in names(cluster_list)) {
+  
+  df <- cluster_list[[clust_name]]
+  
+  p <- ggplot(df,
+              aes(x = Cluster, y = term_name, fill = -log10(p_value))) +
+    geom_tile(color = "white") +
+    scale_fill_gradient(low = "grey90", high = "firebrick") +
+    labs(fill = "-log10(p-value)",
+         x = "Cluster",
+         y = "KEGG Term") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+  
+  print(p)   # display in RStudio
+  
+}
+
+library(dplyr)
+library(ggplot2)
+
+top_terms <- gost_combined %>%
+  filter(source == "KEGG",
+         p_value < 0.05) %>%
+  group_by(Cluster) %>%
+  slice_min(p_value, n = 3, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(
+    Cluster_num = as.numeric(gsub("clust", "", Cluster)),
+    term_label = paste0(Cluster, " : ", term_name)
+  ) %>%
+  arrange(desc(Cluster_num))
+
+top_terms$term_label <- factor(
+  top_terms$term_label,
+  levels = rev(top_terms$term_label)
+)
+
+ggplot(top_terms,
+       aes(x = 1,
+           y = term_label,
+           fill = -log10(p_value))) +
+  geom_tile(color = "white", width = 0.8) +
+  geom_text(aes(label = Cluster), size = 3) +
+  scale_fill_gradient(low = "grey90", high = "firebrick") +
+  labs(fill = "-log10(p-value)",
+       x = NULL,
+       y = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank()
+  )
+```
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined, fig.height=5}
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh <- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster <- gost_combined %>%
+  filter(source == "KEGG") %>%
+  group_by(Cluster) %>%
+  filter(p_value < sig_thresh) %>%                    # keep only significant
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %>%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms <- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data <- gost_combined %>%
+  filter(source == "KEGG", term_name %in% unique_terms) %>%
+  mutate(logp = -log10(p_value)) %>%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide <- heatmap_data %>%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+# 5. Convert to long format for ggplot
+heatmap_long <- heatmap_wide %>%
+  pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
+
+saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey90", high = "firebrick", na.value = "white") +
+  labs(fill = "-log10(p-value)", x = "Cluster", y = "GO Term") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))
+
+heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix <- heatmap_wide %>%
+  column_to_rownames(var = "term_name") %>%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] <- 0
+
+sig_matrix <- gost_combined %>%
+  filter(
+    source == "KEGG",
+    term_name %in% unique_terms
+  ) %>%
+  mutate(
+    sig = ifelse(p_value < 0.05, "*", "")
+  ) %>%
+  select(Cluster, term_name, sig) %>%
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = ""
+  ) %>%
+  column_to_rownames("term_name") %>%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c("grey90", "firebrick"))(100),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = "KEGG Enrichment Heatmap",
+  display_numbers = sig_matrix,
+  number_color = "black"
+)
+```
+
+#### Spearman Coefficients
+
+```{r Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs, fig.width=7, fig.height=5}
+
+metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
+fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
+
+gene_sets <- list(
+  Cluster1 = clust1_RNA,
+  Cluster2 = clust2_RNA,
+  Cluster3 = clust3_RNA,
+  Cluster4 = clust4_RNA,
+  Cluster5 = clust5_RNA,
+  Cluster6 = clust6_RNA,
+  Cluster7 = clust7_RNA,
+  Cluster8 = clust8_RNA,
+  Cluster9 = clust9_RNA,
+  Cluster10 = clust10_RNA,
+  Cluster11 = clust11_RNA,
+  Cluster12 = clust12_RNA
+)
+
+results <- list()
+
+for (i in seq_along(gene_sets)) {
+
+  gene_set <- gene_sets[[i]]
+  cluster_name <- names(gene_sets)[i]
+
+  print(cluster_name)
+  print(length(gene_set))
+
+  # Keep genes in cluster
+  counts <- fc[rownames(fc) %in% gene_set, ]
+
+  # Metadata
+  metadata_i <- RNA_Metadata
+
+  metadata_i <- metadata_i[
+    match(colnames(counts), metadata_i$SampleName),
+  ]
+
+  metadata_i <- metadata_i %>%
+    filter(Individual != "H4R") %>%
+    filter(Timepoint != "Day4")
+
+  counts <- counts %>%
+    dplyr::select(-contains("R")) %>%
+    dplyr::select(-contains("Day4"))
+
+  # Group labels
+  metadata_i$dgelist <- c(
+    rep(c(
+      "Human_Day0",
+      "Human_Day2",
+      "Human_Day5",
+      "Human_Day15",
+      "Human_Day30",
+      "Chimp_Day0",
+      "Chimp_Day2",
+      "Chimp_Day5",
+      "Chimp_Day15",
+      "Chimp_Day30"
+    ), 7)
+  )
+
+  # DGEList
+  dge <- DGEList(counts = counts)
+
+  dge$samples$group <- factor(metadata_i$dgelist)
+
+  dge <- calcNormFactors(
+    dge,
+    method = "TMM"
+  )
+
+  # log2 CPM
+  log2cpm <- cpm(
+    dge,
+    log = TRUE
+  )
+
+  # Match metadata
+  metadata_i <- metadata_i[
+    match(
+      colnames(log2cpm),
+      metadata_i$SampleName
+    ),
+  ]
+
+  stopifnot(
+    all(
+      metadata_i$SampleName ==
+        colnames(log2cpm)
+    )
+  )
+
+  stopifnot(
+    !any(
+      is.na(metadata_i$SampleName)
+    )
+  )
+
+  # Correlation
+  Cor_log2cpm <- cor(
+    log2cpm,
+    method = "spearman"
+  )
+
+  # Sample information
+  sample_info <- data.frame(
+    sample = colnames(Cor_log2cpm),
+    species = metadata_i$Species,
+    timepoint = metadata_i$Timepoint
+  )
+
+  # Long format
+  cor_long <- as.data.frame(Cor_log2cpm) %>%
+    mutate(
+      sample1 = rownames(Cor_log2cpm)
+    ) %>%
+    pivot_longer(
+      -sample1,
+      names_to = "sample2",
+      values_to = "cor"
+    ) %>%
+    filter(sample1 != sample2) %>%
+    left_join(
+      sample_info,
+      by = c("sample1" = "sample")
+    ) %>%
+    rename(
+      species1 = species,
+      timepoint1 = timepoint
+    ) %>%
+    left_join(
+      sample_info,
+      by = c("sample2" = "sample")
+    ) %>%
+    rename(
+      species2 = species,
+      timepoint2 = timepoint
+    )
+
+  # Same-day cross-species
+  same_day_cross <- cor_long %>%
+    filter(
+      species1 != species2,
+      timepoint1 == timepoint2
+    ) %>%
+    filter(species1 == "H") %>%
+    mutate(
+      timepoint1 = factor(
+        timepoint1,
+        levels = c(
+          "Day0",
+          "Day2",
+          "Day5",
+          "Day15",
+          "Day30"
+        )
+      )
+    )
+
+  # Summary
+  summary_by_day <- same_day_cross %>%
+    group_by(timepoint1) %>%
+    summarise(
+      mean_cor = mean(cor, na.rm = TRUE),
+      sd_cor = sd(cor, na.rm = TRUE),
+      median_cor = median(cor, na.rm = TRUE),
+      n = n(),
+      .groups = "drop"
+    )
+
+  # Kruskal-Wallis
+  kruskal_res <- kruskal.test(
+    cor ~ timepoint1,
+    data = same_day_cross
+  )
+
+  # Pairwise Wilcoxon
+  stat.test <- same_day_cross %>%
+    pairwise_wilcox_test(
+      cor ~ timepoint1,
+      p.adjust.method = "BH"
+    ) %>%
+    add_significance("p.adj") %>%
+    add_y_position() %>%
+    filter(p.adj <= 0.05)
+
+  # Save results
+  results[[cluster_name]] <- list(
+    genes = gene_set,
+    n_genes = length(gene_set),
+    same_day_cross = same_day_cross,
+    summary = summary_by_day,
+    kruskal = kruskal_res,
+    pairwise = stat.test
+  )
+}
+
+# Combine cluster summaries
+all_cluster_summary <- bind_rows(
+  lapply(names(results), function(cluster_name) {
+
+    results[[cluster_name]]$summary %>%
+      mutate(cluster = cluster_name)
+
+  })
+)
+
+# Plot each cluster individually
+for (cluster_name in names(results)) {
+
+  plot_data <- results[[cluster_name]]$same_day_cross
+  stat.test <- results[[cluster_name]]$pairwise
+
+  plot <- ggplot(
+    plot_data,
+    aes(
+      x = timepoint1,
+      y = cor
+    )
+  ) +
+
+    geom_jitter(
+      width = 0.08,
+      alpha = 0.3
+    ) +
+
+    stat_summary(
+      aes(group = 1),
+      fun = median,
+      geom = "line",
+      linewidth = 1
+    ) +
+
+    stat_summary(
+      fun = median,
+      geom = "point",
+      size = 3
+    ) +
+
+    stat_pvalue_manual(
+      stat.test,
+      label = "p.adj.signif",
+      step.increase = 0.07
+    ) +
+
+    coord_cartesian(
+      ylim = c(0.8, 1.00)
+    ) +
+
+    labs(
+      title = paste(
+        "Cross-species correlation -",
+        cluster_name
+      ),
+      x = "Timepoint",
+      y = "Median Spearman correlation"
+    ) +
+
+    theme_classic()
+
+  print(plot)
+}
+
+# Plot all clusters together
+plot_all <- ggplot(
+  all_cluster_summary,
+  aes(
+    x = timepoint1,
+    y = median_cor,
+    group = cluster,
+    color = cluster
+  )
+) +
+
+  geom_line(
+    linewidth = 1
+  ) +
+
+  geom_point(
+    size = 2
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species correlation across CorMotif clusters",
+    x = "Timepoint",
+    y = "Median Spearman correlation",
+    color = "Cluster"
+  ) +
+
+  theme_classic()
+
+plot_all
+```
+
 
 
 ```{r Updating Website, eval = FALSE}

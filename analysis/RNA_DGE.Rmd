@@ -664,7 +664,7 @@ plot_cluster_absfc_sig_species_No4 <- function(gene_vector, cluster_name, top_ta
       signif(kw$p.value, 3)
     )
   ) +
-  coord_cartesian(ylim = c(0, 4)) +
+  coord_cartesian(ylim = c(0, 2)) +
   theme(
     plot.title = element_text(size = rel(1.3), hjust = 0.5),
     axis.title = element_text(size = 15),
@@ -1057,18 +1057,14 @@ Enrich_Go_sets <- function(gene_sets, v) {
   library(org.Hs.eg.db)
   library(dplyr)
 
-  # -----------------------------
-  # Universe (FIXED)
-  # -----------------------------
   background_genes <- rownames(v$E) %>%
-    sub("\\..*", "", .)
+    sub("\\..*", "", .) %>%
+    unique()
 
-  # -----------------------------
-  # GO helper
-  # -----------------------------
   run_go <- function(genes) {
 
     genes <- unique(sub("\\..*", "", genes))
+    genes <- intersect(genes, background_genes)
 
     if (length(genes) < 10) return(NULL)
 
@@ -1078,7 +1074,9 @@ Enrich_Go_sets <- function(gene_sets, v) {
       OrgDb         = org.Hs.eg.db,
       keyType       = "ENSEMBL",
       ont           = "BP",
-      readable      = TRUE
+      readable      = TRUE,
+      pvalueCutoff  = 1,
+      qvalueCutoff  = 1
     )
 
     if (is.null(ego)) return(NULL)
@@ -1086,12 +1084,56 @@ Enrich_Go_sets <- function(gene_sets, v) {
     as.data.frame(ego)
   }
 
-  # -----------------------------
-  # Run for each gene set
-  # -----------------------------
+  run_kegg <- function(genes) {
+
+    genes <- unique(sub("\\..*", "", genes))
+    genes <- intersect(genes, background_genes)
+
+    if (length(genes) < 10) return(NULL)
+
+    # Convert Ensembl IDs to Entrez IDs for KEGG
+    gene_conversion <- bitr(
+      genes,
+      fromType = "ENSEMBL",
+      toType   = "ENTREZID",
+      OrgDb    = org.Hs.eg.db
+    )
+
+    background_conversion <- bitr(
+      background_genes,
+      fromType = "ENSEMBL",
+      toType   = "ENTREZID",
+      OrgDb    = org.Hs.eg.db
+    )
+
+    if (is.null(gene_conversion) || nrow(gene_conversion) < 10 ||
+        is.null(background_conversion) || nrow(background_conversion) == 0) {
+      return(NULL)
+    }
+
+    ekegg <- enrichKEGG(
+      gene          = unique(gene_conversion$ENTREZID),
+      universe      = unique(background_conversion$ENTREZID),
+      organism      = "hsa",
+      pvalueCutoff  = 1,
+      qvalueCutoff  = 1
+    )
+
+    if (is.null(ekegg)) return(NULL)
+
+    as.data.frame(ekegg)
+  }
+
   results <- lapply(gene_sets, function(df) {
-    if (is.null(df) || nrow(df) == 0) return(NULL)
-    run_go(df$Gene)
+
+    if (is.null(df) || nrow(df) == 0) {
+      return(list(GO = NULL, KEGG = NULL))
+    }
+
+    list(
+      GO   = run_go(df$Gene),
+      KEGG = run_kegg(df$Gene)
+    )
   })
 
   return(results)
@@ -1313,6 +1355,10 @@ dge$samples$group <- factor(metadata$dgelist)
 dge <- calcNormFactors(dge, method = "TMM")
 dge$samples
 
+Filt_logcpm_G1_SpTp_RNA_log2cpm_TMM <- cpm(dge, log=TRUE)
+
+save(Filt_logcpm_G1_SpTp_RNA_log2cpm_TMM, file = "data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_TMM.RData")
+
 dim(dge)
 dge$samples
 
@@ -1331,6 +1377,7 @@ design_int <- model.matrix(~ Species * Timepoint,
 
 colnames(design_int)
 colnames(design_int) <- make.names(colnames(design_int))
+
 
 # saveRDS(dge,"data/DGE/dge_logcpm_G1_SpTp_All_NoRep.RDS")
 # saveRDS(design_int,"data/DGE/design_int_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -3650,7 +3697,7 @@ ggplot(
 ### Species DEGs
 
 #### Absolute fold change
-```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -3693,6 +3740,235 @@ cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
 names(cluster_plots) <- names(cluster_lists)
 
 for (p in cluster_plots) print(p)
+
+library(dplyr)
+library(tidyr)
+
+median_absfc <- bind_rows(
+  lapply(names(cluster_lists), function(clust_name) {
+
+    TopTable_Species %>%
+      filter(Gene %in% cluster_lists[[clust_name]]) %>%
+      group_by(Comparisons) %>%
+      summarise(
+        Median_absFC = median(absfc, na.rm = TRUE),
+        N_genes = n_distinct(Gene),
+        .groups = "drop"
+      ) %>%
+      mutate(Cluster = clust_name)
+
+  })
+) %>%
+  select(Cluster, Comparisons, N_genes, Median_absFC) %>%
+  arrange(factor(Cluster, levels = names(cluster_lists)),
+          factor(Comparisons, levels = c(
+            "HvC_Day0", "HvC_Day2", "HvC_Day4",
+            "HvC_Day5", "HvC_Day15", "HvC_Day30"
+          )))
+
+median_absfc
+
+```
+
+
+#### Absolute fold change
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
+RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+TopTable$absfc <- abs(TopTable$logFC)
+
+TopTable_Species <- TopTable %>% 
+  filter(Comparisons %in% c(
+    "HvC_Day0","HvC_Day2","HvC_Day4","HvC_Day5","HvC_Day15",
+    "HvC_Day30"
+  ))
+
+SpeciesD0_genes <- unique(c(RNA_sets$HvC_Day0$DEGs$Gene))
+SpeciesD2_genes <- unique(c(RNA_sets$HvC_Day2$DEGs$Gene))
+SpeciesD5_genes <- unique(c(RNA_sets$HvC_Day5$DEGs$Gene))
+SpeciesD15_genes <- unique(c(RNA_sets$HvC_Day15$DEGs$Gene))
+SpeciesD30_genes <- unique(c(RNA_sets$HvC_Day30$DEGs$Gene))
+All_Expressed <- unique(TopTable$Gene)
+
+cluster_lists <- list(
+ HvC_Day0  = SpeciesD0_genes,
+  HvC_Day2  = SpeciesD2_genes,
+  HvC_Day5  = SpeciesD5_genes,
+  HvC_Day15  = SpeciesD15_genes,
+ HvC_Day30  = SpeciesD30_genes,
+ All_Expressed = All_Expressed
+)
+
+# cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+#   plot_cluster_fc_sig_species_No4(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+# })
+# names(cluster_plots) <- names(cluster_lists)
+# 
+# for (p in cluster_plots) print(p)
+# 
+# cluster_plots <- lapply(names(cluster_lists), function(clust_name) {
+#   plot_cluster_absfc_sig_species_No4(cluster_lists[[clust_name]], clust_name, TopTable_Species)
+# })
+# names(cluster_plots) <- names(cluster_lists)
+# 
+# for (p in cluster_plots) print(p)
+# 
+# 
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+
+# DEG sets to compare
+gene_sets <- list(
+  Day0  = SpeciesD0_genes,
+  Day2  = SpeciesD2_genes,
+  Day5  = SpeciesD5_genes,
+  Day15 = SpeciesD15_genes,
+  Day30 = SpeciesD30_genes
+)
+
+# Calculate mean absolute effect size for each DEG set at each stage
+heatmap_data <- lapply(names(gene_sets), function(set_name) {
+  
+  genes <- gene_sets[[set_name]]
+  
+  TopTable_Species %>%
+    filter(Gene %in% genes) %>%
+    group_by(Comparisons) %>%
+    summarise(
+      mean_absFC = mean(absfc, na.rm = TRUE),
+      n_genes = sum(!is.na(absfc)),
+      .groups = "drop"
+    ) %>%
+    mutate(DEG_set = set_name)
+  
+}) %>%
+  bind_rows()
+
+# Set developmental order
+heatmap_data$Comparisons <- factor(
+  heatmap_data$Comparisons,
+  levels = c(
+    "HvC_Day0",
+    "HvC_Day2",
+    "HvC_Day5",
+    "HvC_Day15",
+    "HvC_Day30"
+  )
+)
+
+heatmap_data$DEG_set <- factor(
+  heatmap_data$DEG_set,
+  levels = c("Day0", "Day2", "Day5", "Day15", "Day30")
+)
+
+# Plot
+ggplot(heatmap_data, aes(x = Comparisons, y = DEG_set, fill = mean_absFC)) +
+  geom_tile(color = "white") +
+  scale_x_discrete(
+    labels = c(
+      "HvC_Day0"  = "Day 0",
+      "HvC_Day2"  = "Day 2",
+      "HvC_Day5"  = "Day 5",
+      "HvC_Day15" = "Day 15",
+      "HvC_Day30" = "Day 30"
+    )
+  ) +
+  labs(
+    x = "Developmental stage where effect size is measured",
+    y = "Stage at which genes were identified as species-DE",
+    fill = "Mean |logFC|"
+  ) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+library(dplyr)
+library(ggplot2)
+
+# Define DEG sets
+deg_sets <- list(
+  HvC_Day0  = SpeciesD0_genes,
+  HvC_Day2  = SpeciesD2_genes,
+  HvC_Day5  = SpeciesD5_genes,
+  HvC_Day15 = SpeciesD15_genes,
+  HvC_Day30 = SpeciesD30_genes
+)
+
+# Add DEG / Non-DEG classification within each comparison
+boxplot_data <- lapply(names(deg_sets), function(comp) {
+  
+  deg_genes <- deg_sets[[comp]]
+  
+  TopTable_Species %>%
+    filter(Comparisons == comp) %>%
+    mutate(
+      DEG_status = ifelse(
+        Gene %in% deg_genes,
+        "DEG",
+        "Non-DEG"
+      )
+    )
+  
+}) %>%
+  bind_rows()
+
+# Order comparisons
+boxplot_data$Comparisons <- factor(
+  boxplot_data$Comparisons,
+  levels = c(
+    "HvC_Day0",
+    "HvC_Day2",
+    "HvC_Day5",
+    "HvC_Day15",
+    "HvC_Day30"
+  )
+)
+
+boxplot_data$DEG_status <- factor(
+  boxplot_data$DEG_status,
+  levels = c("DEG", "Non-DEG")
+)
+
+# Plot absolute effect size
+ggplot(
+  boxplot_data,
+  aes(x = DEG_status, y = absfc)
+) +
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+  facet_wrap(
+    ~ Comparisons,
+    nrow = 1
+  ) +
+  labs(
+    x = NULL,
+    y = "|logFC|"
+  ) +
+  coord_cartesian(ylim = c(0, 5)) +
+  theme_classic()
+
+kruskal.test(
+  absfc ~ Comparisons,
+  data = filter(boxplot_data, DEG_status == "Non-DEG")
+)
+
+pairwise.wilcox.test(
+  x = filter(boxplot_data, DEG_status == "DEG")$absfc,
+  g = filter(boxplot_data, DEG_status == "DEG")$Comparisons,
+  p.adjust.method = "BH"
+)
+
+pairwise.wilcox.test(
+  x = filter(boxplot_data, DEG_status == "Non-DEG")$absfc,
+  g = filter(boxplot_data, DEG_status == "Non-DEG")$Comparisons,
+  p.adjust.method = "BH"
+)
 
 ```
 
@@ -3802,7 +4078,7 @@ for (p in cluster_plots) print(p)
 
 
 #### Proportions
-```{r RNASeq_DGE_species_DEGs_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_species_DEGs_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -3835,6 +4111,11 @@ prop_df$Comparisons <- factor(
 # 4. Plot
 library(ggplot2)
 
+prop_df$DEG_status <- factor(
+  prop_df$DEG_status,
+  levels = c("DEG", "Non-DEG")
+)
+
 ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
   geom_col() +
   theme_bw() +
@@ -3842,11 +4123,15 @@ ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
     x = "Time",
     y = "Proportion of genes",
     fill = "",
-    title = "DEG vs NonDEG composition"
+    title = "DEG vs Non-DEG composition"
   )
+
+ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
+  geom_col(position = position_stack(reverse = TRUE)) +
+  theme_bw()
 ```
 
-```{r RNASeq_DGE_Species_proportions_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Species_proportions_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -3894,7 +4179,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
   )
 ```
 
-```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2, fig.height=7,fig.width=7}
+```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3932,38 +4217,38 @@ shared_all <- Reduce(intersect, genes)
 # Determine DEG fate categories and save gene identities
 ############################################################
 
-# fate_list <- lapply(names(genes), function(day) {
-# 
-#   g <- genes[[day]]
-# 
-#   specific <- setdiff(g, unlist(genes[names(genes) != day]))
-# 
-#   shared_all_day <- intersect(g, shared_all)
-# 
-#   shared_partial <- setdiff(
-#     setdiff(g, specific),
-#     shared_all_day
-#   )
-# 
-#   data.frame(
-#     Gene = c(
-#       specific,
-#       shared_partial,
-#       shared_all_day
-#     ),
-#     Day = day,
-#     Fate = c(
-#       rep("Specific", length(specific)),
-#       rep("Shared_partial", length(shared_partial)),
-#       rep("Shared_all", length(shared_all_day))
-#     )
-#   )
-# 
-# })
-# 
-# fate_df <- bind_rows(fate_list)
-# 
-# saveRDS(fate_df, "data/DGE/SpeciesFateDf_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+fate_list <- lapply(names(genes), function(day) {
+
+  g <- genes[[day]]
+
+  Stage_specific <- setdiff(g, unlist(genes[names(genes) != day]))
+
+  All_stage <- intersect(g, shared_all)
+
+  Multi_stage <- setdiff(
+    setdiff(g, Stage_specific),
+    All_stage
+  )
+
+  data.frame(
+    Gene = c(
+      Stage_specific,
+      All_stage,
+      Multi_stage
+    ),
+    Day = day,
+    Fate = c(
+      rep("Stage_specific", length(Stage_specific)),
+      rep("Multi_stage", length(Multi_stage)),
+      rep("All_stage", length(All_stage))
+    )
+  )
+})
+
+fate_df <- bind_rows(fate_list)
+
+saveRDS(fate_df, "data/DGE/SpeciesFateDf_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 fate_df <- readRDS("data/DGE/SpeciesFateDf_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3971,36 +4256,89 @@ fate_df <- readRDS("data/DGE/SpeciesFateDf_logcpm_G1_SpTp_No4_NoRep.RDS")
 # Extract actual TopTable rows for each fate category
 ############################################################
 
-# TopTable_HvC_DEG_Fate <- TopTable %>%
-#   filter(str_detect(Comparisons, "^HvC_Day")) %>%
-#   mutate(
-#     Day = str_extract(Comparisons, "Day[0-9]+")
-#   ) %>%
-#   left_join(
-#     fate_df,
-#     by = c("Gene", "Day")
-#   ) %>%
-#   filter(!is.na(Fate))
-# 
-# 
-# # Split into separate TopTables
-# TopTable_Specific <- TopTable_HvC_DEG_Fate %>%
-#   filter(Fate == "Specific")
-# 
-# TopTable_Shared_partial <- TopTable_HvC_DEG_Fate %>%
-#   filter(Fate == "Shared_partial")
-# 
-# TopTable_Shared_all <- TopTable_HvC_DEG_Fate %>%
-#   filter(Fate == "Shared_all")
-# 
-# 
-# saveRDS(TopTable_HvC_DEG_Fate, "data/DGE/SpeciesFateTopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+TopTable_HvC_DEG_Fate <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Day = str_extract(Comparisons, "Day[0-9]+")
+  ) %>%
+  left_join(
+    fate_df,
+    by = c("Gene", "Day")
+  ) %>%
+  filter(!is.na(Fate))
+
+
+# Split into separate TopTables
+TopTable_Specific <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Stage_specific")
+
+TopTable_Shared_partial <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "Multi_stage")
+
+TopTable_Shared_all <- TopTable_HvC_DEG_Fate %>%
+  filter(Fate == "All_stage")
+
+
+saveRDS(TopTable_HvC_DEG_Fate, "data/DGE/SpeciesFateTopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 TopTable_HvC_DEG_Fate <-readRDS("data/DGE/SpeciesFateTopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 ############################################################
 # Plot counts
 ############################################################
+
+plot_df <- fate_df %>%
+  dplyr::count(Day, name = "Count") %>%
+  mutate(
+    Day = factor(
+      Day,
+      levels = c("Day0", "Day2", "Day5", "Day15", "Day30")
+    )
+  )
+
+col_theme <- ann_colors$timepoint_cor
+
+ggplot(plot_df, aes(x = Day, y = Count, fill = Day)) +
+  geom_col(width = 0.7) +
+  scale_fill_manual(values = col_theme) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of DEGs",
+    title = "HvC DEGs across development"
+  ) +
+  guides(fill = "none")
+plot_df <- fate_df %>%
+  dplyr::count(Day, Fate, name = "Count") %>%
+  pivot_wider(
+    names_from = Fate,
+    values_from = Count,
+    values_fill = 0
+  )
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Stage_specific, Multi_stage, All_stage),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  mutate(
+    Day = factor(
+      Day,
+      levels = c("Day0", "Day2", "Day5", "Day15", "Day30")
+    ),
+    Category = factor(
+      Category,
+      levels = c("Stage_specific", "Multi_stage", "All_stage"),
+      labels = c("Stage-specific", "Multi-stage", "All-stage")
+    )
+  )
+
+category_colors <- c(
+  "Stage-specific" = "#D55E00",
+  "Multi-stage" = "#0072B2",
+  "All-stage" = "#009E73"
+)
 
 plot_df <- fate_df %>%
   dplyr::count(Day, Fate, name = "Count") %>%
@@ -4012,61 +4350,61 @@ plot_df <- fate_df %>%
 
 plot_long <- plot_df %>%
   pivot_longer(
-    cols = c(Specific, Shared_partial, Shared_all),
+    cols = c(Stage_specific, Multi_stage, All_stage),
     names_to = "Category",
     values_to = "Count"
+  ) %>%
+  mutate(
+    Day = factor(
+      Day,
+      levels = c("Day0", "Day2", "Day5", "Day15", "Day30")
+    ),
+    Category = factor(
+      Category,
+      levels = c("Stage_specific", "Multi_stage", "All_stage"),
+      labels = c("Stage-specific", "Multi-stage", "All-stage")
+    )
   )
 
-plot_long$Day <- factor(
-  plot_long$Day,
-  levels = c("Day0","Day2","Day5","Day15","Day30")
+category_colors <- c(
+  "Stage-specific" = "#D55E00",
+  "Multi-stage" = "#0072B2",
+  "All-stage" = "#009E73"
 )
 
-
+# Plot DEG counts
 ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
   geom_col() +
-  scale_fill_manual(values = c(
-    "Specific" = "#D55E00",
-    "Shared_partial" = "#0072B2",
-    "Shared_all" = "#009E73"
-  )) +
+  scale_fill_manual(values = category_colors) +
   theme_bw() +
   labs(
     x = "Developmental stage",
     y = "Number of DEGs",
-    fill = "",
+    fill = NULL,
     title = "Fate of HvC DEGs across development"
   )
 
-
-############################################################
-# Plot proportions
-############################################################
-
+# Plot DEG proportions
 plot_long_prop <- plot_long %>%
   group_by(Day) %>%
-  mutate(
-    Prop = Count / sum(Count)
-  ) %>%
+  mutate(Prop = Count / sum(Count)) %>%
   ungroup()
-
 
 ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   geom_col() +
-  scale_fill_manual(values = c(
-    "Specific" = "#D55E00",
-    "Shared_partial" = "#0072B2",
-    "Shared_all" = "#009E73"
-  )) +
+  scale_fill_manual(values = category_colors) +
+  scale_y_continuous(
+    labels = scales::label_percent()
+  ) +
   theme_bw() +
   labs(
     x = "Developmental stage",
     y = "Proportion of DEGs",
-    fill = "",
-    title = "Fate of HvC DEGs across development (normalized)"
+    fill = NULL,
+    title = "Fate of HvC DEGs across development"
   )
-
 ```
+
 #### Venn
 
 ```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
@@ -4220,7 +4558,7 @@ library(purrr)
 
 
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1, fig.height=10}
+```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1, fig.width=10, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(ggplot2)
@@ -4283,6 +4621,227 @@ names(plots) <- unique(GO_plot_data$GeneSet)
 for (p in plots) {
   print(p)
 }
+```
+
+```{r, fig.width=5, fig.height=5}
+
+
+all_go_results <-readRDS("data/DGE/SpeciesGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tibble)
+library(pheatmap)
+
+sig_thresh <- 0.05
+
+# Developmental comparisons
+comparisons <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30"
+)
+
+# Enrichment categories
+categories <- c(
+  "All"
+)
+
+
+# ============================================================
+# Function to extract one enrichment category
+# ============================================================
+
+get_go_data <- function(category) {
+  
+  bind_rows(
+    lapply(comparisons, function(comp) {
+      
+      df <- all_go_results[[comp]][[category]]
+      
+      # Handle empty enrichment results
+      if (nrow(df) == 0) {
+        return(NULL)
+      }
+      
+      df %>%
+        filter(p.adjust < sig_thresh) %>%
+        arrange(p.adjust) %>%
+        slice_head(n = 5) %>%
+        transmute(
+          Comparison = comp,
+          term_name = Description,
+          p.adjust = p.adjust
+        )
+    })
+  )
+}
+
+
+# ============================================================
+# Function to make one heatmap
+# ============================================================
+
+make_go_heatmap <- function(category) {
+  
+  # ----------------------------------------------------------
+  # Get top significant terms for each comparison
+  # ----------------------------------------------------------
+  
+  top_terms <- get_go_data(category)
+  
+  if (nrow(top_terms) == 0) {
+    message("No significant GO terms for: ", category)
+    return(NULL)
+  }
+  
+  
+  # ----------------------------------------------------------
+  # All unique terms selected across comparisons
+  # ----------------------------------------------------------
+  
+  unique_terms <- unique(top_terms$term_name)
+  
+  
+  # ----------------------------------------------------------
+  # Re-extract all occurrences of those terms
+  # and use the most significant p.adjust if duplicated
+  # ----------------------------------------------------------
+  
+  heatmap_data <- bind_rows(
+    lapply(comparisons, function(comp) {
+      
+      df <- all_go_results [[comp]][[category]]
+      
+      if (nrow(df) == 0) {
+        return(NULL)
+      }
+      
+      df %>%
+        filter(
+          Description %in% unique_terms,
+          p.adjust < sig_thresh
+        ) %>%
+        transmute(
+          Comparison = comp,
+          term_name = Description,
+          logp = -log10(p.adjust)
+        )
+    })
+  ) %>%
+    group_by(Comparison, term_name) %>%
+    summarise(
+      logp = max(logp, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  
+  # ----------------------------------------------------------
+  # Wide matrix
+  # ----------------------------------------------------------
+  
+  heatmap_wide <- heatmap_data %>%
+    pivot_wider(
+      names_from = Comparison,
+      values_from = logp
+    )
+  
+  
+  # Force developmental order
+  heatmap_wide <- heatmap_wide %>%
+    dplyr::select(
+      term_name,
+      any_of(comparisons)
+    )
+  
+  
+
+  
+  # ----------------------------------------------------------
+  # Long format
+  # ----------------------------------------------------------
+  
+  heatmap_long <- heatmap_wide %>%
+    pivot_longer(
+      cols = -term_name,
+      names_to = "Comparison",
+      values_to = "logp"
+    )
+  
+
+  
+  
+  # ----------------------------------------------------------
+  # Prepare matrix
+  # ----------------------------------------------------------
+  
+  heatmap_matrix <- heatmap_wide %>%
+    column_to_rownames("term_name") %>%
+    as.matrix()
+  
+  
+  heatmap_matrix[is.na(heatmap_matrix)] <- 0
+  
+  
+  # ----------------------------------------------------------
+  # Significance matrix
+  # ----------------------------------------------------------
+  
+  sig_matrix <- heatmap_long %>%
+    mutate(
+      sig = ifelse(!is.na(logp) & logp > -log10(sig_thresh), "*", "")
+    ) %>%
+    dplyr::select(
+      Comparison,
+      term_name,
+      sig
+    ) %>%
+    pivot_wider(
+      names_from = Comparison,
+      values_from = sig,
+      values_fill = ""
+    ) %>%
+    dplyr::select(
+      term_name,
+      any_of(comparisons)
+    ) %>%
+    column_to_rownames("term_name") %>%
+    as.matrix()
+  
+  
+  # ----------------------------------------------------------
+  # Plot
+  # ----------------------------------------------------------
+  
+  pheatmap(
+    heatmap_matrix,
+    color = colorRampPalette(
+      c("grey90", "firebrick")
+    )(100),
+    cluster_rows = TRUE,
+    cluster_cols = FALSE,
+    show_rownames = TRUE,
+    show_colnames = TRUE,
+    fontsize_row = 6,
+    fontsize_col = 8,
+    main = paste("GO:BP Enrichment -", category),
+    display_numbers = sig_matrix,
+    number_color = "black"
+  )
+}
+
+
+# ============================================================
+# Generate all three heatmaps
+# ============================================================
+
+make_go_heatmap("All")
+make_go_heatmap("Human_higher")
+make_go_heatmap("Chimp_higher")
+
 ```
 
 
@@ -4468,7 +5027,7 @@ for (p in cluster_plots) print(p)
 
 #### Proportions
 
-```{r  RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_3}
+```{r  RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_3, fig.width=4, fig.height=6}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -4512,9 +5071,50 @@ ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
     fill = "",
     title = "DEG vs NonDEG composition"
   )
+
+ggplot(prop_df, aes(x = Comparisons, y = n, fill = DEG_status)) +
+  geom_col(position = position_stack(reverse = TRUE)) +
+  theme_bw()
+
+ggplot(
+  filter(prop_df, DEG_status == "DEG"),
+  aes(x = Comparisons, y = n)
+) +
+  geom_col() +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Number of DEGs",
+    title = "Transition DEGs"
+  )
+prop_df %>% 
+  filter(DEG_status == "DEG")
+
+ggplot(
+  prop_df %>%
+    filter(DEG_status == "DEG") %>%
+    mutate(
+      Species = ifelse(grepl("^H_", Comparisons), "Human", "Chimpanzee"),
+      Comparisons = sub("^[HC]_", "", as.character(Comparisons)),
+      Comparisons = factor(
+        Comparisons,
+        levels = c("Day02", "Day25", "Day515", "Day1530")
+      ),
+      Species = factor(Species, levels = c("Human", "Chimpanzee"))
+    ),
+  aes(x = Comparisons, y = n)
+) +
+  geom_col() +
+  facet_wrap(~ Species, ncol = 1, scales = "fixed") +
+  theme_bw() +
+  labs(
+    x = "Time",
+    y = "Number of DEGs",
+    title = "Transition DEGs"
+  )
 ```
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.height=7,fig.width=7}
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -4567,7 +5167,7 @@ plot_df <- df_flags %>%
   group_by(Stage, category) %>%
   summarise(n = n(), .groups = "drop") %>%
   group_by(Stage) %>%
-  mutate(prop = n / sum(n))
+  mutate(prop = n / sum(n)) 
 
 plot_df$Stage <- factor(
   plot_df$Stage,
@@ -4638,6 +5238,197 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
     pattern = ""
   )
 ```
+
+```{r}
+# Day 02 verus Day 25
+tab <- matrix(c(2897, 3499, (2609+2985), (1889+2982)), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+# Day 02 verus Day 515
+tab <- matrix(c(2897, 3754, (2609+2985), (2057+3285)), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+# Day 02 verus Day 1530
+tab <- matrix(c(2897, 2841, (2609+2985), (2502+3285)), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+```
+
+
+```{r}
+# Day 25 verus Day 515
+tab <- matrix(c(3499, 3754, (1889+2982), (2057+3285)), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+# Day 25 verus Day 1530
+tab <- matrix(c(3499, 2841, (1889+2982), (2502+3285)), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+```
+
+```{r}
+
+# Day 515 versus Day 1530
+tab <- matrix(c(3754, 2841, (2057+3285), (2502+3285)), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+```
+
+
+
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=10, fig.height=10}
+library(dplyr)
+library(tidyr)
+
+# Count DEGs for each species and stage
+deg_counts <- df_deg2 %>%
+  group_by(Stage, Species) %>%
+  summarise(
+    n_DEGs = n_distinct(Gene),
+    .groups = "drop"
+  )
+
+# Count genes that are DEGs in both species at each stage
+shared_counts <- df_deg2 %>%
+  group_by(Stage, Gene) %>%
+  summarise(
+    shared = n_distinct(Species) == 2,
+    .groups = "drop"
+  ) %>%
+  filter(shared) %>%
+  count(Stage, name = "n_shared")
+
+# Combine counts and calculate the proportion shared
+shared_deg_table <- deg_counts %>%
+  left_join(shared_counts, by = "Stage") %>%
+  mutate(
+    n_shared = replace_na(n_shared, 0L),
+    prop_shared = n_shared / n_DEGs,
+    Species = recode(Species,
+                     "Human" = "H",
+                     "Chimp" = "C")
+  ) %>%
+  dplyr::select(
+    Species,
+    Stage,
+    n_DEGs,
+    n_shared,
+    prop_shared
+  ) %>%
+  arrange(Stage, Species)
+
+shared_deg_table
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Identify genes shared between species at each transition
+gene_overlap <- df_deg2 %>%
+  distinct(Gene, Stage, Species) %>%
+  group_by(Gene, Stage) %>%
+  mutate(
+    overlap = n_distinct(Species) == 2
+  ) %>%
+  ungroup() %>%
+  mutate(
+    Species = recode(
+      Species,
+      "Human" = "H",
+      "Chimp" = "C"
+    ),
+    category = ifelse(overlap, "Shared", "Non-shared")
+  )
+
+plot_shared <- gene_overlap %>%
+  count(Stage, Species, category, name = "n") %>%
+  group_by(Stage, Species) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  mutate(
+    Stage = factor(
+      Stage,
+      levels = c("Day02", "Day25", "Day515", "Day1530"),
+      labels = c("Day 0–2", "Day 2–5", "Day 5–15", "Day 15–30")
+    ),
+    Species = factor(Species, levels = c("H", "C")),
+    category = factor(category, levels = c("Shared", "Non-shared"))
+  )
+
+ggplot(
+  plot_shared,
+  aes(
+    x = interaction(Stage, Species, sep = "\n"),
+    y = prop,
+    fill = category
+  )
+) +
+  geom_col(
+    position = "stack",
+    colour = "black",
+    width = 0.7
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Shared" = "grey60",
+      "Non-shared" = "white"
+    )
+  ) +
+  scale_y_continuous(
+    labels = scales::label_percent(),
+    limits = c(0, 1)
+  ) +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Transition and species",
+    y = "Proportion of DEGs",
+    fill = "DEG category"
+  )
+
+plot_shared$category <- factor(
+  plot_shared$category,
+  levels = c("Non-shared", "Shared")
+)
+
+ggplot(
+  plot_shared,
+  aes(
+    x = interaction(Stage, Species, sep = "\n"),
+    y = n,
+    fill = category
+  )
+) +
+  geom_col(
+    position = "stack",
+    colour = "black",
+    width = 0.7
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Shared" = "grey60",
+      "Non-shared" = "white"
+    )
+  ) +
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Transition and species",
+    y = "Number of DEGs",
+    fill = "DEG category"
+  )
+```
+
+
 #### Effect Sizes
 ```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -6220,111 +7011,172 @@ ggVennDiagram(genes_list, label = "count") +
 ```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_No4_NoRep.RDS")
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
-# all_go_results <- lapply(names(direction_results), function(traj) {
-# 
-#   res <- direction_results[[traj]]
-# 
-#   gene_sets <- list(
-#     H_pos_C_neg = res$H_pos_C_neg,
-#     H_neg_C_pos = res$H_neg_C_pos,
-#     Both_pos    = res$Both_pos,
-#     Both_neg    = res$Both_neg,
-#     Same_direction = res$Same_direction,
-#     Opposite_direction = res$Opposite_direction,
-#     All = res$all
-#   )
-# 
-#   go <- Enrich_Go_sets(gene_sets, v)
-# 
-#   return(go)
-# })
-# 
-# names(all_go_results) <- names(direction_results)
-# 
-# 
-# saveRDS(all_go_results, "data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+df <- TopTable
+
+times <- c(
+  "H_Day02", "H_Day25", "H_Day515", "H_Day1530",
+  "C_Day02", "C_Day25", "C_Day515", "C_Day1530"
+)
+
+gene_sets <- setNames(
+  lapply(times, function(x) {
+    df %>%
+      filter(Comparisons == x) %>%
+      distinct(Gene)
+  }),
+  times
+)
+
+all_go_results <- Enrich_Go_sets(gene_sets, v)
+
+
+saveRDS(all_go_results, "data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 all_go_results <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+```
+
+
+```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
+
+
+fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_No4_NoRep.RDS")
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+
+df <- TopTable
+
+times <- c(
+  "H_Day02", "H_Day25", "H_Day515", "H_Day1530",
+  "C_Day02", "C_Day25", "C_Day515", "C_Day1530"
+)
+
+# Existing sets: all significant DEGs for each species and transition
+gene_sets <- setNames(
+  lapply(times, function(x) {
+    df %>%
+      filter(Comparisons == x, adj.P.Val < 0.05) %>%
+      distinct(Gene)
+  }),
+  times
+)
+
+# Add shared and species-specific DEG sets
+stages <- c("Day02", "Day25", "Day515", "Day1530")
+
+for (stage in stages) {
+
+  human_genes <- gene_sets[[paste0("H_", stage)]]$Gene
+  chimp_genes <- gene_sets[[paste0("C_", stage)]]$Gene
+
+  gene_sets[[paste0(stage, "_Shared")]] <-
+    data.frame(Gene = intersect(human_genes, chimp_genes))
+
+  gene_sets[[paste0(stage, "_Honly")]] <-
+    data.frame(Gene = setdiff(human_genes, chimp_genes))
+
+  gene_sets[[paste0(stage, "_Conly")]] <-
+    data.frame(Gene = setdiff(chimp_genes, human_genes))
+}
+
+# Check group sizes
+data.frame(
+  GeneSet = names(gene_sets),
+  n_genes = sapply(gene_sets, nrow)
+)
+
+# Run GO enrichment on all sets
+all_go_results <- Enrich_Go_sets(gene_sets, v)
+
+# saveRDS(
+#   all_go_results,
+#   "data/DGE/TrajectoryGo_subsetting_logcpm_G1_SpTp_No4_NoRep.RDS"
+# )
+
+TrajectoryGo_subsetting <- readRDS("data/DGE/TrajectoryGo_subsetting_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 ```
 
 ```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+
 TrajectoryGo_logcpm_G1_SpTp_No4_NoRep <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
 library(purrr)
 
-# comparison <- c(
-#     "Traj02_genes","Traj25_genes","Traj515_genes","Traj1530_genes"
-#   )
-# 
-# top10_terms <- imap_dfr(
-#   TrajectoryGo_logcpm_G1_SpTp_No4_NoRep,
-#   function(comp_list, comparison) {
-# 
-#     imap_dfr(
-#       comp_list,
-#       function(go_df, gene_set) {
-# 
-#         if (is.null(go_df) || nrow(go_df) == 0)
-#           return(NULL)
-# 
-#         go_df %>%
-#           filter(p.adjust < 0.05) %>%
-#           arrange(p.adjust) %>%
-#           slice_head(n = 10) %>%
-#           dplyr::select(ID, Description) %>%
-#           mutate(
-#             Comparison = comparison,
-#             GeneSet = gene_set
-#           )
-#       }
-#     )
-#   }
-# )
-# 
-# GO_terms_to_plot <- top10_terms %>%
-#   distinct(GeneSet, Description)
-# 
-# GO_plot_data <- imap_dfr(
-#  TrajectoryGo_logcpm_G1_SpTp_No4_NoRep,
-#   function(comp_list, comparison) {
-# 
-#     imap_dfr(
-#       comp_list,
-#       function(go_df, gene_set) {
-# 
-#         if (is.null(go_df) || nrow(go_df) == 0)
-#           return(NULL)
-# 
-#         go_df %>%
-#           filter(
-#             Description %in% GO_terms_to_plot$Description[
-#               GO_terms_to_plot$GeneSet == gene_set
-#             ]
-#           ) %>%
-#           mutate(
-#             Comparison = comparison,
-#             GeneSet = gene_set
-#           )
-#       }
-#     )
-#   }
-# )
-# 
-# 
-# GO_plot_data$Comparison <- factor(
-#   GO_plot_data$Comparison,
-#   levels = c(
-#     "Traj02_genes","Traj25_genes","Traj515_genes","Traj1530_genes")
-# )
-# 
-# GO_plot_data$Description <- factor(
-#   GO_plot_data$Description,
-#   levels = rev(unique(top10_terms$Description))
-# )
-# 
+comparison <- c(
+    "Traj02_genes","Traj25_genes","Traj515_genes","Traj1530_genes"
+  )
+
+top10_terms <- imap_dfr(
+  TrajectoryGo_logcpm_G1_SpTp_No4_NoRep,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 10) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+ TrajectoryGo_logcpm_G1_SpTp_No4_NoRep,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "Traj02_genes","Traj25_genes","Traj515_genes","Traj1530_genes")
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
 # saveRDS(GO_plot_data, "data/DGE/TrajectoryGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 ```
@@ -6394,111 +7246,589 @@ for (p in plots) {
 }
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=4}
 
-all_go_results <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
-go_all <- imap_dfr(all_go_results, function(x, name) {
+```{r, fig.width=10, fig.height=10}
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(pheatmap)
 
-  df <- x$All
-  if (is.null(df)) return(NULL)
+# all_go_results <- readRDS(
+#   "data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS"
+# )
 
-  df %>%
-    mutate(trajectory = name)
-})
+sig_thresh <- 0.05
 
-go_all <- go_all %>%
-  mutate(
-    trajectory = recode(
-      trajectory,
-      "Traj02_genes"   = "Day02",
-      "Traj25_genes"   = "Day25",
-      "Traj515_genes"  = "Day515",
-      "Traj1530_genes" = "Day1530"
-    ),
-    trajectory = factor(
-      trajectory,
-      levels = c("Day02", "Day25", "Day515", "Day1530")
+comparisons <- c(
+  "Traj02_genes",
+  "Traj25_genes",
+  "Traj515_genes",
+  "Traj1530_genes"
+)
+
+categories <- c(
+  "Same_direction",
+  "Opposite_direction",
+  "All"
+)
+
+# ============================================================
+# Extract top significant GO terms for each category
+# ============================================================
+
+get_go_data <- function(category) {
+
+  bind_rows(lapply(comparisons, function(comp) {
+
+    df <- all_go_results[[comp]][[category]]
+
+    if (is.null(df) || nrow(df) == 0) {
+      return(NULL)
+    }
+
+    df %>%
+      filter(!is.na(p.adjust), p.adjust < sig_thresh) %>%
+      arrange(p.adjust) %>%
+      slice_head(n = 5) %>%
+      transmute(
+        Comparison = comp,
+        term_name = Description,
+        p.adjust = p.adjust
+      )
+  }))
+}
+
+
+# ============================================================
+# Make one heatmap
+# ============================================================
+
+make_go_heatmap <- function(category) {
+
+  top_terms <- get_go_data(category)
+
+  if (is.null(top_terms) || nrow(top_terms) == 0) {
+    message("No significant GO terms for: ", category)
+    return(invisible(NULL))
+  }
+
+  unique_terms <- unique(top_terms$term_name)
+
+  # Re-extract selected terms across all comparisons
+  heatmap_data <- bind_rows(lapply(comparisons, function(comp) {
+
+    df <- all_go_results[[comp]][[category]]
+
+    if (is.null(df) || nrow(df) == 0) {
+      return(NULL)
+    }
+
+    df %>%
+      filter(
+        Description %in% unique_terms,
+        !is.na(p.adjust),
+        p.adjust < sig_thresh
+      ) %>%
+      transmute(
+        Comparison = comp,
+        term_name = Description,
+        logp = -log10(p.adjust)
+      )
+  })) %>%
+    group_by(Comparison, term_name) %>%
+    summarise(
+      logp = max(logp, na.rm = TRUE),
+      .groups = "drop"
+    )
+
+  if (nrow(heatmap_data) == 0) {
+    message("No plot data for: ", category)
+    return(invisible(NULL))
+  }
+
+  # Create complete term-by-comparison grid
+  heatmap_wide <- heatmap_data %>%
+    select(term_name, Comparison, logp) %>%
+    pivot_wider(
+      names_from = Comparison,
+      values_from = logp
+    ) %>%
+    select(term_name, any_of(comparisons))
+
+  # Save wide data
+  saveRDS(
+    heatmap_wide,
+    paste0(
+      "data/Cormotif/Species/",
+      category,
+      "GoWide_logcpm_G1_SpTp_No4_NoRep.RDS"
     )
   )
 
-is_dev <- function(x) {
-  grepl("development|morphogenesis|differentiation", x, ignore.case = TRUE)
+  # Prepare numeric matrix
+  heatmap_matrix <- heatmap_wide %>%
+    column_to_rownames("term_name") %>%
+    as.matrix()
+
+  storage.mode(heatmap_matrix) <- "numeric"
+  heatmap_matrix[!is.finite(heatmap_matrix)] <- 0
+
+  # Remove rows with no variation if row clustering cannot use them
+  if (nrow(heatmap_matrix) > 1) {
+    keep_rows <- apply(heatmap_matrix, 1, function(x) {
+      length(unique(x)) > 1
+    })
+
+    # Keep all rows if every row is constant; pheatmap can still
+    # display them when clustering is disabled.
+    if (any(keep_rows)) {
+      heatmap_matrix <- heatmap_matrix[keep_rows, , drop = FALSE]
+    }
+  }
+
+  if (nrow(heatmap_matrix) == 0 || ncol(heatmap_matrix) == 0) {
+    message("No variable heatmap rows for: ", category)
+    return(invisible(NULL))
+  }
+
+  # Significance labels aligned to the plotted matrix
+  sig_matrix <- ifelse(heatmap_matrix > -log10(sig_thresh), "*", "")
+  dimnames(sig_matrix) <- dimnames(heatmap_matrix)
+
+  # Ensure color breaks are unique, including for constant matrices
+  value_range <- range(heatmap_matrix, finite = TRUE)
+
+  if (diff(value_range) == 0) {
+    value_range <- value_range + c(-0.5, 0.5)
+  }
+
+  breaks <- seq(
+    value_range[1],
+    value_range[2],
+    length.out = 101
+  )
+
+  pheatmap(
+    heatmap_matrix,
+    breaks = breaks,
+    color = colorRampPalette(c("grey90", "firebrick"))(100),
+    cluster_rows = nrow(heatmap_matrix) > 1,
+    cluster_cols = FALSE,
+    show_rownames = TRUE,
+    show_colnames = TRUE,
+    fontsize_row = 6,
+    fontsize_col = 8,
+    main = paste("GO:BP Enrichment -", category),
+    display_numbers = sig_matrix,
+    number_color = "black"
+  )
 }
 
-go_summary <- go_all %>%
-  mutate(dev = is_dev(Description)) %>%
-  group_by(trajectory) %>%
-  summarise(
-    prop_dev = mean(dev),
-    n_terms = n(),
-    .groups = "drop"
-  )
 
-library(ggplot2)
+# ============================================================
+# Generate heatmaps
+# ============================================================
 
-ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
-  geom_col(fill = "black") +
-  theme_bw() +
-  labs(
-    x = "Trajectory",
-    y = "Proportion developmental GO terms",
-    title = "GO enrichment of DEGs (All DEGs at a transition)"
-  )
+make_go_heatmap("All")
+make_go_heatmap("Same_direction")
+make_go_heatmap("Opposite_direction")
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4_2,fig.height=4}
+```{r, fig.width= 10, fig.height=10}
 
-all_go_results <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+all_pathway_results <- readRDS("data/DGE/TrajectoryGo_subsetting_logcpm_G1_SpTp_No4_NoRep.RDS")
 
-go_all <- imap_dfr(all_go_results, function(x, name) {
+sig_thresh <- 0.05
 
-  df <- x$All
-  if (is.null(df)) return(NULL)
+comparisons <- c(
+  "H_Day02", "C_Day02", "Day02_S", "Day02_H", "Day02_C",
+  "H_Day25", "C_Day25", "Day25_S", "Day25_H", "Day25_C",
+  "H_Day515", "C_Day515", "Day515_S", "Day515_H", "Day515_C",
+  "H_Day1530", "C_Day1530", "Day1530_S", "Day1530_H", "Day1530_C"
+)
 
-  df %>%
-    mutate(trajectory = name)
-})
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(pheatmap)
 
-go_all <- go_all %>%
-  mutate(
-    trajectory = recode(
-      trajectory,
-      "Traj02_genes"   = "Day02",
-      "Traj25_genes"   = "Day25",
-      "Traj515_genes"  = "Day515",
-      "Traj1530_genes" = "Day1530"
-    ),
-    trajectory = factor(
-      trajectory,
-      levels = c("Day02", "Day25", "Day515", "Day1530")
+
+# Extract the top five terms per comparison
+get_pathway_data <- function(pathway = "GO") {
+
+  dplyr::bind_rows(lapply(comparisons, function(comp) {
+
+    result <- all_pathway_results[[comp]]
+
+    if (is.null(result) || !is.list(result)) {
+      return(NULL)
+    }
+
+    df <- result[[pathway]]
+
+    if (is.null(df) || !is.data.frame(df) || nrow(df) == 0) {
+      return(NULL)
+    }
+
+    df %>%
+      dplyr::filter(!is.na(p.adjust)) %>%
+      dplyr::arrange(p.adjust) %>%
+      dplyr::slice_head(n = 5) %>%
+      dplyr::transmute(
+        Comparison = comp,
+        term_name = Description,
+        p.adjust = p.adjust
+      )
+  }))
+}
+
+
+# Create a GO or KEGG heatmap
+make_pathway_heatmap <- function(pathway = "GO") {
+
+  if (!pathway %in% c("GO", "KEGG")) {
+    stop("pathway must be either 'GO' or 'KEGG'.")
+  }
+
+  top_terms <- get_pathway_data(pathway)
+
+  if (is.null(top_terms) || nrow(top_terms) == 0) {
+    message("No ", pathway, " terms found.")
+    return(invisible(NULL))
+  }
+
+  unique_terms <- unique(top_terms$term_name)
+
+  # Gather selected terms across all comparisons
+  heatmap_data <- dplyr::bind_rows(lapply(comparisons, function(comp) {
+
+    result <- all_pathway_results[[comp]]
+
+    if (is.null(result) || !is.list(result)) {
+      return(NULL)
+    }
+
+    df <- result[[pathway]]
+
+    if (is.null(df) || !is.data.frame(df) || nrow(df) == 0) {
+      return(NULL)
+    }
+
+    df %>%
+      dplyr::filter(
+        Description %in% unique_terms,
+        !is.na(p.adjust)
+      ) %>%
+      dplyr::transmute(
+        Comparison = comp,
+        term_name = Description,
+        p.adjust = p.adjust,
+        logp = -log10(pmax(p.adjust, .Machine$double.xmin)),
+        sig = ifelse(p.adjust < sig_thresh, "*", "")
+      )
+  }))
+
+  if (nrow(heatmap_data) == 0) {
+    message("No ", pathway, " results available for the selected terms.")
+    return(invisible(NULL))
+  }
+
+  # Handle duplicate term/comparison combinations
+  heatmap_data <- heatmap_data %>%
+    dplyr::group_by(Comparison, term_name) %>%
+    dplyr::summarise(
+      logp = max(logp, na.rm = TRUE),
+      sig = if (any(sig == "*")) "*" else "",
+      .groups = "drop"
+    )
+
+  # Create numeric heatmap matrix
+  heatmap_wide <- heatmap_data %>%
+    dplyr::select(term_name, Comparison, logp) %>%
+    tidyr::pivot_wider(
+      names_from = Comparison,
+      values_from = logp
+    ) %>%
+    dplyr::select(term_name, dplyr::any_of(comparisons))
+
+  # Create significance annotation matrix
+  sig_wide <- heatmap_data %>%
+    dplyr::select(term_name, Comparison, sig) %>%
+    tidyr::pivot_wider(
+      names_from = Comparison,
+      values_from = sig,
+      values_fill = ""
+    ) %>%
+    dplyr::select(term_name, dplyr::any_of(comparisons))
+
+  # Save the numeric heatmap values
+  saveRDS(
+    heatmap_wide,
+    paste0(
+      "data/DGE/",
+      pathway,
+      "_SharedSpecificWide_logcpm_G1_SpTp_No4_NoRep.RDS"
     )
   )
 
-is_dev <- function(x) {
-  grepl("heart|cardiac", x, ignore.case = TRUE)
+  # Convert to matrices
+  heatmap_matrix <- heatmap_wide %>%
+    tibble::column_to_rownames("term_name") %>%
+    as.matrix()
+
+  sig_matrix <- sig_wide %>%
+    tibble::column_to_rownames("term_name") %>%
+    as.matrix()
+
+  storage.mode(heatmap_matrix) <- "numeric"
+  heatmap_matrix[!is.finite(heatmap_matrix)] <- NA_real_
+  sig_matrix[is.na(sig_matrix)] <- ""
+
+  # Remove rows with no usable values
+  keep_rows <- rowSums(!is.na(heatmap_matrix)) > 0
+
+  heatmap_matrix <- heatmap_matrix[keep_rows, , drop = FALSE]
+  sig_matrix <- sig_matrix[rownames(heatmap_matrix), , drop = FALSE]
+
+  if (nrow(heatmap_matrix) == 0) {
+    message("No finite enrichment values to plot.")
+    return(invisible(NULL))
+  }
+
+  # Define colour scale
+  value_range <- range(heatmap_matrix, na.rm = TRUE)
+
+  if (diff(value_range) == 0) {
+    value_range <- value_range + c(-0.5, 0.5)
+  }
+
+  # Plot heatmap
+  pheatmap::pheatmap(
+    heatmap_matrix,
+    color = colorRampPalette(c("grey90", "firebrick"))(100),
+    breaks = seq(value_range[1], value_range[2], length.out = 101),
+    cluster_rows = FALSE,
+    cluster_cols = FALSE,
+    show_rownames = TRUE,
+    show_colnames = TRUE,
+    fontsize_row = 6,
+    fontsize_col = 8,
+    angle_col = 45,
+    main = if (pathway == "GO") {
+      "GO:BP Enrichment — Shared and Species-Specific DEGs"
+    } else {
+      "KEGG Enrichment — Shared and Species-Specific DEGs"
+    },
+    display_numbers = sig_matrix,
+    number_color = "black",
+    na_col = "white"
+  )
 }
 
-go_summary <- go_all %>%
-  mutate(dev = is_dev(Description)) %>%
-  group_by(trajectory) %>%
-  summarise(
-    prop_dev = mean(dev),
-    n_terms = n(),
-    .groups = "drop"
-  )
 
-library(ggplot2)
+# Generate separate heatmaps
+make_pathway_heatmap("GO")
+make_pathway_heatmap("KEGG")
 
-ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
-  geom_col(fill = "black") +
-  theme_bw() +
-  labs(
-    x = "Trajectory",
-    y = "Proportion cardiac/heart GO terms",
-    title = "GO enrichment of DEGs (All DEGs at a transition)"
-  )
+
 ```
+
+```{r, fig.width= 4, fig.height=5}
+all_pathway_results <- readRDS("data/DGE/TrajectoryGo_subsetting_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+sig_thresh <- 0.05
+
+comparisons <- c(
+  "H_Day02",  "H_Day25", "H_Day515", "H_Day1530",
+  "C_Day02",  "C_Day25", "C_Day515", "C_Day1530"
+   )
+
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(pheatmap)
+
+
+# Extract the top five terms per comparison
+get_pathway_data <- function(pathway = "GO") {
+
+  dplyr::bind_rows(lapply(comparisons, function(comp) {
+
+    result <- all_pathway_results[[comp]]
+
+    if (is.null(result) || !is.list(result)) {
+      return(NULL)
+    }
+
+    df <- result[[pathway]]
+
+    if (is.null(df) || !is.data.frame(df) || nrow(df) == 0) {
+      return(NULL)
+    }
+
+    df %>%
+      dplyr::filter(!is.na(p.adjust)) %>%
+      dplyr::arrange(p.adjust) %>%
+      dplyr::slice_head(n = 5) %>%
+      dplyr::transmute(
+        Comparison = comp,
+        term_name = Description,
+        p.adjust = p.adjust
+      )
+  }))
+}
+
+
+# Create a GO or KEGG heatmap
+make_pathway_heatmap <- function(pathway = "GO") {
+
+  if (!pathway %in% c("GO", "KEGG")) {
+    stop("pathway must be either 'GO' or 'KEGG'.")
+  }
+
+  top_terms <- get_pathway_data(pathway)
+
+  if (is.null(top_terms) || nrow(top_terms) == 0) {
+    message("No ", pathway, " terms found.")
+    return(invisible(NULL))
+  }
+
+  unique_terms <- unique(top_terms$term_name)
+
+  # Gather selected terms across all comparisons
+  heatmap_data <- dplyr::bind_rows(lapply(comparisons, function(comp) {
+
+    result <- all_pathway_results[[comp]]
+
+    if (is.null(result) || !is.list(result)) {
+      return(NULL)
+    }
+
+    df <- result[[pathway]]
+
+    if (is.null(df) || !is.data.frame(df) || nrow(df) == 0) {
+      return(NULL)
+    }
+
+    df %>%
+      dplyr::filter(
+        Description %in% unique_terms,
+        !is.na(p.adjust)
+      ) %>%
+      dplyr::transmute(
+        Comparison = comp,
+        term_name = Description,
+        p.adjust = p.adjust,
+        logp = -log10(pmax(p.adjust, .Machine$double.xmin)),
+        sig = ifelse(p.adjust < sig_thresh, "*", "")
+      )
+  }))
+
+  if (nrow(heatmap_data) == 0) {
+    message("No ", pathway, " results available for the selected terms.")
+    return(invisible(NULL))
+  }
+
+  # Handle duplicate term/comparison combinations
+  heatmap_data <- heatmap_data %>%
+    dplyr::group_by(Comparison, term_name) %>%
+    dplyr::summarise(
+      logp = max(logp, na.rm = TRUE),
+      sig = if (any(sig == "*")) "*" else "",
+      .groups = "drop"
+    )
+
+  # Create numeric heatmap matrix
+  heatmap_wide <- heatmap_data %>%
+    dplyr::select(term_name, Comparison, logp) %>%
+    tidyr::pivot_wider(
+      names_from = Comparison,
+      values_from = logp
+    ) %>%
+    dplyr::select(term_name, dplyr::any_of(comparisons))
+
+  # Create significance annotation matrix
+  sig_wide <- heatmap_data %>%
+    dplyr::select(term_name, Comparison, sig) %>%
+    tidyr::pivot_wider(
+      names_from = Comparison,
+      values_from = sig,
+      values_fill = ""
+    ) %>%
+    dplyr::select(term_name, dplyr::any_of(comparisons))
+
+  # Save the numeric heatmap values
+  saveRDS(
+    heatmap_wide,
+    paste0(
+      "data/DGE/",
+      pathway,
+      "_SharedSpecificWide_logcpm_G1_SpTp_No4_NoRep.RDS"
+    )
+  )
+
+  # Convert to matrices
+  heatmap_matrix <- heatmap_wide %>%
+    tibble::column_to_rownames("term_name") %>%
+    as.matrix()
+
+  sig_matrix <- sig_wide %>%
+    tibble::column_to_rownames("term_name") %>%
+    as.matrix()
+
+  storage.mode(heatmap_matrix) <- "numeric"
+  heatmap_matrix[!is.finite(heatmap_matrix)] <- NA_real_
+  sig_matrix[is.na(sig_matrix)] <- ""
+
+  # Remove rows with no usable values
+  keep_rows <- rowSums(!is.na(heatmap_matrix)) > 0
+
+  heatmap_matrix <- heatmap_matrix[keep_rows, , drop = FALSE]
+  sig_matrix <- sig_matrix[rownames(heatmap_matrix), , drop = FALSE]
+
+  if (nrow(heatmap_matrix) == 0) {
+    message("No finite enrichment values to plot.")
+    return(invisible(NULL))
+  }
+
+  # Define colour scale
+  value_range <- range(heatmap_matrix, na.rm = TRUE)
+
+  if (diff(value_range) == 0) {
+    value_range <- value_range + c(-0.5, 0.5)
+  }
+
+  # Plot heatmap
+  pheatmap::pheatmap(
+    heatmap_matrix,
+    color = colorRampPalette(c("grey90", "firebrick"))(100),
+    breaks = seq(value_range[1], value_range[2], length.out = 101),
+    cluster_rows = FALSE,
+    cluster_cols = FALSE,
+    show_rownames = TRUE,
+    show_colnames = TRUE,
+    fontsize_row = 6,
+    fontsize_col = 8,
+    angle_col = 90,
+    main = if (pathway == "GO") {
+      "GO"
+    } else {
+      "KEGG"
+    },
+    display_numbers = sig_matrix,
+    number_color = "black",
+    na_col = "white"
+  )
+}
+
+
+# Generate separate heatmaps
+make_pathway_heatmap("GO")
+make_pathway_heatmap("KEGG")
+
+```
+
 
 ## Interaction DEGs
 
@@ -6548,6 +7878,7 @@ for (p in cluster_plots) print(p)
 
 
 ```
+
 
 #### absFC plot
 ```{r RNASeq_DGE_Interaction_absFC_No4}
@@ -6922,13 +8253,14 @@ prop_long$trajectory <- factor(
 )
 
 ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
-  geom_col() +
+   geom_col(position = position_stack(reverse = TRUE)) +
   theme_bw() +
   labs(
     x = "Time window",
     y = "Proportion of genes",
     fill = ""
   )
+
 ```
 
 ```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
@@ -6951,11 +8283,83 @@ prop_df <- map_dfr(days, function(day) {
 
     Same_direction = length(x$Same_direction$Gene),
 
-    Human_higher = length(x$H_pos_C_neg$Gene),
-
-    Chimp_higher = length(x$H_neg_C_pos$Gene)
+   Pos_human = length(x$H_pos_C_neg$Gene),
+   
+   Pos_chimp = length(x$H_neg_C_pos$Gene)
   )
 })
+
+
+prop_long <- prop_df %>%
+  pivot_longer(
+    cols = -trajectory,
+    names_to = "type",
+    values_to = "count"
+  ) %>%
+  group_by(trajectory) %>%
+  mutate(
+    prop = count / sum(count)
+  ) %>%
+  ungroup()
+
+prop_long$trajectory <- factor(
+  prop_long$trajectory,
+  levels = c("02", "25", "515", "1530"),
+  labels = c("0–2", "2–5", "5–15", "15–30")
+)
+
+ggplot(
+  prop_long,
+  aes(x = trajectory, y = count, fill = type)
+) +
+  geom_col(
+    color = "black",
+    linewidth = 0.3
+  ) +
+  theme_bw() +
+  labs(
+    x = "Time window",
+    y = "Proportion of interaction DEGs",
+    fill = ""
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Same_direction" = "grey70",
+      "Pos_human"   = "white",
+      "Pos_chimp"   = "black"
+    )
+  ) +
+  theme(
+    panel.grid = element_blank()
+  )
+```
+
+
+```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
+
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+RNA_sets <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(ggplot2)
+
+days <- c("02", "25", "515", "1530")
+
+prop_df <- map_dfr(days, function(day) {
+
+  x <- RNA_sets[[paste0("InterTraj", day)]]
+
+  tibble(
+    trajectory = day,
+
+    Same_direction = length(x$Same_direction$Gene),
+
+   Opp_Direction = length(x$H_pos_C_neg$Gene) + length(x$H_neg_C_pos$Gene)
+  )
+})
+
 
 prop_long <- prop_df %>%
   pivot_longer(
@@ -6992,8 +8396,7 @@ ggplot(
   scale_fill_manual(
     values = c(
       "Same_direction" = "grey70",
-      "Human_higher"   = "black",
-      "Chimp_higher"   = "white"
+      "Opp_Direction"   = "black"
     )
   ) +
   theme(
@@ -7001,6 +8404,52 @@ ggplot(
   )
 ```
 
+
+```{r}
+# Day 02 verus Day 25
+tab <- matrix(c(718, 367, 1405, 404), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+# Day 02 verus Day 515
+tab <- matrix(c(718,353, 1405, 519), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+# Day 02 verus Day 1530
+tab <- matrix(c(718,393, 1405, 667), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+```
+
+
+```{r}
+# Day 25 verus Day 515
+tab <- matrix(c(367, 353, 404, 519), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+# Day 25 verus Day 1530
+tab <- matrix(c(367, 393, 404, 667), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+```
+
+```{r}
+
+# Day 515 versus Day 1530
+tab <- matrix(c(353, 393, 519, 667), nrow = 2)
+
+# Run Chi-squared test
+chisq.test(tab)
+
+```
 #### GoEnrichemnt
 ```{r RNASeq_DGE_Interaction_EnrichGo}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7287,6 +8736,250 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
+```{r, fig.width=5, fig.height=5}
+all_go_results <- readRDS("data/DGE/InteractionsGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tibble)
+library(pheatmap)
+
+sig_thresh <- 0.05
+
+# Developmental comparisons
+comparisons <- c(
+  "InterTraj02",
+  "InterTraj25",
+  "InterTraj515",
+  "InterTraj1530"
+)
+
+# Enrichment categories
+categories <- c(
+  "H_pos_C_neg",
+  "H_neg_C_pos",
+  "Both_pos",
+  "Both_neg",
+  "Both_pos",
+  "Same_direction",
+  "Opposite_direction",
+  "All"
+)
+
+
+# ============================================================
+# Function to extract one enrichment category
+# ============================================================
+
+get_go_data <- function(category) {
+  
+  bind_rows(
+    lapply(comparisons, function(comp) {
+      
+      df <- all_go_results[[comp]][[category]]
+      
+      # Handle empty enrichment results
+      if (nrow(df) == 0) {
+        return(NULL)
+      }
+      
+      df %>%
+        filter(p.adjust < sig_thresh) %>%
+        arrange(p.adjust) %>%
+        slice_head(n = 5) %>%
+        transmute(
+          Comparison = comp,
+          term_name = Description,
+          p.adjust = p.adjust
+        )
+    })
+  )
+}
+
+
+# ============================================================
+# Function to make one heatmap
+# ============================================================
+
+make_go_heatmap <- function(category) {
+  
+  # ----------------------------------------------------------
+  # Get top significant terms for each comparison
+  # ----------------------------------------------------------
+  
+  top_terms <- get_go_data(category)
+  
+  if (nrow(top_terms) == 0) {
+    message("No significant GO terms for: ", category)
+    return(NULL)
+  }
+  
+  
+  # ----------------------------------------------------------
+  # All unique terms selected across comparisons
+  # ----------------------------------------------------------
+  
+  unique_terms <- unique(top_terms$term_name)
+  
+  
+  # ----------------------------------------------------------
+  # Re-extract all occurrences of those terms
+  # and use the most significant p.adjust if duplicated
+  # ----------------------------------------------------------
+  
+  heatmap_data <- bind_rows(
+    lapply(comparisons, function(comp) {
+      
+      df <- all_go_results[[comp]][[category]]
+      
+      if (nrow(df) == 0) {
+        return(NULL)
+      }
+      
+      df %>%
+        filter(
+          Description %in% unique_terms,
+          p.adjust < sig_thresh
+        ) %>%
+        transmute(
+          Comparison = comp,
+          term_name = Description,
+          logp = -log10(p.adjust)
+        )
+    })
+  ) %>%
+    group_by(Comparison, term_name) %>%
+    summarise(
+      logp = max(logp, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  
+  # ----------------------------------------------------------
+  # Wide matrix
+  # ----------------------------------------------------------
+  
+  heatmap_wide <- heatmap_data %>%
+    pivot_wider(
+      names_from = Comparison,
+      values_from = logp
+    )
+  
+  
+  # Force developmental order
+  heatmap_wide <- heatmap_wide %>%
+    dplyr::select(
+      term_name,
+      any_of(comparisons)
+    )
+  
+  
+  # ----------------------------------------------------------
+  # Save wide data
+  # ----------------------------------------------------------
+  
+  saveRDS(
+    heatmap_wide,
+    paste0(
+      "data/Cormotif/Species/",
+      category,
+      "GoWide_logcpm_G1_SpTp_No4_NoRep.RDS"
+    )
+  )
+  
+  
+  # ----------------------------------------------------------
+  # Long format
+  # ----------------------------------------------------------
+  
+  heatmap_long <- heatmap_wide %>%
+    pivot_longer(
+      cols = -term_name,
+      names_to = "Comparison",
+      values_to = "logp"
+    )
+  
+  
+  saveRDS(
+    heatmap_long,
+    paste0(
+      "data/Cormotif/Species/",
+      category,
+      "GoLong_logcpm_G1_SpTp_No4_NoRep.RDS"
+    )
+  )
+  
+  
+  # ----------------------------------------------------------
+  # Prepare matrix
+  # ----------------------------------------------------------
+  
+  heatmap_matrix <- heatmap_wide %>%
+    column_to_rownames("term_name") %>%
+    as.matrix()
+  
+  
+  heatmap_matrix[is.na(heatmap_matrix)] <- 0
+  
+  
+  # ----------------------------------------------------------
+  # Significance matrix
+  # ----------------------------------------------------------
+  
+  sig_matrix <- heatmap_long %>%
+    mutate(
+      sig = ifelse(!is.na(logp) & logp > -log10(sig_thresh), "*", "")
+    ) %>%
+    dplyr::select(
+      Comparison,
+      term_name,
+      sig
+    ) %>%
+    pivot_wider(
+      names_from = Comparison,
+      values_from = sig,
+      values_fill = ""
+    ) %>%
+    dplyr::select(
+      term_name,
+      any_of(comparisons)
+    ) %>%
+    column_to_rownames("term_name") %>%
+    as.matrix()
+  
+  
+  # ----------------------------------------------------------
+  # Plot
+  # ----------------------------------------------------------
+  
+  pheatmap(
+    heatmap_matrix,
+    color = colorRampPalette(
+      c("grey90", "firebrick")
+    )(100),
+    cluster_rows = TRUE,
+    cluster_cols = FALSE,
+    show_rownames = TRUE,
+    show_colnames = TRUE,
+    fontsize_row = 6,
+    fontsize_col = 8,
+    main = paste("GO:BP Enrichment -", category),
+    display_numbers = sig_matrix,
+    number_color = "black"
+  )
+}
+
+
+# ============================================================
+# Generate all three heatmaps
+# ============================================================
+
+make_go_heatmap("All")
+
+
+```
+
 ##### Any Interaction Gene
 ```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7349,82 +9042,82 @@ library(dplyr)
 library(purrr)
 
 
-# top10_terms <- imap_dfr(
-#   InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
-#   function(comp_list, comparison) {
-# 
-#     imap_dfr(
-#       comp_list,
-#       function(go_df, gene_set) {
-# 
-#         if (is.null(go_df) || nrow(go_df) == 0)
-#           return(NULL)
-# 
-#         go_df %>%
-#           filter(p.adjust < 0.05) %>%
-#           arrange(p.adjust) %>%
-#           slice_head(n = 10) %>%
-#           dplyr::select(ID, Description) %>%
-#           mutate(
-#             Comparison = comparison,
-#             GeneSet = gene_set
-#           )
-#       }
-#     )
-#   }
-# )
-# 
-# GO_terms_to_plot <- top10_terms %>%
-#   distinct(GeneSet, Description)
-# 
-# GO_plot_data <- imap_dfr(
-#  InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
-#   function(comp_list, comparison) {
-# 
-#     imap_dfr(
-#       comp_list,
-#       function(go_df, gene_set) {
-# 
-#         if (is.null(go_df) || nrow(go_df) == 0)
-#           return(NULL)
-# 
-#         go_df %>%
-#           filter(
-#             Description %in% GO_terms_to_plot$Description[
-#               GO_terms_to_plot$GeneSet == gene_set
-#             ]
-#           ) %>%
-#           mutate(
-#             Comparison = comparison,
-#             GeneSet = gene_set
-#           )
-#       }
-#     )
-#   }
-# )
-# 
-# 
-# GO_plot_data$Comparison <- factor(
-#   GO_plot_data$Comparison,
-#   levels = c(
-#     "InterTraj02",
-#     "InterTraj25",
-#     "InterTraj515",
-#     "InterTraj1530",
-#     "InteractionAtLeastOne"
-#   )
-# )
-# 
-# GO_plot_data$Description <- factor(
-#   GO_plot_data$Description,
-#   levels = rev(unique(top10_terms$Description))
-# )
-# 
-# saveRDS(GO_plot_data, "data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+top10_terms <- imap_dfr(
+  InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(p.adjust < 0.05) %>%
+          arrange(p.adjust) %>%
+          slice_head(n = 5) %>%
+          dplyr::select(ID, Description) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+GO_terms_to_plot <- top10_terms %>%
+  distinct(GeneSet, Description)
+
+GO_plot_data <- imap_dfr(
+ InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4,
+  function(comp_list, comparison) {
+
+    imap_dfr(
+      comp_list,
+      function(go_df, gene_set) {
+
+        if (is.null(go_df) || nrow(go_df) == 0)
+          return(NULL)
+
+        go_df %>%
+          filter(
+            Description %in% GO_terms_to_plot$Description[
+              GO_terms_to_plot$GeneSet == gene_set
+            ]
+          ) %>%
+          mutate(
+            Comparison = comparison,
+            GeneSet = gene_set
+          )
+      }
+    )
+  }
+)
+
+
+GO_plot_data$Comparison <- factor(
+  GO_plot_data$Comparison,
+  levels = c(
+    "InterTraj02",
+    "InterTraj25",
+    "InterTraj515",
+    "InterTraj1530",
+    "InteractionAtLeastOne"
+  )
+)
+
+GO_plot_data$Description <- factor(
+  GO_plot_data$Description,
+  levels = rev(unique(top10_terms$Description))
+)
+
+saveRDS(GO_plot_data, "data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 ```
 
 
-```{r RNASeq_DGE_Interaction_EnrichGo_2_plot1 ,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_2_plot1 ,fig.width=10,fig.height=10}
 library(ggplot2)
 
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -7449,9 +9142,12 @@ ggplot(GO_plot_data,
   )
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_2_plot2, fig.height=5}
+```{r RNASeq_DGE_Interaction_EnrichGo_2_plot2, fig.width=12, fig.height=12}
 
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+GO_plot_data <- GO_plot_data %>% 
+  filter(Comparison != "InteractionAtLeastOne")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
   
@@ -7470,8 +9166,8 @@ plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
     geom_point() +
     theme_bw() +
     theme(
-      axis.text.x = element_text(angle = 45, hjust = 1),
-      axis.text.y = element_text(size = 8)
+    axis.text.x = element_text(angle = 90, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 15)
     ) +
     labs(
       title = gene_set,
@@ -7487,6 +9183,215 @@ names(plots) <- unique(GO_plot_data$GeneSet)
 for (p in plots) {
   print(p)
 }
+
+
+ggplot(
+  GO_plot_data,
+  aes(
+    x = interaction(Comparison, GeneSet, sep = "_"),
+    y = Description,
+    size = Count,
+    color = -log10(p.adjust)
+  )
+) +
+  geom_point() +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 15)
+  ) +
+  labs(
+    x = "Comparison_GeneSet",
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+gene_set_order <- c(
+  "All",
+  "Both_pos",
+  "Both_neg",
+  "H_pos_C_neg",
+  "H_neg_C_pos",
+  "Same_direction",
+  "Opposite_direction"
+)
+
+comparison_order <- c(
+  "InterTraj02",
+  "InterTraj25",
+  "InterTraj515",
+  "InterTraj1530"
+  
+)
+
+column_order <- unlist(lapply(comparison_order, function(comp) {
+  paste(comp, gene_set_order, sep = "_")
+}))
+
+GO_plot_data <- GO_plot_data %>%
+  mutate(
+    Comparison_GeneSet = factor(
+      paste(Comparison, GeneSet, sep = "_"),
+      levels = column_order
+    )
+  )
+
+ggplot(
+  GO_plot_data,
+  aes(
+    x = Comparison_GeneSet,
+    y = Description,
+    size = Count,
+    color = -log10(p.adjust)
+  )
+) +
+  geom_point() +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 15)
+  ) +
+  labs(
+    x = "Comparison_GeneSet",
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+
+comparison_interest <- c("All","Same_direction","H_pos_C_neg", "H_neg_C_pos")
+
+GO_plot_data <- GO_plot_data %>% 
+  filter(GeneSet %in% comparison_interest)
+
+GO_plot_data <- GO_plot_data %>%
+  mutate(
+    Comparison_GeneSet = factor(
+      paste(Comparison, GeneSet, sep = "_"),
+      levels = column_order
+    )
+  )
+
+ggplot(
+  GO_plot_data,
+  aes(
+    x = Comparison_GeneSet,
+    y = Description,
+    size = Count,
+    color = -log10(p.adjust)
+  )
+) +
+  geom_point() +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, size = 15),
+    axis.text.y = element_text(size = 15)
+  ) +
+  labs(
+    x = "Comparison_GeneSet",
+    y = "GO Biological Process",
+    size = "Gene Count",
+    color = "-log10(FDR)"
+  )
+```
+
+
+```{r, fig.width=10, fig.height=10}
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+library(tibble)
+
+GO_plot_data <- readRDS(
+  "data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+# Prepare values and significance labels
+heatmap_data <- GO_plot_data %>%
+  mutate(
+    Column = paste(Comparison, GeneSet, sep = "_"),
+    logp = -log10(pmax(p.adjust, .Machine$double.xmin)),
+    sig = ifelse(p.adjust < 0.05, "*", "")
+  ) %>%
+  group_by(Description, Column) %>%
+  summarise(
+    logp = max(logp, na.rm = TRUE),
+    sig = ifelse(any(sig == "*"), "*", ""),
+    .groups = "drop"
+  )
+
+# Numeric matrix
+heatmap_wide <- heatmap_data %>%
+  select(Description, Column, logp) %>%
+  pivot_wider(names_from = Column, values_from = logp)
+
+heatmap_matrix <- heatmap_wide %>%
+  column_to_rownames("Description") %>%
+  as.matrix()
+
+storage.mode(heatmap_matrix) <- "numeric"
+
+# Significance matrix, matching the numeric matrix
+sig_wide <- heatmap_data %>%
+  select(Description, Column, sig) %>%
+  pivot_wider(names_from = Column, values_from = sig, values_fill = "")
+
+sig_matrix <- sig_wide %>%
+  column_to_rownames("Description") %>%
+  as.matrix()
+
+sig_matrix <- sig_matrix[
+  rownames(heatmap_matrix),
+  colnames(heatmap_matrix),
+  drop = FALSE
+]
+
+# Plot in the style of your example
+value_range <- range(heatmap_matrix[is.finite(heatmap_matrix)])
+
+gene_set_order <- c(
+  "All",
+  "Both_pos",
+  "Both_neg",
+  "H_pos_C_neg",
+  "H_neg_C_pos",
+  "Same_direction",
+  "Opposite_direction"
+)
+
+comparison_order <- c(
+  "InterTraj02",
+  "InterTraj25",
+  "InterTraj515",
+  "InterTraj1530",
+  "InteractionAtLeastOne"
+)
+
+column_order <- unlist(lapply(comparison_order, function(comp) {
+  paste(comp, gene_set_order, sep = "_")
+}))
+
+column_order <- column_order[column_order %in% colnames(heatmap_matrix)]
+
+heatmap_matrix <- heatmap_matrix[, column_order, drop = FALSE]
+sig_matrix <- sig_matrix[, column_order, drop = FALSE]
+
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c("grey90", "firebrick"))(100),
+  breaks = seq(value_range[1], value_range[2], length.out = 101),
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 7,
+  angle_col = 90,
+  main = "GO:BP Enrichment Across Interaction Gene Sets",
+  display_numbers = sig_matrix,
+  number_color = "black",
+  na_col = "white"
+)
 ```
 
 ```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
@@ -7497,4 +9402,13 @@ wflow_publish("analysis/RNA_DGE.Rmd")
 
 ```
 
+```{r}
+
+comp_list <- c("Sig_Sp_inter_Traj02")
+TopTable %>% 
+  filter(Comparisons %in% comp_list) %>% 
+  filter(adj.P.Val < 0.05) %>%
+  pull(Gene) %>% 
+  unique()
+```
 

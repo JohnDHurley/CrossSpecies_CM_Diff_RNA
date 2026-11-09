@@ -1,0 +1,1576 @@
+"term_name","GeneSet","Comparison","Column","logp","sig","p.adjust"
+"glycoprotein metabolic process","All","InterTraj02","All_InterTraj02",1.47029902313698,"*",0.0338610933353208
+"glycoprotein metabolic process","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein metabolic process","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"glycoprotein metabolic process","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein metabolic process","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"glycoprotein metabolic process","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein metabolic process","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",6.11115798726054,"*",7.74180116016297e-07
+"glycoprotein metabolic process","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein metabolic process","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"glycoprotein metabolic process","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein metabolic process","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"glycoprotein metabolic process","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein metabolic process","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"glycoprotein metabolic process","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"glycoprotein metabolic process","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"glycoprotein metabolic process","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"glycoprotein metabolic process","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","All","InterTraj02","All_InterTraj02",1.47029902313698,"*",0.0338610933353208
+"rRNA metabolic process","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"rRNA metabolic process","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"rRNA metabolic process","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"rRNA metabolic process","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"rRNA metabolic process","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"rRNA metabolic process","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",13.0098100856917,"*",9.77664654237904e-14
+"rRNA metabolic process","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"rRNA metabolic process","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"rRNA metabolic process","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"rRNA metabolic process","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"rRNA metabolic process","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"rRNA metabolic process","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"rRNA metabolic process","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"rRNA metabolic process","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"rRNA metabolic process","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"rRNA metabolic process","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"rRNA metabolic process","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"rRNA metabolic process","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"rRNA metabolic process","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",2.79978958786846,"*",0.001585661246319
+"rRNA metabolic process","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"rRNA metabolic process","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"rRNA metabolic process","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"rRNA metabolic process","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","All","InterTraj02","All_InterTraj02",1.47029902313698,"*",0.0338610933353208
+"protein maturation","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"protein maturation","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"protein maturation","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"protein maturation","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"protein maturation","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"protein maturation","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"protein maturation","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"protein maturation","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"protein maturation","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"protein maturation","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"protein maturation","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"protein maturation","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",1.88594151440156,"*",0.0130034468114742
+"protein maturation","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"protein maturation","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"protein maturation","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"protein maturation","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"protein maturation","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"protein maturation","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"protein maturation","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"protein maturation","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"protein maturation","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"protein maturation","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"protein maturation","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"protein maturation","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"protein maturation","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"protein maturation","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"protein maturation","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"protein maturation","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"protein maturation","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","All","InterTraj02","All_InterTraj02",1.43751631751574,"*",0.0365160407019201
+"mitochondrial translation","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"mitochondrial translation","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"mitochondrial translation","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"mitochondrial translation","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"mitochondrial translation","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"mitochondrial translation","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"mitochondrial translation","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"mitochondrial translation","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",10.566160176518,"*",2.71543757627138e-11
+"mitochondrial translation","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"mitochondrial translation","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"mitochondrial translation","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"mitochondrial translation","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"mitochondrial translation","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"mitochondrial translation","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"mitochondrial translation","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"mitochondrial translation","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"mitochondrial translation","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"mitochondrial translation","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"mitochondrial translation","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"mitochondrial translation","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"mitochondrial translation","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"mitochondrial translation","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"mitochondrial translation","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"mitochondrial translation","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial translation","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",2.79978958786846,"*",0.001585661246319
+"mitochondrial translation","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"mitochondrial translation","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"mitochondrial translation","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"mitochondrial translation","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","All","InterTraj02","All_InterTraj02",1.43751631751574,"*",0.0365160407019201
+"rRNA processing","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"rRNA processing","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"rRNA processing","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"rRNA processing","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"rRNA processing","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"rRNA processing","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"rRNA processing","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"rRNA processing","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",13.1944653645219,"*",6.3904970025539e-14
+"rRNA processing","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"rRNA processing","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"rRNA processing","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"rRNA processing","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"rRNA processing","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"rRNA processing","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"rRNA processing","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"rRNA processing","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"rRNA processing","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"rRNA processing","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"rRNA processing","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"rRNA processing","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"rRNA processing","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"rRNA processing","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"rRNA processing","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"rRNA processing","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"rRNA processing","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",2.79978958786846,"*",0.001585661246319
+"rRNA processing","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"rRNA processing","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"rRNA processing","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"rRNA processing","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"tissue remodeling","All","InterTraj02","All_InterTraj02",1.31069666176121,"*",0.0488993783721336
+"tissue remodeling","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"tissue remodeling","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"tissue remodeling","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"tissue remodeling","All","InteractionAtLeastOne","All_InteractionAtLeastOne",1.7211657071486,"*",0.0190035305272687
+"tissue remodeling","Same_direction","InterTraj02","Same_direction_InterTraj02",1.74266564286746,"*",0.0180856597933202
+"tissue remodeling","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"tissue remodeling","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"tissue remodeling","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"tissue remodeling","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"tissue remodeling","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"tissue remodeling","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"tissue remodeling","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"tissue remodeling","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"tissue remodeling","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"tissue remodeling","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"tissue remodeling","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"tissue remodeling","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"tissue remodeling","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"tissue remodeling","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"tissue remodeling","Both_pos","InterTraj02","Both_pos_InterTraj02",1.53965221878881,"*",0.028863419485092
+"tissue remodeling","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"tissue remodeling","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"tissue remodeling","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"tissue remodeling","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"tissue remodeling","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"tissue remodeling","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"tissue remodeling","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"tissue remodeling","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"tissue remodeling","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"tissue remodeling","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"tissue remodeling","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"tissue remodeling","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"tissue remodeling","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"tissue remodeling","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","All","InterTraj02","All_InterTraj02",1.31069666176121,"*",0.0488993783721336
+"ribonucleoprotein complex biogenesis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",19.1602038149017,"*",6.91506370019421e-20
+"ribonucleoprotein complex biogenesis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",2.89936795537459,"*",0.00126075890578951
+"ribonucleoprotein complex biogenesis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"ribonucleoprotein complex biogenesis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"ribosome biogenesis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"ribosome biogenesis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"ribosome biogenesis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"ribosome biogenesis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"ribosome biogenesis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"ribosome biogenesis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",14.67667986494,"*",2.10532978696284e-15
+"ribosome biogenesis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"ribosome biogenesis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"ribosome biogenesis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"ribosome biogenesis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"ribosome biogenesis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"ribosome biogenesis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"ribosome biogenesis","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"ribosome biogenesis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"ribosome biogenesis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"ribosome biogenesis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"ribosome biogenesis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"ribosome biogenesis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"ribosome biogenesis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",2.76684755495237,"*",0.00171061566608394
+"ribosome biogenesis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"ribosome biogenesis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"ribosome biogenesis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"ribosome biogenesis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","All","InterTraj02","All_InterTraj02",1.31069666176121,"*",0.0488993783721336
+"mitochondrial gene expression","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"mitochondrial gene expression","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",11.2088302930395,"*",6.18257946333137e-12
+"mitochondrial gene expression","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"mitochondrial gene expression","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"mitochondrial gene expression","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"mitochondrial gene expression","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial gene expression","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",2.73926821646404,"*",0.00182276962808874
+"mitochondrial gene expression","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"mitochondrial gene expression","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"mitochondrial gene expression","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"mitochondrial gene expression","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"glycoprotein biosynthetic process","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"glycoprotein biosynthetic process","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"glycoprotein biosynthetic process","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",3.2573052030957,"*",0.000552961375660322
+"glycoprotein biosynthetic process","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"glycoprotein biosynthetic process","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"glycoprotein biosynthetic process","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"glycoprotein biosynthetic process","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"glycoprotein biosynthetic process","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"glycoprotein biosynthetic process","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"glycoprotein biosynthetic process","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"glycoprotein biosynthetic process","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","All","InterTraj02","All_InterTraj02",1.31069666176121,"*",0.0488993783721336
+"endoplasmic reticulum mannose trimming","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",3.2573052030957,"*",0.000552961375660322
+"endoplasmic reticulum mannose trimming","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",1.48892561146311,"*",0.0324395176922486
+"endoplasmic reticulum mannose trimming","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"endoplasmic reticulum mannose trimming","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"intracellular monoatomic cation homeostasis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",3.2573052030957,"*",0.000552961375660322
+"intracellular monoatomic cation homeostasis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"intracellular monoatomic cation homeostasis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"monoatomic cation homeostasis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"monoatomic cation homeostasis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"monoatomic cation homeostasis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",3.2573052030957,"*",0.000552961375660322
+"monoatomic cation homeostasis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"monoatomic cation homeostasis","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"monoatomic cation homeostasis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"monoatomic cation homeostasis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"monoatomic cation homeostasis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"monoatomic cation homeostasis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"monoatomic cation homeostasis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"monoatomic cation homeostasis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj25","Both_pos_InterTraj25",1.36521413834088,"*",0.0431306359407513
+"regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj02","Both_neg_InterTraj02",2.13003439316452,"*",0.00741251536904188
+"regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"regulation of synaptic transmission, glutamatergic","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj02","Both_neg_InterTraj02",1.74668912988402,"*",0.0179188803731227
+"positive regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"positive regulation of synaptic transmission, glutamatergic","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"lymphocyte homeostasis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"lymphocyte homeostasis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"lymphocyte homeostasis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"lymphocyte homeostasis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"lymphocyte homeostasis","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","Both_neg","InterTraj02","Both_neg_InterTraj02",1.51483459043844,"*",0.0305608486137356
+"lymphocyte homeostasis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"lymphocyte homeostasis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"lymphocyte homeostasis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"lymphocyte homeostasis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"lymphocyte homeostasis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"lymphocyte homeostasis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"synaptic transmission, glutamatergic","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"synaptic transmission, glutamatergic","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"synaptic transmission, glutamatergic","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"synaptic transmission, glutamatergic","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_pos","InterTraj25","Both_pos_InterTraj25",1.45423285989416,"*",0.0351371991475159
+"synaptic transmission, glutamatergic","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_neg","InterTraj02","Both_neg_InterTraj02",1.51483459043844,"*",0.0305608486137356
+"synaptic transmission, glutamatergic","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"synaptic transmission, glutamatergic","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"synaptic transmission, glutamatergic","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"synaptic transmission, glutamatergic","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"synaptic transmission, glutamatergic","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"synaptic transmission, glutamatergic","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"glutamate receptor signaling pathway","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"glutamate receptor signaling pathway","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"glutamate receptor signaling pathway","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"glutamate receptor signaling pathway","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"glutamate receptor signaling pathway","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","Both_neg","InterTraj02","Both_neg_InterTraj02",1.31811479999595,"*",0.0480712261732182
+"glutamate receptor signaling pathway","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"glutamate receptor signaling pathway","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"glutamate receptor signaling pathway","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"glutamate receptor signaling pathway","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"glutamate receptor signaling pathway","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"glutamate receptor signaling pathway","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"transmission of nerve impulse","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"transmission of nerve impulse","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",2.75680877621275,"*",0.00175061733159176
+"transmission of nerve impulse","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"transmission of nerve impulse","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"transmission of nerve impulse","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"transmission of nerve impulse","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"transmission of nerve impulse","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"transmission of nerve impulse","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"transmission of nerve impulse","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"transmission of nerve impulse","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"transmission of nerve impulse","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"calcium ion transport","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"calcium ion transport","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"calcium ion transport","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"calcium ion transport","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"calcium ion transport","All","InteractionAtLeastOne","All_InteractionAtLeastOne",1.60020250842806,"*",0.0251071542976805
+"calcium ion transport","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"calcium ion transport","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"calcium ion transport","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"calcium ion transport","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"calcium ion transport","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"calcium ion transport","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"calcium ion transport","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",2.04687049337338,"*",0.0089769644769742
+"calcium ion transport","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"calcium ion transport","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"calcium ion transport","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"calcium ion transport","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"calcium ion transport","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"calcium ion transport","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",1.64759388934075,"*",0.022511586901972
+"calcium ion transport","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"calcium ion transport","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"calcium ion transport","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"calcium ion transport","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"calcium ion transport","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"calcium ion transport","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"calcium ion transport","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"calcium ion transport","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"calcium ion transport","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"calcium ion transport","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"calcium ion transport","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"calcium ion transport","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"calcium ion transport","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"calcium ion transport","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"calcium ion transport","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"calcium ion transport","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"calcium ion transport","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"detection of stimulus involved in sensory perception","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"detection of stimulus involved in sensory perception","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","All","InteractionAtLeastOne","All_InteractionAtLeastOne",1.44531285605684,"*",0.0358663468397693
+"detection of stimulus involved in sensory perception","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"detection of stimulus involved in sensory perception","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",1.61936209435218,"*",0.0240235899062808
+"detection of stimulus involved in sensory perception","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"detection of stimulus involved in sensory perception","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"detection of stimulus involved in sensory perception","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"detection of stimulus involved in sensory perception","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"detection of stimulus involved in sensory perception","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"detection of stimulus involved in sensory perception","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"neuron projection morphogenesis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"neuron projection morphogenesis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",2.80695293067986,"*",0.00155972153802589
+"neuron projection morphogenesis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"neuron projection morphogenesis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"neuron projection morphogenesis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"neuron projection morphogenesis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"neuron projection morphogenesis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"neuron projection morphogenesis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"neuron projection morphogenesis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","Both_pos","InterTraj25","Both_pos_InterTraj25",3.76387799555007,"*",0.000172235235994686
+"neuron projection morphogenesis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"neuron projection morphogenesis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"neuron projection morphogenesis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"neuron projection morphogenesis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"neuron projection morphogenesis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"neuron projection morphogenesis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"neuron projection morphogenesis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"neuron projection morphogenesis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",2.80695293067986,"*",0.00155972153802589
+"plasma membrane bounded cell projection morphogenesis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",1.3609077490632,"*",0.0435604393041347
+"plasma membrane bounded cell projection morphogenesis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_pos","InterTraj25","Both_pos_InterTraj25",3.76387799555007,"*",0.000172235235994686
+"plasma membrane bounded cell projection morphogenesis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"plasma membrane bounded cell projection morphogenesis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"cell projection morphogenesis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"cell projection morphogenesis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"cell projection morphogenesis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",2.68129383502672,"*",0.00208308103492949
+"cell projection morphogenesis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"cell projection morphogenesis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"cell projection morphogenesis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"cell projection morphogenesis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"cell projection morphogenesis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"cell projection morphogenesis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"cell projection morphogenesis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"cell projection morphogenesis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",1.3609077490632,"*",0.0435604393041347
+"cell projection morphogenesis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"cell projection morphogenesis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","Both_pos","InterTraj25","Both_pos_InterTraj25",3.76387799555007,"*",0.000172235235994686
+"cell projection morphogenesis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"cell projection morphogenesis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"cell projection morphogenesis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"cell projection morphogenesis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"cell projection morphogenesis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"cell projection morphogenesis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"cell projection morphogenesis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"cell projection morphogenesis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"cell projection morphogenesis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"cell projection morphogenesis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"axon development","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"axon development","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"axon development","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"axon development","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"axon development","All","InteractionAtLeastOne","All_InteractionAtLeastOne",3.60814590920225,"*",0.000246521096521841
+"axon development","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"axon development","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"axon development","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"axon development","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"axon development","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"axon development","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"axon development","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"axon development","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"axon development","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"axon development","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"axon development","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"axon development","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"axon development","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"axon development","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"axon development","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"axon development","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"axon development","Both_pos","InterTraj25","Both_pos_InterTraj25",3.46047509892573,"*",0.000346357743098296
+"axon development","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"axon development","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"axon development","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"axon development","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"axon development","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"axon development","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"axon development","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"axon development","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"axon development","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"axon development","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"axon development","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"axon development","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"axon development","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"axonogenesis","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"axonogenesis","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"axonogenesis","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"axonogenesis","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"axonogenesis","All","InteractionAtLeastOne","All_InteractionAtLeastOne",3.03551836318232,"*",0.000921470925549715
+"axonogenesis","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"axonogenesis","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"axonogenesis","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"axonogenesis","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"axonogenesis","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"axonogenesis","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"axonogenesis","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"axonogenesis","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"axonogenesis","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"axonogenesis","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"axonogenesis","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"axonogenesis","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"axonogenesis","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"axonogenesis","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"axonogenesis","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"axonogenesis","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"axonogenesis","Both_pos","InterTraj25","Both_pos_InterTraj25",3.44973491676328,"*",0.000355030025170539
+"axonogenesis","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"axonogenesis","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"axonogenesis","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"axonogenesis","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"axonogenesis","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"axonogenesis","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"axonogenesis","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"axonogenesis","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"axonogenesis","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"axonogenesis","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"axonogenesis","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"axonogenesis","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"axonogenesis","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"regulation of leukocyte migration","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"regulation of leukocyte migration","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"regulation of leukocyte migration","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"regulation of leukocyte migration","All","InteractionAtLeastOne","All_InteractionAtLeastOne",2.0663208664255,"*",0.00858379097596307
+"regulation of leukocyte migration","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"regulation of leukocyte migration","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"regulation of leukocyte migration","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"regulation of leukocyte migration","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"regulation of leukocyte migration","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"regulation of leukocyte migration","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"regulation of leukocyte migration","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"regulation of leukocyte migration","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"regulation of leukocyte migration","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",1.63657293859325,"*",0.0230901663320336
+"regulation of leukocyte migration","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",2.33676806783513,"*",0.00460502436278564
+"regulation of leukocyte migration","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"regulation of leukocyte migration","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"regulation of leukocyte migration","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"regulation of leukocyte migration","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"regulation of leukocyte migration","Both_pos","InterTraj1530","Both_pos_InterTraj1530",1.52930017813668,"*",0.0295596863704028
+"regulation of leukocyte migration","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"regulation of leukocyte migration","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"regulation of leukocyte migration","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"regulation of leukocyte migration","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"regulation of leukocyte migration","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"regulation of leukocyte migration","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"regulation of leukocyte migration","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"regulation of leukocyte migration","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"regulation of leukocyte migration","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"regulation of leukocyte migration","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"leukocyte migration","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"leukocyte migration","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"leukocyte migration","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"leukocyte migration","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"leukocyte migration","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"leukocyte migration","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"leukocyte migration","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"leukocyte migration","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"leukocyte migration","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"leukocyte migration","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"leukocyte migration","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"leukocyte migration","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"leukocyte migration","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"leukocyte migration","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",2.33676806783513,"*",0.00460502436278564
+"leukocyte migration","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"leukocyte migration","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"leukocyte migration","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"leukocyte migration","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"leukocyte migration","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"leukocyte migration","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"leukocyte migration","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"leukocyte migration","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"leukocyte migration","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"leukocyte migration","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"leukocyte migration","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"leukocyte migration","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"leukocyte migration","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"leukocyte migration","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"leukocyte migration","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"cellular response to mechanical stimulus","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"cellular response to mechanical stimulus","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"cellular response to mechanical stimulus","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",1.97539218150373,"*",0.0105829761768798
+"cellular response to mechanical stimulus","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"cellular response to mechanical stimulus","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"cellular response to mechanical stimulus","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"cellular response to mechanical stimulus","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"cellular response to mechanical stimulus","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"cellular response to mechanical stimulus","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"cellular response to mechanical stimulus","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"cellular response to mechanical stimulus","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"cellular response to external stimulus","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"cellular response to external stimulus","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"cellular response to external stimulus","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",1.97539218150373,"*",0.0105829761768798
+"cellular response to external stimulus","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"cellular response to external stimulus","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"cellular response to external stimulus","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"cellular response to external stimulus","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"cellular response to external stimulus","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"cellular response to external stimulus","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"cellular response to external stimulus","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"cellular response to external stimulus","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"extracellular matrix organization","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"extracellular matrix organization","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"extracellular matrix organization","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"extracellular matrix organization","All","InterTraj1530","All_InterTraj1530",3.52399618573423,"*",0.000299229091680092
+"extracellular matrix organization","All","InteractionAtLeastOne","All_InteractionAtLeastOne",1.72371632095501,"*",0.0188922497872681
+"extracellular matrix organization","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"extracellular matrix organization","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"extracellular matrix organization","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"extracellular matrix organization","Same_direction","InterTraj1530","Same_direction_InterTraj1530",2.29290757537504,"*",0.00509439276128337
+"extracellular matrix organization","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"extracellular matrix organization","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"extracellular matrix organization","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"extracellular matrix organization","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"extracellular matrix organization","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"extracellular matrix organization","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"extracellular matrix organization","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",1.39984288559619,"*",0.0398251219554267
+"extracellular matrix organization","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"extracellular matrix organization","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"extracellular matrix organization","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"extracellular matrix organization","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"extracellular matrix organization","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"extracellular matrix organization","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"extracellular matrix organization","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"extracellular matrix organization","Both_pos","InterTraj1530","Both_pos_InterTraj1530",3.70569966506018,"*",0.000196924764575178
+"extracellular matrix organization","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"extracellular matrix organization","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"extracellular matrix organization","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"extracellular matrix organization","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"extracellular matrix organization","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"extracellular matrix organization","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"extracellular matrix organization","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"extracellular matrix organization","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"extracellular matrix organization","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"extracellular matrix organization","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"extracellular matrix organization","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"extracellular structure organization","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"extracellular structure organization","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"extracellular structure organization","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"extracellular structure organization","All","InterTraj1530","All_InterTraj1530",3.52399618573423,"*",0.000299229091680092
+"extracellular structure organization","All","InteractionAtLeastOne","All_InteractionAtLeastOne",1.72371632095501,"*",0.0188922497872681
+"extracellular structure organization","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"extracellular structure organization","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"extracellular structure organization","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"extracellular structure organization","Same_direction","InterTraj1530","Same_direction_InterTraj1530",2.29290757537504,"*",0.00509439276128337
+"extracellular structure organization","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"extracellular structure organization","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"extracellular structure organization","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"extracellular structure organization","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"extracellular structure organization","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"extracellular structure organization","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"extracellular structure organization","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",1.39984288559619,"*",0.0398251219554267
+"extracellular structure organization","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"extracellular structure organization","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"extracellular structure organization","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"extracellular structure organization","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"extracellular structure organization","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"extracellular structure organization","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"extracellular structure organization","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"extracellular structure organization","Both_pos","InterTraj1530","Both_pos_InterTraj1530",3.70569966506018,"*",0.000196924764575178
+"extracellular structure organization","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"extracellular structure organization","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"extracellular structure organization","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"extracellular structure organization","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"extracellular structure organization","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"extracellular structure organization","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"extracellular structure organization","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"extracellular structure organization","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"extracellular structure organization","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"extracellular structure organization","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"extracellular structure organization","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"external encapsulating structure organization","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"external encapsulating structure organization","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","All","InterTraj1530","All_InterTraj1530",3.52399618573423,"*",0.000299229091680092
+"external encapsulating structure organization","All","InteractionAtLeastOne","All_InteractionAtLeastOne",1.69722234559523,"*",0.0200806448131815
+"external encapsulating structure organization","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"external encapsulating structure organization","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","Same_direction","InterTraj1530","Same_direction_InterTraj1530",2.29290757537504,"*",0.00509439276128337
+"external encapsulating structure organization","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"external encapsulating structure organization","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"external encapsulating structure organization","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"external encapsulating structure organization","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"external encapsulating structure organization","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",1.38713366360198,"*",0.0410077873150315
+"external encapsulating structure organization","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"external encapsulating structure organization","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"external encapsulating structure organization","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"external encapsulating structure organization","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","Both_pos","InterTraj1530","Both_pos_InterTraj1530",3.70569966506018,"*",0.000196924764575178
+"external encapsulating structure organization","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"external encapsulating structure organization","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"external encapsulating structure organization","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"external encapsulating structure organization","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"external encapsulating structure organization","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"external encapsulating structure organization","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"external encapsulating structure organization","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"external encapsulating structure organization","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"external encapsulating structure organization","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","All","InterTraj1530","All_InterTraj1530",2.79013704690881,"*",0.00162129839618748
+"ATP synthesis coupled electron transport","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","Same_direction","InterTraj1530","Same_direction_InterTraj1530",4.59371870227737,"*",2.54848039930818e-05
+"ATP synthesis coupled electron transport","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"ATP synthesis coupled electron transport","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"ATP synthesis coupled electron transport","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_pos","InterTraj1530","Both_pos_InterTraj1530",8.295127996354,"*",5.0684130872416e-09
+"ATP synthesis coupled electron transport","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"ATP synthesis coupled electron transport","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"ATP synthesis coupled electron transport","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"ATP synthesis coupled electron transport","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"ATP synthesis coupled electron transport","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"ATP synthesis coupled electron transport","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"ATP synthesis coupled electron transport","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","All","InterTraj1530","All_InterTraj1530",2.79013704690881,"*",0.00162129839618748
+"mitochondrial ATP synthesis coupled electron transport","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Same_direction","InterTraj1530","Same_direction_InterTraj1530",4.59371870227737,"*",2.54848039930818e-05
+"mitochondrial ATP synthesis coupled electron transport","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_pos","InterTraj1530","Both_pos_InterTraj1530",8.295127996354,"*",5.0684130872416e-09
+"mitochondrial ATP synthesis coupled electron transport","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"mitochondrial ATP synthesis coupled electron transport","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","All","InterTraj1530","All_InterTraj1530",2.79013704690881,"*",0.00162129839618748
+"respiratory electron transport chain","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","Same_direction","InterTraj1530","Same_direction_InterTraj1530",4.74997076799074,"*",1.77839910861177e-05
+"respiratory electron transport chain","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"respiratory electron transport chain","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"respiratory electron transport chain","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","Both_pos","InterTraj1530","Both_pos_InterTraj1530",8.99386503238311,"*",1.01422653242947e-09
+"respiratory electron transport chain","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"respiratory electron transport chain","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"respiratory electron transport chain","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"respiratory electron transport chain","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"respiratory electron transport chain","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"respiratory electron transport chain","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"respiratory electron transport chain","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"electron transport chain","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"electron transport chain","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"electron transport chain","All","InterTraj1530","All_InterTraj1530",2.3378129471265,"*",0.00459395834387925
+"electron transport chain","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"electron transport chain","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"electron transport chain","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"electron transport chain","Same_direction","InterTraj1530","Same_direction_InterTraj1530",4.59371870227737,"*",2.54848039930818e-05
+"electron transport chain","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"electron transport chain","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"electron transport chain","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"electron transport chain","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"electron transport chain","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"electron transport chain","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"electron transport chain","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"electron transport chain","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"electron transport chain","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"electron transport chain","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"electron transport chain","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"electron transport chain","Both_pos","InterTraj1530","Both_pos_InterTraj1530",8.70527138599455,"*",1.97119057518446e-09
+"electron transport chain","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"electron transport chain","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"electron transport chain","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"electron transport chain","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"electron transport chain","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"electron transport chain","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"electron transport chain","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"electron transport chain","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"electron transport chain","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"electron transport chain","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","All","InterTraj1530","All_InterTraj1530",2.70925421707631,"*",0.00195319580532311
+"aerobic electron transport chain","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","Same_direction","InterTraj1530","Same_direction_InterTraj1530",4.04847166186475,"*",8.94392890030227e-05
+"aerobic electron transport chain","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"aerobic electron transport chain","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"aerobic electron transport chain","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","Both_pos","InterTraj1530","Both_pos_InterTraj1530",7.46237017973283,"*",3.44849674395217e-08
+"aerobic electron transport chain","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"aerobic electron transport chain","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"aerobic electron transport chain","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"aerobic electron transport chain","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"aerobic electron transport chain","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"aerobic electron transport chain","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"aerobic electron transport chain","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"organic anion transport","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"organic anion transport","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"organic anion transport","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"organic anion transport","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"organic anion transport","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"organic anion transport","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"organic anion transport","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"organic anion transport","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"organic anion transport","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"organic anion transport","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"organic anion transport","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",2.02074185490357,"*",0.00953362675415614
+"organic anion transport","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"organic anion transport","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"organic anion transport","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"organic anion transport","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"organic anion transport","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"organic anion transport","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"organic anion transport","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"organic anion transport","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"organic anion transport","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"organic anion transport","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"organic anion transport","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"organic anion transport","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"organic anion transport","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"organic anion transport","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"organic anion transport","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"organic anion transport","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"organic anion transport","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"organic anion transport","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"organic acid transport","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"organic acid transport","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"organic acid transport","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"organic acid transport","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"organic acid transport","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"organic acid transport","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"organic acid transport","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"organic acid transport","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"organic acid transport","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"organic acid transport","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"organic acid transport","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",2.02074185490357,"*",0.00953362675415614
+"organic acid transport","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"organic acid transport","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"organic acid transport","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"organic acid transport","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"organic acid transport","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"organic acid transport","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"organic acid transport","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"organic acid transport","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"organic acid transport","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"organic acid transport","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"organic acid transport","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"organic acid transport","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"organic acid transport","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"organic acid transport","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"organic acid transport","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"organic acid transport","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"organic acid transport","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"organic acid transport","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"carboxylic acid transport","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"carboxylic acid transport","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"carboxylic acid transport","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"carboxylic acid transport","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"carboxylic acid transport","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"carboxylic acid transport","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"carboxylic acid transport","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"carboxylic acid transport","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"carboxylic acid transport","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"carboxylic acid transport","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"carboxylic acid transport","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",2.02074185490357,"*",0.00953362675415614
+"carboxylic acid transport","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"carboxylic acid transport","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"carboxylic acid transport","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"carboxylic acid transport","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"carboxylic acid transport","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"carboxylic acid transport","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"carboxylic acid transport","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"carboxylic acid transport","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"carboxylic acid transport","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"carboxylic acid transport","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"carboxylic acid transport","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"carboxylic acid transport","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"carboxylic acid transport","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"carboxylic acid transport","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"carboxylic acid transport","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"carboxylic acid transport","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"carboxylic acid transport","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"carboxylic acid transport","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"epidermis development","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"epidermis development","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"epidermis development","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"epidermis development","All","InteractionAtLeastOne","All_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"epidermis development","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"epidermis development","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"epidermis development","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"epidermis development","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"epidermis development","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"epidermis development","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"epidermis development","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",1.48968984829732,"*",0.0323824834099926
+"epidermis development","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"epidermis development","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"epidermis development","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"epidermis development","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"epidermis development","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"epidermis development","Both_pos","InterTraj25","Both_pos_InterTraj25",NA,NA,NA
+"epidermis development","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"epidermis development","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"epidermis development","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"epidermis development","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"epidermis development","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"epidermis development","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"epidermis development","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"epidermis development","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"epidermis development","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"epidermis development","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"epidermis development","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"epidermis development","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"synapse assembly","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"synapse assembly","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"synapse assembly","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"synapse assembly","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"synapse assembly","All","InteractionAtLeastOne","All_InteractionAtLeastOne",3.03551836318232,"*",0.000921470925549715
+"synapse assembly","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"synapse assembly","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"synapse assembly","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"synapse assembly","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"synapse assembly","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"synapse assembly","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"synapse assembly","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"synapse assembly","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"synapse assembly","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"synapse assembly","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"synapse assembly","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",1.86729595894907,"*",0.013573881111507
+"synapse assembly","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"synapse assembly","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"synapse assembly","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"synapse assembly","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"synapse assembly","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"synapse assembly","Both_pos","InterTraj25","Both_pos_InterTraj25",1.36850808712358,"*",0.0428047448716227
+"synapse assembly","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"synapse assembly","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"synapse assembly","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"synapse assembly","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"synapse assembly","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"synapse assembly","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"synapse assembly","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"synapse assembly","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"synapse assembly","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"synapse assembly","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"synapse assembly","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"synapse assembly","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"synapse assembly","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"axon guidance","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"axon guidance","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"axon guidance","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"axon guidance","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"axon guidance","All","InteractionAtLeastOne","All_InteractionAtLeastOne",2.80695293067986,"*",0.00155972153802589
+"axon guidance","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"axon guidance","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"axon guidance","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"axon guidance","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"axon guidance","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"axon guidance","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"axon guidance","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"axon guidance","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"axon guidance","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"axon guidance","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"axon guidance","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"axon guidance","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"axon guidance","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"axon guidance","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"axon guidance","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"axon guidance","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"axon guidance","Both_pos","InterTraj25","Both_pos_InterTraj25",1.49149724963161,"*",0.0322479974177066
+"axon guidance","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"axon guidance","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"axon guidance","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"axon guidance","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"axon guidance","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"axon guidance","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"axon guidance","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"axon guidance","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"axon guidance","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"axon guidance","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"axon guidance","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"axon guidance","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"axon guidance","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA
+"neuron projection guidance","All","InterTraj02","All_InterTraj02",NA,NA,NA
+"neuron projection guidance","All","InterTraj25","All_InterTraj25",NA,NA,NA
+"neuron projection guidance","All","InterTraj515","All_InterTraj515",NA,NA,NA
+"neuron projection guidance","All","InterTraj1530","All_InterTraj1530",NA,NA,NA
+"neuron projection guidance","All","InteractionAtLeastOne","All_InteractionAtLeastOne",2.80695293067986,"*",0.00155972153802589
+"neuron projection guidance","Same_direction","InterTraj02","Same_direction_InterTraj02",NA,NA,NA
+"neuron projection guidance","Same_direction","InterTraj25","Same_direction_InterTraj25",NA,NA,NA
+"neuron projection guidance","Same_direction","InterTraj515","Same_direction_InterTraj515",NA,NA,NA
+"neuron projection guidance","Same_direction","InterTraj1530","Same_direction_InterTraj1530",NA,NA,NA
+"neuron projection guidance","Same_direction","InteractionAtLeastOne","Same_direction_InteractionAtLeastOne",NA,NA,NA
+"neuron projection guidance","H_pos_C_neg","InterTraj02","H_pos_C_neg_InterTraj02",NA,NA,NA
+"neuron projection guidance","H_pos_C_neg","InterTraj25","H_pos_C_neg_InterTraj25",NA,NA,NA
+"neuron projection guidance","H_pos_C_neg","InterTraj515","H_pos_C_neg_InterTraj515",NA,NA,NA
+"neuron projection guidance","H_pos_C_neg","InterTraj1530","H_pos_C_neg_InterTraj1530",NA,NA,NA
+"neuron projection guidance","H_pos_C_neg","InteractionAtLeastOne","H_pos_C_neg_InteractionAtLeastOne",NA,NA,NA
+"neuron projection guidance","H_neg_C_pos","InterTraj02","H_neg_C_pos_InterTraj02",NA,NA,NA
+"neuron projection guidance","H_neg_C_pos","InterTraj25","H_neg_C_pos_InterTraj25",NA,NA,NA
+"neuron projection guidance","H_neg_C_pos","InterTraj515","H_neg_C_pos_InterTraj515",NA,NA,NA
+"neuron projection guidance","H_neg_C_pos","InterTraj1530","H_neg_C_pos_InterTraj1530",NA,NA,NA
+"neuron projection guidance","H_neg_C_pos","InteractionAtLeastOne","H_neg_C_pos_InteractionAtLeastOne",NA,NA,NA
+"neuron projection guidance","Both_pos","InterTraj02","Both_pos_InterTraj02",NA,NA,NA
+"neuron projection guidance","Both_pos","InterTraj25","Both_pos_InterTraj25",1.49149724963161,"*",0.0322479974177066
+"neuron projection guidance","Both_pos","InterTraj515","Both_pos_InterTraj515",NA,NA,NA
+"neuron projection guidance","Both_pos","InterTraj1530","Both_pos_InterTraj1530",NA,NA,NA
+"neuron projection guidance","Both_pos","InteractionAtLeastOne","Both_pos_InteractionAtLeastOne",NA,NA,NA
+"neuron projection guidance","Both_neg","InterTraj02","Both_neg_InterTraj02",NA,NA,NA
+"neuron projection guidance","Both_neg","InterTraj25","Both_neg_InterTraj25",NA,NA,NA
+"neuron projection guidance","Both_neg","InterTraj515","Both_neg_InterTraj515",NA,NA,NA
+"neuron projection guidance","Both_neg","InterTraj1530","Both_neg_InterTraj1530",NA,NA,NA
+"neuron projection guidance","Both_neg","InteractionAtLeastOne","Both_neg_InteractionAtLeastOne",NA,NA,NA
+"neuron projection guidance","Opposite_direction","InterTraj02","Opposite_direction_InterTraj02",NA,NA,NA
+"neuron projection guidance","Opposite_direction","InterTraj25","Opposite_direction_InterTraj25",NA,NA,NA
+"neuron projection guidance","Opposite_direction","InterTraj515","Opposite_direction_InterTraj515",NA,NA,NA
+"neuron projection guidance","Opposite_direction","InterTraj1530","Opposite_direction_InterTraj1530",NA,NA,NA
+"neuron projection guidance","Opposite_direction","InteractionAtLeastOne","Opposite_direction_InteractionAtLeastOne",NA,NA,NA

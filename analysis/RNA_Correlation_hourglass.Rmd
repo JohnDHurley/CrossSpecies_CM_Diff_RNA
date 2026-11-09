@@ -1,0 +1,3531 @@
+---
+title: "RNA_Correlation_hourglass"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+date: "2026-09-29"
+---
+
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+# RNA-seq Quality Control
+
+## Setting enviroment
+
+### Loading libraries
+```{r Setting_Up_Enviroment, include=FALSE, warning = FALSE, message=FALSE}
+library("edgeR")
+library("ggplot2")
+library("tibble")
+library("dplyr")
+library("ggrepel")
+library("readr")
+library("org.Hs.eg.db")
+library("AnnotationDbi")
+library("pheatmap")
+library("Cormotif")
+library("tidyverse")
+library("workflowr")
+library("RUVSeq")
+library("SummarizedExperiment")
+library("readxl")
+library("ggfortify")
+library("ComplexHeatmap")
+library("tidyr")
+library("forcats")
+library("tidyr")
+library("ggplot2")
+
+# BiocManager::install("SummarizedExperiment")
+```
+
+### Loading saved RDS objects
+```{r Setting_Up_Enviroment_variables, include=FALSE, warning = FALSE, message=FALSE}
+#Loading objects used in this workbook
+total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
+RNA_fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
+RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata.RDS")
+marker_genes <- readRDS("data/Raw_Data/concat/marker_genes.RDS")
+counts_table <-readRDS("data/Raw_Data/concat/counts_table.RDS")
+
+ann_colors <- readRDS("data/Raw_Data/concat/ann_colors.RDS")
+
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+RNA_log2cpm <-readRDS("data/QC/concat/RNA_log2cpm.RDS")
+RNA_fc_No5 <-readRDS("data/QC/concat/RNA_fc_No5.RDS")
+RNA_log2cpm_No5 <-readRDS("data/QC/concat/RNA_log2cpm_No5.RDS")
+RNA_fc_No4 <-readRDS("data/QC/concat/RNA_fc_No4.RDS")
+RNA_log2cpm_No4 <-readRDS("data/QC/concat/RNA_log2cpm_No4.RDS")
+
+
+RNA_Metadata_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
+RNA_Metadata_No4_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
+RNA_Metadata_No5_NoRep <- readRDS("data/Raw_Data/concat/RNA_Metadata_No5_NoRep.RDS")
+
+Cor_RNA_log2cpm <-readRDS("data/QC/concat/Cor_RNA_log2cpm.RDS")
+Cor_metadata <- readRDS("data/QC/concat/Cor_RNA_metadata.RDS")
+
+Filt_RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
+Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm.RDS")
+Cor_Filt_RMG0_RNA_log2cpm <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS")
+
+RNA_Metadata_No4 <- readRDS("data/QC/concat/RNA_Metatdata_No4.RDS")
+Filt_RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+Filt_RMG0_RNA_log2cpm_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_No4.RDS")
+
+Cor_metadata_No4 <-readRDS("data/QC/concat/Cor_metadata_No4.RDS")
+Cor_Filt_RMG0_RNA_log2cpm_No4 <- readRDS("data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_No4.RDS")
+ann_colors_No4 <- readRDS("data/QC/concat/ann_colors_No4.RDS")
+
+RNA_Metadata_No5 <- readRDS("data/QC/concat/RNA_Metatdata_No5.RDS")
+Filt_RMG0_RNA_fc_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No5.RDS")
+Filt_RMG0_RNA_log2cpm_NoD5 <- readRDS("data/QC/concat/Filt_RMG0_RNA_log2cpm_No5.RDS")
+
+Cor_metadata_No5 <-readRDS("data/QC/concat/Cor_metadata_No5.RDS")
+ann_colors_No5 <-readRDS("data/QC/concat/ann_colors_No5.RDS")
+
+Filt_logcpm_G1_SpTp_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
+Filt_logcpm_G1_SpTp_RNA_log2cpm <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm.RDS")
+
+Filt_logcpm_G1_SpTp_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
+Filt_logcpm_G1_SpTp_RNA_log2cpm_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS")
+
+Filt_logcpm_G1_SpTp_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
+Filt_logcpm_G1_SpTp_RNA_log2cpm_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_log2cpm_No5.RDS")
+
+Filt_FilterByExpression_RNA_log2cpm <-readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm.RDS")
+Filt_FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
+
+Filt_FilterByExpression_RNA_log2cpm_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No4.RDS")
+Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
+
+Filt_FilterByExpression_RNA_log2cpm_No5 <-readRDS("data/QC/concat/Filt_FilterByExpression_RNA_log2cpm_No5.RDS")
+Filt_FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
+```
+
+### Defining functions
+```{r Making_Plotting_Function, include=FALSE, warning = FALSE, message=FALSE}
+plot_stage <- function(stage_name, data, ann_colors) {
+  
+  df <- data %>%
+    filter(Stage == stage_name)
+  
+  ggplot(df, aes(x = Timepoint, y = log2CPM)) +
+    
+    geom_boxplot(
+      aes(fill = Species, group = interaction(Timepoint, Species)),
+      position = position_dodge(width = 0.8),
+      alpha = 0.3,
+      outlier.shape = NA
+    ) +
+    
+    scale_fill_manual(values = ann_colors$species_cor) +
+    
+    geom_jitter(
+      aes(color = Individual),
+      position = position_jitterdodge(
+        jitter.width = 0.15,
+        dodge.width = 0.8
+      ),
+      size = 1,
+      alpha = 0.6
+    ) +
+    
+    scale_color_manual(values = ann_colors$individual_cor) +
+    
+    geom_line(
+      stat = "summary",
+      fun = mean,
+      aes(group = Species, linetype = Species),
+      position = position_dodge(width = 0.8),
+      linewidth = 1
+    ) +
+    
+    scale_linetype_manual(values = c(C = "dotted", H = "solid")) +
+    
+    geom_point(
+      stat = "summary",
+      fun = mean,
+      aes(shape = Species),
+      position = position_dodge(width = 0.8),
+      size = 2
+    ) +
+    
+    facet_wrap(~ Gene, scales = "free_y") +
+    
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    
+    ggtitle(stage_name)
+}
+```
+
+### Unfiltered
+
+#### No4
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+
+metadata <- RNA_Metadata_No4
+counts <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Raw_No4_NoRep.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day5","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nUnfiltered \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+
+metadata <- RNA_Metadata_No4
+counts <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Raw_No4_NoRep.RDS"
+)
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "H") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Human) correlation, matched timepoints \nUnfiltered \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+
+metadata <- RNA_Metadata_No4
+counts <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Raw_No4_NoRep.RDS"
+)
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "C") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nUnfiltered \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+## Log2cpm Filtered
+
+### All
+#### Correlations
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata
+counts <- Filt_logcpm_G1_SpTp_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day4","Day5","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    median_cor = median(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor,
+    group = 1
+  )
+) +
+
+  stat_summary(
+    fun = median,
+    geom = "line"
+  ) +
+
+  stat_summary(
+    fun = median,
+    geom = "point",
+    size = 2
+  ) +
+
+  stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nLog2cpm >1 in at least 1 sample",
+    x = "Timepoint",
+    y = "Median Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+```{r}
+
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+# library(ggsignif)
+# 
+# metadata <- RNA_Metadata
+# counts <- Filt_logcpm_G1_SpTp_RNA_fc
+# 
+# # Make sure metadata follows the count matrix
+# metadata <- metadata[
+#     match(colnames(counts), metadata$SampleName),
+# ]
+# 
+# metadata <- metadata %>% 
+#   filter(Individual != "H4R")
+# counts <- counts %>% 
+#   dplyr::select(-contains("R"))
+# 
+# 
+# Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS")
+# 
+# library(dplyr)
+# library(tidyr)
+# 
+# sample_info <- data.frame(
+#   sample    = colnames(Cor_log2cpm),
+#   species   = metadata$Species,
+#   timepoint = metadata$Timepoint
+# )
+# 
+# cor_long <- as.data.frame(Cor_log2cpm) %>%
+#   mutate(sample1 = rownames(Cor_log2cpm)) %>%
+#   pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+#   filter(sample1 != sample2) %>%
+#   left_join(sample_info, by = c("sample1" = "sample")) %>%
+#   dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+#   left_join(sample_info, by = c("sample2" = "sample")) %>%
+#   dplyr::rename(species2 = species, timepoint2 = timepoint)
+# 
+# same_day_cross <- cor_long %>%
+#   filter(species1 == species2, timepoint1 == timepoint2) %>%
+#   filter(species1 == "H") %>% 
+#   mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day5","Day15","Day30")))
+# 
+# summary_by_day <- same_day_cross %>%
+#   group_by(timepoint1) %>%
+#   summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+# 
+# summary_by_day
+# 
+# 
+# # ---------------------------------------------------------
+# # Kruskal-Wallis test
+# # ---------------------------------------------------------
+# 
+# kruskal_res <- kruskal.test(
+#   cor ~ timepoint1,
+#   data = same_day_cross
+# )
+# 
+# kruskal_res
+# 
+# 
+# # ---------------------------------------------------------
+# # ALL pairwise Wilcoxon rank-sum tests
+# # ---------------------------------------------------------
+# 
+# library(dplyr)
+# library(ggplot2)
+# # install.packages("rstatix")
+# library(rstatix)
+# # install.packages("ggpubr")
+# library(ggpubr)
+# 
+# # ---------------------------------------------------------
+# # Pairwise Wilcoxon tests with BH correction
+# # ---------------------------------------------------------
+# 
+# stat.test <- same_day_cross %>%
+#   pairwise_wilcox_test(
+#     cor ~ timepoint1,
+#     p.adjust.method = "BH"
+#   ) %>%
+#   add_significance("p.adj") %>% 
+#   add_y_position()
+# 
+# stat.test
+# 
+# # Keep only significant comparisons if desired
+# stat.test <- stat.test %>%
+#   filter(p.adj <= 0.05)
+# 
+# 
+# stat.test
+# 
+# # ---------------------------------------------------------
+# # Plot
+# # ---------------------------------------------------------
+# 
+# plot <- ggplot(
+#   same_day_cross,
+#   aes(
+#     x = timepoint1,
+#     y = cor
+#   )
+# ) +
+# 
+#   geom_boxplot(
+#     outlier.shape = NA
+#   ) +
+# 
+#   geom_jitter(
+#     width = 0.15,
+#     alpha = 0.4
+#   ) +
+# 
+#  stat_pvalue_manual(
+#     stat.test,
+#     label = "p.adj.signif",
+#     step.increase = 0.07
+#   ) +
+# 
+#   coord_cartesian(
+#     ylim = c(0.8, 1.05)
+#   ) +
+# 
+#   labs(
+#     title = "Cross-species (Human vs Human) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+#     x = "Timepoint",
+#     y = "Spearman correlation"
+#   ) +
+# 
+#   theme_classic()
+# 
+# plot
+# 
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
+
+```
+
+```{r}
+
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+# library(ggsignif)
+# 
+# metadata <- RNA_Metadata
+# counts <- Filt_logcpm_G1_SpTp_RNA_fc
+# 
+# # Make sure metadata follows the count matrix
+# metadata <- metadata[
+#     match(colnames(counts), metadata$SampleName),
+# ]
+# 
+# metadata <- metadata %>% 
+#   filter(Individual != "H4R")
+# counts <- counts %>% 
+#   dplyr::select(-contains("R"))
+# 
+# 
+# Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS")
+# 
+# library(dplyr)
+# library(tidyr)
+# 
+# sample_info <- data.frame(
+#   sample    = colnames(Cor_log2cpm),
+#   species   = metadata$Species,
+#   timepoint = metadata$Timepoint
+# )
+# 
+# cor_long <- as.data.frame(Cor_log2cpm) %>%
+#   mutate(sample1 = rownames(Cor_log2cpm)) %>%
+#   pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+#   filter(sample1 != sample2) %>%
+#   left_join(sample_info, by = c("sample1" = "sample")) %>%
+#   dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+#   left_join(sample_info, by = c("sample2" = "sample")) %>%
+#   dplyr::rename(species2 = species, timepoint2 = timepoint)
+# 
+# same_day_cross <- cor_long %>%
+#   filter(species1 == species2, timepoint1 == timepoint2) %>%
+#   filter(species1 == "C") %>% 
+#   mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day5","Day15","Day30")))
+# 
+# summary_by_day <- same_day_cross %>%
+#   group_by(timepoint1) %>%
+#   summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+# 
+# summary_by_day
+# 
+# 
+# # ---------------------------------------------------------
+# # Kruskal-Wallis test
+# # ---------------------------------------------------------
+# 
+# kruskal_res <- kruskal.test(
+#   cor ~ timepoint1,
+#   data = same_day_cross
+# )
+# 
+# kruskal_res
+# 
+# 
+# # ---------------------------------------------------------
+# # ALL pairwise Wilcoxon rank-sum tests
+# # ---------------------------------------------------------
+# 
+# library(dplyr)
+# library(ggplot2)
+# # install.packages("rstatix")
+# library(rstatix)
+# # install.packages("ggpubr")
+# library(ggpubr)
+# 
+# # ---------------------------------------------------------
+# # Pairwise Wilcoxon tests with BH correction
+# # ---------------------------------------------------------
+# 
+# stat.test <- same_day_cross %>%
+#   pairwise_wilcox_test(
+#     cor ~ timepoint1,
+#     p.adjust.method = "BH"
+#   ) %>%
+#   add_significance("p.adj") %>% 
+#   add_y_position()
+# 
+# stat.test
+# 
+# # Keep only significant comparisons if desired
+# stat.test <- stat.test %>%
+#   filter(p.adj <= 0.05)
+# 
+# 
+# stat.test
+# 
+# # ---------------------------------------------------------
+# # Plot
+# # ---------------------------------------------------------
+# 
+# plot <- ggplot(
+#   same_day_cross,
+#   aes(
+#     x = timepoint1,
+#     y = cor
+#   )
+# ) +
+# 
+#   geom_boxplot(
+#     outlier.shape = NA
+#   ) +
+# 
+#   geom_jitter(
+#     width = 0.15,
+#     alpha = 0.4
+#   ) +
+# 
+#  stat_pvalue_manual(
+#     stat.test,
+#     label = "p.adj.signif",
+#     step.increase = 0.07
+#   ) +
+# 
+#   coord_cartesian(
+#     ylim = c(0.8, 1.05)
+#   ) +
+# 
+#   labs(
+#     title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+#     x = "Timepoint",
+#     y = "Spearman correlation"
+#   ) +
+# 
+#   theme_classic()
+# 
+# plot
+# 
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
+
+```
+
+
+
+```{r , fig.width=5,fig.height=5}
+Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS")
+
+H_samples <- grep("^H", colnames(Cor_log2cpm), value = TRUE)
+C_samples <- grep("^C", colnames(Cor_log2cpm), value = TRUE)
+
+H_C_cor <- expand.grid(
+  H_sample = H_samples,
+  C_sample = C_samples,
+  stringsAsFactors = FALSE
+)
+
+H_C_cor$Spearman <- mapply(
+  function(h, c) Cor_log2cpm[h, c],
+  H_C_cor$H_sample,
+  H_C_cor$C_sample
+)
+
+H_C_cor$H_timepoint <- sub("^.*_(Day.*)$", "\\1", H_C_cor$H_sample)
+H_C_cor$C_timepoint <- sub("^.*_(Day.*)$", "\\1", H_C_cor$C_sample)
+
+head(H_C_cor)
+
+timepoint_order <- c(
+  "Day0", "Day2", "Day4","Day5", "Day15", "Day30"
+)
+
+H_C_cor$H_timepoint <- factor(
+  H_C_cor$H_timepoint,
+  levels = timepoint_order
+)
+
+H_C_cor$C_timepoint <- factor(
+  H_C_cor$C_timepoint,
+  levels = timepoint_order
+)
+
+
+table(H_C_cor$H_timepoint, H_C_cor$C_timepoint)
+
+
+library(ggplot2)
+
+ggplot(
+  subset(H_C_cor, H_timepoint == "Day0"),
+  aes(x = C_timepoint, y = Spearman, group = 1)
+) +
+  geom_line() +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Spearman correlation",
+    title = "Human Day0 vs. chimpanzee developmental trajectory"
+  )
+
+ggplot(
+  H_C_cor,
+  aes(x = C_timepoint, y = Spearman, group = H_timepoint, color = H_timepoint)
+) +
+  geom_line() +
+  geom_point(size = 2) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Spearman correlation",
+    color = "Human timepoint"
+  )
+
+library(dplyr)
+library(ggplot2)
+
+H_C_cor_median <- H_C_cor %>%
+  group_by(H_timepoint, C_timepoint) %>%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = Median_Spearman,
+    group = H_timepoint,
+    color = H_timepoint
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Median Spearman correlation",
+    color = "Human timepoint"
+  )
+
+
+H_C_cor_median <- H_C_cor %>%
+  group_by(H_timepoint, C_timepoint) %>%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = H_timepoint,
+    fill = Median_Spearman
+  )
+) +
+  geom_tile() +
+  geom_text(
+    aes(label = sprintf("%.2f", Median_Spearman)),
+    size = 3
+  ) +
+  scale_fill_viridis_c(
+    limits = c(0, 1),
+    name = "Spearman\ncorrelation"
+  ) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Human developmental timepoint"
+  )
+```
+
+#### Mixed Model Effects
+
+```{r}
+same_day_cross <- H_C_cor %>%
+  filter(H_timepoint == C_timepoint) %>%
+  mutate(
+    H_individual = sub("_.*", "", H_sample),
+    C_individual = sub("_.*", "", C_sample),
+    timepoint = factor(
+      H_timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  )
+
+table(same_day_cross$timepoint)
+
+same_day_cross <- same_day_cross %>%
+  mutate(
+    pair = interaction(H_individual, C_individual, drop = TRUE)
+  )
+
+# BiocManager::install("lme4")
+library(lme4)
+
+
+model <- lmer(
+  Spearman ~ timepoint +
+    (1 | H_individual) +
+    (1 | C_individual) +
+    (1 | pair),
+  data = same_day_cross
+)
+
+summary(model)
+
+model_no_pair <- lmer(
+  Spearman ~ timepoint +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_no_pair)
+
+same_day_cross <- same_day_cross %>%
+  mutate(Spearman_z = atanh(Spearman))
+
+summary(same_day_cross$Spearman_z)
+
+model_z <- lmer(
+  Spearman_z ~ timepoint +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_z)
+
+same_day_cross <- same_day_cross %>%
+  mutate(
+    window = case_when(
+      timepoint %in% c("Day0") ~ "Early",
+      timepoint %in% c("Day2", "Day4", "Day5") ~ "Middle",
+      timepoint %in% c("Day15", "Day30") ~ "Late"
+    ),
+    window = factor(window, levels = c("Early", "Middle", "Late"))
+  )
+
+table(same_day_cross$timepoint, same_day_cross$window)
+
+model_window <- lmer(
+  Spearman_z ~ window +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_window)
+
+same_day_cross <- same_day_cross %>%
+  mutate(
+    window_middle_ref = relevel(window, ref = "Middle")
+  )
+
+model_window_middle <- lmer(
+  Spearman_z ~ window_middle_ref +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_window_middle)
+```
+
+
+### No4
+```{r , fig.width=5,fig.height=5}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day5","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    median_cor = median(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor,
+    group = 1
+  )
+) +
+
+  stat_summary(
+    fun = median,
+    geom = "line"
+  ) +
+
+  stat_summary(
+    fun = median,
+    geom = "point",
+    size = 2
+  ) +
+
+  stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nLog2cpm >1 in at least 3/7 individuals \n at least 1 SpTp",
+    x = "Timepoint",
+    y = "Median Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+```
+
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "H") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Human) correlation, matched timepoints \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "C") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r , fig.width=5,fig.height=5}
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS"
+)
+
+H_samples <- grep("^H", colnames(Cor_log2cpm), value = TRUE)
+C_samples <- grep("^C", colnames(Cor_log2cpm), value = TRUE)
+
+H_C_cor <- expand.grid(
+  H_sample = H_samples,
+  C_sample = C_samples,
+  stringsAsFactors = FALSE
+)
+
+H_C_cor$Spearman <- mapply(
+  function(h, c) Cor_log2cpm[h, c],
+  H_C_cor$H_sample,
+  H_C_cor$C_sample
+)
+
+H_C_cor$H_timepoint <- sub("^.*_(Day.*)$", "\\1", H_C_cor$H_sample)
+H_C_cor$C_timepoint <- sub("^.*_(Day.*)$", "\\1", H_C_cor$C_sample)
+
+head(H_C_cor)
+
+timepoint_order <- c(
+  "Day0", "Day2", "Day4","Day5", "Day15", "Day30"
+)
+
+H_C_cor$H_timepoint <- factor(
+  H_C_cor$H_timepoint,
+  levels = timepoint_order
+)
+
+H_C_cor$C_timepoint <- factor(
+  H_C_cor$C_timepoint,
+  levels = timepoint_order
+)
+
+
+table(H_C_cor$H_timepoint, H_C_cor$C_timepoint)
+
+
+library(ggplot2)
+
+ggplot(
+  subset(H_C_cor, H_timepoint == "Day0"),
+  aes(x = C_timepoint, y = Spearman, group = 1)
+) +
+  geom_line() +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Spearman correlation",
+    title = "Human Day0 vs. chimpanzee developmental trajectory"
+  )
+
+ggplot(
+  H_C_cor,
+  aes(x = C_timepoint, y = Spearman, group = H_timepoint, color = H_timepoint)
+) +
+  geom_line() +
+  geom_point(size = 2) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Spearman correlation",
+    color = "Human timepoint"
+  )
+
+library(dplyr)
+library(ggplot2)
+
+H_C_cor_median <- H_C_cor %>%
+  group_by(H_timepoint, C_timepoint) %>%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = Median_Spearman,
+    group = H_timepoint,
+    color = H_timepoint
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Median Spearman correlation",
+    color = "Human timepoint"
+  )
+
+
+H_C_cor_median <- H_C_cor %>%
+  group_by(H_timepoint, C_timepoint) %>%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = H_timepoint,
+    fill = Median_Spearman
+  )
+) +
+  geom_tile() +
+  geom_text(
+    aes(label = sprintf("%.2f", Median_Spearman)),
+    size = 3
+  ) +
+  scale_fill_viridis_c(
+    limits = c(0, 1),
+    name = "Spearman\ncorrelation"
+  ) +
+  theme_classic() +
+  labs(
+    x = "Chimpanzee developmental timepoint",
+    y = "Human developmental timepoint"
+  )
+```
+
+### No5
+
+```{r}
+
+metadata <- RNA_Metadata_No5
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day4","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nDay4 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No5
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "H") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Human) correlation, matched timepoints \nDay4 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No5
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "C") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nDay4 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+
+
+## EdgeR Filter By Expression
+
+### All
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata
+counts <- Filt_FilterByExpression_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day4","Day5","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata
+counts <- Filt_FilterByExpression_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS"
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "H") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Human) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata
+counts <- Filt_FilterByExpression_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS"
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "C") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+## Log2cpm row means Greater than 0
+
+### All days
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_NoRep
+counts <- Filt_RMG0_RNA_fc %>% 
+  as.data.frame() %>% 
+  dplyr::select(-contains("R"))
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day4","Day5","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_NoRep
+counts <- Filt_RMG0_RNA_fc %>% 
+  as.data.frame() %>% 
+  dplyr::select(-contains("R"))
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS"
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "H") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Human) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r}
+
+metadata <- RNA_Metadata_NoRep
+counts <- Filt_RMG0_RNA_fc %>% 
+  as.data.frame() %>% 
+  dplyr::select(-contains("R"))
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS"
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "C") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day4","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r Updating Website, eval = FALSE}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/RNA_Correlation_hourglass.Rmd")
+
+```
+

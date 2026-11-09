@@ -43,6 +43,7 @@ library("tidyr")
 library("forcats")
 library("tidyr")
 library("ggplot2")
+library("scales")
 
 # BiocManager::install("SummarizedExperiment")
 ```
@@ -224,9 +225,6 @@ col_names <- RNA_Metadata$SampleName
 # saveRDS(RNA_Metadata,"data/Raw_Data/concat/RNA_Metadata.RDS")
 # saveRDS(marker_genes,"data/Raw_Data/concat/marker_genes.RDS")
 # saveRDS(counts_table,"data/Raw_Data/concat/counts_table.RDS")
-```
-
-```{r RNASeq_FeatureCounts_No4_No5_Datasets, fig.height=6,fig.width=12}
 
 RNA_fc_No4 <- RNA_fc %>% 
   dplyr::select(!contains("Day4"))
@@ -251,33 +249,33 @@ RNA_log2cpm_No5 <- cpm(RNA_fc_No5, log=TRUE)
 
 ann_colors <- list(
   timepoint_cor = c(
-    "Day0" = "#883268",   # Purple
-    "Day2" = "#3E7274",  # blue
-    "Day4" = "#5AAA464D",  # light green
-    "Day5" = "#94C47D",  # Green
-    "Day15" = "#C03830",  # red
-    "Day30" = "#830C05"  # dark red
+    "Day0" = "#e9a3c1", 
+    "Day2" = "#d81b61", 
+    "Day4" = "#5AAA464D",  
+    "Day5" = "#6c4199",  
+    "Day15" = "#e57e25",  
+    "Day30" = "#9e2b2b"  
   ),
   species_cor = c(
-    "H" = "black",  # black
-    "C" = "white"   # white
+    "H" = "#2167ac",
+    "C" = "#fab89e" 
   ),
   individual_cor = c(
-    H1 = "#091638", #Blue-Green Darkest
-    H2 = "#11185B",
-    H3 = "#0F2C71",
-    H4 = "#0D568F",
-    H4R = "#0D568F",
-    H5 = "#1D8296",
-    H6 = "#46A389",
-    H7 = "#9DD484", #Blue-Green Lightest
-    C1 = "#340702", #Brown-Orange darkest
-    C2 = "#5D0B02",
-    C3 = "#951302",
-    C4 = "#D32804",
-    C5 = "#F74019",
-    C6 = "#FA7A38",
-    C7 = "#FCC598"
+    H1 = "#10111d",
+    H2 = "#2d3e5d",
+    H3 = "#3f5579",
+    H4 = "#2167ac",
+    H4R = "#2167ac",
+    H5 = "#6d84b0",
+    H6 = "#88a0cd",
+    H7 = "#c3cad7", 
+    C1 = "#512718",
+    C2 = "#744937",
+    C3 = "#9e6552",
+    C4 = "#bf765c",
+    C5 = "#dd957c",
+    C6 = "#efb39e",
+    C7 = "#f8d3c5"
     
   )
 )
@@ -289,6 +287,8 @@ ann_colors <- list(
 
 ### Data preparation
 ```{r RNASeq_Statistics_data}
+
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 
 total_reads_df <- RNA_fc %>%
   as.data.frame() %>%
@@ -322,7 +322,8 @@ total_reads_df <- total_reads_df %>%
 
 ### By sample
 ```{r RNASeq_perSample_graph, fig.height=6,fig.width=12}
-library(ggplot2)
+
+total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 
 ggplot(total_reads_df, aes(x = Sample, y = Total_Reads, fill = Timepoint)) +
   geom_col() +
@@ -404,10 +405,20 @@ ggplot(total_reads_df, aes(x = Sample, y = Usable_Fragments, fill = Timepoint)) 
 
 ### By species
 ```{r RNASeq_perSpecies_graph, fig.height=6,fig.width=12}
+
+total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
+
 ggplot(total_reads_df, aes(x = Species, y = Total_Reads)) +
   geom_boxplot(fill = "#CCCCCC", alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "top") +
   labs(
@@ -419,8 +430,15 @@ ggplot(total_reads_df, aes(x = Species, y = Total_Reads)) +
 
 ggplot(total_reads_df, aes(x = Species, y = Mapped_Reads)) +
   geom_boxplot(fill = "#CCCCCC", alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "top") +
   labs(
@@ -432,8 +450,15 @@ ggplot(total_reads_df, aes(x = Species, y = Mapped_Reads)) +
 
 ggplot(total_reads_df, aes(x = Species, y = Percent_Mapped)) +
   geom_boxplot(fill = "#CCCCCC", alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "top") +
   labs(
@@ -445,8 +470,15 @@ ggplot(total_reads_df, aes(x = Species, y = Percent_Mapped)) +
 
 ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
   geom_boxplot(fill = "#CCCCCC", alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "top") +
   labs(
@@ -461,12 +493,21 @@ ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
 ### By day by species
 ```{r RNASeq_perDaybySpecies_graph, fig.height=6,fig.width=12}
 
+total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
+
 ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
   scale_color_manual(values = ann_colors$individual_cor) +
   facet_wrap(~Species, scales = "free_x") +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "top") +
@@ -480,9 +521,16 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   facet_wrap(~Species, scales = "free_x") +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -497,9 +545,16 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   facet_wrap(~Species, scales = "free_x") +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -514,9 +569,16 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual), width = 0.15, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
   scale_color_manual(values = ann_colors$individual_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   facet_wrap(~Species, scales = "free_x") +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -532,15 +594,57 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
 
 ### By individual by species
 ```{r RNASeq_perIndividualbySpecies_graph, fig.height=6,fig.width=12}
+
+total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
+
 ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
-  geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
-  scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
-  facet_wrap(~Species, scales = "free_x") +
+
+  geom_boxplot(
+    aes(fill = Individual),
+    alpha = 0.3,
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    aes(
+      color = Timepoint,
+      shape = Species
+    ),
+    width = 0.2,
+    size = 3
+  ) +
+
+  scale_fill_manual(
+    values = ann_colors$individual_cor
+  ) +
+
+  scale_color_manual(
+    values = ann_colors$timepoint_cor
+  ) +
+
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
+
+  facet_wrap(
+    ~ Species,
+    scales = "free_x"
+  ) +
+
   theme_minimal(base_size = 14) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "top") +
+
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    ),
+    legend.position = "top"
+  ) +
+
   labs(
     title = "Total Reads per Individual by Species",
     x = "Individual",
@@ -549,11 +653,19 @@ ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
     color = "Timepoint"
   )
 
+
 ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
   scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   facet_wrap(~Species, scales = "free_x") +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -568,9 +680,16 @@ ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
 
 ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
   scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   facet_wrap(~Species, scales = "free_x") +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -585,9 +704,16 @@ ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
 
 ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
   scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
   facet_wrap(~Species, scales = "free_x") +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -646,6 +772,7 @@ summary_df <- df_long_all %>%
   group_by(Marker, Day, Group) %>%
   summarise(
     Mean = mean(Percent_Positive, na.rm = TRUE),
+    Median = median(Percent_Positive, na.rm = TRUE),
     SD = sd(Percent_Positive, na.rm = TRUE),
     N = sum(!is.na(Percent_Positive)),
     SEM = SD / sqrt(N),
@@ -658,6 +785,7 @@ results <- df_long_all %>%
   group_by(Day, Marker, Group) %>%
   summarise(
     Mean = mean(Percent_Positive, na.rm = TRUE),
+    Median = median(Percent_Positive, na.rm = TRUE),
     SD   = sd(Percent_Positive, na.rm = TRUE),
     N    = sum(!is.na(Percent_Positive)),
     SEM  = SD / sqrt(N),
@@ -665,7 +793,7 @@ results <- df_long_all %>%
   ) %>%
   tidyr::pivot_wider(
     names_from = Group,
-    values_from = c(Mean, SD, SEM, N),
+    values_from = c(Mean,Median, SD, SEM, N),
     names_sep = "_"
   ) %>%
   left_join(
@@ -678,18 +806,12 @@ results <- df_long_all %>%
     by = c("Day", "Marker")
   )
 
-# saveRDS(RNA_Metadata_NoRep,"data/Raw_Data/concat/RNA_Metadata_NoRep.RDS")
-```
 
-```{r RNASeq_Purities_graph, fig.height=6,fig.width=12}
-# -----------------------------
-# 3. Plot lines over time with SEM error bars
-# -----------------------------
-library(dplyr)
-library(scales)
+
+#Plot lines over time with SEM error bars
 
 ggplot(summary_df,
-       aes(x = Day, y = Mean,
+       aes(x = Day, y = Median,
            linetype = Group,
            group = Group)) +
 
@@ -756,7 +878,7 @@ ggplot(summary_df,
   coord_cartesian(ylim = c(0, 100)) +
 
   labs(
-    title = "Mean Percent Positive Across Timepoints for Each Marker",
+    title = "Median Percent Positive Across Timepoints for Each Marker",
     x = "Day",
     y = "Mean Percent Positive (%)",
     caption = "Color = individual, shape/line = species, error bars = SD"
@@ -768,6 +890,199 @@ ggplot(summary_df,
     axis.text.x = element_text(angle = 0, hjust = 0.5),
     plot.caption = element_text(hjust = 0, face = "italic", size = 10)
   )
+# saveRDS(df_long_all,"data/Raw_Data/concat/purities_long.RDS")
+```
+
+
+```{r RNASeq_Purities_graph, fig.width=12 ,fig.height=6}
+
+df_long_all <- readRDS("data/Raw_Data/concat/purities_long.RDS")
+
+ggplot(
+  df_long_all,
+  aes(
+    x = Day,
+    y = Percent_Positive,
+    linetype = Group,
+    group = interaction(Day, Group)
+  )
+) +
+
+  # Box plots
+  geom_boxplot(
+    aes(fill = Group),
+    width = 1.0,
+    alpha = 0.25,
+    color = "black",
+    position = position_dodge(width = 0.5),
+    outlier.shape = NA
+  ) +
+
+  # Individual points
+  geom_point(
+    aes(
+      color = Individual,
+      shape = Group
+    ),
+    size = 2.5,
+    alpha = 0.9,
+    position = position_jitterdodge(
+      jitter.width = 0.08,
+      dodge.width = 0.5
+    )
+  ) +
+
+  facet_wrap(~ Marker, nrow = 1) +
+
+  # Species as line texture
+  scale_linetype_manual(
+    values = c(
+      "H" = "solid",
+      "C" = "dashed"
+    ),
+    name = "Species"
+  ) +
+
+  # Species as shape
+  scale_shape_manual(
+    values = c(
+      "H" = 17,  # triangle
+      "C" = 16   # circle
+    ),
+    name = "Species"
+  ) +
+
+  # Species fill
+  scale_fill_manual(
+    values = c(
+      "H" = "grey80",
+      "C" = "grey50"
+    ),
+    name = "Species"
+  ) +
+
+  # Individual colors
+  scale_color_manual(
+    values = ann_colors$individual_cor,
+    name = "Individual"
+  ) +
+
+  coord_cartesian(ylim = c(0, 100)) +
+
+  labs(
+    title = "Percent Positive Across Timepoints for Each Marker",
+    x = "Day",
+    y = "Percent Positive (%)",
+    caption = "Color = individual, shape = species, box = distribution"
+  ) +
+
+  theme_minimal(base_size = 14) +
+
+  theme(
+    legend.position = "top",
+    axis.text.x = element_text(
+      angle = 0,
+      hjust = 0.5
+    ),
+    plot.caption = element_text(
+      hjust = 0,
+      face = "italic",
+      size = 10
+    )
+  )
+```
+
+```{r}
+
+species_stats <- function(df) {
+
+  df %>%
+    filter(!is.na(Day), !is.na(Group), !is.na(Percent_Positive)) %>%
+    group_by(Group, Day, Marker) %>%
+    summarise(
+      N = n(),
+      Mean = mean(Percent_Positive, na.rm = TRUE),
+      Median = median(Percent_Positive, na.rm = TRUE),
+      SD = sd(Percent_Positive, na.rm = TRUE),
+      SEM = SD / sqrt(N),
+      Min = min(Percent_Positive, na.rm = TRUE),
+      Max = max(Percent_Positive, na.rm = TRUE),
+      Q1 = quantile(Percent_Positive, 0.25, na.rm = TRUE),
+      Q3 = quantile(Percent_Positive, 0.75, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+
+species_stats <- species_stats(df_long_all)
+
+species_stats
+
+Timepoint_stats <- function(df) {
+
+  df %>%
+    filter(!is.na(Day), !is.na(Percent_Positive)) %>%
+    group_by(Day, Marker) %>%
+    summarise(
+      N = n(),
+      Mean = mean(Percent_Positive, na.rm = TRUE),
+      Median = median(Percent_Positive, na.rm = TRUE),
+      SD = sd(Percent_Positive, na.rm = TRUE),
+      SEM = SD / sqrt(N),
+      Min = min(Percent_Positive, na.rm = TRUE),
+      Max = max(Percent_Positive, na.rm = TRUE),
+      Q1 = quantile(Percent_Positive, 0.25, na.rm = TRUE),
+      Q3 = quantile(Percent_Positive, 0.75, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+
+Timepoint_stats <- Timepoint_stats(df_long_all)
+
+Timepoint_stats
+
+```
+
+```{r}
+
+run_HC_stats <- function(df, correction = "BH") {
+
+  results <- df %>%
+    filter(!is.na(Day), !is.na(Group), !is.na(Percent_Positive)) %>%
+    group_by(Day, Marker) %>%
+    summarise(
+      H_Mean = mean(Percent_Positive[Group == "H"], na.rm = TRUE),
+      C_Mean = mean(Percent_Positive[Group == "C"], na.rm = TRUE),
+      H_SD = sd(Percent_Positive[Group == "H"], na.rm = TRUE),
+      C_SD = sd(Percent_Positive[Group == "C"], na.rm = TRUE),
+      H_N = sum(Group == "H"),
+      C_N = sum(Group == "C"),
+      p_value = t.test(
+        Percent_Positive ~ Group,
+        data = pick(Percent_Positive, Group),
+        var.equal = FALSE
+      )$p.value,
+      .groups = "drop"
+    ) %>%
+    group_by(Day) %>%
+    mutate(
+      p_adj = p.adjust(p_value, method = correction),
+      Significance = case_when(
+        p_adj < 0.001 ~ "***",
+        p_adj < 0.01 ~ "**",
+        p_adj < 0.05 ~ "*",
+        TRUE ~ "ns"
+      )
+    ) %>%
+    ungroup()
+
+  return(results)
+}
+
+
+HC_stats <- run_HC_stats(df_long_all)
+
+HC_stats
+
 ```
 
 ### Purity No Day 4
@@ -814,24 +1129,15 @@ summary_df_No4 <- df_long_No4 %>%
   group_by(Marker, Day, Group) %>%
   summarise(
     Mean = mean(Percent_Positive, na.rm = TRUE),
+    Median = median(Percent_Positive, na.rm = TRUE),
     SD = sd(Percent_Positive, na.rm = TRUE),
     N = sum(!is.na(Percent_Positive)),
     SEM = SD / sqrt(N),
     .groups = "drop"
   )
 
-# saveRDS(RNA_Metadata_NoD4_NoRep,"data/Raw_Data/concat/RNA_Metadata_No4.RDS")
-```
-
-```{r RNASeq_Purities_graph_No4_graph, fig.height=6,fig.width=12}
-# -----------------------------
-# 3. Plot lines over time with SEM error bars
-# -----------------------------
-library(dplyr)
-library(scales)
-
-ggplot(summary_df_No4,
-       aes(x = Day, y = Mean,
+plot <- ggplot(summary_df_No4,
+       aes(x = Day, y = Median,
            linetype = Group,
            group = Group)) +
 
@@ -844,27 +1150,27 @@ ggplot(summary_df_No4,
       color = Individual,
       shape = Group
     ),
-    size = 2.5,
+    size = 5,
     alpha = 0.9,
     position = position_jitter(width = 0.08, height = 0)
   ) +
 
   # Mean line (black, texture = species)
   geom_line(
-    linewidth = 0.5,
+    linewidth = 1.5,
     color = "black"
   ) +
 
   # Mean point (black)
   geom_point(
-    size = 0.5,
+    size = 1.5,
     color = "black"
   ) +
 
   # Error bars (black)
   geom_errorbar(
-    aes(ymin = Mean - SD, ymax = Mean + SD),
-    width = 0.2,
+    aes(ymin = Median - SD, ymax = Median + SD),
+    width = 0.5,
     color = "black"
   ) +
 
@@ -898,9 +1204,9 @@ ggplot(summary_df_No4,
   coord_cartesian(ylim = c(0, 100)) +
 
   labs(
-    title = "Mean Percent Positive Across Timepoints for Each Marker",
+    title = "Median Percent Positive Across Timepoints for Each Marker",
     x = "Day",
-    y = "Mean Percent Positive (%)",
+    y = "Median Percent Positive (%)",
     caption = "Color = individual, shape/line = species, error bars = SD"
   ) +
 
@@ -910,6 +1216,17 @@ ggplot(summary_df_No4,
     axis.text.x = element_text(angle = 0, hjust = 0.5),
     plot.caption = element_text(hjust = 0, face = "italic", size = 10)
   )
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 12,
+  height = 6
+)
+
+# saveRDS(summary_df_No4,"data/Raw_Data/concat/purities_summary_df_No4.RDS")
 ```
 
 ### Purity No Day 5
@@ -963,14 +1280,7 @@ summary_df_No5 <- df_long_No5 %>%
   )
 
 # saveRDS(RNA_Metadata_NoD5_NoRep,"data/Raw_Data/concat/RNA_Metadata_No5.RDS")
-```
 
-```{r RNASeq_Purities_graph_No5_graph, fig.height=6,fig.width=12}
-# -----------------------------
-# 3. Plot lines over time with SEM error bars
-# -----------------------------
-library(dplyr)
-library(scales)
 
 ggplot(summary_df_No5,
        aes(x = Day, y = Mean,
@@ -1053,6 +1363,7 @@ ggplot(summary_df_No5,
     plot.caption = element_text(hjust = 0, face = "italic", size = 10)
   )
 ```
+
 
 ## Unfiltered
 
@@ -1377,6 +1688,16 @@ axis(1,
 
 ### Cor_HeatMap_Unfiltered
 ```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.height=10,fig.width=10}
+###### Align Metadata with RNA_log2cpm ###### 
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+RNA_Metadata <- RNA_Metadata[ match(colnames(RNA_log2cpm), RNA_Metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(RNA_Metadata$SampleName == colnames(RNA_log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(RNA_Metadata$SampleName)))
 
 ######Cor_HeatMap####
 Cor_RNA_log2cpm <- cor(RNA_log2cpm, method = "spearman")
@@ -1407,6 +1728,77 @@ print(
 
 # saveRDS(Cor_RNA_log2cpm, "data/QC/concat/Cor_RNA_log2cpm.RDS")
 # saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
+```
+
+```{r RNASeq_FeatureCounts_Raw_Correlation_No4,fig.height=10,fig.width=10}
+RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
+
+metadata <- RNA_Metadata_No4
+counts <- RNA_fc %>% 
+  dplyr::select(-contains("Day4"))
+  
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+
+print(
+  pheatmap(Cor_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(Spearman) \nNoRep")
+)
+
+# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Raw_No4_NoRep.RDS")
 ```
 
 ### Markers_Unfiltered
@@ -1455,10 +1847,13 @@ log2cpm_long_NoR$Stage <- factor(
     "MatureCardiomyocytes"
   )
 )
+
+# saveRDS(log2cpm_long_NoR,"data/QC/concat/markers_long_No4.RDS")
 ```
 
 ```{r RNASeq_MarkerGenes_graph, fig.height=12,fig.width=12}
-library(ggplot2)
+
+log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
 ggplot(log2cpm_long_NoR, aes(
   x = Timepoint,
@@ -1510,7 +1905,9 @@ ggplot(log2cpm_long_NoR, aes(
 ```
 
 ```{r RNASeq_FeatureCounts_FullMarkerPanel_ByStage, fig.height=12,fig.width=12}
-library(ggplot2)
+
+log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
+
 
 ggplot(log2cpm_long_NoR, aes(
   x = Timepoint,
@@ -1577,9 +1974,8 @@ ggplot(log2cpm_long_NoR, aes(
 ```
 
 ```{r RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap, fig.height=10,fig.width=10}
-library(dplyr)
-library(tidyr)
-library(tibble)
+
+log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
 mat <- log2cpm_long_NoR %>%
   dplyr::group_by(Gene, Sample) %>%
@@ -1647,6 +2043,9 @@ pheatmap(
 ```
 
 ```{r RNASeq_FeatureCounts_FullMarkerPanel_SummaryHeatMap, fig.height=6,fig.width=6}
+mean_df <- mean_df %>% 
+  filter(Timepoint != "Day4")
+
 mean_df$Stage <- factor(
   mean_df$Stage,
   levels=c("MatureCardiomyocytes","EarlyCardiomyocytes","CardiacProgenitors","CardiacMesoderm","Mesoderm","Pluripotency")
@@ -1678,6 +2077,8 @@ ggplot(mean_df, aes(
 ```
 
 ```{r RNASeq_FeatureCounts_FullMarkerPanel_ByGene, fig.height=12,fig.width=12}
+log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
+
 stages <- c(
   "Pluripotency",
   "Mesoderm",
@@ -1696,7 +2097,11 @@ print(plots)
 
 ## logCPM >1 in 4 or more individuals within at least one species-time point
 
+
+
+
 ### All days
+
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints, fig.height=6,fig.width=12}
 
 group <- RNA_Metadata$Cond
@@ -1727,12 +2132,66 @@ axis(1,
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.6)        # shrink label size
 
+
+
+
+
+filtered_log2cpm_human <- filtered_log2cpm %>% 
+  as.data.frame() %>% 
+  dplyr::select(contains("H")) %>% 
+  as.matrix()
+
+hist(filtered_log2cpm_human, main = "Histogram of human filtered counts using lcpm >1 in 4/7 species-timepoints",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+col_labels <- RNA_Metadata$SampleName
+
+boxplot(filtered_log2cpm_human, main = "Boxplots of human log cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
+
+
+
+
+
+
+filtered_log2cpm_chimp <- filtered_log2cpm %>% 
+  as.data.frame() %>% 
+  dplyr::select(contains("C")) %>% 
+  as.matrix()
+
+hist(filtered_log2cpm_chimp, main = "Histogram of chimp filtered counts using lcpm >1 in 4/7 species-timepoints",
+     xlab =expression("Log"[2]*" counts-per-million"), col =5 )
+
+col_labels <- RNA_Metadata$SampleName
+
+boxplot(filtered_log2cpm_chimp, main = "Boxplots of chimp log cpm per sample with lcpm >1 in 4/7 species-timepoints",xaxt = "n", xlab= "")
+axis(1,
+     at = 1:length(col_labels),  # positions (one per sample)
+     labels = col_labels,        # your labels vector
+     las = 2,               # rotate text vertically (like srt=90)
+     cex.axis = 0.6)        # shrink label size
 ```
 
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata <- RNA_Metadata
+
+###### Align Metadata with RNA_log2cpm ###### 
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
 
 ######Cor_HeatMap####
 Cor_log2cpm <- cor(log2cpm, method = "spearman")
@@ -1764,8 +2223,80 @@ print(
 
 ```
 
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
+metadata <- RNA_Metadata
+counts <- Filt_logcpm_G1_SpTp_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>%
+  filter(Individual != "H4R")
+
+counts <- counts %>%
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ]
+
+# Check that all samples matched
+stopifnot(all(metadata$SampleName == colnames(log2cpm)))
+
+# Optional: check for missing metadata
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+Cor_log2cpm <- readRDS("data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS")
+
+print(
+  pheatmap(Cor_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint) \nNoRep")
+)
+
+# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS")
+```
+
+
+
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
-library(ggplot2)
+
+log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
+
 expressed_genes <- rownames(Filt_logcpm_G1_SpTp_RNA_log2cpm)
 
 log2cpm_long_NoR_expressed <- log2cpm_long_NoR %>% 
@@ -1833,9 +2364,16 @@ ggplot(log2cpm_long_NoR_expressed, aes(
   facet_wrap(~ factor(Stage, levels = levels(log2cpm_long_NoR$Stage))) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# saveRDS(log2cpm_long_NoR_expressed ,"data/QC/concat/markers_long_NoRep_Expressed.RDS")
+
 ```
 
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_SummaryHeatMap, fig.height=6,fig.width=6}
+
+
+log2cpm_long_NoR_expressed <- readRDS("data/QC/concat/markers_long_NoRep_Expressed.RDS")
+
 mean_df_expressed <- log2cpm_long_NoR_expressed %>%
   group_by(Stage, Timepoint, Species) %>%
   summarise(
@@ -1874,6 +2412,10 @@ ggplot(mean_df_expressed, aes(
 ```
 
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_FullHeatMap, fig.height=10,fig.width=10}
+
+
+log2cpm_long_NoR_expressed <- readRDS("data/QC/concat/markers_long_NoRep_Expressed.RDS")
+
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -1944,6 +2486,9 @@ pheatmap(
 ```
 
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene, fig.height=12,fig.width=12}
+
+log2cpm_long_NoR_expressed <- readRDS("data/QC/concat/markers_long_NoRep_Expressed.RDS")
+
 stages <- c(
   "Pluripotency",
   "Mesoderm",
@@ -1958,6 +2503,364 @@ plots <- lapply(stages, function(s) {
 })
 
 print(plots)
+```
+
+#### Variance
+
+```{r}
+metadata <- RNA_Metadata
+counts <- Filt_logcpm_G1_SpTp_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+all(metadata$SampleName == colnames(counts))
+
+table(metadata$Species, metadata$Timepoint)
+
+metadata$dgelist <- paste(
+    metadata$Species,
+    metadata$Timepoint,
+    sep = "_"
+)
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Make sure sample order matches expression matrix
+meta <- metadata %>%
+  filter(Species %in% c("H", "C"))
+
+log2cpm <- log2cpm[, meta$SampleName]
+
+# Calculate variance for every gene within each species × stage
+variance_df <- map_dfr(unique(meta$Timepoint), function(tp) {
+
+  samples_h <- meta$SampleName[
+    meta$Timepoint == tp & meta$Species == "H"
+  ]
+
+  samples_c <- meta$SampleName[
+    meta$Timepoint == tp & meta$Species == "C"
+  ]
+
+  tibble(
+    Gene = rownames(log2cpm),
+    Human_Var = apply(log2cpm[, samples_h, drop = FALSE], 1, var),
+    Chimp_Var = apply(log2cpm[, samples_c, drop = FALSE], 1, var),
+    Timepoint = tp
+  )
+})
+
+variance_tests <- variance_df %>%
+  group_by(Timepoint) %>%
+  summarise(
+    p_value = wilcox.test(
+      Human_Var,
+      Chimp_Var,
+      paired = TRUE
+    )$p.value,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    FDR = p.adjust(p_value, method = "BH")) %>% 
+       mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  ) %>% 
+  arrange(Timepoint)
+
+variance_tests
+
+library(ggplot2)
+
+variance_df %>%
+  pivot_longer(
+    cols = c(Human_Var, Chimp_Var),
+    names_to = "Species",
+    values_to = "Variance"
+  ) %>%
+  ggplot(aes(x = Species, y = Variance)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_wrap(~Timepoint, scales = "free_y") +
+  scale_y_log10() +
+  theme_bw()
+
+variance_df <- variance_df %>%
+  mutate(
+    log2_Var_Ratio = log2(Human_Var / Chimp_Var)
+  )
+variance_summary <- variance_df %>%
+  group_by(Timepoint) %>%
+  summarise(
+    Human_median = median(Human_Var, na.rm = TRUE),
+    Chimp_median = median(Chimp_Var, na.rm = TRUE),
+    Median_log2_ratio = median(log2_Var_Ratio, na.rm = TRUE),
+    .groups = "drop"
+  )  %>%
+       mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  ) %>% 
+  arrange(Timepoint)
+  
+
+variance_summary
+
+ggplot(variance_df, aes(x = log2_Var_Ratio)) +
+  geom_histogram(bins = 100) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  facet_wrap(~Timepoint, scales = "free_y") +
+  theme_bw()
+
+variance_df <- variance_df %>%
+  mutate(
+    log2_Human_Var = log2(Human_Var),
+    log2_Chimp_Var = log2(Chimp_Var),
+    abs_log2_var_diff = abs(log2_Human_Var - log2_Chimp_Var)
+  )
+
+ggplot(variance_df, aes(x = abs_log2_var_diff)) +
+  geom_histogram(bins = 100) +
+  facet_wrap(~Timepoint) +
+  theme_bw()
+
+variance_df %>%
+  group_by(Timepoint) %>%
+  summarise(
+    Median = median(abs_log2_var_diff, na.rm = TRUE),
+    Q25 = quantile(abs_log2_var_diff, 0.25, na.rm = TRUE),
+    Q75 = quantile(abs_log2_var_diff, 0.75, na.rm = TRUE),
+    Pct_within_2fold = mean(abs_log2_var_diff <= 1, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+       mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  ) %>% 
+  arrange(Timepoint)
+```
+
+
+```{r, fig.width=5, fig.height=5}
+
+# 1. Prepare data: Pivot to long format, calculate log2 variance, and clean up species names
+plot_df <- variance_df %>%
+  pivot_longer(
+    cols = c(Human_Var, Chimp_Var),
+    names_to = "Species",
+    values_to = "Variance"
+  ) %>%
+  mutate(
+    # Clean up names ("Human_Var" -> "Human", "Chimp_Var" -> "Chimp")
+    Species = ifelse(Species == "Human_Var", "Human", "Chimp"),
+    # Calculate log2 of variance
+    log2_Variance = log2(Variance),
+    # Ensure correct chronological order of stages
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  )
+
+# 2. Generate the plot: Log2 variance for each stage, faceted by Species
+ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
+  geom_boxplot(outlier.size = 0.5, alpha = 0.7) +
+  facet_wrap(~ Species, ncol = 1) +  # Facet by species vertically to easily compare stages
+  labs(
+    title = "Log2 Gene Expression Variance Across Stages",
+    x = "Developmental Stage / Timepoint",
+    y = "Log2 Variance"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1) # Prevents stage names from overlapping
+  )
+
+ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
+  geom_boxplot(outlier.size = 0.5, alpha = 0.7) +
+  facet_wrap(~ Species, nrow = 1) +  # Facet by species vertically to easily compare stages
+  labs(
+    title = "Log2 Gene Expression Variance Across Stages",
+    x = "Developmental Stage / Timepoint",
+    y = "Log2 Variance"
+  ) +
+  theme_bw() +
+  coord_cartesian(ylim = c(-15, 5)) + 
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1) # Prevents stage names from overlapping
+  )
+```
+
+
+```{r}
+ggplot(
+  variance_df,
+  aes(
+    x = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    ),
+    y = log2_Var_Ratio
+  )
+) +
+  geom_boxplot(
+    width = 0.5,
+    outlier.size = 0.3
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed"
+  ) +
+  geom_hline(
+    yintercept = c(-1, 1),
+    linetype = "dotted"
+  ) +
+  coord_cartesian(ylim = c(-3, 3)) +
+  labs(
+    x = "Developmental stage",
+    y = "log2Human variance / log2Chimpanzee variance"
+  ) +
+  theme_bw()
+```
+
+
+```{r}
+# BiocManager::install("vegan")
+# library(vegan)
+
+betadisper_results <- map_dfr(
+  unique(meta$Timepoint),
+  function(tp) {
+    
+    log2cpm_tp <- log2cpm[, meta$Timepoint == tp, drop = FALSE]
+    
+    metadata_tp <- meta %>%
+      filter(Timepoint == tp)
+    
+    dist_mat <- dist(t(log2cpm_tp))
+    
+    bd <- betadisper(
+      dist_mat,
+      group = metadata_tp$Species
+    )
+    
+    a <- anova(bd)
+    
+    tibble(
+      Timepoint = tp,
+      F_value = a$`F value`[1],
+      p_value = a$`Pr(>F)`[1]
+    )
+  }
+)
+
+betadisper_results <- betadisper_results %>%
+  mutate(
+    FDR = p.adjust(p_value, method = "BH")
+  )
+
+betadisper_results
+```
+
+
+```{r}
+sensitivity_results <- map_dfr(
+  unique(meta$Timepoint),
+  function(tp) {
+    
+    samples_h <- meta$SampleName[
+      meta$Timepoint == tp & meta$Species == "H"
+    ]
+    
+    samples_c <- meta$SampleName[
+      meta$Timepoint == tp & meta$Species == "C"
+    ]
+    
+    human_mean <- rowMeans(log2cpm[, samples_h, drop = FALSE])
+    chimp_mean <- rowMeans(log2cpm[, samples_c, drop = FALSE])
+    
+    cor_all <- cor(
+      human_mean,
+      chimp_mean,
+      method = "spearman"
+    )
+    
+    var_h <- apply(log2cpm[, samples_h, drop = FALSE], 1, var)
+    var_c <- apply(log2cpm[, samples_c, drop = FALSE], 1, var)
+    
+    variance_ratio <- pmax(var_h, var_c) / pmin(var_h, var_c)
+    
+    keep <- variance_ratio <= 2
+    
+    cor_matched <- cor(
+      human_mean[keep],
+      chimp_mean[keep],
+      method = "spearman"
+    )
+    
+    tibble(
+      Timepoint = tp,
+      Original = cor_all,
+      Variance_matched = cor_matched,
+      Difference = cor_matched - cor_all,
+      N_genes = sum(keep)
+    )
+  }
+)
+
+sensitivity_results
+sensitivity_long <- sensitivity_results %>%
+  pivot_longer(
+    cols = c(Original, Variance_matched),
+    names_to = "Analysis",
+    values_to = "Correlation"
+  )
+
+ggplot(
+  sensitivity_long,
+  aes(x = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    ),
+    y = Correlation,
+    group = Analysis,
+    linetype = Analysis
+  )
+) +
+  geom_line() +
+  geom_point(size = 3) +
+  labs(
+    x = "Developmental stage",
+    y = "Human–Chimpanzee Spearman correlation",
+    linetype = "Gene set"
+  ) +
+  theme_bw()
+
 ```
 
 ### No Day 4
@@ -1999,8 +2902,23 @@ axis(1,
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata <- RNA_Metadata_No4
-log2cpm <- cpm(counts, log=TRUE) 
-  
+log2cpm <- cpm(counts, log=TRUE)
+```
+
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ]
+```
+
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
 ######Cor_HeatMap####
 Cor_log2cpm <- cor(log2cpm, method = "spearman")
 individual <- metadata$Individual
@@ -2017,19 +2935,184 @@ Cor_metadata <- data.frame(
 rownames(Cor_metadata) <- Cor_metadata$sample_cor
 
 
+pdf("Sample_Sample_Correlation_Heatmap.pdf",
+    width = 8,
+    height = 8,
+    useDingbats = FALSE)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  main = "Sample-Sample Correlation\n(Spearman-log2CPM>1 4 or more in a Species-Timepoint - Day 5)"
+)
+
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = as.dist(1 - Cor_log2cpm),
+  clustering_distance_cols = as.dist(1 - Cor_log2cpm),
+  # clustering_distance_rows = "correlation",
+  # clustering_distance_cols = "correlation",
+  # clustering_distance_rows = "euclidean",
+  # clustering_distance_cols = "euclidean",
+  clustering_method = "ward.D2",
+  main = "Sample-Sample Correlation\n(Spearman-log2CPM>1 4 or more in a Species-Timepoint - Day 5)"
+)
+
+# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS")
+
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  scale = "none",
+  clustering_distance_rows = "euclidean",
+  clustering_distance_cols = "euclidean",
+  clustering_method = "complete",
+  main = "Sample-Sample Correlation\n(Spearman-log2CPM>1 4 or more in a Species-Timepoint - Day 5)"
+)
+
+```
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+metadata <- RNA_Metadata_No4
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+
+# print(
+#   pheatmap(Cor_log2cpm,
+#          fontsize_row = 5,
+#          fontsize_col = 5,
+#          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+#          annotation_colors = ann_colors,
+#          clustering_distance_rows = "euclidean",
+#          clustering_distance_cols = "euclidean",
+#          clustering_method = "complete",
+#          main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
+# )
+# 
+# print(
+#   pheatmap(Cor_log2cpm,
+#          fontsize_row = 5,
+#          fontsize_col = 5,
+#          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+#          annotation_colors = ann_colors,
+#          clustering_distance_rows = "correlation",
+#          clustering_distance_cols = "correlation",
+#         clustering_method = "complete",
+#          main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
+# )
+# 
+# print(
+#   pheatmap(Cor_log2cpm,
+#          fontsize_row = 5,
+#          fontsize_col = 5,
+#          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+#          annotation_colors = ann_colors,
+         # clustering_distance_rows = as.dist(1 - Cor_log2cpm),
+         # clustering_distance_cols = as.dist(1 - Cor_log2cpm),
+#          clustering_method = "complete",
+#          main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
+# )
+# 
+# print(
+#   pheatmap(Cor_log2cpm,
+#          fontsize_row = 5,
+#          fontsize_col = 5,
+#          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+#          annotation_colors = ann_colors,
+#          clustering_distance_rows = "euclidean",
+#          clustering_distance_cols = "euclidean",
+#          clustering_method = "ward.D2",
+#          main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
+# )
+# 
+# print(
+#   pheatmap(Cor_log2cpm,
+#          fontsize_row = 5,
+#          fontsize_col = 5,
+#          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+#          annotation_colors = ann_colors,
+#          clustering_distance_rows = "correlation",
+#          clustering_distance_cols = "correlation",
+#         clustering_method = "ward.D2",
+#          main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
+# )
+
 print(
   pheatmap(Cor_log2cpm,
          fontsize_row = 5,
          fontsize_col = 5,
          annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
          annotation_colors = ann_colors,
-         clustering_distance_rows = "correlation",
-         clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5)")
+         clustering_distance_rows = as.dist(1 - Cor_log2cpm),
+         clustering_distance_cols = as.dist(1 - Cor_log2cpm),
+         clustering_method = "ward.D2",
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
 )
-
-# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS")
+# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS")
 ```
+
 
 ### No Day 5
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5, fig.height=6,fig.width=12}
@@ -2071,7 +3154,16 @@ axis(1,
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
 metadata <- RNA_Metadata_No5
 log2cpm <- cpm(counts, log=TRUE) 
-  
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
 ######Cor_HeatMap####
 Cor_log2cpm <- cor(log2cpm, method = "spearman")
 individual <- metadata$Individual
@@ -2085,8 +3177,96 @@ Cor_metadata <- data.frame(
   individual_cor = individual
 )
 
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+
+pdf("Sample_Sample_Correlation_Heatmap.pdf",
+    width = 8,
+    height = 8,
+    useDingbats = FALSE)
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  main = "Sample-Sample Correlation\n(Spearman-log2CPM>1 4 or more in a Species-Timepoint - Day 4)"
+)
+
+dev.off()
+
+pheatmap(
+  Cor_log2cpm,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor", "individual_cor")],
+  annotation_colors = ann_colors,
+  clustering_distance_rows = "correlation",
+  clustering_distance_cols = "correlation",
+  main = "Sample-Sample Correlation\n(Spearman-log2CPM>1 4 or more in a Species-Timepoint - Day 4)"
+)
+
+# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No5.RDS")
+
+
+
+```
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5,fig.height=10,fig.width=10}
+metadata <- RNA_Metadata_No5
+counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
 
 rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
 
 print(
   pheatmap(Cor_log2cpm,
@@ -2096,10 +3276,13 @@ print(
          annotation_colors = ann_colors,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 4)")
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 4) \nNoRep")
 )
 
+saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS")
 ```
+
+
 
 ## EdgeR Filter By Expression
 
@@ -2166,6 +3349,76 @@ print(
 )
 
 ```
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
+Filt_FilterByExpression_RNA <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
+
+metadata <- RNA_Metadata
+counts <- Filt_FilterByExpression_RNA
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+
+print(
+  pheatmap(Cor_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint) \nNoRep")
+)
+
+saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS")
+```
+
 
 ```{r RNASeq_FeatureCounts_FilterByExpression_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
 library(ggplot2)
@@ -2356,7 +3609,7 @@ plots <- lapply(stages, function(s) {
 print(plots)
 ```
 
-#### No Day 4
+### No Day 4
 ```{r RNASeq_FeatureCounts_FilterByExpression_No4, fig.height=6,fig.width=12}
 
 dge <- DGEList(counts = RNA_fc_No4)
@@ -2417,6 +3670,79 @@ print(
 )
 
 ```
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+Filt_FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_FilterByExpression_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+
+print(
+  pheatmap(Cor_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \nFilterByExpression - Day 5) \nNoRep")
+)
+
+saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_No4_NoRep.RDS")
+```
+
+
+
+
 
 ### No Day 5
 ```{r RNASeq_FeatureCounts_FilterByExpression_No5, fig.height=6,fig.width=12}
@@ -2757,6 +4083,217 @@ Filt_RMG0_RNA_log2cpm_NoD4 <- cpm(Filt_RMG0_RNA_fc_NoD4,log=TRUE)
 
 ```
 
+#### Variance
+
+```{r}
+metadata <- RNA_Metadata
+counts <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+all(metadata$SampleName == colnames(counts))
+
+table(metadata$Species, metadata$Timepoint)
+
+metadata$dgelist <- paste(
+    metadata$Species,
+    metadata$Timepoint,
+    sep = "_"
+)
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Make sure sample order matches expression matrix
+meta <- metadata %>%
+  filter(Species %in% c("H", "C"))
+
+log2cpm <- log2cpm[, meta$SampleName]
+
+# Calculate variance for every gene within each species × stage
+variance_df <- map_dfr(unique(meta$Timepoint), function(tp) {
+
+  samples_h <- meta$SampleName[
+    meta$Timepoint == tp & meta$Species == "H"
+  ]
+
+  samples_c <- meta$SampleName[
+    meta$Timepoint == tp & meta$Species == "C"
+  ]
+
+  tibble(
+    Gene = rownames(log2cpm),
+    Human_Var = apply(log2cpm[, samples_h, drop = FALSE], 1, var),
+    Chimp_Var = apply(log2cpm[, samples_c, drop = FALSE], 1, var),
+    Timepoint = tp
+  )
+})
+
+variance_tests <- variance_df %>%
+  group_by(Timepoint) %>%
+  summarise(
+    p_value = wilcox.test(
+      Human_Var,
+      Chimp_Var,
+      paired = TRUE
+    )$p.value,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    FDR = p.adjust(p_value, method = "BH")) %>% 
+       mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  ) %>% 
+  arrange(Timepoint)
+
+variance_tests
+
+library(ggplot2)
+
+variance_df %>%
+  pivot_longer(
+    cols = c(Human_Var, Chimp_Var),
+    names_to = "Species",
+    values_to = "Variance"
+  ) %>%
+  ggplot(aes(x = Species, y = Variance)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_wrap(~Timepoint, scales = "free_y") +
+  scale_y_log10() +
+  theme_bw()
+
+variance_df <- variance_df %>%
+  mutate(
+    log2_Var_Ratio = log2(Human_Var / Chimp_Var)
+  )
+variance_summary <- variance_df %>%
+  group_by(Timepoint) %>%
+  summarise(
+    Human_median = median(Human_Var, na.rm = TRUE),
+    Chimp_median = median(Chimp_Var, na.rm = TRUE),
+    Median_log2_ratio = median(log2_Var_Ratio, na.rm = TRUE),
+    .groups = "drop"
+  )  %>%
+       mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  ) %>% 
+  arrange(Timepoint)
+  
+
+variance_summary
+
+ggplot(variance_df, aes(x = log2_Var_Ratio)) +
+  geom_histogram(bins = 100) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  facet_wrap(~Timepoint, scales = "free_y") +
+  theme_bw()
+
+variance_df <- variance_df %>%
+  mutate(
+    log2_Human_Var = log2(Human_Var),
+    log2_Chimp_Var = log2(Chimp_Var),
+    abs_log2_var_diff = abs(log2_Human_Var - log2_Chimp_Var)
+  )
+
+ggplot(variance_df, aes(x = abs_log2_var_diff)) +
+  geom_histogram(bins = 100) +
+  facet_wrap(~Timepoint) +
+  theme_bw()
+
+variance_df %>%
+  group_by(Timepoint) %>%
+  summarise(
+    Median = median(abs_log2_var_diff, na.rm = TRUE),
+    Q25 = quantile(abs_log2_var_diff, 0.25, na.rm = TRUE),
+    Q75 = quantile(abs_log2_var_diff, 0.75, na.rm = TRUE),
+    Pct_within_2fold = mean(abs_log2_var_diff <= 1, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+       mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  ) %>% 
+  arrange(Timepoint)
+```
+
+
+```{r, fig.width=5, fig.height=5}
+
+# 1. Prepare data: Pivot to long format, calculate log2 variance, and clean up species names
+plot_df <- variance_df %>%
+  pivot_longer(
+    cols = c(Human_Var, Chimp_Var),
+    names_to = "Species",
+    values_to = "Variance"
+  ) %>%
+  mutate(
+    # Clean up names ("Human_Var" -> "Human", "Chimp_Var" -> "Chimp")
+    Species = ifelse(Species == "Human_Var", "Human", "Chimp"),
+    # Calculate log2 of variance
+    log2_Variance = log2(Variance),
+    # Ensure correct chronological order of stages
+    Timepoint = factor(
+      Timepoint,
+      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+    )
+  )
+
+# 2. Generate the plot: Log2 variance for each stage, faceted by Species
+ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
+  geom_boxplot(outlier.size = 0.5, alpha = 0.7) +
+  facet_wrap(~ Species, ncol = 1) +  # Facet by species vertically to easily compare stages
+  labs(
+    title = "Log2 Gene Expression Variance Across Stages",
+    x = "Developmental Stage / Timepoint",
+    y = "Log2 Variance"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1) # Prevents stage names from overlapping
+  )
+
+ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
+  geom_boxplot(outlier.size = 0.5, alpha = 0.7) +
+  facet_wrap(~ Species, nrow = 1) +  # Facet by species vertically to easily compare stages
+  labs(
+    title = "Log2 Gene Expression Variance Across Stages",
+    x = "Developmental Stage / Timepoint",
+    y = "Log2 Variance"
+  ) +
+  theme_bw() +
+  coord_cartesian(ylim = c(-4, 0)) + 
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1) # Prevents stage names from overlapping
+  )
+```
+
 ```{r RNASeq_FeatureCounts_RMG0_Correlation_No4,fig.height=10,fig.width=10}
 ######Cor_HeatMap####
 Cor_Filt_RMG0_RNA_log2cpm_NoD4 <- cor(Filt_RMG0_RNA_log2cpm_NoD4, method = "spearman")
@@ -2834,6 +4371,569 @@ print(
 # saveRDS(Cor_metadata_No5, "data/QC/concat/Cor_metadata_No5.RDS")
 # saveRDS(Cor_Filt_RMG0_RNA_log2cpm_NoD5, "data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm_No5.RDS")
 # saveRDS(ann_colors_No5,"data/QC/concat/ann_colors_No5.RDS")
+```
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+Filt_RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_RMG0_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- calcNormFactors(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+######Cor_HeatMap####
+Cor_log2cpm <- cor(log2cpm, method = "spearman")
+individual <- metadata$Individual
+species <- metadata$Species
+timepoint <- metadata$Timepoint
+timepoint <- factor(timepoint,levels = c("Day0","Day2","Day5","Day15","Day30"))
+Cor_metadata <- data.frame(
+  sample_cor = colnames(Cor_log2cpm),
+  species_cor = species,
+  timepoint_cor = timepoint,
+  individual_cor = individual
+)
+
+rownames(Cor_metadata) <- Cor_metadata$sample_cor
+
+
+print(
+  pheatmap(Cor_log2cpm,
+         fontsize_row = 5,
+         fontsize_col = 5,
+         annotation_col = Cor_metadata[, c("species_cor", "timepoint_cor","individual_cor")],
+         annotation_colors = ann_colors,
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         main = "Sample-Sample Correlation \nRowMeans >0 \nDay 5 \nNoRep")
+)
+
+saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_RMG0_RNA_TMM_log2cpm_No4_NoRep.RDS")
+```
+
+
+
+
+```{r}
+Filt_RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_RMG0_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_RMG0_RNA_TMM_log2cpm_No4_NoRep.RDS"
+)
+
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(
+    -sample1,
+    names_to = "sample2",
+    values_to = "cor"
+  ) %>%
+  filter(sample1 != sample2) %>%
+  left_join(
+    sample_info,
+    by = c("sample1" = "sample")
+  ) %>%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %>%
+  left_join(
+    sample_info,
+    by = c("sample2" = "sample")
+  ) %>%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross <- cor_long %>%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %>%
+  filter(species1 == "H") %>% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c("Day0","Day2","Day5","Day15","Day30")
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Chimp) correlation, matched timepoints \nRowMeans >0 \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+
+```{r}
+
+Filt_RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_RMG0_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_RMG0_RNA_TMM_log2cpm_No4_NoRep.RDS"
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "H") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Human vs Human) correlation, matched timepoints \nRowMeans >0 \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
+```
+
+```{r}
+
+Filt_RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata <- RNA_Metadata_No4
+counts <- Filt_RMG0_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+
+Cor_log2cpm <- readRDS(
+  "data/QC/concat/Cor_Filt_RMG0_RNA_TMM_log2cpm_No4_NoRep.RDS"
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info <- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long <- as.data.frame(Cor_log2cpm) %>%
+  mutate(sample1 = rownames(Cor_log2cpm)) %>%
+  pivot_longer(-sample1, names_to = "sample2", values_to = "cor") %>%
+  filter(sample1 != sample2) %>%
+  left_join(sample_info, by = c("sample1" = "sample")) %>%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %>%
+  left_join(sample_info, by = c("sample2" = "sample")) %>%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross <- cor_long %>%
+  filter(species1 == species2, timepoint1 == timepoint2) %>%
+  filter(species1 == "C") %>% 
+  mutate(timepoint1 = factor(timepoint1, levels = c("Day0","Day2","Day5","Day15","Day30")))
+
+summary_by_day <- same_day_cross %>%
+  group_by(timepoint1) %>%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day
+
+
+# ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res <- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res
+
+
+# ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages("rstatix")
+library(rstatix)
+# install.packages("ggpubr")
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test <- same_day_cross %>%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = "BH"
+  ) %>%
+  add_significance("p.adj") %>% 
+  add_y_position()
+
+stat.test
+
+# Keep only significant comparisons if desired
+stat.test <- stat.test %>%
+  filter(p.adj <= 0.05)
+
+
+stat.test
+
+# ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot <- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = "p.adj.signif",
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = "Cross-species (Chimp vs Chimp) correlation, matched timepoints \nRowMeans >0 \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)",
+    x = "Timepoint",
+    y = "Spearman correlation"
+  ) +
+
+  theme_classic()
+
+plot
+
+ggsave(
+  "purity_plot.pdf",
+  plot = plot,
+  width = 5,
+  height = 5
+)
+
 ```
 
 ```{r Updating Website, eval = FALSE}

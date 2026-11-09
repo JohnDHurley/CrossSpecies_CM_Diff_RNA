@@ -2223,7 +2223,7 @@ print(
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation, fig.width=10, fig.height=7}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_TMM, fig.width=10, fig.height=7}
 metadata <- RNA_Metadata
 counts <- Filt_logcpm_G1_SpTp_RNA_fc
 

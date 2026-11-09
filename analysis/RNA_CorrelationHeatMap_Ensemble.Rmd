@@ -321,7 +321,7 @@ total_reads_df <- total_reads_df %>%
 ```
 
 ### By sample
-```{r RNASeq_perSample_graph, fig.height=6,fig.width=12}
+```{r RNASeq_perSample_graph, fig.width=10, fig.height=7}
 
 total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 
@@ -404,7 +404,7 @@ ggplot(total_reads_df, aes(x = Sample, y = Usable_Fragments, fill = Timepoint)) 
 ```
 
 ### By species
-```{r RNASeq_perSpecies_graph, fig.height=6,fig.width=12}
+```{r RNASeq_perSpecies_graph, fig.width=10, fig.height=7}
 
 total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 
@@ -491,7 +491,7 @@ ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
 ```
 
 ### By day by species
-```{r RNASeq_perDaybySpecies_graph, fig.height=6,fig.width=12}
+```{r RNASeq_perDaybySpecies_graph, fig.width=12, fig.height=7}
 
 total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 
@@ -593,7 +593,7 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
 ```
 
 ### By individual by species
-```{r RNASeq_perIndividualbySpecies_graph, fig.height=6,fig.width=12}
+```{r RNASeq_perIndividualbySpecies_graph, fig.width=12, fig.height=7}
 
 total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 
@@ -729,8 +729,8 @@ ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
 
 ## Purity
 
-### Purity all days
-```{r RNASeq_Purities,results="hide"}
+### All days
+```{r RNASeq_Purities,results="hide", fig.width=10, fig.height=7}
 # -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -887,14 +887,14 @@ ggplot(summary_df,
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "top",
-    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    axis.text.x = element_text(angle = 90, hjust = 0.5),
     plot.caption = element_text(hjust = 0, face = "italic", size = 10)
   )
 # saveRDS(df_long_all,"data/Raw_Data/concat/purities_long.RDS")
 ```
 
 
-```{r RNASeq_Purities_graph, fig.width=12 ,fig.height=6}
+```{r RNASeq_Purities_graph, fig.width=10, fig.height=7}
 
 df_long_all <- readRDS("data/Raw_Data/concat/purities_long.RDS")
 
@@ -981,7 +981,7 @@ ggplot(
   theme(
     legend.position = "top",
     axis.text.x = element_text(
-      angle = 0,
+      angle = 90,
       hjust = 0.5
     ),
     plot.caption = element_text(
@@ -992,7 +992,7 @@ ggplot(
   )
 ```
 
-```{r}
+```{r RNASeq_Purities_stats, fig.width=10, fig.height=7}
 
 species_stats <- function(df) {
 
@@ -1042,7 +1042,7 @@ Timepoint_stats
 
 ```
 
-```{r}
+```{r RNASeq_Purities_HvC_stats, fig.width=10, fig.height=7}
 
 run_HC_stats <- function(df, correction = "BH") {
 
@@ -1085,8 +1085,8 @@ HC_stats
 
 ```
 
-### Purity No Day 4
-```{r RNASeq_Purities_No4,results="hide"}
+### No Day 4
+```{r RNASeq_Purities_No4, fig.width=10, fig.height=7}
 # -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -1213,7 +1213,7 @@ plot <- ggplot(summary_df_No4,
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "top",
-    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    axis.text.x = element_text(angle = 90, hjust = 0.5),
     plot.caption = element_text(hjust = 0, face = "italic", size = 10)
   )
 
@@ -1230,7 +1230,7 @@ ggsave(
 ```
 
 ### Purity No Day 5
-```{r RNASeq_Purities_No5,results="hide"}
+```{r RNASeq_Purities_No5, fig.width=10, fig.height=7}
 # -----------------------------
 # 1. Prepare long-format data
 # -----------------------------
@@ -1368,7 +1368,7 @@ ggplot(summary_df_No5,
 ## Unfiltered
 
 ### Boxplot_Histograms_Unfiltered
-```{r RNASeq_FeatureCounts_Unfiltered, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_Unfiltered, fig.width=10, fig.height=7}
 
 ####All####
 
@@ -1687,7 +1687,7 @@ axis(1,
 ```
 
 ### Cor_HeatMap_Unfiltered
-```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_Cor_RMG0_PerDay, fig.width=10, fig.height=7}
 ###### Align Metadata with RNA_log2cpm ###### 
 
 # Match metadata rows to the order of RNA_log2cpm columns 
@@ -1730,7 +1730,7 @@ print(
 # saveRDS(Cor_metadata, "data/QC/concat/Cor_RNA_metadata.RDS")
 ```
 
-```{r RNASeq_FeatureCounts_Raw_Correlation_No4,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_Raw_Correlation_No4, fig.width=10, fig.height=7}
 RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 
 metadata <- RNA_Metadata_No4
@@ -1802,7 +1802,7 @@ print(
 ```
 
 ### Markers_Unfiltered
-```{r RNASeq_MarkerGenes_dataset, fig.height=6,fig.width=12}
+```{r RNASeq_MarkerGenes_dataset, fig.width=10, fig.height=7}
 markers <- marker_genes$Ensembl.ID
 
 log2cpm_long <- RNA_log2cpm %>%
@@ -1851,7 +1851,7 @@ log2cpm_long_NoR$Stage <- factor(
 # saveRDS(log2cpm_long_NoR,"data/QC/concat/markers_long_No4.RDS")
 ```
 
-```{r RNASeq_MarkerGenes_graph, fig.height=12,fig.width=12}
+```{r RNASeq_MarkerGenes_graph, fig.width=10, fig.height=7}
 
 log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
@@ -1904,7 +1904,7 @@ ggplot(log2cpm_long_NoR, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r RNASeq_FeatureCounts_FullMarkerPanel_ByStage, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_FullMarkerPanel_ByStage, fig.width=10, fig.height=7}
 
 log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
@@ -1973,7 +1973,7 @@ ggplot(log2cpm_long_NoR, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap, fig.width=10, fig.height=7}
 
 log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
@@ -2042,7 +2042,7 @@ pheatmap(
 )
 ```
 
-```{r RNASeq_FeatureCounts_FullMarkerPanel_SummaryHeatMap, fig.height=6,fig.width=6}
+```{r RNASeq_FeatureCounts_FullMarkerPanel_SummaryHeatMap, fig.width=10, fig.height=7}
 mean_df <- mean_df %>% 
   filter(Timepoint != "Day4")
 
@@ -2076,7 +2076,7 @@ ggplot(mean_df, aes(
   )
 ```
 
-```{r RNASeq_FeatureCounts_FullMarkerPanel_ByGene, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_FullMarkerPanel_ByGene, fig.width=10, fig.height=7}
 log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
 stages <- c(
@@ -2102,7 +2102,7 @@ print(plots)
 
 ### All days
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints, fig.width=10, fig.height=7}
 
 group <- RNA_Metadata$Cond
 
@@ -2176,7 +2176,7 @@ axis(1,
      cex.axis = 0.6)        # shrink label size
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation, fig.width=10, fig.height=7}
 
 log2cpm <- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata <- RNA_Metadata
@@ -2223,7 +2223,7 @@ print(
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation, fig.width=10, fig.height=7}
 metadata <- RNA_Metadata
 counts <- Filt_logcpm_G1_SpTp_RNA_fc
 
@@ -2293,7 +2293,7 @@ print(
 
 
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage, fig.width=10, fig.height=7}
 
 log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
@@ -2369,7 +2369,7 @@ ggplot(log2cpm_long_NoR_expressed, aes(
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_SummaryHeatMap, fig.height=6,fig.width=6}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_SummaryHeatMap, fig.width=10, fig.height=7}
 
 
 log2cpm_long_NoR_expressed <- readRDS("data/QC/concat/markers_long_NoRep_Expressed.RDS")
@@ -2411,7 +2411,7 @@ ggplot(mean_df_expressed, aes(
   )
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_FullHeatMap, fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_FullHeatMap, fig.width=14, fig.height=12}
 
 
 log2cpm_long_NoR_expressed <- readRDS("data/QC/concat/markers_long_NoRep_Expressed.RDS")
@@ -2485,7 +2485,7 @@ pheatmap(
 )
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene, fig.height=12,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene, fig.width=10, fig.height=7}
 
 log2cpm_long_NoR_expressed <- readRDS("data/QC/concat/markers_long_NoRep_Expressed.RDS")
 
@@ -2507,7 +2507,7 @@ print(plots)
 
 #### Variance
 
-```{r}
+```{r RNASeq_Varinances, fig.width=10, fig.height=7}
 metadata <- RNA_Metadata
 counts <- Filt_logcpm_G1_SpTp_RNA_fc
 
@@ -2664,7 +2664,7 @@ variance_df %>%
 ```
 
 
-```{r, fig.width=5, fig.height=5}
+```{r RNASeq_Varinances_graphs, fig.width=5, fig.height=5}
 
 # 1. Prepare data: Pivot to long format, calculate log2 variance, and clean up species names
 plot_df <- variance_df %>%
@@ -2717,7 +2717,7 @@ ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
 ```
 
 
-```{r}
+```{r RNASeq_Varinances_HvC_graphs, fig.width=5, fig.height=5}
 ggplot(
   variance_df,
   aes(
@@ -2749,122 +2749,8 @@ ggplot(
 ```
 
 
-```{r}
-# BiocManager::install("vegan")
-# library(vegan)
-
-betadisper_results <- map_dfr(
-  unique(meta$Timepoint),
-  function(tp) {
-    
-    log2cpm_tp <- log2cpm[, meta$Timepoint == tp, drop = FALSE]
-    
-    metadata_tp <- meta %>%
-      filter(Timepoint == tp)
-    
-    dist_mat <- dist(t(log2cpm_tp))
-    
-    bd <- betadisper(
-      dist_mat,
-      group = metadata_tp$Species
-    )
-    
-    a <- anova(bd)
-    
-    tibble(
-      Timepoint = tp,
-      F_value = a$`F value`[1],
-      p_value = a$`Pr(>F)`[1]
-    )
-  }
-)
-
-betadisper_results <- betadisper_results %>%
-  mutate(
-    FDR = p.adjust(p_value, method = "BH")
-  )
-
-betadisper_results
-```
-
-
-```{r}
-sensitivity_results <- map_dfr(
-  unique(meta$Timepoint),
-  function(tp) {
-    
-    samples_h <- meta$SampleName[
-      meta$Timepoint == tp & meta$Species == "H"
-    ]
-    
-    samples_c <- meta$SampleName[
-      meta$Timepoint == tp & meta$Species == "C"
-    ]
-    
-    human_mean <- rowMeans(log2cpm[, samples_h, drop = FALSE])
-    chimp_mean <- rowMeans(log2cpm[, samples_c, drop = FALSE])
-    
-    cor_all <- cor(
-      human_mean,
-      chimp_mean,
-      method = "spearman"
-    )
-    
-    var_h <- apply(log2cpm[, samples_h, drop = FALSE], 1, var)
-    var_c <- apply(log2cpm[, samples_c, drop = FALSE], 1, var)
-    
-    variance_ratio <- pmax(var_h, var_c) / pmin(var_h, var_c)
-    
-    keep <- variance_ratio <= 2
-    
-    cor_matched <- cor(
-      human_mean[keep],
-      chimp_mean[keep],
-      method = "spearman"
-    )
-    
-    tibble(
-      Timepoint = tp,
-      Original = cor_all,
-      Variance_matched = cor_matched,
-      Difference = cor_matched - cor_all,
-      N_genes = sum(keep)
-    )
-  }
-)
-
-sensitivity_results
-sensitivity_long <- sensitivity_results %>%
-  pivot_longer(
-    cols = c(Original, Variance_matched),
-    names_to = "Analysis",
-    values_to = "Correlation"
-  )
-
-ggplot(
-  sensitivity_long,
-  aes(x = factor(
-      Timepoint,
-      levels = c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
-    ),
-    y = Correlation,
-    group = Analysis,
-    linetype = Analysis
-  )
-) +
-  geom_line() +
-  geom_point(size = 3) +
-  labs(
-    x = "Developmental stage",
-    y = "Human–Chimpanzee Spearman correlation",
-    linetype = "Gene set"
-  ) +
-  theme_bw()
-
-```
-
 ### No Day 4
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.width=10 fig.height=6}
 counts <- RNA_fc_No4
 metadata <- RNA_Metadata_No4
 log2cpm <- cpm(counts, log=TRUE)
@@ -2899,24 +2785,18 @@ axis(1,
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4, fig.width=10, fig.height=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 metadata <- RNA_Metadata_No4
 log2cpm <- cpm(counts, log=TRUE)
-```
 
-
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
 # Match metadata rows to the order of RNA_log2cpm columns 
 metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ]
-```
 
+# Check that all samples matched
+stopifnot(all(metadata$SampleName == colnames(log2cpm)))
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
-# Check that all samples matched 
-stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
-
-# Optional: check for missing metadata 
+# Optional: check for missing metadata
 stopifnot(!any(is.na(metadata$SampleName)))
 
 ######Cor_HeatMap####
@@ -2940,6 +2820,9 @@ pdf("Sample_Sample_Correlation_Heatmap.pdf",
     height = 8,
     useDingbats = FALSE)
 
+```
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_plotting, fig.width=10, fig.height=10}
 pheatmap(
   Cor_log2cpm,
   fontsize_row = 5,
@@ -2986,7 +2869,9 @@ pheatmap(
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4,fig.height=10,fig.width=10}
+
+
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_TMM, fig.width=10, fig.height=10}
 metadata <- RNA_Metadata_No4
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No4
 
@@ -3108,14 +2993,15 @@ print(
          clustering_distance_rows = as.dist(1 - Cor_log2cpm),
          clustering_distance_cols = as.dist(1 - Cor_log2cpm),
          clustering_method = "ward.D2",
-         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5) \nNoRep")
+         main = 
+         "Sample-Sample Correlation\n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 5)\nNoRep\nTMM")
 )
 # saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS")
 ```
 
 
 ### No Day 5
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5, fig.height=6,fig.width=12}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5, fig.width=10, fig.height=6}
 counts <- RNA_fc_No5
 metadata <- RNA_Metadata_No5
 log2cpm <- cpm(counts, log=TRUE)
@@ -3150,7 +3036,7 @@ axis(1,
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5,fig.width=10,fig.height=10}
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
 metadata <- RNA_Metadata_No5
 log2cpm <- cpm(counts, log=TRUE) 
@@ -3215,7 +3101,7 @@ pheatmap(
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5_TMM,fig.width=10,fig.height=10}
 metadata <- RNA_Metadata_No5
 counts <- Filt_logcpm_G1_SpTp_RNA_fc_No5
 
@@ -3276,10 +3162,10 @@ print(
          annotation_colors = ann_colors,
          clustering_distance_rows = "correlation",
          clustering_distance_cols = "correlation",
-         main = "Sample-Sample Correlation \n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 4) \nNoRep")
+         main = "Sample-Sample Correlation\n(Spearman-log2CPM->1 4 or more in a Species-Timpoint - Day 4)\nNoRep\nTMM")
 )
 
-saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS")
+# saveRDS(Cor_log2cpm, "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS")
 ```
 
 

@@ -3236,7 +3236,7 @@ print(
 
 ```
 
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
+```{r RNASeq_FeatureCounts_FilterByExpression_HalfSpeciesTimepoints_Correlation,fig.height=10,fig.width=10}
 Filt_FilterByExpression_RNA <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
 
 metadata <- RNA_Metadata

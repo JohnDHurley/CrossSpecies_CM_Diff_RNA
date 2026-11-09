@@ -2750,7 +2750,7 @@ ggplot(
 
 
 ### No Day 4
-```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.width=10 fig.height=6}
+```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4, fig.width=10, fig.height=6}
 counts <- RNA_fc_No4
 metadata <- RNA_Metadata_No4
 log2cpm <- cpm(counts, log=TRUE)

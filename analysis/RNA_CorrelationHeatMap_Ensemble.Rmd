@@ -1973,11 +1973,12 @@ ggplot(log2cpm_long_NoR, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap, fig.width=10, fig.height=7}
+```{r RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap, fig.width=15, fig.height=12}
 
 log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 
 mat <- log2cpm_long_NoR %>%
+  filter(!(Timepoint == "Day4")) %>% 
   dplyr::group_by(Gene, Sample) %>%
   dplyr::summarise(log2CPM = mean(log2CPM, na.rm = TRUE), .groups = "drop") %>%
   tidyr::pivot_wider(names_from = Sample, values_from = log2CPM) %>%
@@ -2004,7 +2005,7 @@ mat <- mat[gene_annot$Gene, ]
 gene_annot <- data.frame(Stage = gene_annot$Stage)
 rownames(gene_annot) <- gene_annot$Gene
 
-tp_order <- c("Day0", "Day2", "Day4", "Day5", "Day15", "Day30")
+tp_order <- c("Day0", "Day2", "Day5", "Day15", "Day30")
 
 sample_annot <- log2cpm_long_NoR %>%
   distinct(Sample, Timepoint, Species, Individual) %>%

@@ -2083,7 +2083,6 @@ log2cpm_long_NoR <-readRDS("data/QC/concat/markers_long_No4.RDS")
 stages <- c(
   "Pluripotency",
   "Mesoderm",
-  "CardiacMesoderm",
   "CardiacProgenitors",
   "EarlyCardiomyocytes",
   "MatureCardiomyocytes"
@@ -3083,7 +3082,6 @@ pheatmap(
   main = "Sample-Sample Correlation\n(Spearman-log2CPM>1 4 or more in a Species-Timepoint - Day 4)"
 )
 
-dev.off()
 
 pheatmap(
   Cor_log2cpm,

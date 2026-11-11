@@ -367,7 +367,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -378,8 +378,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -388,13 +388,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-11-09
+<strong>Last updated:</strong> 2026-11-11
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>CrossSpecies_CM_Diff_RNA/</code>
@@ -417,18 +417,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -519,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreef4edaeb145e24207eae45ab79d2442e87b855cc4targetblankf4edaeba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree76933d1d454647dfea9474cbbc87b6f0cb274957targetblank76933d1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/f4edaeb145e24207eae45ab79d2442e87b855cc4" target="_blank">f4edaeb</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/76933d1d454647dfea9474cbbc87b6f0cb274957" target="_blank">76933d1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreef4edaeb145e24207eae45ab79d2442e87b855cc4targetblankf4edaeba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree76933d1d454647dfea9474cbbc87b6f0cb274957targetblank76933d1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/f4edaeb145e24207eae45ab79d2442e87b855cc4" target="_blank">f4edaeb</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/76933d1d454647dfea9474cbbc87b6f0cb274957" target="_blank">76933d1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -555,7 +558,12 @@ Ignored files:
     Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/
+
+Unstaged changes:
+    Modified:   analysis/RNA_CorrelationHeatMap_Ensemble.Rmd
+    Modified:   purity_plot.pdf
 
 </code></pre>
 <p>
@@ -601,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/5d8da23a715c05ac3cd229d8530661d926c3ec5a/analysis/RNA_CorrelationHeatMap_Ensemble.Rmd" target="_blank">5d8da23</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-11
+</td>
+<td>
+20261111_Edit1
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2053,6 +2095,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -2206,6 +2259,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-2.png" target="_blank">ae0f7bb</a>
@@ -2363,6 +2427,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-3.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -2516,6 +2591,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSample_graph-4.png" target="_blank">ae0f7bb</a>
@@ -2679,6 +2765,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -2822,6 +2919,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-2.png" target="_blank">ae0f7bb</a>
@@ -2969,6 +3077,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-3.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -3112,6 +3231,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perSpecies_graph-4.png" target="_blank">ae0f7bb</a>
@@ -3266,6 +3396,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-1.png" target="_blank">ae0f7bb</a>
@@ -3428,6 +3569,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-2.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -3588,6 +3740,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-3.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -3746,6 +3909,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perDaybySpecies_graph-4.png" target="_blank">ae0f7bb</a>
@@ -3945,6 +4119,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -4103,6 +4288,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-2.png" target="_blank">ae0f7bb</a>
@@ -4265,6 +4461,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-3.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -4423,6 +4630,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_perIndividualbySpecies_graph-4.png" target="_blank">ae0f7bb</a>
@@ -4703,6 +4921,43 @@ ggplot(summary_df,
     plot.caption = element_text(hjust = 0, face = &quot;italic&quot;, size = 10)
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Purities-1">
+Past versions of RNASeq_Purities-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Purities-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(df_long_all,&quot;data/Raw_Data/concat/purities_long.RDS&quot;)</code></pre>
 <pre class="r"><code>df_long_all &lt;- readRDS(&quot;data/Raw_Data/concat/purities_long.RDS&quot;)
 
@@ -4821,6 +5076,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_graph-1.png" target="_blank">ae0f7bb</a>
@@ -5196,6 +5462,43 @@ plot &lt;- ggplot(summary_df_No4,
 
 plot</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_No4-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Purities_No4-1">
+Past versions of RNASeq_Purities_No4-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Purities_No4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_No4-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(
   &quot;purity_plot.pdf&quot;,
   plot = plot,
@@ -5339,6 +5642,43 @@ ggplot(summary_df_No5,
     plot.caption = element_text(hjust = 0, face = &quot;italic&quot;, size = 10)
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_No5-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Purities_No5-1">
+Past versions of RNASeq_Purities_No5-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Purities_No5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Purities_No5-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="unfiltered" class="section level2">
@@ -5374,6 +5714,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-1.png" target="_blank">ae0f7bb</a>
@@ -5485,6 +5836,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-2.png" target="_blank">ae0f7bb</a>
@@ -5607,6 +5969,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-3.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -5716,6 +6089,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-4.png" target="_blank">ae0f7bb</a>
@@ -5832,6 +6216,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-5.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-5.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -5941,6 +6336,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-6.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-6.png" target="_blank">ae0f7bb</a>
@@ -6057,6 +6463,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-7.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-7.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -6166,6 +6583,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-8.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-8.png" target="_blank">ae0f7bb</a>
@@ -6282,6 +6710,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-9.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-9.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -6391,6 +6830,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-10.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-10.png" target="_blank">ae0f7bb</a>
@@ -6507,6 +6957,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-11.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-11.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -6616,6 +7077,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-12.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-12.png" target="_blank">ae0f7bb</a>
@@ -6732,6 +7204,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-13.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-13.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -6841,6 +7324,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-14.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-14.png" target="_blank">ae0f7bb</a>
@@ -6957,6 +7451,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-15.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-15.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -7066,6 +7571,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-16.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-16.png" target="_blank">ae0f7bb</a>
@@ -7183,6 +7699,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-17.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-17.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -7292,6 +7819,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-18.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-18.png" target="_blank">ae0f7bb</a>
@@ -7408,6 +7946,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-19.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-19.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -7517,6 +8066,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-20.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-20.png" target="_blank">ae0f7bb</a>
@@ -7633,6 +8193,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-21.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-21.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -7742,6 +8313,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-22.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-22.png" target="_blank">ae0f7bb</a>
@@ -7858,6 +8440,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-23.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-23.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -7967,6 +8560,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-24.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-24.png" target="_blank">ae0f7bb</a>
@@ -8083,6 +8687,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-25.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-25.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -8192,6 +8807,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-26.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-26.png" target="_blank">ae0f7bb</a>
@@ -8308,6 +8934,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-27.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-27.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -8417,6 +9054,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-28.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-28.png" target="_blank">ae0f7bb</a>
@@ -8533,6 +9181,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-29.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-29.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -8642,6 +9301,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-30.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Unfiltered-30.png" target="_blank">ae0f7bb</a>
@@ -8786,6 +9456,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Cor_RMG0_PerDay-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Cor_RMG0_PerDay-1.png" target="_blank">ae0f7bb</a>
@@ -9077,6 +9758,44 @@ print(
          main = &quot;Sample-Sample Correlation \n(Spearman) \nNoRep&quot;)
 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Raw_Correlation_No4-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_Raw_Correlation_No4-1">
+Past versions of RNASeq_FeatureCounts_Raw_Correlation_No4-1.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_Raw_Correlation_No4-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_Raw_Correlation_No4-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Raw_No4_NoRep.RDS&quot;)</code></pre>
 </div>
 <div id="markers_unfiltered" class="section level3">
@@ -9199,6 +9918,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_MarkerGenes_graph-1.png" target="_blank">ae0f7bb</a>
@@ -9415,6 +10145,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByStage-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByStage-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -9497,6 +10238,7 @@ John D. Hurley
 <pre class="r"><code>log2cpm_long_NoR &lt;-readRDS(&quot;data/QC/concat/markers_long_No4.RDS&quot;)
 
 mat &lt;- log2cpm_long_NoR %&gt;%
+  filter(!(Timepoint == &quot;Day4&quot;)) %&gt;% 
   dplyr::group_by(Gene, Sample) %&gt;%
   dplyr::summarise(log2CPM = mean(log2CPM, na.rm = TRUE), .groups = &quot;drop&quot;) %&gt;%
   tidyr::pivot_wider(names_from = Sample, values_from = log2CPM) %&gt;%
@@ -9523,7 +10265,7 @@ mat &lt;- mat[gene_annot$Gene, ]
 gene_annot &lt;- data.frame(Stage = gene_annot$Stage)
 rownames(gene_annot) &lt;- gene_annot$Gene
 
-tp_order &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;, &quot;Day4&quot;, &quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;)
+tp_order &lt;- c(&quot;Day0&quot;, &quot;Day2&quot;, &quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;)
 
 sample_annot &lt;- log2cpm_long_NoR %&gt;%
   distinct(Sample, Timepoint, Species, Individual) %&gt;%
@@ -9559,7 +10301,7 @@ pheatmap(
   clustering_distance_cols = &quot;correlation&quot;,
   color = colorRampPalette(c(&quot;#2166AC&quot;, &quot;white&quot;, &quot;#B2182B&quot;))(100)
 )</code></pre>
-<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap-1">
 Past versions of RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap-1.png
@@ -9583,6 +10325,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_FullHeatMap-1.png" target="_blank">ae0f7bb</a>
@@ -9676,26 +10429,23 @@ levels(mean_df$Stage)</code></pre>
 <pre><code>[1] &quot;MatureCardiomyocytes&quot; &quot;EarlyCardiomyocytes&quot;  &quot;CardiacProgenitors&quot;  
 [4] &quot;CardiacMesoderm&quot;      &quot;Mesoderm&quot;             &quot;Pluripotency&quot;        </code></pre>
 <pre class="r"><code>mean_df$Stage</code></pre>
-<pre><code> [1] CardiacMesoderm      CardiacMesoderm      CardiacMesoderm     
- [4] CardiacMesoderm      CardiacMesoderm      CardiacMesoderm     
- [7] CardiacMesoderm      CardiacMesoderm      CardiacMesoderm     
-[10] CardiacMesoderm      CardiacProgenitors   CardiacProgenitors  
-[13] CardiacProgenitors   CardiacProgenitors   CardiacProgenitors  
-[16] CardiacProgenitors   CardiacProgenitors   CardiacProgenitors  
-[19] CardiacProgenitors   CardiacProgenitors   EarlyCardiomyocytes 
-[22] EarlyCardiomyocytes  EarlyCardiomyocytes  EarlyCardiomyocytes 
-[25] EarlyCardiomyocytes  EarlyCardiomyocytes  EarlyCardiomyocytes 
-[28] EarlyCardiomyocytes  EarlyCardiomyocytes  EarlyCardiomyocytes 
-[31] MatureCardiomyocytes MatureCardiomyocytes MatureCardiomyocytes
-[34] MatureCardiomyocytes MatureCardiomyocytes MatureCardiomyocytes
-[37] MatureCardiomyocytes MatureCardiomyocytes MatureCardiomyocytes
-[40] MatureCardiomyocytes Mesoderm             Mesoderm            
-[43] Mesoderm             Mesoderm             Mesoderm            
-[46] Mesoderm             Mesoderm             Mesoderm            
-[49] Mesoderm             Mesoderm             Pluripotency        
-[52] Pluripotency         Pluripotency         Pluripotency        
-[55] Pluripotency         Pluripotency         Pluripotency        
-[58] Pluripotency         Pluripotency         Pluripotency        
+<pre><code> [1] CardiacProgenitors   CardiacProgenitors   CardiacProgenitors  
+ [4] CardiacProgenitors   CardiacProgenitors   CardiacProgenitors  
+ [7] CardiacProgenitors   CardiacProgenitors   CardiacProgenitors  
+[10] CardiacProgenitors   EarlyCardiomyocytes  EarlyCardiomyocytes 
+[13] EarlyCardiomyocytes  EarlyCardiomyocytes  EarlyCardiomyocytes 
+[16] EarlyCardiomyocytes  EarlyCardiomyocytes  EarlyCardiomyocytes 
+[19] EarlyCardiomyocytes  EarlyCardiomyocytes  MatureCardiomyocytes
+[22] MatureCardiomyocytes MatureCardiomyocytes MatureCardiomyocytes
+[25] MatureCardiomyocytes MatureCardiomyocytes MatureCardiomyocytes
+[28] MatureCardiomyocytes MatureCardiomyocytes MatureCardiomyocytes
+[31] Mesoderm             Mesoderm             Mesoderm            
+[34] Mesoderm             Mesoderm             Mesoderm            
+[37] Mesoderm             Mesoderm             Mesoderm            
+[40] Mesoderm             Pluripotency         Pluripotency        
+[43] Pluripotency         Pluripotency         Pluripotency        
+[46] Pluripotency         Pluripotency         Pluripotency        
+[49] Pluripotency         Pluripotency        
 6 Levels: MatureCardiomyocytes EarlyCardiomyocytes ... Pluripotency</code></pre>
 <pre class="r"><code>ggplot(mean_df, aes(
   x = Timepoint,
@@ -9742,6 +10492,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_SummaryHeatMap-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_SummaryHeatMap-1.png" target="_blank">ae0f7bb</a>
@@ -9828,7 +10589,6 @@ John D. Hurley
 stages &lt;- c(
   &quot;Pluripotency&quot;,
   &quot;Mesoderm&quot;,
-  &quot;CardiacMesoderm&quot;,
   &quot;CardiacProgenitors&quot;,
   &quot;EarlyCardiomyocytes&quot;,
   &quot;MatureCardiomyocytes&quot;
@@ -9864,6 +10624,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-1.png" target="_blank">ae0f7bb</a>
@@ -9973,6 +10744,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-2.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -10078,6 +10860,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-3.png" target="_blank">ae0f7bb</a>
@@ -10187,6 +10980,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-4.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -10294,6 +11098,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-5.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-5.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -10373,113 +11188,6 @@ John D. Hurley
 </table>
 </div>
 </div>
-<pre><code>
-[[6]]</code></pre>
-<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" alt="" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6">
-Past versions of RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png
-</button>
-</p>
-<div id="fig-RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">ae0f7bb</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/49823ebae9134193706e2d5f87c88e7d805430f7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">49823eb</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/8064dab0b701464c9c198f4c615c7091d746977c/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">8064dab</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/570b721b6d2fc98928c843821ba9dd0f279a923c/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">570b721</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec744cc81a0d90e4add6067016cbaac36f7e8c53/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">ec744cc</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f0757b17bbde44e51118f179874d7d360e6a5756/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">f0757b1</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/1c0396871e2a2eb4a9ea74aaee470551fe479d18/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_FullMarkerPanel_ByGene-6.png" target="_blank">1c03968</a>
-</td>
-<td>
-John D. Hurley
-</td>
-<td>
-2026-04-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 </div>
 </div>
 <div
@@ -10532,6 +11240,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-1.png" target="_blank">ae0f7bb</a>
@@ -10648,6 +11367,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-2.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -10735,6 +11465,45 @@ John D. Hurley
 hist(filtered_log2cpm_human, main = &quot;Histogram of human filtered counts using lcpm &gt;1 in 4/7 species-timepoints&quot;,
      xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =5 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-3.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-3">
+Past versions of
+RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-3.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>col_labels &lt;- RNA_Metadata$SampleName
 
 boxplot(filtered_log2cpm_human, main = &quot;Boxplots of human log cpm per sample with lcpm &gt;1 in 4/7 species-timepoints&quot;,xaxt = &quot;n&quot;, xlab= &quot;&quot;)
@@ -10744,6 +11513,45 @@ axis(1,
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.6)        # shrink label size</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-4.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-4">
+Past versions of
+RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-4.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>filtered_log2cpm_chimp &lt;- filtered_log2cpm %&gt;% 
   as.data.frame() %&gt;% 
   dplyr::select(contains(&quot;C&quot;)) %&gt;% 
@@ -10752,6 +11560,45 @@ axis(1,
 hist(filtered_log2cpm_chimp, main = &quot;Histogram of chimp filtered counts using lcpm &gt;1 in 4/7 species-timepoints&quot;,
      xlab =expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), col =5 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-5.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-5">
+Past versions of
+RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-5.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-5.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>col_labels &lt;- RNA_Metadata$SampleName
 
 boxplot(filtered_log2cpm_chimp, main = &quot;Boxplots of chimp log cpm per sample with lcpm &gt;1 in 4/7 species-timepoints&quot;,xaxt = &quot;n&quot;, xlab= &quot;&quot;)
@@ -10761,6 +11608,45 @@ axis(1,
      las = 2,               # rotate text vertically (like srt=90)
      cex.axis = 0.6)        # shrink label size</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-6.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-6">
+Past versions of
+RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-6.png
+</button>
+</p>
+<div id="fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints-6.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>log2cpm &lt;- Filt_logcpm_G1_SpTp_RNA_log2cpm
 metadata &lt;- RNA_Metadata
 
@@ -10827,6 +11713,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation-1.png" target="_blank">ae0f7bb</a>
@@ -11142,6 +12039,46 @@ print(
          main = &quot;Sample-Sample Correlation \n(Spearman-log2CPM-&gt;1 4 or more in a Species-Timpoint) \nNoRep&quot;)
 )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_TMM-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_TMM-1">
+Past versions of
+RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_TMM-1.png
+</button>
+</p>
+<div
+id="fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_TMM-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_TMM-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS&quot;)</code></pre>
 <pre class="r"><code>log2cpm_long_NoR &lt;-readRDS(&quot;data/QC/concat/markers_long_No4.RDS&quot;)
 
@@ -11238,6 +12175,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByStage-1.png" target="_blank">ae0f7bb</a>
@@ -11409,6 +12357,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_SummaryHeatMap-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_SummaryHeatMap-1.png" target="_blank">ae0f7bb</a>
@@ -11587,6 +12546,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_FullHeatMap-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_FullHeatMap-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -11711,6 +12681,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -11818,6 +12799,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-2.png" target="_blank">ae0f7bb</a>
@@ -11929,6 +12921,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-3.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -12036,6 +13039,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-4.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-4.png" target="_blank">ae0f7bb</a>
@@ -12147,6 +13161,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-5.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-5.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -12254,6 +13279,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-6.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_ExpressedMarkers_ByGene-6.png" target="_blank">ae0f7bb</a>
@@ -12613,6 +13649,43 @@ variance_df %&gt;%
   scale_y_log10() +
   theme_bw()</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Varinances-1">
+Past versions of RNASeq_Varinances-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Varinances-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>variance_df &lt;- variance_df %&gt;%
   mutate(
     log2_Var_Ratio = log2(Human_Var / Chimp_Var)
@@ -12650,6 +13723,43 @@ variance_summary</code></pre>
   facet_wrap(~Timepoint, scales = &quot;free_y&quot;) +
   theme_bw()</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances-2.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Varinances-2">
+Past versions of RNASeq_Varinances-2.png
+</button>
+</p>
+<div id="fig-RNASeq_Varinances-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>variance_df &lt;- variance_df %&gt;%
   mutate(
     log2_Human_Var = log2(Human_Var),
@@ -12662,6 +13772,43 @@ ggplot(variance_df, aes(x = abs_log2_var_diff)) +
   facet_wrap(~Timepoint) +
   theme_bw()</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances-3.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Varinances-3">
+Past versions of RNASeq_Varinances-3.png
+</button>
+</p>
+<div id="fig-RNASeq_Varinances-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances-3.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>variance_df %&gt;%
   group_by(Timepoint) %&gt;%
   summarise(
@@ -12721,6 +13868,43 @@ ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
     axis.text.x = element_text(angle = 45, hjust = 1) # Prevents stage names from overlapping
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances_graphs-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Varinances_graphs-1">
+Past versions of RNASeq_Varinances_graphs-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Varinances_graphs-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances_graphs-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
   geom_boxplot(outlier.size = 0.5, alpha = 0.7) +
   facet_wrap(~ Species, nrow = 1) +  # Facet by species vertically to easily compare stages
@@ -12736,6 +13920,43 @@ ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
     axis.text.x = element_text(angle = 45, hjust = 1) # Prevents stage names from overlapping
   )</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances_graphs-2.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Varinances_graphs-2">
+Past versions of RNASeq_Varinances_graphs-2.png
+</button>
+</p>
+<div id="fig-RNASeq_Varinances_graphs-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances_graphs-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(
   variance_df,
   aes(
@@ -12765,6 +13986,43 @@ ggplot(plot_df, aes(x = Timepoint, y = log2_Variance, fill = Species)) +
   ) +
   theme_bw()</code></pre>
 <p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances_HvC_graphs-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_Varinances_HvC_graphs-1">
+Past versions of RNASeq_Varinances_HvC_graphs-1.png
+</button>
+</p>
+<div id="fig-RNASeq_Varinances_HvC_graphs-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_Varinances_HvC_graphs-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="no-day-4-1" class="section level3">
@@ -12816,6 +14074,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4-1.png" target="_blank">ae0f7bb</a>
@@ -12930,6 +14199,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No4-2.png" target="_blank">ae0f7bb</a>
@@ -13405,6 +14685,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5-1.png" target="_blank">ae0f7bb</a>
 </td>
 <td>
@@ -13517,6 +14808,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5-2.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_No5-2.png" target="_blank">ae0f7bb</a>

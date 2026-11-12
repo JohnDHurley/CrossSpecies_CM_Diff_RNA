@@ -1183,13 +1183,24 @@ Enrichment_results_CI$FDR <- p.adjust(
   method = "BH"
 )
 
-comparison_order <- c(
-  "Sig_Sp_inter_Traj02",
-  "Sig_Sp_inter_Traj25",
-  "Sig_Sp_inter_Traj515",
-  "Sig_Sp_inter_Traj1530",
-  "InteractionAtLeastOne"
-)
+
+comparison_order <- c("HvC_Day0",
+                      "HvC_Day2",
+                      "HvC_Day5",
+                      "HvC_Day15",
+                      "HvC_Day30",
+                      "H_Day02",
+                      "H_Day25",
+                      "H_Day515",
+                      "H_Day1530",
+                      "C_Day02",
+                      "C_Day25",
+                      "C_Day515",
+                      "C_Day1530",
+                      "Sig_Sp_inter_Traj02",
+                      "Sig_Sp_inter_Traj25",
+                      "Sig_Sp_inter_Traj515",
+                      "Sig_Sp_inter_Traj1530")
 
 Enrichment_results_CI <- Enrichment_results_CI %>%
   mutate(

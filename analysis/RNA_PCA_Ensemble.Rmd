@@ -80,7 +80,7 @@ Filt_FilterByExpression_RNA_log2cpm_No5 <-readRDS("data/QC/concat/Filt_FilterByE
 
 #### All
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_Unfiltered_PCA, fig.height=6,fig.width=8}
 
 RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 
@@ -222,7 +222,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### No4
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_Unfiltered_PCA_No4, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 
@@ -364,7 +364,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### No5
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_Unfiltered_PCA_No5, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
 
@@ -644,7 +644,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nscale=TRUE")
 
 ```
-```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
 
@@ -707,7 +707,7 @@ ggplot2::autoplot(prcomp_RNA,
 
 ```
 
-```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_PC1_PC2, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
 
@@ -769,7 +769,7 @@ ggplot2::autoplot(prcomp_RNA,
   ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nScale=TRUE")
 
 ```
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_NoRep, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
 
@@ -862,7 +862,7 @@ Filtered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nScaled=TRUE")
 
 #### No4
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4, fig.height=6,fig.width=8}
 Filtered_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 
 metadata <- RNA_Metadata_No4
@@ -1003,7 +1003,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 ```
 
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC1, fig.height=6,fig.width=8}
 
 prcomp_log2cpm_meta <- prcomp_log2cpm_meta %>%
   mutate(Intended_Marker_Expression = case_when(
@@ -1044,7 +1044,7 @@ summary(anova_purity)
 ```
 
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC2, fig.height=6,fig.width=8}
 # Test if Timepoint significantly drives variance on PC1
 anova_timepoint <- aov(PC2 ~ Timepoint, data = prcomp_log2cpm_meta)
 summary(anova_timepoint)
@@ -1061,7 +1061,7 @@ anova_purity <- aov(PC2 ~ Intended_Marker_Level, data = prcomp_log2cpm_meta)
 summary(anova_purity)
 
 ```
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC3, fig.height=6,fig.width=8}
 # Test if Timepoint significantly drives variance on PC1
 anova_timepoint <- aov(PC3 ~ Timepoint, data = prcomp_log2cpm_meta)
 summary(anova_timepoint)
@@ -1079,7 +1079,7 @@ summary(anova_purity)
 
 ```
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC4, fig.height=6,fig.width=8}
 # Test if Timepoint significantly drives variance on PC1
 anova_timepoint <- aov(PC4 ~ Timepoint, data = prcomp_log2cpm_meta)
 summary(anova_timepoint)
@@ -1099,7 +1099,7 @@ summary(anova_purity)
 
 #### No5
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
 
@@ -1242,7 +1242,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### All
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
 
@@ -1384,7 +1384,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 
 #### No4
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA_No4, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
 
@@ -1525,7 +1525,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 
 #### No5
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA_No5, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
 
@@ -1667,7 +1667,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### All
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_RMG0_PCA, fig.height=6,fig.width=8}
 
 RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
 
@@ -1809,7 +1809,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 
 #### No4
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_RMG0_PCA_No4, fig.height=6,fig.width=8}
 
 RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
 
@@ -1950,7 +1950,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 
 #### No5
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_RMG0_PCA_No5, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
 

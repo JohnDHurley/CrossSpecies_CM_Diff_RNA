@@ -644,7 +644,11 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nscale=TRUE")
 
 ```
+<<<<<<< HEAD
 ```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_PC1_PC2_NoRep, fig.height=6,fig.width=8}
+=======
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_PC1_PC2, fig.height=6,fig.width=8}
+>>>>>>> 0221211704c39098fcf26a7405872c26bcadb887
 
 Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
 
@@ -705,8 +709,63 @@ ggplot2::autoplot(prcomp_log2cpm ,
                             max.overlaps = 50)+
   ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM")
 
+<<<<<<< HEAD
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
+=======
+```
+
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_PC1_PC2, fig.height=6,fig.width=8}
+
+Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
+
+metadata <- RNA_Metadata
+counts <- Filtered_RNA_fc 
+  
+
+# Make sure metadata follows the count matrix
+metadata <- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata <- metadata %>% 
+  filter(Individual != "H4R")
+
+counts <- counts %>% 
+  dplyr::select(-contains("R"))
+
+metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
+
+#create DGEList object
+dge <- DGEList(counts = counts)
+dge$samples$group <- factor(metadata$dgelist)
+dge <- normLibSizes(dge, method = "TMM")
+dge$samples
+
+dim(dge)
+dge$samples
+
+log2cpm <- cpm(dge, log=TRUE)
+
+# Match metadata rows to the order of RNA_log2cpm columns 
+metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
+
+# Check that all samples matched 
+stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
+
+# Optional: check for missing metadata 
+stopifnot(!any(is.na(metadata$SampleName)))
+
+prcomp_RNA <- prcomp(t(RNA_log2cpm), scale=TRUE, center = TRUE)
+prcomp_RNA_meta <- prcomp_RNA$x %>% cbind(., RNA_Metadata)
+#PCA checks
+#k=1
+
+prcomp_RNA_meta$Timepoint <- factor(prcomp_RNA_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
+
+ggplot2::autoplot(prcomp_RNA,
+                  data = prcomp_RNA_meta,
+>>>>>>> 0221211704c39098fcf26a7405872c26bcadb887
                   colour = "Timepoint",
                   shape = "Species",
                   size = 4,
@@ -718,6 +777,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
                             max.overlaps = 50)+
   ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM")
 
+<<<<<<< HEAD
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
                   colour = "Timepoint",
@@ -730,6 +790,10 @@ ggplot2::autoplot(prcomp_log2cpm ,
                             vjust = -0.5,
                             max.overlaps = 50)+
   ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM")
+=======
+```
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_NoRep, fig.height=6,fig.width=8}
+>>>>>>> 0221211704c39098fcf26a7405872c26bcadb887
 
 
 

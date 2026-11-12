@@ -10,5 +10,6 @@ analysis/*html
 analysis/*_cache
 analysis/site_libs
 data/*
-docs/*
+docs/*.pdf
+docs/*.png
 .positai

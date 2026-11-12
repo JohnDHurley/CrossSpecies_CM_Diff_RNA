@@ -3292,7 +3292,7 @@ median_absfc <- bind_rows(
 
   })
 ) %>%
-  select(Cluster, Comparisons, N_genes, Median_absFC) %>%
+  dplyr::select(Cluster, Comparisons, N_genes, Median_absFC) %>%
   arrange(factor(Cluster, levels = names(cluster_lists)),
           factor(Comparisons, levels = c(
             "HvC_Day0", "HvC_Day2", "HvC_Day4",
@@ -5829,12 +5829,12 @@ make_go_heatmap <- function(category) {
 
   # Create complete term-by-comparison grid
   heatmap_wide <- heatmap_data %>%
-    select(term_name, Comparison, logp) %>%
+    dplyr::select(term_name, Comparison, logp) %>%
     pivot_wider(
       names_from = Comparison,
       values_from = logp
     ) %>%
-    select(term_name, any_of(comparisons))
+    dplyr::select(term_name, any_of(comparisons))
 
   # Save wide data
   saveRDS(
@@ -7803,7 +7803,7 @@ heatmap_data <- GO_plot_data %>%
 
 # Numeric matrix
 heatmap_wide <- heatmap_data %>%
-  select(Description, Column, logp) %>%
+  dplyr::select(Description, Column, logp) %>%
   pivot_wider(names_from = Column, values_from = logp)
 
 heatmap_matrix <- heatmap_wide %>%
@@ -7814,7 +7814,7 @@ storage.mode(heatmap_matrix) <- "numeric"
 
 # Significance matrix, matching the numeric matrix
 sig_wide <- heatmap_data %>%
-  select(Description, Column, sig) %>%
+  dplyr::select(Description, Column, sig) %>%
   pivot_wider(names_from = Column, values_from = sig, values_fill = "")
 
 sig_matrix <- sig_wide %>%

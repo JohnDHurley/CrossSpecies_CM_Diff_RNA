@@ -80,7 +80,7 @@ Filt_FilterByExpression_RNA_log2cpm_No5 <-readRDS("data/QC/concat/Filt_FilterByE
 
 #### All
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_Unfiltered_PCA, fig.height=6,fig.width=8}
 
 RNA_fc <- readRDS("data/QC/concat/RNA_fc.RDS")
 
@@ -222,7 +222,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### No4
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_Unfiltered_PCA_No4, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 
@@ -364,7 +364,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### No5
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_Unfiltered_PCA_No5, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
 
@@ -644,7 +644,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nscale=TRUE")
 
 ```
-```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_PC1_PC2_NoRep, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
 
@@ -692,123 +692,48 @@ prcomp_RNA_meta <- prcomp_RNA$x %>% cbind(., RNA_Metadata)
 
 prcomp_RNA_meta$Timepoint <- factor(prcomp_RNA_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
 
-ggplot2::autoplot(prcomp_RNA,
-                  data = prcomp_RNA_meta,
+ggplot2::autoplot(prcomp_log2cpm ,
+                  data = prcomp_log2cpm_meta,
                   colour = "Timepoint",
                   shape = "Species",
                   size = 4,
                   x=1,
                   y=2) +
   scale_color_manual(values=ann_colors$timepoint_cor)+
-  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+  ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp")
+  ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM")
 
-```
-
-```{r RNA_Unfiltered_PCA_PC1_PC2, fig.height=6,fig.width=8}
-
-Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
-
-metadata <- RNA_Metadata
-counts <- Filtered_RNA_fc 
-  
-
-# Make sure metadata follows the count matrix
-metadata <- metadata[
-    match(colnames(counts), metadata$SampleName),
-]
-
-metadata <- metadata %>% 
-  filter(Individual != "H4R")
-
-counts <- counts %>% 
-  dplyr::select(-contains("R"))
-
-metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
-
-#create DGEList object
-dge <- DGEList(counts = counts)
-dge$samples$group <- factor(metadata$dgelist)
-dge <- normLibSizes(dge, method = "TMM")
-dge$samples
-
-dim(dge)
-dge$samples
-
-log2cpm <- cpm(dge, log=TRUE)
-
-# Match metadata rows to the order of RNA_log2cpm columns 
-metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
-
-# Check that all samples matched 
-stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
-
-# Optional: check for missing metadata 
-stopifnot(!any(is.na(metadata$SampleName)))
-
-prcomp_RNA <- prcomp(t(RNA_log2cpm), scale=TRUE, center = TRUE)
-prcomp_RNA_meta <- prcomp_RNA$x %>% cbind(., RNA_Metadata)
-#PCA checks
-#k=1
-
-prcomp_RNA_meta$Timepoint <- factor(prcomp_RNA_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
-
-ggplot2::autoplot(prcomp_RNA,
-                  data = prcomp_RNA_meta,
+ggplot2::autoplot(prcomp_log2cpm ,
+                  data = prcomp_log2cpm_meta,
                   colour = "Timepoint",
                   shape = "Species",
                   size = 4,
-                  x=1,
-                  y=2) +
+                  x=2,
+                  y=3) +
   scale_color_manual(values=ann_colors$timepoint_cor)+
-  ggrepel::geom_text_repel(label = RNA_Metadata$Individual,
+  ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM")
 
-```
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+ggplot2::autoplot(prcomp_log2cpm ,
+                  data = prcomp_log2cpm_meta,
+                  colour = "Timepoint",
+                  shape = "Species",
+                  size = 4,
+                  x=3,
+                  y=4) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
+  ggrepel::geom_text_repel(label = metadata$Individual,
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM")
 
-Filtered_RNA_fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc.RDS")
 
-metadata <- RNA_Metadata
-counts <- Filtered_RNA_fc 
-  
 
-# Make sure metadata follows the count matrix
-metadata <- metadata[
-    match(colnames(counts), metadata$SampleName),
-]
 
-metadata <- metadata %>% 
-  filter(Individual != "H4R")
-
-counts <- counts %>% 
-  dplyr::select(-contains("R"))
-
-metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
-
-#create DGEList object
-dge <- DGEList(counts = counts)
-dge$samples$group <- factor(metadata$dgelist)
-dge <- dge
-dge$samples
-
-dim(dge)
-dge$samples
-
-log2cpm <- cpm(dge, log=TRUE)
-
-# Match metadata rows to the order of RNA_log2cpm columns 
-metadata <- metadata[ match(colnames(log2cpm), metadata$SampleName), ] 
-
-# Check that all samples matched 
-stopifnot(all(metadata$SampleName == colnames(log2cpm))) 
-
-# Optional: check for missing metadata 
-stopifnot(!any(is.na(metadata$SampleName)))
 
 prcomp_log2cpm <- prcomp(t(log2cpm), scale=TRUE, center = TRUE)
 prcomp_log2cpm_meta <- prcomp_log2cpm$x %>% cbind(., metadata)
@@ -828,7 +753,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nScaled=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -841,8 +766,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3
-Filtered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nScaled=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -855,14 +779,14 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4
-Filtered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nScaled=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nscale=TRUE")
 
 ```
 
+
 #### No4
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4, fig.height=6,fig.width=8}
 Filtered_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
 
 metadata <- RNA_Metadata_No4
@@ -914,15 +838,13 @@ ggplot2::autoplot(prcomp_log2cpm ,
                   colour = "Timepoint",
                   shape = "Species",
                   size = 4,
-                  x = 1,
-                  y = 2) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
   ggrepel::geom_text_repel(label = metadata$Individual,
-                           vjust = -0.5,
-                           max.overlaps = 50) +
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay5 Cardiac Mesoderm ") +
-  theme_classic() # Removes the gray background and grid lines
-
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM \nNo4")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -935,7 +857,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay5 Cardiac Mesoderm")
+  ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM \nNo4")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -948,7 +870,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay5 Cardiac Mesoderm")
+  ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nNo4")
+
 
 
 
@@ -958,22 +881,20 @@ prcomp_log2cpm_meta <- prcomp_log2cpm$x %>% cbind(., metadata)
 #PCA checks
 #k=1
 
-prcomp_log2cpm_meta$Timepoint <- factor(prcomp_log2cpm_meta$Timepoint, levels = c("Day0","Day2","Day5","Day15","Day30"))
+prcomp_log2cpm_meta$Timepoint <- factor(prcomp_log2cpm_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
                   colour = "Timepoint",
                   shape = "Species",
                   size = 4,
-                  x = 1,
-                  y = 2) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+                  x=1,
+                  y=2) +
+  scale_color_manual(values=ann_colors$timepoint_cor)+
   ggrepel::geom_text_repel(label = metadata$Individual,
-                           vjust = -0.5,
-                           max.overlaps = 50) +
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay5 Cardiac Mesoderm\nScaled=TRUE") +
-  theme_classic() # Removes the gray background and grid lines
-
+                            vjust = -0.5,
+                            max.overlaps = 50)+
+  ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -986,7 +907,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay5 Cardiac Mesoderm\nScaled=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -999,11 +920,11 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay5 Cardiac Mesoderm \nScaled=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 ```
 
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC1, fig.height=6,fig.width=8}
 
 prcomp_log2cpm_meta <- prcomp_log2cpm_meta %>%
   mutate(Intended_Marker_Expression = case_when(
@@ -1044,7 +965,7 @@ summary(anova_purity)
 ```
 
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC2, fig.height=6,fig.width=8}
 # Test if Timepoint significantly drives variance on PC1
 anova_timepoint <- aov(PC2 ~ Timepoint, data = prcomp_log2cpm_meta)
 summary(anova_timepoint)
@@ -1061,7 +982,7 @@ anova_purity <- aov(PC2 ~ Intended_Marker_Level, data = prcomp_log2cpm_meta)
 summary(anova_purity)
 
 ```
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC3, fig.height=6,fig.width=8}
 # Test if Timepoint significantly drives variance on PC1
 anova_timepoint <- aov(PC3 ~ Timepoint, data = prcomp_log2cpm_meta)
 summary(anova_timepoint)
@@ -1079,7 +1000,7 @@ summary(anova_purity)
 
 ```
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No4_PC4, fig.height=6,fig.width=8}
 # Test if Timepoint significantly drives variance on PC1
 anova_timepoint <- aov(PC4 ~ Timepoint, data = prcomp_log2cpm_meta)
 summary(anova_timepoint)
@@ -1099,7 +1020,7 @@ summary(anova_purity)
 
 #### No5
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA_No5, fig.height=6,fig.width=8}
 
 Filtered_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No5.RDS")
 
@@ -1158,7 +1079,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay4 Cardiac Mesoderm ")
+  ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM \nNo5")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1171,7 +1092,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay4 Cardiac Mesoderm")
+  ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM \nNo5")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1184,7 +1105,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay4 Cardiac Mesoderm")
+  ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nNo5")
+
 
 
 
@@ -1194,7 +1116,7 @@ prcomp_log2cpm_meta <- prcomp_log2cpm$x %>% cbind(., metadata)
 #PCA checks
 #k=1
 
-prcomp_log2cpm_meta$Timepoint <- factor(prcomp_log2cpm_meta$Timepoint, levels = c("Day0","Day2","Day4","Day15","Day30"))
+prcomp_log2cpm_meta$Timepoint <- factor(prcomp_log2cpm_meta$Timepoint, levels = c("Day0","Day2","Day4","Day5","Day15","Day30"))
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1207,7 +1129,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay4 Cardiac Mesoderm\nScaled=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - Filtered RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1220,7 +1142,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay4 Cardiac Mesoderm\nScaled=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - Filtered RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1233,16 +1155,14 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nTMM - log2cpm >1 in 4 or more SpTp \nDay4 Cardiac Mesoderm \nScaled=TRUE")
-
-
+  ggtitle("PC3 v. PC4 \nTMM - Filtered RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 ```
 
 ### FilterByExp
 
 #### All
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc.RDS")
 
@@ -1301,7 +1221,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nFilterByExpression")
+  ggtitle("PC1 v. PC2 \nTMM - FilterByExpression RNA-Seq Log2CPM")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1314,7 +1234,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nFilterByExpression")
+  ggtitle("PC2 v. PC3 \nTMM - FilterByExpression RNA-Seq Log2CPM")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1327,7 +1247,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nFilterByExpression")
+  ggtitle("PC3 v. PC4 \nTMM - FilterByExpression RNA-Seq Log2CPM")
+
 
 
 
@@ -1350,7 +1271,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - FilterByExpression RNA-Seq Log2CPM \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1363,7 +1284,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - FilterByExpression RNA-Seq Log2CPM \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1376,7 +1297,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - FilterByExpression RNA-Seq Log2CPM \nscale=TRUE")
 
 ```
 
@@ -1384,7 +1305,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 
 #### No4
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA_No4, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No4.RDS")
 
@@ -1443,7 +1364,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC1 v. PC2 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo4")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1456,7 +1377,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC2 v. PC3 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo4")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1469,7 +1390,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC3 v. PC4 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo4")
+
 
 
 
@@ -1492,7 +1414,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1505,7 +1427,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1518,14 +1440,14 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ```
 
 
 
 #### No5
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_FilterByExpression_PCA_No5, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
 
@@ -1584,7 +1506,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC1 v. PC2 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo5")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1597,7 +1519,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC2 v. PC3 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo5")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1610,7 +1532,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC3 v. PC4 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo5")
+
 
 
 
@@ -1633,7 +1556,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1646,7 +1569,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1659,7 +1582,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - FilterByExpression RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ```
 
@@ -1667,7 +1590,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 #### All
 
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_RMG0_PCA, fig.height=6,fig.width=8}
 
 RMG0_RNA_fc <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc.RDS")
 
@@ -1726,7 +1649,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nRMG0")
+  ggtitle("PC1 v. PC2 \nTMM - RMG0 RNA-Seq Log2CPM")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1739,7 +1662,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nRMG0")
+  ggtitle("PC2 v. PC3 \nTMM - RMG0 RNA-Seq Log2CPM")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1752,7 +1675,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nRMG0")
+  ggtitle("PC3 v. PC4 \nTMM - RMG0 RNA-Seq Log2CPM")
+
 
 
 
@@ -1775,7 +1699,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nRMG0 \nScale=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - RMG0 RNA-Seq Log2CPM \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1788,7 +1712,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nRMG0 \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - RMG0 RNA-Seq Log2CPM \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1801,7 +1725,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nRMG0 \nScale=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - RMG0 RNA-Seq Log2CPM \nscale=TRUE")
 
 ```
 
@@ -1809,7 +1733,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
 
 
 #### No4
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_RMG0_PCA_No4, fig.height=6,fig.width=8}
 
 RMG0_RNA_fc_No4 <- readRDS("data/QC/concat/Filt_RMG0_RNA_fc_No4.RDS")
 
@@ -1868,7 +1792,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nRMG0")
+  ggtitle("PC1 v. PC2 \nTMM - RMG0 RNA-Seq Log2CPM \nNo4")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1881,7 +1805,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nRMG0")
+  ggtitle("PC2 v. PC3 \nTMM - RMG0 RNA-Seq Log2CPM \nNo4")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1894,7 +1818,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nRMG0")
+  ggtitle("PC3 v. PC4 \nTMM - RMG0 RNA-Seq Log2CPM \nNo4")
+
 
 
 
@@ -1917,7 +1842,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nRMG0 \nScale=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - RMG0 RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1930,7 +1855,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nRMG0 \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - RMG0 RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -1943,14 +1868,14 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay5 CardiacMesoderm \nRMG0 \nScale=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - RMG0 RNA-Seq Log2CPM \nNo4 \nscale=TRUE")
 
 ```
 
 
 
 #### No5
-```{r RNA_lcpm_G1_HalfSpeciesTimepoint_PCA, fig.height=6,fig.width=8}
+```{r RNA_RMG0_PCA_No5, fig.height=6,fig.width=8}
 
 FilterByExpression_RNA_fc_No5 <- readRDS("data/QC/concat/Filt_FilterByExpression_RNA_fc_No5.RDS")
 
@@ -2009,7 +1934,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC1 v. PC2 \nTMM - RMG0 RNA-Seq Log2CPM \nNo5")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -2022,7 +1947,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC2 v. PC3 \nTMM - RMG0 RNA-Seq Log2CPM \nNo5")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -2035,7 +1960,8 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression")
+  ggtitle("PC3 v. PC4 \nTMM - RMG0 RNA-Seq Log2CPM \nNo5")
+
 
 
 
@@ -2058,7 +1984,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC1 v. PC2 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC1 v. PC2 \nTMM - RMG0 RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -2071,7 +1997,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC2 v. PC3 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC2 v. PC3 \nTMM - RMG0 RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ggplot2::autoplot(prcomp_log2cpm ,
                   data = prcomp_log2cpm_meta,
@@ -2084,7 +2010,7 @@ ggplot2::autoplot(prcomp_log2cpm ,
   ggrepel::geom_text_repel(label = metadata$Individual,
                             vjust = -0.5,
                             max.overlaps = 50)+
-  ggtitle("PC3 v. PC4 \nFiltered RNA-Seq Log2CPM \nDay4 CardiacMesoderm \nFilterByExpression \nScale=TRUE")
+  ggtitle("PC3 v. PC4 \nTMM - RMG0 RNA-Seq Log2CPM \nNo5 \nscale=TRUE")
 
 ```
 

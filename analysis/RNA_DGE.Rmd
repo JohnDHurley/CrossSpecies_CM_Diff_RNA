@@ -9402,13 +9402,4 @@ wflow_publish("analysis/RNA_DGE.Rmd")
 
 ```
 
-```{r}
-
-comp_list <- c("Sig_Sp_inter_Traj02")
-TopTable %>% 
-  filter(Comparisons %in% comp_list) %>% 
-  filter(adj.P.Val < 0.05) %>%
-  pull(Gene) %>% 
-  unique()
-```
 

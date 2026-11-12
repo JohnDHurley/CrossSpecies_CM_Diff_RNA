@@ -3771,8 +3771,8 @@ median_absfc
 ```
 
 
-#### Absolute fold change
-```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
+#### Correlations
+```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4_Correlation, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")

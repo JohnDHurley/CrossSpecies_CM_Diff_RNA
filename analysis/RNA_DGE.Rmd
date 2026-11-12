@@ -1191,22 +1191,24 @@ counts_table_NoRep <- counts_table %>%
 
 metadata$dgelist <- c(rep(c("Human_Day0","Human_Day2","Human_Day4","Human_Day5","Human_Day15","Human_Day30","Chimp_Day0","Chimp_Day2","Chimp_Day4","Chimp_Day5","Chimp_Day15","Chimp_Day30"),7))
 
-#create DGEList object
-dge <- DGEList(counts = counts_table_NoRep)
-dge$samples$group <- factor(metadata$dgelist)
-dge <- calcNormFactors(dge, method = "TMM")
-dge$samples
+# #create DGEList object
+# dge <- DGEList(counts = counts_table_NoRep)
+# dge$samples$group <- factor(metadata$dgelist)
+# dge <- calcNormFactors(dge, method = "TMM")
+# dge$samples
+
+dge <- readRDS("data/DGE/dge_unfiltered_NoRep.RDS")
 
 dim(dge)
 
 dge$samples
-
+# 
 design_int <- model.matrix(~ Species * Timepoint,
                            data = metadata)
 
 colnames(design_int)
 colnames(design_int) <- make.names(colnames(design_int))
-
+# 
 # saveRDS(dge, "data/DGE/dge_unfiltered_NoRep.RDS")
 # saveRDS(design_int, "data/DGE/design_unfiltered_NoRep.RDS")
 ```

@@ -1503,7 +1503,7 @@ for (sp in species_levels) {
 ```
 
 ### DGE
-```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Contrasts}
 fit <- readRDS("data/DGE/fit_logcpm_G1_SpTp_All_NoRep.RDS")
 design_int <- readRDS("data/DGE/design_int_logcpm_G1_SpTp_All_NoRep.RDS")
 
@@ -1552,7 +1552,7 @@ summary(results_summary)
 # saveRDS(fit2, "data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_TopTable}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
 #Create Human TopTable. using listapply, then you can pull specific comp using the $
@@ -1586,7 +1586,7 @@ head(TopTable_RNA_All)
 ```
 
 ### Volcano plots
-```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_VolcanoPlots}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
 
@@ -1611,7 +1611,7 @@ for (n in ComparisonNames) {
 }
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_RNASets}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
 
@@ -1635,7 +1635,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 ```
 
 ### Species DEGs
-```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species, fig.height=6, fig.width=10}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -1681,7 +1681,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Species_Directionality_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species_Directions}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -1717,7 +1717,7 @@ fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 
 
-```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species_LogFC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -1793,7 +1793,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species_GO}
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_All_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
@@ -1820,7 +1820,7 @@ fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
 ```
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species_GO2 ,fig.height=10,fig.height=10}
 
 SpeciesGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/SpeciesGo_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 
@@ -1905,7 +1905,7 @@ SpeciesGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/SpeciesGo_Filt_logcpm_G1_SpTp
 
 ```
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species_GOPlotting, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 library(ggplot2)
@@ -1931,7 +1931,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Species_GoPlotting2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -1971,7 +1971,7 @@ for (p in plots) {
 ```
 
 ### Trajectory DEGs
-```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage, fig.height=6, fig.width=10}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -2021,7 +2021,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage_TopTable}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 
@@ -2055,7 +2055,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/TrajectoryDirections_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage_LogFC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -2164,7 +2164,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage_GO}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_All_NoRep.RDS")
 direction_results <- readRDS("data/DGE/TrajectoryDirections_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -2197,7 +2197,7 @@ all_go_results <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_All_NoRep.RDS")
 
 ```
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage_GO2,fig.height=10,fig.height=10}
 TrajectoryGo_logcpm_G1_SpTp_All_NoRep <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_All_NoRep.RDS")
 
 # library(dplyr)
@@ -2278,7 +2278,7 @@ TrajectoryGo_logcpm_G1_SpTp_All_NoRep <- readRDS("data/DGE/TrajectoryGo_logcpm_G
 ```
 
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_plot1,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage_GoPlotting,fig.height=10,fig.height=10}
 GO_plot_data <- readRDS("data/DGE/TrajectoryGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 library(ggplot2)
@@ -2304,7 +2304,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=6}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Stage_GoPlotting2,fig.height=6}
 GO_plot_data <- readRDS("data/DGE/TrajectoryGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -2343,476 +2343,9 @@ for (p in plots) {
 }
 ```
 
-#### R2 scatter plots
-```{r RNASeq_DGE_Clusters_FC_Quadrants_RLCOMP_G1_4SpTp}
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_All_NoRep.RDS")
-
-
-H_comp <- "H_Day02"
-C_comp <- "C_Day02"
-
-df_wide <- TopTable %>%
-  filter(Comparisons %in% c(H_comp, C_comp)) %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  group_by(Gene, Comparisons) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)
-
-r2 <- summary(fit)$r.squared
-pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
-
-x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos <- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-max_val <- max(abs(c(x_limits, y_limits)))
-x_limits <- c(-15, 15)
-y_limits <- c(-15, 15)
-
-
-genes_of_interest_human <- unique(RNA_sets$H_Day02$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day02$DEGs$Gene)
-
-df_wide$highlight <- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
-
-  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
-
-  TRUE ~ "Other"
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  annotate(
-    "text",
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      "R² = ", round(r2, 3),
-      "\np = ", format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, " vs ", C_comp),
-    color = "Gene Set"
-  )
-
-
-
-H_comp <- "H_Day24"
-C_comp <- "C_Day24"
-
-df_wide <- TopTable %>%
-  filter(Comparisons %in% c(H_comp, C_comp)) %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  group_by(Gene, Comparisons) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)
-
-r2 <- summary(fit)$r.squared
-pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
-
-x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos <- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-max_val <- max(abs(c(x_limits, y_limits)))
-x_limits <- c(-15, 15)
-y_limits <- c(-15, 15)
-
-
-genes_of_interest_human <- unique(RNA_sets$H_Day24$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day24$DEGs$Gene)
-
-df_wide$highlight <- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
-
-  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
-
-  TRUE ~ "Other"
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  annotate(
-    "text",
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      "R² = ", round(r2, 3),
-      "\np = ", format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, " vs ", C_comp),
-    color = "Gene Set"
-  )
-
-
-H_comp <- "H_Day45"
-C_comp <- "C_Day45"
-
-df_wide <- TopTable %>%
-  filter(Comparisons %in% c(H_comp, C_comp)) %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  group_by(Gene, Comparisons) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)
-
-r2 <- summary(fit)$r.squared
-pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
-
-x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos <- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-max_val <- max(abs(c(x_limits, y_limits)))
-x_limits <- c(-15, 15)
-y_limits <- c(-15, 15)
-
-
-genes_of_interest_human <- unique(RNA_sets$H_Day45$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day45$DEGs$Gene)
-
-df_wide$highlight <- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
-
-  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
-
-  TRUE ~ "Other"
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  annotate(
-    "text",
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      "R² = ", round(r2, 3),
-      "\np = ", format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, " vs ", C_comp),
-    color = "Gene Set"
-  )
-
-
-H_comp <- "H_Day515"
-C_comp <- "C_Day515"
-
-df_wide <- TopTable %>%
-  filter(Comparisons %in% c(H_comp, C_comp)) %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  group_by(Gene, Comparisons) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)
-
-r2 <- summary(fit)$r.squared
-pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
-
-x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos <- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-max_val <- max(abs(c(x_limits, y_limits)))
-x_limits <- c(-15, 15)
-y_limits <- c(-15, 15)
-
-
-genes_of_interest_human <- unique(RNA_sets$H_Day515$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day515$DEGs$Gene)
-
-df_wide$highlight <- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
-
-  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
-
-  TRUE ~ "Other"
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  annotate(
-    "text",
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      "R² = ", round(r2, 3),
-      "\np = ", format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, " vs ", C_comp),
-    color = "Gene Set"
-  )
-
-
-
-H_comp <- "H_Day1530"
-C_comp <- "C_Day1530"
-
-df_wide <- TopTable %>%
-  filter(Comparisons %in% c(H_comp, C_comp)) %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  group_by(Gene, Comparisons) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  pivot_wider(names_from = Comparisons, values_from = logFC) %>%
-  filter(!is.na(.data[[H_comp]]), !is.na(.data[[C_comp]]))
-
-# head(df_wide)
-# nrow(df_wide)
-
-fit <- lm(df_wide[[C_comp]] ~ df_wide[[H_comp]])
-summary(fit)
-
-r2 <- summary(fit)$r.squared
-pval <- summary(fit)$coefficients[2, "Pr(>|t|)"]
-
-# r2
-# pval
-
-format(pval, scientific = TRUE, digits = 3)
-
-library(ggplot2)
-
-x_pos <- max(df_wide[[H_comp]]) * 0.95      # right side
-x_neg <- min(df_wide[[H_comp]]) * 0.5      # left side
-
-y_pos <- max(df_wide[[C_comp]]) * 0.95
-
-# Optional: make axes symmetric around 0 for a nicer visual
-max_val <- max(abs(c(x_limits, y_limits)))
-x_limits <- c(-15, 15)
-y_limits <- c(-15, 15)
-
-
-genes_of_interest_human <- unique(RNA_sets$H_Day1530$DEGs$Gene)
-genes_of_interest_chimp <- unique(RNA_sets$C_Day1530$DEGs$Gene)
-
-df_wide$highlight <- dplyr::case_when(
-  df_wide$Gene %in% genes_of_interest_human &
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Both",
-
-  df_wide$Gene %in% genes_of_interest_human ~ "T-DEG Human Only",
-
-  df_wide$Gene %in% genes_of_interest_chimp ~ "T-DEG Chimp Only",
-
-  TRUE ~ "Other"
-)
-
-# Plot
-ggplot(df_wide, aes(x = .data[[H_comp]], y = .data[[C_comp]], color = highlight)) +
-  geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("T-DEG Human Only" = "red", "T-DEG Chimp Only" = "blue", "T-DEG Both" = "purple", "Other" = "grey70")) +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  annotate(
-    "text",
-    x = min(df_wide[[H_comp]], na.rm = TRUE),
-    y = max(df_wide[[C_comp]], na.rm = TRUE),
-    label = paste0(
-      "R² = ", round(r2, 3),
-      "\np = ", format(pval, scientific = TRUE, digits = 3)
-    ),
-    hjust = 0,
-    vjust = 1
-  ) +
-  coord_cartesian(xlim = x_limits, ylim = y_limits) +
-  theme_bw() +
-  labs(
-    x = H_comp,
-    y = C_comp,
-    title = paste0(H_comp, " vs ", C_comp),
-    color = "Gene Set"
-  )
-
-```
-
-```{r Trajectory plotting_RLCOMP_G1_4SpTp_Quadrants_combined }
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_All_NoRep.RDS")
-
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-df_all <- TopTable %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  
-  mutate(
-    species = ifelse(str_starts(Comparisons, "H_"), "H", "C"),
-    trajectory = str_remove(Comparisons, "^[HC]_")
-  ) %>%
-  
-  group_by(Gene, species, trajectory) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  
-  pivot_wider(names_from = species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C))
-
-library(ggplot2)
-
-df_all$trajectory <- df_all$trajectory <- factor(
-  df_all$trajectory,
-  levels = c("Day02", "Day24", "Day45", "Day515","Day1530")
-)
-
-ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
-  geom_point(alpha = 0.7) +
-  
-  # one regression line per trajectory (same color as points)
-  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE)+
-  
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  
-  theme_bw() +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    color = "Trajectory",
-    title = "All Trajectories Combined"
-  )
-
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  do({
-    fit <- lm(C ~ H, data = .)
-    data.frame(
-      r2 = summary(fit)$r.squared,
-      p = summary(fit)$coefficients[2, "Pr(>|t|)"]
-    )
-  })
-```
-
 
 ### Interaction DEGs
-```{r RNASeq_DGE_Interaction_FC_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -2848,7 +2381,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions_Directions}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -2891,7 +2424,7 @@ direction_results <- setNames(
 # saveRDS(direction_results, "data/DGE/InteractionDirections_logcpm_G1_SpTp_All_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality_FC_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions_LogFC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_All_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -3000,7 +2533,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions_GO}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_All_NoRep.RDS")
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_All_NoRep.RDS")
 direction_results <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_All_NoRep.RDS")
@@ -3032,7 +2565,7 @@ all_go_results <- readRDS("data/DGE/InteractionGo_Filt_logcpm_G1_SpTp_RNA_fc_NoR
 
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions_GO2,fig.height=10,fig.height=10}
 
 InteractionGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/InteractionGo_Filt_logcpm_G1_SpTp_RNA_fc_NoRep.RDS")
 
@@ -3115,7 +2648,7 @@ InteractionGo_logcpm_G1_SpTp_NoRep <-readRDS("data/DGE/InteractionGo_Filt_logcpm
 
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_plot1, fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions_GoPlotting, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 library(ggplot2)
@@ -3141,7 +2674,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_plot2,fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_Interactions_GoPlotting2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_logcpm_G1_SpTp_All_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -3349,7 +2882,7 @@ for (sp in species_levels) {
 
 ```
 
-```{r RNASeq_DGE_Differential_Data_Model_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_contrasts}
 fit <- readRDS("data/DGE/fit_logcpm_G1_SpTp_No4_NoRep.RDS")
 design_int <- readRDS("data/DGE/design_int_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3395,7 +2928,7 @@ summary(results_summary)
 # saveRDS(fit2, "data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_TopTable}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 #Create Human TopTable. using listapply, then you can pull specific comp using the $
@@ -3429,7 +2962,7 @@ head(TopTable_RNA_All)
 ```
 
 ### Volcano plots
-```{r RNASeq_DGE_Differential_TopTable_VolcancoPlots_RLCOMP_G1_4SpTp_No4, fig.height=3,fig.width=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_VolcanoPlots, fig.height=3,fig.width=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3454,7 +2987,7 @@ for (n in ComparisonNames) {
 }
 ```
 
-```{r RNASeq_DGE_Differential_TopTable_Subsetting0.05_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Sets}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -3477,7 +3010,7 @@ names(RNA_sets) <- paste0(ComparisonNames)
 # saveRDS(RNA_sets, "data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
-```{r Genes_Species_FC_lineplot}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_ExpresionPlot}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -3697,7 +3230,7 @@ ggplot(
 ### Species DEGs
 
 #### Absolute fold change
-```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -3772,7 +3305,8 @@ median_absfc
 
 
 #### Correlations
-```{r RNASeq_DGE_Species_FC_RLCOMP_G1_4SpTp_No4_Correlation, fig.width=5, fig.height=5}
+
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Correlation, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -3972,7 +3506,7 @@ pairwise.wilcox.test(
 
 ```
 
-```{r RNASeq_DGE_Species_Directionality_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Directions}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4008,7 +3542,7 @@ direction_results <- setNames(
 
 #### Fold change
 
-```{r RNASeq_DGE_Species_Directionality_FC_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_LogFC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4078,7 +3612,7 @@ for (p in cluster_plots) print(p)
 
 
 #### Proportions
-```{r RNASeq_DGE_species_DEGs_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Proportions, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -4131,7 +3665,7 @@ ggplot(prop_df, aes(x = Comparisons, y = prop, fill = DEG_status)) +
   theme_bw()
 ```
 
-```{r RNASeq_DGE_Species_proportions_RLCOMP_G1_4SpTp_No4, fig.width=5, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Proportions2, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4179,7 +3713,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
   )
 ```
 
-```{r RNASeq_DGE_Species_DEG_Proportions_RLCOMP_G1_4SpTp_No4_2, fig.width=5, fig.height=5}
+```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Proportions3, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -4407,7 +3941,7 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 #### Venn
 
-```{r RNASeq_DGE_Species_Venn_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Venn, fig.height=7,fig.width=7}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 
@@ -4444,7 +3978,7 @@ ggVennDiagram(genes_list, label = "count") +
 ```
 
 #### GoEnrichment
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4}
+```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_GO}
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_No4_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 direction_results <- readRDS("data/DGE/SpeciesDirections_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4474,7 +4008,7 @@ all_go_results <-readRDS("data/DGE/SpeciesGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_GO2,fig.height=10,fig.height=10}
 
 SpeciesGo_logcpm_G1_SpTp_No4_NoRep <-readRDS("data/DGE/SpeciesGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -4558,7 +4092,7 @@ library(purrr)
 
 
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1, fig.width=10, fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_GoPlotting, fig.width=10, fig.height=10}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(ggplot2)
@@ -4584,7 +4118,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Species_EnrichGo_RLCOMP_G1_4SpTp_No4_plot2,fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_GoPlotting2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/SpeciesGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -4623,7 +4157,7 @@ for (p in plots) {
 }
 ```
 
-```{r, fig.width=5, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_GoPlotting3, fig.width=5, fig.height=5}
 
 
 all_go_results <-readRDS("data/DGE/SpeciesGo_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4848,7 +4382,7 @@ make_go_heatmap("Chimp_higher")
 ### Trajectory DEGs
 
 #### Absolute fold change
-```{r RNASeq_DGE_Trajectory_FC_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage, fig.height=6, fig.width=10}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4899,7 +4433,7 @@ for (p in cluster_plots) print(p)
 ```
 
 
-```{r RNASeq_DGE_Trajectory_Directionality_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Directions}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -4933,7 +4467,7 @@ direction_results <- setNames(
 ```
 
 #### Fold change
-```{r RNASeq_DGE_Trajectory_Directionality_FC_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_logFC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -5027,7 +4561,7 @@ for (p in cluster_plots) print(p)
 
 #### Proportions
 
-```{r  RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_3, fig.width=4, fig.height=6}
+```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Proportions, fig.width=4, fig.height=6}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -5114,7 +4648,7 @@ ggplot(
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=5, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Proportions2, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -5260,7 +4794,7 @@ chisq.test(tab)
 ```
 
 
-```{r}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_ChiSq}
 # Day 25 verus Day 515
 tab <- matrix(c(3499, 3754, (1889+2982), (2057+3285)), nrow = 2)
 
@@ -5275,7 +4809,7 @@ chisq.test(tab)
 
 ```
 
-```{r}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_ChiSq2}
 
 # Day 515 versus Day 1530
 tab <- matrix(c(3754, 2841, (2057+3285), (2502+3285)), nrow = 2)
@@ -5287,7 +4821,7 @@ chisq.test(tab)
 
 
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=10, fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_proprotions4, fig.width=10, fig.height=10}
 library(dplyr)
 library(tidyr)
 
@@ -5430,7 +4964,7 @@ ggplot(
 
 
 #### Effect Sizes
-```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_EffectSize}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -5509,7 +5043,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_RLCOMP_G1_4SpTp_No4_2}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_EffectSize2}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -5599,7 +5133,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_DEGs_EffectSizes_Divergence_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_EffectSize3}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -5763,7 +5297,7 @@ ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
 
 ```
 
-```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_Divergence_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_EffectSize4}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -5830,7 +5364,7 @@ ggplot(plot_df, aes(x = Species, y = abs_logFC, fill = Species)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_DEGs_ConservedDEGs_EffectSizes_Divergence_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_EffectSize5}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -5880,1062 +5414,10 @@ ggplot(plot_df, aes(x = Stage, y = diff_logFC)) +
   )
 ```
 
-```{r RNASeq_DGE_Trajectory_correlationPlots_DEGs_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
 
-
-library(dplyr)
-library(stringr)
-
-traj <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
-          "C_Day02","C_Day25","C_Day515","C_Day1530")
-
-df <- TopTable %>%
-  filter(Comparisons %in% traj) %>%
-  mutate(
-    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
-    trajectory = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  )
-
-df_all <- df %>%
-  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
-  tidyr::pivot_wider(
-    names_from = Species,
-    values_from = c(logFC, DEG)
-  ) %>%
-  filter(!is.na(logFC_Human) & !is.na(logFC_Chimp))
-
-df_all <- df_all %>%
-  filter(DEG_Human | DEG_Chimp)
-
-df_all$trajectory <- df_all$trajectory <- factor(
-  df_all$trajectory,
-  levels = c("Day02", "Day25", "Day515","Day1530")
-)
-
-df_all <- df_all %>%
-  mutate(
-    H = logFC_Human,
-    C = logFC_Chimp,
-    trajectory = recode(
-      trajectory,
-      "Day02"   = "Day0-Day2",
-      "Day25"   = "Day2-Day5",
-      "Day515"  = "Day5-Day15",
-      "Day1530" = "Day15-Day30"
-    )
-  )
-
-df_all <- df_all %>%
-  mutate(trajectory = recode(
-    trajectory,
-    "Day02"   = "Day0-Day2",
-    "Day25"   = "Day2-Day5",
-    "Day515"  = "Day5-Day15",
-    "Day1530" = "Day15-Day30"
-  ))
-
-ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
-  geom_point(alpha = 0.7) +
-  
-  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
-  
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  
-  facet_wrap(~ trajectory, ncol = 2) +  # 2x2 layout
-  
-  theme_bw() +
-  theme(
-    legend.position = "none"  # cleaner since each panel is labeled
-  ) +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Trajectories (split panels)"
-  )
-
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  do({
-    fit <- lm(C ~ H, data = .)
-    data.frame(
-      r2 = round(summary(fit)$r.squared, 3),
-      p = format(summary(fit)$coefficients[2, "Pr(>|t|)"], scientific = TRUE, digits = 2)
-    )
-  })
-ggplot(df_all, aes(x = H, y = C)) +
-  geom_point(alpha = 0.7, color = "steelblue") +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  
-  facet_wrap(~ trajectory, ncol = 2) +
-  
-  geom_text(
-    data = df_stats,
-    aes(
-      x = -Inf, y = Inf,
-      label = paste0("R² = ", r2, "\np = ", p)
-    ),
-    hjust = -0.1,
-    vjust = 1.1,
-    inherit.aes = FALSE
-  ) +
-  
-  coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) +
-  
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Trajectories (faceted)"
-  )
-
-```
-
-```{r RNASeq_DGE_Trajectory_correlationPlots_TrajecotrySpecific_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
-
-
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(ggplot2)
-
-# ----------------------------
-# 1. Define trajectories
-# ----------------------------
-traj <- c(
-  "H_Day02","H_Day25","H_Day515","H_Day1530",
-  "C_Day02","C_Day25","C_Day515","C_Day1530"
-)
-
-# ----------------------------
-# 2. Prepare long data
-# ----------------------------
-df <- TopTable %>%
-  filter(Comparisons %in% traj) %>%
-  mutate(
-    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
-    trajectory = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  )
-
-# ----------------------------
-# 3. Pivot to paired H vs C
-# ----------------------------
-df_wide <- df %>%
-  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
-  pivot_wider(
-    names_from = Species,
-    values_from = c(logFC, DEG)
-  )
-
-# ----------------------------
-# 4. KEEP ONLY shared DEGs
-# ----------------------------
-df_all <- df_wide %>%
-  filter(DEG_Human & DEG_Chimp)
-
-# ----------------------------
-# 5. Format for plotting
-# ----------------------------
-df_all <- df_all %>%
-  mutate(
-    H = logFC_Human,
-    C = logFC_Chimp,
-    trajectory = factor(
-      trajectory,
-      levels = c("Day02","Day25","Day515","Day1530"),
-      labels = c("Day0-Day2","Day2-Day5","Day5-Day15","Day15-Day30")
-    )
-  )
-
-# ----------------------------
-# 6. Scatter plots + regression
-# ----------------------------
-ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
-  geom_point(alpha = 0.7) +
-  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  facet_wrap(~ trajectory, ncol = 2) +
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Shared DEGs: trajectory-specific conservation"
-  )
-
-# ----------------------------
-# 7. R² per trajectory
-# ----------------------------
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  summarise(
-    r2 = summary(lm(C ~ H))$r.squared,
-    p = summary(lm(C ~ H))$coefficients[2,4],
-    .groups = "drop"
-  )
-
-# ----------------------------
-# 8. Scatter + R² labels
-# ----------------------------
-ggplot(df_all, aes(x = H, y = C)) +
-  geom_point(alpha = 0.7, color = "steelblue") +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  facet_wrap(~ trajectory, ncol = 2) +
-  geom_text(
-    data = df_stats,
-    aes(
-      x = -Inf, y = Inf,
-      label = paste0("R² = ", round(r2, 3), "\np = ", signif(p, 2))
-    ),
-    inherit.aes = FALSE,
-    hjust = -0.1,
-    vjust = 1.1
-  ) +
-  coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) +
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Shared DEGs: trajectory conservation"
-  )
-```
-
-```{r RNASeq_DGE_Trajectory_effectSizes_SpeciesSpecific_RLCOMP_G1_4SpTp_No4}
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
-
-
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(ggplot2)
-
-traj <- c(
-  "H_Day02","H_Day25","H_Day515","H_Day1530",
-  "C_Day02","C_Day25","C_Day515","C_Day1530"
-)
-
-# Prepare dataframe
-df <- TopTable %>%
-  filter(Comparisons %in% traj) %>%
-  mutate(
-    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
-    Stage = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  )
-
-# Wide format: one row per Gene + Stage
-df_wide <- df %>%
-  dplyr::select(Gene, Stage, Species, logFC, DEG) %>%
-  pivot_wider(
-    names_from = Species,
-    values_from = c(logFC, DEG)
-  ) %>%
-  filter(
-    !is.na(logFC_Human),
-    !is.na(logFC_Chimp)
-  )
-
-# Keep genes DEG in ONLY one species
-# (Human XOR Chimp)
-plot_df <- df_wide %>%
-  filter(DEG_Human != DEG_Chimp) %>%
-  mutate(
-    logFC_Human = abs(logFC_Human),
-    logFC_Chimp = abs(logFC_Chimp)
-  ) %>%
-  dplyr::select(
-    Gene,
-    Stage,
-    logFC_Human,
-    logFC_Chimp
-  ) %>%
-  pivot_longer(
-    cols = c(logFC_Human, logFC_Chimp),
-    names_to = "Species",
-    values_to = "abs_logFC"
-  ) %>%
-  mutate(
-    Species = recode(
-      Species,
-      "logFC_Human" = "Human",
-      "logFC_Chimp" = "Chimp"
-    ),
-    Stage = factor(
-      Stage,
-      levels = c(
-        "Day02",
-        "Day25",
-        "Day515",
-        "Day1530"
-      ),
-      labels = c(
-        "Day0-Day2",
-        "Day2-Day5",
-        "Day5-Day15",
-        "Day15-Day30"
-      )
-    )
-  )
-
-# Plot
-ggplot(plot_df,
-       aes(x = Species,
-           y = abs_logFC,
-           fill = Species)) +
-
-  geom_boxplot(width = 0.7) +
-
-  facet_wrap(~Stage, nrow = 1) +
-
-  scale_fill_manual(values = c(
-    "Human" = "black",
-    "Chimp" = "white"
-  )) +
-
-  scale_y_continuous(limits = c(0, 2)) +
-
-  theme_bw() +
-
-  theme(
-    legend.position = "none",
-    strip.background = element_blank(),
-    strip.text = element_text(size = 12)
-  ) +
-
-  labs(
-    x = "",
-    y = "|logFC|",
-    title = "Effect sizes for species-specific Trajectory DEGs"
-  )
-```
-
-```{r RNASeq_DGE_Trajectory_effectSizes_Divergence_SpeciesSpecific_RLCOMP_G1_4SpTp_No4}
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
-
-
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(ggplot2)
-
-traj <- c(
-  "H_Day02","H_Day25","H_Day515","H_Day1530",
-  "C_Day02","C_Day25","C_Day515","C_Day1530"
-)
-
-# Prepare dataframe
-df <- TopTable %>%
-  filter(Comparisons %in% traj) %>%
-  mutate(
-    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
-    Stage = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  )
-
-# Wide format
-df_wide <- df %>%
-  dplyr::select(Gene, Stage, Species, logFC, DEG) %>%
-  pivot_wider(
-    names_from = Species,
-    values_from = c(logFC, DEG)
-  ) %>%
-  filter(
-    !is.na(logFC_Human),
-    !is.na(logFC_Chimp)
-  )
-
-# Keep genes DEG in ONLY one species
-# (Human XOR Chimp)
-plot_df <- df_wide %>%
-  filter(DEG_Human != DEG_Chimp) %>%
-  mutate(
-    diff_logFC = abs(logFC_Human - logFC_Chimp),
-    Stage = factor(
-      Stage,
-      levels = c(
-        "Day02",
-        "Day25",
-        "Day515",
-        "Day1530"
-      ),
-      labels = c(
-        "Day0-Day2",
-        "Day2-Day5",
-        "Day5-Day15",
-        "Day15-Day30"
-      )
-    )
-  )
-
-# Plot
-ggplot(plot_df,
-       aes(x = Stage,
-           y = diff_logFC)) +
-
-  geom_boxplot(
-    fill = "grey80",
-    color = "black"
-  ) +
-
-  geom_hline(
-    yintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  coord_cartesian(ylim = c(0, 2)) +
-
-  theme_bw() +
-
-  labs(
-    x = "Developmental Stage",
-    y = "|Human logFC − Chimp logFC|",
-    title = "Species divergence in species-specific Trajectory DEGs"
-  )
-```
-
-#### R2 scatter plots
-
-```{r RNASeq_DGE_Trajectory_SpeciesSpecific_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
-
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
-
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(ggplot2)
-
-# ----------------------------
-# 1. Define trajectories
-# ----------------------------
-traj <- c(
-  "H_Day02","H_Day25","H_Day515","H_Day1530",
-  "C_Day02","C_Day25","C_Day515","C_Day1530"
-)
-
-# ----------------------------
-# 2. Prepare long data
-# ----------------------------
-df <- TopTable %>%
-  filter(Comparisons %in% traj) %>%
-  mutate(
-    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
-    trajectory = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  )
-
-# ----------------------------
-# 3. Pivot to paired H vs C
-# ----------------------------
-df_wide <- df %>%
-  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
-  pivot_wider(
-    names_from = Species,
-    values_from = c(logFC, DEG)
-  ) %>%
-  filter(
-    !is.na(logFC_Human),
-    !is.na(logFC_Chimp)
-  )
-
-# ----------------------------
-# 4. KEEP ONLY species-specific DEGs
-#    (DEG in Human XOR Chimp)
-# ----------------------------
-df_all <- df_wide %>%
-  filter(DEG_Human != DEG_Chimp)
-
-# ----------------------------
-# 5. Format for plotting
-# ----------------------------
-df_all <- df_all %>%
-  mutate(
-    H = logFC_Human,
-    C = logFC_Chimp,
-    trajectory = factor(
-      trajectory,
-      levels = c(
-        "Day02",
-        "Day25",
-        "Day515",
-        "Day1530"
-      ),
-      labels = c(
-        "Day0-Day2",
-        "Day2-Day5",
-        "Day5-Day15",
-        "Day15-Day30"
-      )
-    )
-  )
-
-# ----------------------------
-# 6. Scatter plots + regression
-# ----------------------------
-ggplot(df_all,
-       aes(x = H,
-           y = C,
-           color = trajectory)) +
-
-  geom_point(alpha = 0.7) +
-
-  geom_smooth(
-    method = "lm",
-    se = FALSE,
-    fullrange = TRUE
-  ) +
-
-  geom_hline(
-    yintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  geom_vline(
-    xintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  facet_wrap(~ trajectory, ncol = 2) +
-
-  theme_bw() +
-
-  theme(
-    legend.position = "none"
-  ) +
-
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Species-specific DEGs: trajectory divergence"
-  )
-
-# ----------------------------
-# 7. R² per trajectory
-# ----------------------------
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  summarise(
-    r2 = summary(lm(C ~ H))$r.squared,
-    p = summary(lm(C ~ H))$coefficients[2,4],
-    .groups = "drop"
-  )
-
-# ----------------------------
-# 8. Scatter + R² labels
-# ----------------------------
-ggplot(df_all,
-       aes(x = H,
-           y = C)) +
-
-  geom_point(
-    alpha = 0.7,
-    color = "steelblue"
-  ) +
-
-  geom_smooth(
-    method = "lm",
-    se = FALSE,
-    color = "black"
-  ) +
-
-  geom_hline(
-    yintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  geom_vline(
-    xintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  facet_wrap(~ trajectory, ncol = 2) +
-
-  geom_text(
-    data = df_stats,
-    aes(
-      x = -Inf,
-      y = Inf,
-      label = paste0(
-        "R² = ",
-        round(r2, 3),
-        "\np = ",
-        signif(p, 2)
-      )
-    ),
-    inherit.aes = FALSE,
-    hjust = -0.1,
-    vjust = 1.1
-  ) +
-
-  coord_cartesian(
-    xlim = c(-15, 15),
-    ylim = c(-15, 15)
-  ) +
-
-  theme_bw() +
-
-  theme(
-    legend.position = "none"
-  ) +
-
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Species-specific DEGs: trajectory divergence"
-  )
-```
-
-```{r RNASeq_DGE_Trajectory_NonDEGs_Correlation_RLCOMP_G1_4SpTp_No4, fig.height=10,fig.width=10}
-
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
-
-library(dplyr)
-library(tidyr)
-library(stringr)
-library(ggplot2)
-
-# Comparisons to include
-traj <- c(
-  "H_Day02","H_Day25","H_Day515","H_Day1530",
-  "C_Day02","C_Day25","C_Day515","C_Day1530"
-)
-
-# Prepare dataframe
-df <- TopTable %>%
-  filter(Comparisons %in% traj) %>%
-  mutate(
-    Species = ifelse(str_detect(Comparisons, "^H"), "Human", "Chimp"),
-    trajectory = str_extract(Comparisons, "Day[0-9]+"),
-    DEG = adj.P.Val < 0.05
-  )
-
-# Wide format
-df_all <- df %>%
-  dplyr::select(Gene, Species, trajectory, logFC, DEG) %>%
-  pivot_wider(
-    names_from = Species,
-    values_from = c(logFC, DEG)
-  )
-
-# Remove missing values
-df_all <- df_all %>%
-  filter(
-    !is.na(logFC_Human),
-    !is.na(logFC_Chimp),
-    !is.na(DEG_Human),
-    !is.na(DEG_Chimp)
-  )
-
-# KEEP genes non-significant in BOTH species
-df_all <- df_all %>%
-  filter(
-    DEG_Human == FALSE &
-    DEG_Chimp == FALSE
-  )
-
-# Rename trajectory labels
-df_all <- df_all %>%
-  mutate(
-    trajectory = recode(
-      trajectory,
-      "Day02"   = "Day0-Day2",
-      "Day25"   = "Day2-Day5",
-      "Day515"  = "Day5-Day15",
-      "Day1530" = "Day15-Day30"
-    )
-  )
-
-# Set factor order
-df_all$trajectory <- factor(
-  df_all$trajectory,
-  levels = c(
-    "Day0-Day2",
-    "Day2-Day5",
-    "Day5-Day15",
-    "Day15-Day30"
-  )
-)
-
-# Create plotting variables
-df_all <- df_all %>%
-  mutate(
-    H = logFC_Human,
-    C = logFC_Chimp
-  )
-
-# Calculate statistics
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  do({
-    fit <- lm(C ~ H, data = .)
-
-    data.frame(
-      r2 = round(summary(fit)$r.squared, 3),
-      p = format(
-        summary(fit)$coefficients[2, "Pr(>|t|)"],
-        scientific = TRUE,
-        digits = 2
-      )
-    )
-  })
-
-# Plot
-ggplot(df_all, aes(x = H, y = C)) +
-
-  geom_point(
-    alpha = 0.5,
-    color = "grey40"
-  ) +
-
-  geom_smooth(
-    method = "lm",
-    se = FALSE,
-    color = "black"
-  ) +
-
-  geom_hline(
-    yintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  geom_vline(
-    xintercept = 0,
-    linetype = "dashed"
-  ) +
-
-  facet_wrap(
-    ~ trajectory,
-    ncol = 2
-  ) +
-
-  geom_text(
-    data = df_stats,
-    aes(
-      x = -Inf,
-      y = Inf,
-      label = paste0(
-        "R² = ", r2,
-        "\np = ", p
-      )
-    ),
-    hjust = -0.1,
-    vjust = 1.1,
-    inherit.aes = FALSE
-  ) +
-
-  coord_cartesian(
-    xlim = c(-15, 15),
-    ylim = c(-15, 15)
-  ) +
-
-  theme_bw() +
-
-  theme(
-    legend.position = "none"
-  ) +
-
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Non-DEGs in both species"
-  )
-```
-
-```{r RNASeq_DGE_Trajectory_PlotsCombined_RLCOMP_G1_4SpTp_No4, fig.height=5 }
-TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
-RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
-
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-df_all <- TopTable %>%
-  dplyr::select(Gene, Comparisons, logFC) %>%
-  
-  mutate(
-    species = ifelse(str_starts(Comparisons, "H_"), "H", "C"),
-    trajectory = str_remove(Comparisons, "^[HC]_")
-  ) %>%
-  
-  group_by(Gene, species, trajectory) %>%
-  summarize(logFC = mean(logFC), .groups = "drop") %>%
-  
-  pivot_wider(names_from = species, values_from = logFC) %>%
-  
-  filter(!is.na(H), !is.na(C))
-
-library(ggplot2)
-
-df_all$trajectory <- df_all$trajectory <- factor(
-  df_all$trajectory,
-  levels = c("Day02", "Day25", "Day515","Day1530")
-)
-
-ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
-  geom_point(alpha = 0.7) +
-  
-  # one regression line per trajectory (same color as points)
-  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE)+
-  
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  
-  theme_bw() +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    color = "Trajectory",
-    title = "All Trajectories Combined"
-  )
-
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  do({
-    fit <- lm(C ~ H, data = .)
-    data.frame(
-      r2 = summary(fit)$r.squared,
-      p = summary(fit)$coefficients[2, "Pr(>|t|)"]
-    )
-  })
-
-
-df_all <- df_all %>%
-  mutate(trajectory = recode(
-    trajectory,
-    "Day02"   = "Day0-Day2",
-    "Day25"   = "Day2-Day5",
-    "Day515"  = "Day5-Day15",
-    "Day1530" = "Day15-Day30"
-  ))
-
-ggplot(df_all, aes(x = H, y = C, color = trajectory)) +
-  geom_point(alpha = 0.7) +
-  
-  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
-  
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  
-  facet_wrap(~ trajectory, ncol = 2) +  # 2x2 layout
-  
-  theme_bw() +
-  theme(
-    legend.position = "none"  # cleaner since each panel is labeled
-  ) +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Trajectories (split panels)"
-  )
-
-df_stats <- df_all %>%
-  group_by(trajectory) %>%
-  do({
-    fit <- lm(C ~ H, data = .)
-    data.frame(
-      r2 = round(summary(fit)$r.squared, 3),
-      p = format(summary(fit)$coefficients[2, "Pr(>|t|)"], scientific = TRUE, digits = 2)
-    )
-  })
-ggplot(df_all, aes(x = H, y = C)) +
-  geom_point(alpha = 0.7, color = "steelblue") +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  
-  facet_wrap(~ trajectory, ncol = 2) +
-  
-  geom_text(
-    data = df_stats,
-    aes(
-      x = -Inf, y = Inf,
-      label = paste0("R² = ", r2, "\np = ", p)
-    ),
-    hjust = -0.1,
-    vjust = 1.1,
-    inherit.aes = FALSE
-  ) +
-  
-  coord_cartesian(xlim = c(-15, 15), ylim = c(-15, 15)) +
-  
-  theme_bw() +
-  theme(legend.position = "none") +
-  labs(
-    x = "Human logFC",
-    y = "Chimp logFC",
-    title = "Trajectories (faceted)"
-  )
-
-```
-
-```{r RNASeq_DGE_CorrelationValues_Combined_RLCOMP_G1_4SpTp_No4, fig.height=6, fig.width=6}
-
-r2_df <- data.frame(
-  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
-  R2 = c(0.538, 0.673, 0.562, 0.428)
-)
-
-r2_df$Transition <- factor(
-  r2_df$Transition,
-  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
-)
-
-r3_df <- data.frame(
-  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
-  R2 = c(0.606, 0.708, 0.61, 0.471)
-)
-
-r3_df$Transition <- factor(
-  r3_df$Transition,
-  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
-)
-
-r4_df <- data.frame(
-  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
-  R2 = c(0.844, 0.868, 0.84, 0.797)
-)
-
-r4_df$Transition <- factor(
-  r4_df$Transition,
-  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
-)
-
-r5_df <- data.frame(
-  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
-  R2 = c(0.123, 0.204, 0.183, 0.158)
-)
-
-r5_df$Transition <- factor(
-  r5_df$Transition,
-  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
-)
-
-r6_df <- data.frame(
-  Transition = c("Day0-2","Day2-5","Day5-15","Day15-30"),
-  R2 = c(0.042,0.14,0.09,0.144)
-)
-
-r6_df$Transition <- factor(
-  r6_df$Transition,
-  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
-)
-
-library(dplyr)
-library(ggplot2)
-
-# Add labels
-r2_df$Group <- "All Expressed"
-r3_df$Group <- "All DEGs"
-r4_df$Group <- "Shared DEGs"
-r5_df$Group <- "Species-Specific DEGs"
-r6_df$Group <- "Non-DEGs"
-
-# Combine
-all_df <- bind_rows(r2_df, r3_df, r4_df, r5_df,r6_df)
-
-# Factor order
-all_df$Transition <- factor(
-  all_df$Transition,
-  levels = c("Day0-2","Day2-5","Day5-15","Day15-30")
-)
-
-p <- ggplot(
-  all_df,
-  aes(
-    x = Transition,
-    y = R2,
-    group = Group,
-    linetype = Group
-  )
-) +
-
-  # Background highlight
-  annotate(
-    "rect",
-    xmin = 1.5, xmax = 3.5,
-    ymin = -Inf, ymax = Inf,
-    alpha = 0.1,
-    fill = "grey70"
-  ) +
-
-  geom_line(
-    aes(linewidth = Group),
-    color = "black"
-  ) +
-
-  geom_point(
-    size = 3,
-    color = "black"
-  ) +
-
-  geom_text(
-    aes(label = round(R2, 2)),
-    vjust = -1,
-    size = 3,
-    show.legend = FALSE
-  ) +
-
-  scale_linetype_manual(
-  values = c(
-    "All Expressed" = "solid",
-    "All DEGs" = "dashed",
-    "Shared DEGs" = "dotted",
-    "Species-Specific DEGs" = "longdash",
-    "Non-DEGs" = "dotdash"
-  )
-  ) +
-
-  scale_linewidth_manual(
-    values = c(
-      "All Expressed" = 1.8,  # bold
-      "All DEGs" = 1.2,
-      "Shared DEGs" = 1.2,
-      "Species-Specific DEGs" = 1.2,
-      "Non-DEGs" = 1.2
-    )
-  ) +
-
-  labs(
-    title = "Inter-species correlation peaks at mid-development",
-    x = "Differentiation Transition",
-    y = expression(R^2),
-    linetype = "Dataset",
-    linewidth = "Dataset"
-  ) +
-
-  ylim(0, 1) +
-
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.text.x = element_text(angle = 0, hjust = 0.5),
-    plot.title = element_text(face = "bold")
-  )
-
-p
-```
 
 #### Venn
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Venn, fig.height=7,fig.width=7}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -6971,7 +5453,7 @@ ggVennDiagram(genes_list, label = "count") +
 
 ```
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4, fig.height=7,fig.width=7}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Venn2, fig.height=7,fig.width=7}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -7008,7 +5490,7 @@ ggVennDiagram(genes_list, label = "count") +
 ```
 
 #### GoEnrichemnt
-```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Go}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_No4_NoRep.RDS")
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7038,7 +5520,7 @@ all_go_results <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Go2}
 
 
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7100,7 +5582,7 @@ TrajectoryGo_subsetting <- readRDS("data/DGE/TrajectoryGo_subsetting_logcpm_G1_S
 
 ```
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Go3,fig.height=10,fig.height=10}
 
 TrajectoryGo_logcpm_G1_SpTp_No4_NoRep <- readRDS("data/DGE/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -7181,7 +5663,7 @@ GO_plot_data$Description <- factor(
 
 ```
 
-```{r RNASeq_DGE_Trajectorys_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1, fig.height=15}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_GoPlotting, fig.height=15}
 GO_plot_data <- readRDS("data/DGE/TrajectoryGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(ggplot2)
@@ -7207,7 +5689,7 @@ ggplot(GO_plot_data,
 ```
 
 
-```{r RNASeq_DGE_Trajectory_EnrichGo_RLCOMP_G1_4SpTp_No4_plot2,fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_GoPlotting2,fig.height=5}
 GO_plot_data <- readRDS("data/DGE/TrajectoryGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 plots <- lapply(unique(GO_plot_data$GeneSet), function(gene_set) {
@@ -7246,9 +5728,7 @@ for (p in plots) {
 }
 ```
 
-
-
-```{r, fig.width=10, fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_GoPlotting3, fig.width=10, fig.height=10}
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -7435,7 +5915,7 @@ make_go_heatmap("Same_direction")
 make_go_heatmap("Opposite_direction")
 ```
 
-```{r, fig.width= 10, fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_GoPlotting4, fig.width= 10, fig.height=10}
 
 all_pathway_results <- readRDS("data/DGE/TrajectoryGo_subsetting_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -7634,7 +6114,7 @@ make_pathway_heatmap("KEGG")
 
 ```
 
-```{r, fig.width= 4, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_GoPlotting5, fig.width= 4, fig.height=5}
 all_pathway_results <- readRDS("data/DGE/TrajectoryGo_subsetting_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 sig_thresh <- 0.05
@@ -7833,7 +6313,7 @@ make_pathway_heatmap("KEGG")
 ## Interaction DEGs
 
 #### FC plot
-```{r RNASeq_DGE_Interaction_FC_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7881,7 +6361,7 @@ for (p in cluster_plots) print(p)
 
 
 #### absFC plot
-```{r RNASeq_DGE_Interaction_absFC_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_logFC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7927,7 +6407,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_Directions}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -7982,7 +6462,7 @@ fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 direction_results <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_No4_NoRep.RDS")
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality_FC_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_FC}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -8075,7 +6555,7 @@ for (p in cluster_plots) print(p)
 
 ```
 
-```{r RNASeq_DGE_Interaction_Directionality_absFC_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_FC2}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -8169,7 +6649,7 @@ for (p in cluster_plots) print(p)
 ```
 
 #### VennDiagram
-```{r RNASeq_DGE_Interaction_Venn_No4, fig.height=7,fig.width=7}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_Venn, fig.height=7,fig.width=7}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 
@@ -8205,7 +6685,7 @@ ggVennDiagram(genes_list, label = "count") +
 ```
 
 #### Proportion
-```{r RNASeq_DGE_Interactions_DEGs_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_proportion}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -8263,7 +6743,7 @@ ggplot(prop_long, aes(x = trajectory, y = prop, fill = type)) +
 
 ```
 
-```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_proportion2}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -8335,7 +6815,7 @@ ggplot(
 ```
 
 
-```{r RNASeq_DGE_Interactions_DEGs_proportions_RLCOMP_G1_4SpTp_No4}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_proportion3}
 
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 RNA_sets <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -8405,7 +6885,7 @@ ggplot(
 ```
 
 
-```{r}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_ChiSq}
 # Day 02 verus Day 25
 tab <- matrix(c(718, 367, 1405, 404), nrow = 2)
 
@@ -8426,7 +6906,7 @@ chisq.test(tab)
 ```
 
 
-```{r}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_ChiSq2}
 # Day 25 verus Day 515
 tab <- matrix(c(367, 353, 404, 519), nrow = 2)
 
@@ -8441,7 +6921,7 @@ chisq.test(tab)
 
 ```
 
-```{r}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_ChiSq3}
 
 # Day 515 versus Day 1530
 tab <- matrix(c(353, 393, 519, 667), nrow = 2)
@@ -8450,8 +6930,9 @@ tab <- matrix(c(353, 393, 519, 667), nrow = 2)
 chisq.test(tab)
 
 ```
+
 #### GoEnrichemnt
-```{r RNASeq_DGE_Interaction_EnrichGo}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GO}
 fit2 <- readRDS("data/DGE/fit2_logcpm_G1_SpTp_No4_NoRep.RDS")
 v <- readRDS("data/DGE/v1_logcpm_G1_SpTp_No4_NoRep.RDS")
 direction_results <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_No4_NoRep.RDS")
@@ -8481,7 +6962,7 @@ direction_results <- readRDS("data/DGE/InteractionDirections_logcpm_G1_SpTp_No4_
 
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_No4_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GO2,fig.height=10,fig.height=10}
 InteractionsGo_logcpm_G1_SpTp_No4_NoRep <- readRDS("data/DGE/InteractionsGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -8564,7 +7045,7 @@ library(purrr)
 
 
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_No4_plot1 ,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GoPlotting ,fig.height=10,fig.height=10}
 
 GO_plot_data <- readRDS("data/DGE/InteractionsGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -8592,7 +7073,7 @@ ggplot(GO_plot_data,
 
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_RLCOMP_G1_4SpTp_No4_plot2,fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GoPlotting2,fig.height=5}
 
 GO_plot_data <- readRDS("data/DGE/InteractionsGoPlot_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -8632,7 +7113,7 @@ for (p in plots) {
 }
 ```
 
-```{r RNASeq_DGE_ Interaction_EnrichGo_DevTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GoPlotting3,fig.height=10,fig.height=10}
 all_go_results <- readRDS("data/DGE/InteractionsGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 go_all <- imap_dfr(all_go_results, function(x, name) {
@@ -8684,7 +7165,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
-```{r RNASeq_DGE_ Interaction_EnrichGoHeartTerms_RLCOMP_G1_4SpTp_No4,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GoPlotting4,fig.height=10,fig.height=10}
 all_go_results <- readRDS("data/DGE/InteractionsGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 go_all <- imap_dfr(all_go_results, function(x, name) {
@@ -8736,7 +7217,7 @@ ggplot(go_summary, aes(x = trajectory, y = prop_dev)) +
   )
 ```
 
-```{r, fig.width=5, fig.height=5}
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Interaction_GoPlotting5, fig.width=5, fig.height=5}
 all_go_results <- readRDS("data/DGE/InteractionsGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 library(dplyr)
@@ -9035,7 +7516,7 @@ InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS
 ```
 
 
-```{r RNASeq_DGE_Interaction_EnrichGo_2,fig.height=10,fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions2,fig.height=10,fig.height=10}
 InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4 <- readRDS("data/DGE/InteractionGo_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 library(dplyr)
@@ -9117,7 +7598,7 @@ saveRDS(GO_plot_data, "data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm
 ```
 
 
-```{r RNASeq_DGE_Interaction_EnrichGo_2_plot1 ,fig.width=10,fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions_plotting ,fig.width=10,fig.height=10}
 library(ggplot2)
 
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -9142,7 +7623,7 @@ ggplot(GO_plot_data,
   )
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_2_plot2, fig.width=12, fig.height=12}
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions_plotting2, fig.width=12, fig.height=12}
 
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -9296,7 +7777,7 @@ ggplot(
 ```
 
 
-```{r, fig.width=10, fig.height=10}
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions_plotting3, fig.width=10, fig.height=10}
 library(dplyr)
 library(tidyr)
 library(pheatmap)

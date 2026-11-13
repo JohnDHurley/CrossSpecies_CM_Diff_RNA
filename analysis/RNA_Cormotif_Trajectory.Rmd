@@ -1133,7 +1133,7 @@ all_genes <- unique(TopTable$Gene)
 # 
 # saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 # 
-# gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
+gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_No4_NoRep.RDS")
 # 
 # gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
 # 
@@ -1148,7 +1148,7 @@ all_genes <- unique(TopTable$Gene)
 # 
 # saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 # 
-# gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_No4_NoRep.RDS")
 # 
 # gost_export <- gost_combined
 # 
@@ -1276,7 +1276,7 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS")
+# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -1284,7 +1284,7 @@ heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpT
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
 
-saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_No4_NoRep.RDS")
+# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_No4_NoRep.RDS")
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_No4_NoRep.RDS")
 
@@ -2568,90 +2568,90 @@ clust_names_list <- list(
 all_genes <- unique(TopTable$Gene)
 
 
-convert_to_entrez_df <- function(genes) {
-
-  genes <- sub("\\..*", "", genes)
-
-  bitr(
-    genes,
-    fromType = "ENSEMBL",
-    toType   = "ENTREZID",
-    OrgDb    = org.Hs.eg.db
-  ) %>% distinct()
-}
-
-background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
-
-gost_results <- setNames(
-
-  lapply(names(clust_names_list), function(clust_name) {
-
-    genes <- clust_names_list[[clust_name]]
-
-    entrez_df <- convert_to_entrez_df(genes)
-
-    if (nrow(entrez_df) == 0) return(NULL)
-
-    gost(
-      query = entrez_df$ENTREZID,
-
-      organism = "hsapiens",
-
-      significant = FALSE,
-      ordered_query = FALSE,         # TRUE only if ranked
-      domain_scope = "custom",
-
-      measure_underrepresentation = FALSE,
-      evcodes = FALSE,
-
-      numeric_ns = "ENTREZGENE",
-
-      user_threshold = 0.05,
-      correction_method = "fdr",
-
-      custom_bg = background_entrez,
-
-      sources = c("GO:BP", "KEGG")
-    )
-  }),
-
-  names(clust_names_list)
-)
-
-saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# convert_to_entrez_df <- function(genes) {
+# 
+#   genes <- sub("\\..*", "", genes)
+# 
+#   bitr(
+#     genes,
+#     fromType = "ENSEMBL",
+#     toType   = "ENTREZID",
+#     OrgDb    = org.Hs.eg.db
+#   ) %>% distinct()
+# }
+# 
+# background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
+# 
+# gost_results <- setNames(
+# 
+#   lapply(names(clust_names_list), function(clust_name) {
+# 
+#     genes <- clust_names_list[[clust_name]]
+# 
+#     entrez_df <- convert_to_entrez_df(genes)
+# 
+#     if (nrow(entrez_df) == 0) return(NULL)
+# 
+#     gost(
+#       query = entrez_df$ENTREZID,
+# 
+#       organism = "hsapiens",
+# 
+#       significant = FALSE,
+#       ordered_query = FALSE,         # TRUE only if ranked
+#       domain_scope = "custom",
+# 
+#       measure_underrepresentation = FALSE,
+#       evcodes = FALSE,
+# 
+#       numeric_ns = "ENTREZGENE",
+# 
+#       user_threshold = 0.05,
+#       correction_method = "fdr",
+# 
+#       custom_bg = background_entrez,
+# 
+#       sources = c("GO:BP", "KEGG")
+#     )
+#   }),
+# 
+#   names(clust_names_list)
+# )
+# 
+# saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
-gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
-
-  res <- gost_results[[clust_name]]
-
-  if (is.null(res)) return(NULL)
-
-  df <- res$result
-  df$Cluster <- clust_name
-  df
-}))
-
-saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
+# 
+#   res <- gost_results[[clust_name]]
+# 
+#   if (is.null(res)) return(NULL)
+# 
+#   df <- res$result
+#   df$Cluster <- clust_name
+#   df
+# }))
+# 
+# saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
-gost_export <- gost_combined
-
-gost_export[] <- lapply(gost_export, function(col) {
-
-  if (is.list(col)) {
-    sapply(col, paste, collapse = ";")
-  } else {
-    col
-  }
-
-})
-
-write.csv(gost_export,
-          "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.csv",
-          row.names = FALSE)
+# gost_export <- gost_combined
+# 
+# gost_export[] <- lapply(gost_export, function(col) {
+# 
+#   if (is.list(col)) {
+#     sapply(col, paste, collapse = ";")
+#   } else {
+#     col
+#   }
+# 
+# })
+# 
+# write.csv(gost_export,
+#           "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.csv",
+#           row.names = FALSE)
 
 ```
 
@@ -2764,7 +2764,7 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2772,7 +2772,7 @@ heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpT
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
 
-saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2936,15 +2936,15 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGOWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGOWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGOWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 # 5. Convert to long format for ggplot
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
-
-saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGOLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# 
+# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGOLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryGOLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -3033,7 +3033,7 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -3041,7 +3041,7 @@ heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_S
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
 
-saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -3224,13 +3224,13 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 # 5. Convert to long format for ggplot (logp will now be a proper numeric vector)
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
 
-saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 # 6. Plot heatmap
 ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
@@ -3400,7 +3400,7 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -3408,7 +3408,7 @@ heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGWide_logcpm_G1_S
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
 
-saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryKEGGLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 

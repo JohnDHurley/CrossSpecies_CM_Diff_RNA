@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 ## Setting up the environment
 
 ### Loading libraries
-```{r Enviroment Set Up, }
+```{r Enviroment_SetUp}
 #loading libraries
 library("tidyverse")
 library("rmarkdown")
@@ -1338,7 +1338,7 @@ plot_KZFP_OR_CI(
 
 #### All
 
-```{r KZFP_enrichment, fig.width=5, fig.height=5}
+```{r ZNF_enrichment, fig.width=5, fig.height=5}
 
 TopTable <- readRDS(
   "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
@@ -1509,9 +1509,326 @@ plot_OR(Enrichment_results, "Interaction", ylim = c(0, 2))
 
 ```
 
+```{r ZNF_enrichment_CI, fig.width=5, fig.height=5}
+
+# --------------------------------------------------
+# KZFP enrichment with confidence intervals
+# --------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+gene_list <- ZNFs$`Approved symbol`
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS(
+  "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+
+# # --------------------------------------------------
+# # Enrichment function
+# # --------------------------------------------------
+# 
+# test_ZNF_enrichment_CI <- function(comparisons, TopTable, gene_list) {
+# 
+#   test_genes <- unique(na.omit(TopTable$Symbol))
+# 
+#   results <- lapply(comparisons, function(comparison) {
+# 
+#     deg_genes <- TopTable %>%
+#       filter(
+#         Comparisons == comparison,
+#         adj.P.Val < 0.05
+#       ) %>%
+#       pull(Symbol) %>%
+#       unique() %>%
+#       na.omit()
+# 
+#     not_deg_genes <- setdiff(test_genes, deg_genes)
+# 
+#     tab <- matrix(
+#       c(
+#         sum(deg_genes %in% gene_list),
+#         sum(deg_genes %notin% gene_list),
+#         sum(not_deg_genes %in% gene_list),
+#         sum(not_deg_genes %notin% gene_list)
+#       ),
+#       nrow = 2,
+#       byrow = TRUE
+#     )
+# 
+#     fisher <- fisher.test(tab)
+# 
+#     data.frame(
+#       Comparison = comparison,
+#       ZNF_DEG = tab[1, 1],
+#       NonZNF_DEG = tab[1, 2],
+#       ZNF_not_DEG = tab[2, 1],
+#       NonZNF_not_DEG = tab[2, 2],
+#       Odds_Ratio = as.numeric(fisher$estimate),
+#       CI_lower = fisher$conf.int[1],
+#       CI_upper = fisher$conf.int[2],
+#       Fisher_p = fisher$p.value
+#     )
+#   })
+# 
+#   bind_rows(results)
+# }
+# 
+# 
+# # --------------------------------------------------
+# # Run enrichment
+# # --------------------------------------------------
+# 
+# comparisons <- unique(TopTable$Comparisons)
+# 
+# Enrichment_results_CI <- test_ZNF_enrichment_CI(
+#   comparisons = comparisons,
+#   TopTable = TopTable,
+#   gene_list = gene_list
+# )
+# 
+# 
+# # --------------------------------------------------
+# # InteractionAtLeastOne
+# # --------------------------------------------------
+# 
+# Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+# Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+# Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+# Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+# 
+# InteractionAtLeastOne <- unique(c(
+#   Inter_02_genes,
+#   Inter_25_genes,
+#   Inter_515_genes,
+#   Inter_1530_genes
+# ))
+# 
+# test_genes <- unique(na.omit(TopTable$Symbol))
+# 
+# InteractionAtLeastOne_symbols <- TopTable %>%
+#   filter(Gene %in% InteractionAtLeastOne) %>%
+#   pull(Symbol) %>%
+#   unique() %>%
+#   na.omit()
+# 
+# deg_genes <- intersect(
+#   InteractionAtLeastOne_symbols,
+#   test_genes
+# )
+# 
+# not_deg_genes <- setdiff(
+#   test_genes,
+#   deg_genes
+# )
+# 
+# tab <- matrix(
+#   c(
+#     sum(deg_genes %in% gene_list),
+#     sum(deg_genes %notin% gene_list),
+#     sum(not_deg_genes %in% gene_list),
+#     sum(not_deg_genes %notin% gene_list)
+#   ),
+#   nrow = 2,
+#   byrow = TRUE
+# )
+# 
+# fisher <- fisher.test(tab)
+# 
+# InteractionAtLeastOne_result_CI <- data.frame(
+#   Comparison = "InteractionAtLeastOne",
+#   ZNF_DEG = tab[1, 1],
+#   NonZNF_DEG = tab[1, 2],
+#   ZNF_not_DEG = tab[2, 1],
+#   NonZNF_not_DEG = tab[2, 2],
+#   Odds_Ratio = as.numeric(fisher$estimate),
+#   CI_lower = fisher$conf.int[1],
+#   CI_upper = fisher$conf.int[2],
+#   Fisher_p = fisher$p.value
+# )
+# 
+# 
+# # --------------------------------------------------
+# # Combine results and adjust P-values
+# # --------------------------------------------------
+# 
+# Enrichment_results_CI <- bind_rows(
+#   Enrichment_results_CI,
+#   InteractionAtLeastOne_result_CI
+# )
+# 
+# Enrichment_results_CI$FDR <- p.adjust(
+#   Enrichment_results_CI$Fisher_p,
+#   method = "BH"
+# )
+# 
+# 
+# comparison_order <- c("HvC_Day0",
+#                       "HvC_Day2",
+#                       "HvC_Day5",
+#                       "HvC_Day15",
+#                       "HvC_Day30",
+#                       "H_Day02",
+#                       "H_Day25",
+#                       "H_Day515",
+#                       "H_Day1530",
+#                       "C_Day02",
+#                       "C_Day25",
+#                       "C_Day515",
+#                       "C_Day1530",
+#                       "Sig_Sp_inter_Traj02",
+#                       "Sig_Sp_inter_Traj25",
+#                       "Sig_Sp_inter_Traj515",
+#                       "Sig_Sp_inter_Traj1530",
+#                       "InteractionAtLeastOne")
+# 
+# Enrichment_results_CI <- Enrichment_results_CI %>%
+#   mutate(
+#     Comparison = factor(
+#       Comparison,
+#       levels = comparison_order
+#     ),
+#     Comparison_Group = case_when(
+#       Comparison == "InteractionAtLeastOne" ~ "Interaction",
+#       grepl("^HvC", Comparison) ~ "Species",
+#       grepl("inter", Comparison) ~ "Interaction",
+#       grepl("^[HC]_Day", Comparison) ~ "Trajectory",
+#       TRUE ~ "Other"
+#     ),
+#     Significant = FDR < 0.05
+#   )
+# 
+# Enrichment_results_CI
+# 
+# 
+# # --------------------------------------------------
+# # Plot odds ratios with 95% CI
+# # New function: plot_KZFP_OR_CI
+# # --------------------------------------------------
+# 
+# plot_ZNF_OR_CI <- function(df, comparison_group, ylim = NULL) {
+# 
+#   plot_df <- df %>%
+#     filter(Comparison_Group == comparison_group) %>%
+#     mutate(
+#       Significant = factor(
+#         ifelse(FDR < 0.05, "Significant", "Not significant"),
+#         levels = c("Not significant", "Significant")
+#       )
+#     )
+# 
+#   p <- ggplot(
+#     plot_df,
+#     aes(
+#       x = Comparison,
+#       y = Odds_Ratio
+#     )
+#   ) +
+#     geom_hline(
+#       yintercept = 1,
+#       linetype = "dashed",
+#       color = "grey50"
+#     ) +
+#     geom_errorbar(
+#       aes(
+#         ymin = CI_lower,
+#         ymax = CI_upper
+#       ),
+#       width = 0.2
+#     ) +
+#     geom_point(
+#       aes(
+#         shape = Significant,
+#         fill = Significant
+#       ),
+#       size = 3,
+#       color = "black"
+#     ) +
+#     scale_shape_manual(
+#       values = c(
+#         "Not significant" = 21,
+#         "Significant" = 21
+#       )
+#     ) +
+#     scale_fill_manual(
+#       values = c(
+#         "Not significant" = "white",
+#         "Significant" = "black"
+#       )
+#     ) +
+#     theme_bw() +
+#     labs(
+#       x = NULL,
+#       y = "Odds Ratio",
+#       title = comparison_group,
+#       shape = "FDR < 0.05",
+#       fill = "FDR < 0.05"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(
+#         angle = 45,
+#         hjust = 1
+#       )
+#     )
+# 
+#   if (!is.null(ylim)) {
+#     p <- p + coord_cartesian(ylim = ylim)
+#   }
+# 
+#   return(p)
+# }
+
+Enrichment_results_CI <- readRDS("data/TEs/ZNF_Enrichment_CI.RDS")
+
+Enrichment_results_CI
+
+# --------------------------------------------------
+# Generate plots
+# --------------------------------------------------
+
+plot_ZNF_OR_CI(
+  Enrichment_results_CI,
+  "Species",
+  ylim = c(0, 2)
+)
+
+plot_ZNF_OR_CI(
+  Enrichment_results_CI,
+  "Trajectory",
+  ylim = c(0, 3)
+)
+
+plot_ZNF_OR_CI(
+  Enrichment_results_CI,
+  "Interaction",
+  ylim = c(0, 2.5)
+)
+
+
+# --------------------------------------------------
+# Save results
+# --------------------------------------------------
+
+# saveRDS(
+#   Enrichment_results_CI,
+#   "data/TEs/ZNF_Enrichment_CI.RDS"
+# )
+
+
+```
+
+
+
 #### ZNFs-KZFPs
 
-```{r KZFP_enrichment, fig.width=5, fig.height=5}
+```{r ZNF_NoKZFP_enrichment, fig.width=5, fig.height=5}
 
 TopTable <- readRDS(
   "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
@@ -1696,7 +2013,7 @@ plot_OR(Enrichment_results, "Interaction", ylim = c(0, 2))
 
 #### All
 
-```{r KZFP_enrichment,fig.height=5, fig.width=5}
+```{r TF_enrichment,fig.height=5, fig.width=5}
 
 TopTable <- readRDS(
   "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
@@ -1868,9 +2185,325 @@ plot_OR(Enrichment_results, "Trajectory", ylim = c(0, 2))
 plot_OR(Enrichment_results, "Interaction", ylim = c(0, 2))
 
 ```
+
+```{r ZNF_enrichment_CI, fig.width=5, fig.height=5}
+
+# --------------------------------------------------
+# KZFP enrichment with confidence intervals
+# --------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+gene_list <- tf_df$Gene
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS(
+  "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+
+# # --------------------------------------------------
+# # Enrichment function
+# # --------------------------------------------------
+# 
+# test_TF_enrichment_CI <- function(comparisons, TopTable, gene_list) {
+# 
+#   test_genes <- unique(na.omit(TopTable$Symbol))
+# 
+#   results <- lapply(comparisons, function(comparison) {
+# 
+#     deg_genes <- TopTable %>%
+#       filter(
+#         Comparisons == comparison,
+#         adj.P.Val < 0.05
+#       ) %>%
+#       pull(Symbol) %>%
+#       unique() %>%
+#       na.omit()
+# 
+#     not_deg_genes <- setdiff(test_genes, deg_genes)
+# 
+#     tab <- matrix(
+#       c(
+#         sum(deg_genes %in% gene_list),
+#         sum(deg_genes %notin% gene_list),
+#         sum(not_deg_genes %in% gene_list),
+#         sum(not_deg_genes %notin% gene_list)
+#       ),
+#       nrow = 2,
+#       byrow = TRUE
+#     )
+# 
+#     fisher <- fisher.test(tab)
+# 
+#     data.frame(
+#       Comparison = comparison,
+#       TF_DEG = tab[1, 1],
+#       NonTF_DEG = tab[1, 2],
+#       TF_not_DEG = tab[2, 1],
+#       NonTF_not_DEG = tab[2, 2],
+#       Odds_Ratio = as.numeric(fisher$estimate),
+#       CI_lower = fisher$conf.int[1],
+#       CI_upper = fisher$conf.int[2],
+#       Fisher_p = fisher$p.value
+#     )
+#   })
+# 
+#   bind_rows(results)
+# }
+# 
+# 
+# # --------------------------------------------------
+# # Run enrichment
+# # --------------------------------------------------
+# 
+# comparisons <- unique(TopTable$Comparisons)
+# 
+# Enrichment_results_CI <- test_TF_enrichment_CI(
+#   comparisons = comparisons,
+#   TopTable = TopTable,
+#   gene_list = gene_list
+# )
+# 
+# 
+# # --------------------------------------------------
+# # InteractionAtLeastOne
+# # --------------------------------------------------
+# 
+# Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+# Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+# Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+# Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+# 
+# InteractionAtLeastOne <- unique(c(
+#   Inter_02_genes,
+#   Inter_25_genes,
+#   Inter_515_genes,
+#   Inter_1530_genes
+# ))
+# 
+# test_genes <- unique(na.omit(TopTable$Symbol))
+# 
+# InteractionAtLeastOne_symbols <- TopTable %>%
+#   filter(Gene %in% InteractionAtLeastOne) %>%
+#   pull(Symbol) %>%
+#   unique() %>%
+#   na.omit()
+# 
+# deg_genes <- intersect(
+#   InteractionAtLeastOne_symbols,
+#   test_genes
+# )
+# 
+# not_deg_genes <- setdiff(
+#   test_genes,
+#   deg_genes
+# )
+# 
+# tab <- matrix(
+#   c(
+#     sum(deg_genes %in% gene_list),
+#     sum(deg_genes %notin% gene_list),
+#     sum(not_deg_genes %in% gene_list),
+#     sum(not_deg_genes %notin% gene_list)
+#   ),
+#   nrow = 2,
+#   byrow = TRUE
+# )
+# 
+# fisher <- fisher.test(tab)
+# 
+# InteractionAtLeastOne_result_CI <- data.frame(
+#   Comparison = "InteractionAtLeastOne",
+#   TF_DEG = tab[1, 1],
+#   NonTF_DEG = tab[1, 2],
+#   TF_not_DEG = tab[2, 1],
+#   NonTF_not_DEG = tab[2, 2],
+#   Odds_Ratio = as.numeric(fisher$estimate),
+#   CI_lower = fisher$conf.int[1],
+#   CI_upper = fisher$conf.int[2],
+#   Fisher_p = fisher$p.value
+# )
+# 
+# 
+# # --------------------------------------------------
+# # Combine results and adjust P-values
+# # --------------------------------------------------
+# 
+# Enrichment_results_CI <- bind_rows(
+#   Enrichment_results_CI,
+#   InteractionAtLeastOne_result_CI
+# )
+# 
+# Enrichment_results_CI$FDR <- p.adjust(
+#   Enrichment_results_CI$Fisher_p,
+#   method = "BH"
+# )
+# 
+# 
+# comparison_order <- c("HvC_Day0",
+#                       "HvC_Day2",
+#                       "HvC_Day5",
+#                       "HvC_Day15",
+#                       "HvC_Day30",
+#                       "H_Day02",
+#                       "H_Day25",
+#                       "H_Day515",
+#                       "H_Day1530",
+#                       "C_Day02",
+#                       "C_Day25",
+#                       "C_Day515",
+#                       "C_Day1530",
+#                       "Sig_Sp_inter_Traj02",
+#                       "Sig_Sp_inter_Traj25",
+#                       "Sig_Sp_inter_Traj515",
+#                       "Sig_Sp_inter_Traj1530",
+#                       "InteractionAtLeastOne")
+# 
+# Enrichment_results_CI <- Enrichment_results_CI %>%
+#   mutate(
+#     Comparison = factor(
+#       Comparison,
+#       levels = comparison_order
+#     ),
+#     Comparison_Group = case_when(
+#       Comparison == "InteractionAtLeastOne" ~ "Interaction",
+#       grepl("^HvC", Comparison) ~ "Species",
+#       grepl("inter", Comparison) ~ "Interaction",
+#       grepl("^[HC]_Day", Comparison) ~ "Trajectory",
+#       TRUE ~ "Other"
+#     ),
+#     Significant = FDR < 0.05
+#   )
+# 
+# Enrichment_results_CI
+# 
+# 
+# # --------------------------------------------------
+# # Plot odds ratios with 95% CI
+# # New function: plot_KZFP_OR_CI
+# # --------------------------------------------------
+# 
+# plot_TF_OR_CI <- function(df, comparison_group, ylim = NULL) {
+# 
+#   plot_df <- df %>%
+#     filter(Comparison_Group == comparison_group) %>%
+#     mutate(
+#       Significant = factor(
+#         ifelse(FDR < 0.05, "Significant", "Not significant"),
+#         levels = c("Not significant", "Significant")
+#       )
+#     )
+# 
+#   p <- ggplot(
+#     plot_df,
+#     aes(
+#       x = Comparison,
+#       y = Odds_Ratio
+#     )
+#   ) +
+#     geom_hline(
+#       yintercept = 1,
+#       linetype = "dashed",
+#       color = "grey50"
+#     ) +
+#     geom_errorbar(
+#       aes(
+#         ymin = CI_lower,
+#         ymax = CI_upper
+#       ),
+#       width = 0.2
+#     ) +
+#     geom_point(
+#       aes(
+#         shape = Significant,
+#         fill = Significant
+#       ),
+#       size = 3,
+#       color = "black"
+#     ) +
+#     scale_shape_manual(
+#       values = c(
+#         "Not significant" = 21,
+#         "Significant" = 21
+#       )
+#     ) +
+#     scale_fill_manual(
+#       values = c(
+#         "Not significant" = "white",
+#         "Significant" = "black"
+#       )
+#     ) +
+#     theme_bw() +
+#     labs(
+#       x = NULL,
+#       y = "Odds Ratio",
+#       title = comparison_group,
+#       shape = "FDR < 0.05",
+#       fill = "FDR < 0.05"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(
+#         angle = 45,
+#         hjust = 1
+#       )
+#     )
+# 
+#   if (!is.null(ylim)) {
+#     p <- p + coord_cartesian(ylim = ylim)
+#   }
+# 
+#   return(p)
+# }
+
+Enrichment_results_CI <- readRDS("data/TEs/TF_Enrichment_CI.RDS")
+
+Enrichment_results_CI
+
+# --------------------------------------------------
+# Generate plots
+# --------------------------------------------------
+
+plot_TF_OR_CI(
+  Enrichment_results_CI,
+  "Species",
+  ylim = c(0, 2)
+)
+
+plot_TF_OR_CI(
+  Enrichment_results_CI,
+  "Trajectory",
+  ylim = c(0, 3)
+)
+
+plot_TF_OR_CI(
+  Enrichment_results_CI,
+  "Interaction",
+  ylim = c(0, 2.5)
+)
+
+
+# # --------------------------------------------------
+# # Save results
+# # --------------------------------------------------
+# 
+# saveRDS(
+#   Enrichment_results_CI,
+#   "data/TEs/TF_Enrichment_CI.RDS"
+# )
+
+
+```
+
 #### TFs-ZNF&KZFPs
 
-```{r KZFP_enrichment,fig.height=5, fig.width=5}
+```{r TF_noZNF_NoKZFP_enrichment,fig.height=5, fig.width=5}
 
 TopTable <- readRDS(
   "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
@@ -2060,7 +2693,7 @@ plot_OR(Enrichment_results, "Interaction", ylim = c(0, 2))
 
 ### All
 
-```{r Spearman Coefficients, fig.width=7, fig.height=5}
+```{r Spearman_Coefficients_ByDay, fig.width=7, fig.height=5}
 
 metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
@@ -2386,999 +3019,6 @@ plot_all <- ggplot(
 plot_all
 ```
 
-
-
-
-
-```{r Spearman Expression Changes, fig.width=7, fig.height=5}
-
-metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
-RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
-fc <- readRDS("data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS")
-KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
-ZNFs <- readRDS("data/TEs/ZNFs.RDS")
-tf_df <- readRDS("data/TEs/tf_df.RDS")
-fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
-
-metadata <- RNA_Metadata %>% 
-  filter(Timepoint != "Day4")
-
-# Get Ensembl IDs corresponding to your TF symbols
-TFs_list <- tf_df$Gene
-
-TFs <- fc_df %>%
-  filter(Symbol %in% TFs_list) %>%
-  pull(Ensemble) %>%
-  unique()
-
-# Get Ensembl IDs corresponding to your KZFP symbols
-ZNFs_list <- ZNFs$`Approved symbol`
-
-ZNfs <- fc_df %>%
-  filter(Symbol %in% ZNFs_list) %>%
-  pull(Ensemble) %>%
-  unique()
-
-# Get Ensembl IDs corresponding to your KZFP symbols
-KZFPs <- fc_df %>%
-  filter(Symbol %in% KZFPs_list) %>%
-  pull(Ensemble) %>%
-  unique()
-
-Expressed_genes <- rownames(fc)
-
-gene_sets <- list(
-  Expr_genes = Expressed_genes,
-  Expr_TFs = TFs,
-  Expr_ZNfs = ZNfs,
-  Expr_KZFPs = KZFPs
-)
-
-
-# --------------------------------------------------
-# Metadata and sample filtering
-# --------------------------------------------------
-
-metadata_i <- RNA_Metadata %>%
-  filter(
-    Individual != "H4R",
-    Timepoint %in% c(
-      "Day0", "Day2", "Day5", "Day15", "Day30"
-    )
-  ) %>%
-  filter(SampleName %in% colnames(fc))
-
-# Match metadata to expression matrix columns
-metadata_i <- metadata_i[
-  match(colnames(fc), metadata_i$SampleName),
-]
-
-# Retain only samples with matched metadata
-keep_samples <- !is.na(metadata_i$SampleName)
-
-metadata_i <- metadata_i[keep_samples, , drop = FALSE]
-
-fc <- fc[, metadata_i$SampleName, drop = FALSE]
-
-stopifnot(
-  all(metadata_i$SampleName == colnames(fc))
-)
-
-
-# --------------------------------------------------
-# Normalize expression data
-# --------------------------------------------------
-
-# Normalize using the full expression matrix so that
-# normalization is consistent across gene sets.
-
-dge <- DGEList(counts = fc)
-
-dge <- calcNormFactors(
-  dge,
-  method = "TMM"
-)
-
-log2cpm <- cpm(
-  dge,
-  log = TRUE
-)
-
-
-# --------------------------------------------------
-# Define consecutive transitions
-# --------------------------------------------------
-
-transitions <- list(
-  Day0_Day2 = c("Day0", "Day2"),
-  Day2_Day5 = c("Day2", "Day5"),
-  Day5_Day15 = c("Day5", "Day15"),
-  Day15_Day30 = c("Day15", "Day30")
-)
-
-transition_order <- names(transitions)
-
-
-# --------------------------------------------------
-# Calculate expression changes for each individual
-# --------------------------------------------------
-
-calculate_changes <- function(
-    expression,
-    metadata,
-    transition
-) {
-
-  start_day <- transition[1]
-  end_day <- transition[2]
-
-  # Individuals with samples at both timepoints
-  matched_individuals <- metadata %>%
-    filter(Timepoint %in% c(start_day, end_day)) %>%
-    distinct(Species, Individual, Timepoint) %>%
-    dplyr::count(Species, Individual, name = "n_timepoints") %>%
-    filter(n_timepoints == 2) %>%
-    dplyr::select(Species, Individual)
-
-  change_list <- list()
-
-  for (j in seq_len(nrow(matched_individuals))) {
-
-    sp <- matched_individuals$Species[j]
-    ind <- matched_individuals$Individual[j]
-
-    sample_start <- metadata %>%
-      filter(
-        Species == sp,
-        Individual == ind,
-        Timepoint == start_day
-      ) %>%
-      pull(SampleName)
-
-    sample_end <- metadata %>%
-      filter(
-        Species == sp,
-        Individual == ind,
-        Timepoint == end_day
-      ) %>%
-      pull(SampleName)
-
-    # Require exactly one sample per individual per timepoint
-    if (length(sample_start) != 1 ||
-        length(sample_end) != 1) {
-      stop(
-        "Expected one sample per individual per timepoint: ",
-        sp, ", ", ind, ", ",
-        start_day, " to ", end_day
-      )
-    }
-
-    # Change in log2 CPM
-    change_list[[paste(sp, ind, sep = "_")]] <-
-      expression[, sample_end] -
-      expression[, sample_start]
-  }
-
-  change_matrix <- do.call(cbind, change_list)
-
-  colnames(change_matrix) <- names(change_list)
-
-  # Sample information for the change matrix
-  change_info <- matched_individuals %>%
-    mutate(
-      sample_id = paste(Species, Individual, sep = "_")
-    )
-
-  change_matrix <- change_matrix[
-    ,
-    change_info$sample_id,
-    drop = FALSE
-  ]
-
-  list(
-    expression = change_matrix,
-    metadata = change_info
-  )
-}
-
-
-# --------------------------------------------------
-# Calculate cross-species correlations
-# --------------------------------------------------
-
-results <- list()
-
-for (i in seq_along(gene_sets)) {
-
-  gene_set <- gene_sets[[i]]
-  cluster_name <- names(gene_sets)[i]
-
-  # Match gene IDs to expression matrix
-  gene_set <- intersect(
-    gene_set,
-    rownames(log2cpm)
-  )
-
-  print(cluster_name)
-  print(length(gene_set))
-
-  if (length(gene_set) < 3) {
-    warning(
-      cluster_name,
-      " has fewer than three matched genes; skipping."
-    )
-    next
-  }
-
-  expression_i <- log2cpm[
-    gene_set,
-    ,
-    drop = FALSE
-  ]
-
-  # Calculate changes for every transition
-  transition_changes <- lapply(
-    transitions,
-    function(tr) {
-      calculate_changes(
-        expression = expression_i,
-        metadata = metadata_i,
-        transition = tr
-      )
-    }
-  )
-
-  names(transition_changes) <- transition_order
-
-  correlation_results <- list()
-
-  for (tr_name in transition_order) {
-
-    change_data <- transition_changes[[tr_name]]
-
-    change_matrix <- change_data$expression
-    change_info <- change_data$metadata
-
-    human_samples <- change_info %>%
-      filter(Species == "H") %>%
-      pull(sample_id)
-
-    chimp_samples <- change_info %>%
-      filter(Species == "C") %>%
-      pull(sample_id)
-
-    if (length(human_samples) == 0 ||
-        length(chimp_samples) == 0) {
-      warning(
-        "Missing human or chimpanzee samples for ",
-        cluster_name, ": ", tr_name
-      )
-      next
-    }
-
-    # Correlate every human individual's change profile
-    # with every chimpanzee individual's change profile.
-    cor_matrix <- cor(
-      change_matrix[, human_samples, drop = FALSE],
-      change_matrix[, chimp_samples, drop = FALSE],
-      method = "spearman",
-      use = "pairwise.complete.obs"
-    )
-
-    cor_long <- as.data.frame(
-      as.table(cor_matrix)
-    ) %>%
-      rename(
-        sample1 = Var1,
-        sample2 = Var2,
-        cor = Freq
-      ) %>%
-      filter(is.finite(cor)) %>%
-      mutate(
-        transition = tr_name
-      )
-
-    correlation_results[[tr_name]] <- cor_long
-  }
-
-  same_transition_cross <- bind_rows(
-    correlation_results
-  ) %>%
-    mutate(
-      transition = factor(
-        transition,
-        levels = transition_order
-      )
-    )
-
-  # Summary
-  summary_by_transition <- same_transition_cross %>%
-    group_by(transition) %>%
-    summarise(
-      mean_cor = mean(cor, na.rm = TRUE),
-      sd_cor = sd(cor, na.rm = TRUE),
-      median_cor = median(cor, na.rm = TRUE),
-      n = n(),
-      .groups = "drop"
-    )
-
-  # Kruskal-Wallis
-  kruskal_res <- kruskal.test(
-    cor ~ transition,
-    data = same_transition_cross
-  )
-
-  # Pairwise Wilcoxon
-  stat.test <- same_transition_cross %>%
-    pairwise_wilcox_test(
-      cor ~ transition,
-      p.adjust.method = "BH"
-    ) %>%
-    add_significance("p.adj") %>%
-    add_y_position(
-      data = same_transition_cross,
-      formula = cor ~ transition
-    ) %>%
-    filter(p.adj <= 0.05)
-
-  # Save results
-  results[[cluster_name]] <- list(
-    genes = gene_set,
-    n_genes = length(gene_set),
-    transition_changes = transition_changes,
-    same_transition_cross = same_transition_cross,
-    summary = summary_by_transition,
-    kruskal = kruskal_res,
-    pairwise = stat.test
-  )
-}
-
-
-# --------------------------------------------------
-# Combine cluster summaries
-# --------------------------------------------------
-
-all_cluster_summary <- bind_rows(
-  lapply(names(results), function(cluster_name) {
-
-    results[[cluster_name]]$summary %>%
-      mutate(cluster = cluster_name)
-
-  })
-)
-
-
-# --------------------------------------------------
-# Plot each gene set individually
-# --------------------------------------------------
-
-for (cluster_name in names(results)) {
-
-  plot_data <- results[[cluster_name]]$same_transition_cross
-  stat.test <- results[[cluster_name]]$pairwise
-
-  plot <- ggplot(
-    plot_data,
-    aes(
-      x = transition,
-      y = cor
-    )
-  ) +
-
-    geom_jitter(
-      width = 0.08,
-      alpha = 0.3
-    ) +
-
-    stat_summary(
-      aes(group = 1),
-      fun = median,
-      geom = "line",
-      linewidth = 1
-    ) +
-
-    stat_summary(
-      fun = median,
-      geom = "point",
-      size = 3
-    ) +
-
-    {
-      if (nrow(stat.test) > 0) {
-        stat_pvalue_manual(
-          stat.test,
-          label = "p.adj.signif",
-          step.increase = 0.07
-        )
-      }
-    } +
-
-    coord_cartesian(
-      ylim = c(0.0, 1.00)
-    ) +
-
-    scale_x_discrete(
-      labels = c(
-        Day0_Day2 = "Day 0–2",
-        Day2_Day5 = "Day 2–5",
-        Day5_Day15 = "Day 5–15",
-        Day15_Day30 = "Day 15–30"
-      )
-    ) +
-
-    labs(
-      title = paste(
-        "Cross-species correlation of expression changes -",
-        cluster_name
-      ),
-      x = "Differentiation transition",
-      y = "Spearman correlation of expression changes"
-    ) +
-
-    theme_classic()
-
-  print(plot)
-}
-
-
-# --------------------------------------------------
-# Plot all gene sets together
-# --------------------------------------------------
-
-plot_all <- ggplot(
-  all_cluster_summary,
-  aes(
-    x = transition,
-    y = median_cor,
-    group = cluster,
-    color = cluster
-  )
-) +
-
-  geom_line(
-    linewidth = 1
-  ) +
-
-  geom_point(
-    size = 2
-  ) +
-
-  coord_cartesian(
-    ylim = c(0.0, 1.00)
-  ) +
-
-  scale_x_discrete(
-    labels = c(
-      Day0_Day2 = "Day 0–2",
-      Day2_Day5 = "Day 2–5",
-      Day5_Day15 = "Day 5–15",
-      Day15_Day30 = "Day 15–30"
-    )
-  ) +
-
-  labs(
-    title = "Cross-species correlation of expression changes",
-    x = "Differentiation transition",
-    y = "Median Spearman correlation",
-    color = "Gene set"
-  ) +
-
-  theme_classic()
-
-plot_all
-
-```
-
-
-### Exclusive
-
-```{r Spearman Expression Changes, fig.width=7, fig.height=5}
-
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(edgeR)
-library(rstatix)
-library(ggpubr)
-
-# Load data
-RNA_Metadata <- readRDS(
-  "data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS"
-)
-
-fc <- readRDS(
-  "data/QC/concat/Filt_logcpm_G1_SpTp_RNA_fc_No4.RDS"
-)
-
-KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
-ZNFs <- readRDS("data/TEs/ZNFs.RDS")
-tf_df <- readRDS("data/TEs/tf_df.RDS")
-fc_df <- readRDS("data/Raw_Data/concat/RNA_fc_df.RDS")
-
-
-# --------------------------------------------------
-# Gene sets
-# --------------------------------------------------
-
-KZFPs <- fc_df %>%
-  filter(Symbol %in% KZFPs_list) %>%
-  pull(Ensemble) %>%
-  unique()
-
-ZNFs_symbol <- ZNFs$`Approved symbol`
-
-ZNFs_ensembl <- fc_df %>%
-  filter(Symbol %in% ZNFs_list) %>%
-  pull(Ensemble) %>%
-  unique()
-
-overlap <- intersect(KZFPs,ZNFs_ensembl)
-
-ZNFs_NotKZFP <- setdiff(ZNFs_ensembl,overlap)
-
-TFs_list <- tf_df$Gene
-
-TFs_ensembl <- fc_df %>%
-  filter(Symbol %in% TFs_list) %>%
-  pull(Ensemble) %>%
-  unique()
-
-KZFP_ZNF <- unique(c(KZFPs,ZNFs_ensembl))
-
-overlap <- intersect(TFs_ensembl,KZFP_ZNF)
-
-TFs_NotZNFs_NotKZFPs <- setdiff(TFs_ensembl,overlap)
-
-Expressed_genes_all <- rownames(fc)
-
-KZFP_ZNF_TF <- unique(c(KZFPs,ZNFs_ensembl,TFs_ensembl))
-
-overlap <- intersect(Expressed_genes_all,KZFP_ZNF_TF)
-
-Expressed_genes_NotTFs_NotZNFs_NotKZFPs <- setdiff(Expressed_genes_all,overlap)
-
-gene_sets <- list(
-  Expressed_genes_NotTFs_NotZNFs_NotKZFPs = Expressed_genes_NotTFs_NotZNFs_NotKZFPs,
-  Expr_TFs_NotZNFs_NotKZFPs = TFs_NotZNFs_NotKZFPs,
-  Expr_ZNFs_NotKZFP = ZNFs_NotKZFP,
-  Expr_KZFPs = KZFPs
-)
-
-
-# --------------------------------------------------
-# Metadata and sample filtering
-# --------------------------------------------------
-
-metadata_i <- RNA_Metadata %>%
-  filter(
-    Individual != "H4R",
-    Timepoint %in% c(
-      "Day0", "Day2", "Day5", "Day15", "Day30"
-    )
-  ) %>%
-  filter(SampleName %in% colnames(fc))
-
-# Match metadata to expression matrix columns
-metadata_i <- metadata_i[
-  match(colnames(fc), metadata_i$SampleName),
-]
-
-# Retain only samples with matched metadata
-keep_samples <- !is.na(metadata_i$SampleName)
-
-metadata_i <- metadata_i[keep_samples, , drop = FALSE]
-
-fc <- fc[, metadata_i$SampleName, drop = FALSE]
-
-stopifnot(
-  all(metadata_i$SampleName == colnames(fc))
-)
-
-
-# --------------------------------------------------
-# Normalize expression data
-# --------------------------------------------------
-
-# Normalize using the full expression matrix so that
-# normalization is consistent across gene sets.
-
-dge <- DGEList(counts = fc)
-
-dge <- calcNormFactors(
-  dge,
-  method = "TMM"
-)
-
-log2cpm <- cpm(
-  dge,
-  log = TRUE
-)
-
-
-# --------------------------------------------------
-# Define consecutive transitions
-# --------------------------------------------------
-
-transitions <- list(
-  Day0_Day2 = c("Day0", "Day2"),
-  Day2_Day5 = c("Day2", "Day5"),
-  Day5_Day15 = c("Day5", "Day15"),
-  Day15_Day30 = c("Day15", "Day30")
-)
-
-transition_order <- names(transitions)
-
-
-# --------------------------------------------------
-# Calculate expression changes for each individual
-# --------------------------------------------------
-
-calculate_changes <- function(
-    expression,
-    metadata,
-    transition
-) {
-
-  start_day <- transition[1]
-  end_day <- transition[2]
-
-  # Individuals with samples at both timepoints
-  matched_individuals <- metadata %>%
-    filter(Timepoint %in% c(start_day, end_day)) %>%
-    distinct(Species, Individual, Timepoint) %>%
-    dplyr::count(Species, Individual, name = "n_timepoints") %>%
-    filter(n_timepoints == 2) %>%
-    dplyr::select(Species, Individual)
-
-  change_list <- list()
-
-  for (j in seq_len(nrow(matched_individuals))) {
-
-    sp <- matched_individuals$Species[j]
-    ind <- matched_individuals$Individual[j]
-
-    sample_start <- metadata %>%
-      filter(
-        Species == sp,
-        Individual == ind,
-        Timepoint == start_day
-      ) %>%
-      pull(SampleName)
-
-    sample_end <- metadata %>%
-      filter(
-        Species == sp,
-        Individual == ind,
-        Timepoint == end_day
-      ) %>%
-      pull(SampleName)
-
-    # Require exactly one sample per individual per timepoint
-    if (length(sample_start) != 1 ||
-        length(sample_end) != 1) {
-      stop(
-        "Expected one sample per individual per timepoint: ",
-        sp, ", ", ind, ", ",
-        start_day, " to ", end_day
-      )
-    }
-
-    # Change in log2 CPM
-    change_list[[paste(sp, ind, sep = "_")]] <-
-      expression[, sample_end] -
-      expression[, sample_start]
-  }
-
-  change_matrix <- do.call(cbind, change_list)
-
-  colnames(change_matrix) <- names(change_list)
-
-  # Sample information for the change matrix
-  change_info <- matched_individuals %>%
-    mutate(
-      sample_id = paste(Species, Individual, sep = "_")
-    )
-
-  change_matrix <- change_matrix[
-    ,
-    change_info$sample_id,
-    drop = FALSE
-  ]
-
-  list(
-    expression = change_matrix,
-    metadata = change_info
-  )
-}
-
-
-# --------------------------------------------------
-# Calculate cross-species correlations
-# --------------------------------------------------
-
-results <- list()
-
-for (i in seq_along(gene_sets)) {
-
-  gene_set <- gene_sets[[i]]
-  cluster_name <- names(gene_sets)[i]
-
-  # Match gene IDs to expression matrix
-  gene_set <- intersect(
-    gene_set,
-    rownames(log2cpm)
-  )
-
-  print(cluster_name)
-  print(length(gene_set))
-
-  if (length(gene_set) < 3) {
-    warning(
-      cluster_name,
-      " has fewer than three matched genes; skipping."
-    )
-    next
-  }
-
-  expression_i <- log2cpm[
-    gene_set,
-    ,
-    drop = FALSE
-  ]
-
-  # Calculate changes for every transition
-  transition_changes <- lapply(
-    transitions,
-    function(tr) {
-      calculate_changes(
-        expression = expression_i,
-        metadata = metadata_i,
-        transition = tr
-      )
-    }
-  )
-
-  names(transition_changes) <- transition_order
-
-  correlation_results <- list()
-
-  for (tr_name in transition_order) {
-
-    change_data <- transition_changes[[tr_name]]
-
-    change_matrix <- change_data$expression
-    change_info <- change_data$metadata
-
-    human_samples <- change_info %>%
-      filter(Species == "H") %>%
-      pull(sample_id)
-
-    chimp_samples <- change_info %>%
-      filter(Species == "C") %>%
-      pull(sample_id)
-
-    if (length(human_samples) == 0 ||
-        length(chimp_samples) == 0) {
-      warning(
-        "Missing human or chimpanzee samples for ",
-        cluster_name, ": ", tr_name
-      )
-      next
-    }
-
-    # Correlate every human individual's change profile
-    # with every chimpanzee individual's change profile.
-    cor_matrix <- cor(
-      change_matrix[, human_samples, drop = FALSE],
-      change_matrix[, chimp_samples, drop = FALSE],
-      method = "spearman",
-      use = "pairwise.complete.obs"
-    )
-
-    cor_long <- as.data.frame(
-      as.table(cor_matrix)
-    ) %>%
-      rename(
-        sample1 = Var1,
-        sample2 = Var2,
-        cor = Freq
-      ) %>%
-      filter(is.finite(cor)) %>%
-      mutate(
-        transition = tr_name
-      )
-
-    correlation_results[[tr_name]] <- cor_long
-  }
-
-  same_transition_cross <- bind_rows(
-    correlation_results
-  ) %>%
-    mutate(
-      transition = factor(
-        transition,
-        levels = transition_order
-      )
-    )
-
-  # Summary
-  summary_by_transition <- same_transition_cross %>%
-    group_by(transition) %>%
-    summarise(
-      mean_cor = mean(cor, na.rm = TRUE),
-      sd_cor = sd(cor, na.rm = TRUE),
-      median_cor = median(cor, na.rm = TRUE),
-      n = n(),
-      .groups = "drop"
-    )
-
-  # Kruskal-Wallis
-  kruskal_res <- kruskal.test(
-    cor ~ transition,
-    data = same_transition_cross
-  )
-
-  # Pairwise Wilcoxon
-  stat.test <- same_transition_cross %>%
-    pairwise_wilcox_test(
-      cor ~ transition,
-      p.adjust.method = "BH"
-    ) %>%
-    add_significance("p.adj") %>%
-    add_y_position(
-      data = same_transition_cross,
-      formula = cor ~ transition
-    ) %>%
-    filter(p.adj <= 0.05)
-
-  # Save results
-  results[[cluster_name]] <- list(
-    genes = gene_set,
-    n_genes = length(gene_set),
-    transition_changes = transition_changes,
-    same_transition_cross = same_transition_cross,
-    summary = summary_by_transition,
-    kruskal = kruskal_res,
-    pairwise = stat.test
-  )
-}
-
-
-# --------------------------------------------------
-# Combine cluster summaries
-# --------------------------------------------------
-
-all_cluster_summary <- bind_rows(
-  lapply(names(results), function(cluster_name) {
-
-    results[[cluster_name]]$summary %>%
-      mutate(cluster = cluster_name)
-
-  })
-)
-
-
-# --------------------------------------------------
-# Plot each gene set individually
-# --------------------------------------------------
-
-for (cluster_name in names(results)) {
-
-  plot_data <- results[[cluster_name]]$same_transition_cross
-  stat.test <- results[[cluster_name]]$pairwise
-
-  plot <- ggplot(
-    plot_data,
-    aes(
-      x = transition,
-      y = cor
-    )
-  ) +
-
-    geom_jitter(
-      width = 0.08,
-      alpha = 0.3
-    ) +
-
-    stat_summary(
-      aes(group = 1),
-      fun = median,
-      geom = "line",
-      linewidth = 1
-    ) +
-
-    stat_summary(
-      fun = median,
-      geom = "point",
-      size = 3
-    ) +
-
-    {
-      if (nrow(stat.test) > 0) {
-        stat_pvalue_manual(
-          stat.test,
-          label = "p.adj.signif",
-          step.increase = 0.07
-        )
-      }
-    } +
-
-    coord_cartesian(
-      ylim = c(0.0, 1.00)
-    ) +
-
-    scale_x_discrete(
-      labels = c(
-        Day0_Day2 = "Day 0–2",
-        Day2_Day5 = "Day 2–5",
-        Day5_Day15 = "Day 5–15",
-        Day15_Day30 = "Day 15–30"
-      )
-    ) +
-
-    labs(
-      title = paste(
-        "Cross-species correlation of expression changes -",
-        cluster_name
-      ),
-      x = "Differentiation transition",
-      y = "Spearman correlation of expression changes"
-    ) +
-
-    theme_classic()
-
-  print(plot)
-}
-
-
-# --------------------------------------------------
-# Plot all gene sets together
-# --------------------------------------------------
-
-plot_all <- ggplot(
-  all_cluster_summary,
-  aes(
-    x = transition,
-    y = median_cor,
-    group = cluster,
-    color = cluster
-  )
-) +
-
-  geom_line(
-    linewidth = 1
-  ) +
-
-  geom_point(
-    size = 2
-  ) +
-
-  coord_cartesian(
-    ylim = c(0.0, 1.00)
-  ) +
-
-  scale_x_discrete(
-    labels = c(
-      Day0_Day2 = "Day 0–2",
-      Day2_Day5 = "Day 2–5",
-      Day5_Day15 = "Day 5–15",
-      Day15_Day30 = "Day 15–30"
-    )
-  ) +
-
-  labs(
-    title = "Cross-species correlation of expression changes",
-    x = "Differentiation transition",
-    y = "Median Spearman correlation",
-    color = "Gene set"
-  ) +
-
-  theme_classic()
-
-plot_all
-
-```
-
 ## FC
 
 #### KZFP
@@ -3496,7 +3136,7 @@ saveRDS( testing_all,"data/TEs/KZFPs_Toptable.RDS")
 ```
 
 
-```{r, fig.width=7, fig.height=3}
+```{r KZFP_Species_FC_example, fig.width=7, fig.height=3}
 
 # Load your processed TMM-normalized log2CPM expression data
 log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
@@ -3580,7 +3220,7 @@ ggplot(plot_data, aes(x = Day, y = median_log2_cpm, color = Species, group = Spe
 ```
 
 
-```{r KZFP_Species_FC_lineplot}
+```{r KZFP_Species_FC_lineplots}
 
 TopTable <-readRDS("data/TEs/KZFPs_Toptable.RDS")
 
@@ -3802,7 +3442,7 @@ ggplot(
 
 #### ZNF
 
-```{r KZFP_Species_FC}
+```{r ZNF_Species_FC}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -3919,124 +3559,7 @@ saveRDS( testing_all,"data/TEs/ZNFs_Toptable.RDS")
  
 ```
 
-#### Transcription Factors
-
-```{r KZFP_Species_FC}
-
-TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-tf_df <- readRDS("data/TEs/tf_df.RDS")
-
-testing_list <- tf_df$Gene
-
-testing <- "TFs"
-
-comparisons <- unique(TopTable$Comparisons)
-
-comparison_order <- c(
-  "HvC_Day0",
-  "HvC_Day2",
-  "HvC_Day5",
-  "HvC_Day15",
-  "HvC_Day30",
-  "H_Day02",
-  "H_Day25",
-  "H_Day515",
-  "H_Day1530",
-  "C_Day02",
-  "C_Day25",
-  "C_Day515",
-  "C_Day1530",
-  "Sig_Sp_inter_Traj02",
-  "Sig_Sp_inter_Traj25",
-  "Sig_Sp_inter_Traj515",
-  "Sig_Sp_inter_Traj1530"
-)
-
- testing_all <- TopTable %>%
-  filter(
-    Comparisons %in% comparison_order,
-    Symbol %in%  testing_list
-  ) %>%
-  mutate(
-    Comparisons = factor(
-      Comparisons,
-      levels = comparison_order
-    )
-  )
-
-ggplot( testing_all, aes(Comparisons, logFC)) +
-  geom_boxplot() +
-  ggtitle(paste0("Logfc of all ",  testing," expressed")) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  theme_bw() +
-  coord_cartesian(ylim = c(-2, 2)) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-
- testing_all$absfc <- abs( testing_all$logFC)
-
-ggplot( testing_all, aes(Comparisons, absfc)) +
-  geom_boxplot() +
-  ggtitle(paste0("Absolute logfc of all ",  testing," expressed")) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  theme_bw() +
-  coord_cartesian(ylim = c(0, 3)) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-
-saveRDS( testing_all,"data/TEs/ZNFs_Toptable.RDS")
-
- testing_FC <- TopTable %>%
-  filter(
-    Comparisons %in% comparisons,
-    Symbol %in%  testing_list
-  ) %>%
-  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
-
- testing_DEG <- TopTable %>%
-  filter(
-    Comparisons %in% comparisons,
-    Symbol %in%  testing_list,
-    adj.P.Val < 0.05
-  ) %>%
-  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
-
- testing_DEG %>%
-  filter(grepl("^HvC", Comparisons)) %>%
-  arrange(Comparisons, desc(logFC))
-
- testing_DEG_direction <-  testing_DEG %>%
-  mutate(
-    Direction = case_when(
-      
-      # Species contrasts
-      grepl("^HvC", Comparisons) & logFC > 0 ~ "Higher in Human",
-      grepl("^HvC", Comparisons) & logFC < 0 ~ "Higher in Chimp",
-      
-      # Human trajectory contrasts
-      grepl("^H_Day", Comparisons) & logFC > 0 ~ "Human increased",
-      grepl("^H_Day", Comparisons) & logFC < 0 ~ "Human decreased",
-      
-      # Chimp trajectory contrasts
-      grepl("^C_Day", Comparisons) & logFC > 0 ~ "Chimp increased",
-      grepl("^C_Day", Comparisons) & logFC < 0 ~ "Chimp decreased",
-      
-      # Species x trajectory interactions
-      grepl("^Sig_Sp_inter", Comparisons) & logFC > 0 ~ "Human-Chimp difference increased",
-      grepl("^Sig_Sp_inter", Comparisons) & logFC < 0 ~ "Human-Chimp difference decreased",
-      
-      TRUE ~ "Unknown"
-    )
-  ) %>%
-  dplyr::count(Comparisons, Direction)
- 
-```
-
-
-```{r KZFP_Species_FC_lineplot}
+```{r ZNF_Species_FC_lineplots}
 
 TopTable <-readRDS("data/TEs/ZNFs_Toptable.RDS")
 
@@ -4255,6 +3778,123 @@ ggplot(
   theme(axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
+
+#### Transcription Factors
+
+```{r TFs_Species_FC}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+testing_list <- tf_df$Gene
+
+testing <- "TFs"
+
+comparisons <- unique(TopTable$Comparisons)
+
+comparison_order <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30",
+  "H_Day02",
+  "H_Day25",
+  "H_Day515",
+  "H_Day1530",
+  "C_Day02",
+  "C_Day25",
+  "C_Day515",
+  "C_Day1530",
+  "Sig_Sp_inter_Traj02",
+  "Sig_Sp_inter_Traj25",
+  "Sig_Sp_inter_Traj515",
+  "Sig_Sp_inter_Traj1530"
+)
+
+ testing_all <- TopTable %>%
+  filter(
+    Comparisons %in% comparison_order,
+    Symbol %in%  testing_list
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  )
+
+ggplot( testing_all, aes(Comparisons, logFC)) +
+  geom_boxplot() +
+  ggtitle(paste0("Logfc of all ",  testing," expressed")) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  coord_cartesian(ylim = c(-2, 2)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ testing_all$absfc <- abs( testing_all$logFC)
+
+ggplot( testing_all, aes(Comparisons, absfc)) +
+  geom_boxplot() +
+  ggtitle(paste0("Absolute logfc of all ",  testing," expressed")) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  coord_cartesian(ylim = c(0, 3)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+saveRDS( testing_all,"data/TEs/ZNFs_Toptable.RDS")
+
+ testing_FC <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in%  testing_list
+  ) %>%
+  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
+
+ testing_DEG <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in%  testing_list,
+    adj.P.Val < 0.05
+  ) %>%
+  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
+
+ testing_DEG %>%
+  filter(grepl("^HvC", Comparisons)) %>%
+  arrange(Comparisons, desc(logFC))
+
+ testing_DEG_direction <-  testing_DEG %>%
+  mutate(
+    Direction = case_when(
+      
+      # Species contrasts
+      grepl("^HvC", Comparisons) & logFC > 0 ~ "Higher in Human",
+      grepl("^HvC", Comparisons) & logFC < 0 ~ "Higher in Chimp",
+      
+      # Human trajectory contrasts
+      grepl("^H_Day", Comparisons) & logFC > 0 ~ "Human increased",
+      grepl("^H_Day", Comparisons) & logFC < 0 ~ "Human decreased",
+      
+      # Chimp trajectory contrasts
+      grepl("^C_Day", Comparisons) & logFC > 0 ~ "Chimp increased",
+      grepl("^C_Day", Comparisons) & logFC < 0 ~ "Chimp decreased",
+      
+      # Species x trajectory interactions
+      grepl("^Sig_Sp_inter", Comparisons) & logFC > 0 ~ "Human-Chimp difference increased",
+      grepl("^Sig_Sp_inter", Comparisons) & logFC < 0 ~ "Human-Chimp difference decreased",
+      
+      TRUE ~ "Unknown"
+    )
+  ) %>%
+  dplyr::count(Comparisons, Direction)
+ 
+```
+
 
 ```{r TF_Species_FC_lineplot}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -4496,7 +4136,7 @@ ggplot(
 
 ### KZFP
 
-```{r KZFP_Species_alluvial,fig.height=5,fig.width=5}
+```{r KZFP_Species_alluvial, fig.height=5,fig.width=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 KZFPs <- readRDS("data/TEs/KZFPs.RDS")
@@ -4613,7 +4253,7 @@ Interaction_plot
 
 ### ZNFs
 
-```{r KZFP_Species_alluvial,fig.height=5,fig.width=5}
+```{r ZNF_Species_alluvial,fig.height=5,fig.width=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 ZNFs <- readRDS("data/TEs/ZNFs.RDS")
@@ -4730,7 +4370,7 @@ Interaction_plot
 
 ### TFs
 
-```{r KZFP_Species_alluvial,fig.height=5,fig.width=5}
+```{r TFs_Species_alluvial,fig.height=5,fig.width=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 tf_df <- readRDS("data/TEs/tf_df.RDS")
@@ -4845,13 +4485,11 @@ Interaction_plot
 
 ```
 
-
-
 ## Species KZFPs
 
 ### Fate
 
-```{r KZFP_Species,fig.height=4, fig.width=7}
+```{r KZFP_Fate_Species,fig.height=4, fig.width=7}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
@@ -4924,7 +4562,7 @@ plot_Fate_OR(Fate_KZFP_results)
 
 ```
 
-```{r ZNF_Species,fig.height=4, fig.width=7}
+```{r ZNF_Fate_Species,fig.height=4, fig.width=7}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
@@ -4998,7 +4636,7 @@ plot_Fate_OR(Fate_ZNF_results)
 
 ```
 
-```{r KZFP_Species_2}
+```{r KZFP_Fate_Species2}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
 
 KZFP_Toptable_HvC_Day0_DEG <- KZFP_Toptable %>% 
@@ -5216,7 +4854,7 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 ##### ZNF-KZFP
 
-```{r KZFP_Species_Venn, fig.width=5, fig.height=5}
+```{r ZNF_NoKZFP_Species_Venn, fig.width=5, fig.height=5}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -5392,7 +5030,7 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 ##### TF-ZNF&KZFP
 
-```{r KZFP_Species_Venn, fig.width=5, fig.height=5}
+```{r TF_noZNF_NoKZFP_Species_Venn, fig.width=5, fig.height=5}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -5574,7 +5212,7 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 ##### DEGs-TFs
 
-```{r KZFP_Species_Venn, fig.width=5, fig.height=5}
+```{r DEGs_noTF_Species_Venn, fig.width=5, fig.height=5}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -5741,7 +5379,7 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 ```
 ### Trajectory
 
-```{r KZFP_species_intersects}
+```{r KZFP_Trajectory_intersects}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
 
 KZFP_Toptable_sig <- KZFP_Toptable %>% 
@@ -5932,7 +5570,7 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
 
 ##### ZNFs-KZFPs
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=5, fig.height=5}
+```{r ZNF_noKZFP_Trajectory, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -6080,7 +5718,7 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
 
 ##### TFs
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=5, fig.height=5}
+```{r TF_noZNF_noKZFP_Trajectory, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -6230,7 +5868,7 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
 
 ##### DEGs-TFs
 
-```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4, fig.width=5, fig.height=5}
+```{r DEGS_noTFs_Trajectory, fig.width=5, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
@@ -6505,7 +6143,7 @@ KZFP_DEG_direction
 ```
 
 
-```{r KZFP_Interactions_directions, fig.width=5, fig.height=5}
+```{r KZFP_Interactions_directions2, fig.width=5, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
@@ -6668,7 +6306,7 @@ TE_Summary_Alu <- KZFP_Interactions_meta %>%
 TE_Summary_Alu
 ```
 
-```{r, fig.width= 5, fig.height=5}
+```{r KZFP_Interactions_plotting, fig.width= 5, fig.height=5}
 dge <- readRDS("data/DGE/dge_logcpm_G1_SpTp_No4_NoRep.RDS")
 log2cpm <- cpm(dge, log=TRUE) 
 
@@ -6911,7 +6549,7 @@ ggplot(
   
 ```
 
-```{r}
+```{r KZFP_Interactions_Venn}
 library(dplyr)
 library(ggVennDiagram)
 library(ggplot2)
@@ -7066,1067 +6704,10 @@ Interaction_plot
 
 ```
 
-```{r, fig.width=9,fig.height=5}
-TE_Peak_results <- readRDS("data/Raw_Data/TE_Peak_results.RDS")
-dge <- readRDS("data/Raw_Data/dge_H3K27ac_hg38_Reproducible2_fc_No4_FilteredCondition.RDS")
-# counts <- readRDS("data/Raw_Data/H3K27ac_hg38_Reproducible2_fc_No4.RDS")
-log2cpm <- cpm(dge, log=TRUE) 
-KZFP_Interactions_meta
-
-KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
-
-ZNF93 <- KZFP_Interactions_meta %>% 
-  filter(Symbol == "ZNF93")
-
-KZFP_TE_Targets <- unique(KZFP_metadata_Hardy2023$`Target Subfamily`)
-
-
-
-ERV1_list <- unique(ZNF93$`Target Subfamily`)
-
-KZFP_ERV1 <- TE_Peak_results %>%
-  filter(TE_name %in% KZFP_TE_Targets) %>%
-  filter(TE_name %in% ERV1_list) %>%
-  dplyr::select(Peak, TE_name) %>%
-  distinct()
-
-plot_individual <- log2cpm %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "peak") %>%
-  inner_join(KZFP_ERV1, by = c("peak" = "Peak")) %>%
-  pivot_longer(
-    cols = -c(peak, TE_name),
-    names_to = "sample",
-    values_to = "log2cpm"
-  ) %>%
-  extract(
-    sample,
-    into = c("Individual", "Day"),
-    regex = "^(.*)_Day(\\d+)$"
-  ) %>%
-  mutate(
-    Day = factor(Day, levels = c(0, 2, 5, 15, 30)),
-    Species = case_when(
-      str_starts(Individual, "H") ~ "Human",
-      str_starts(Individual, "C") ~ "Chimpanzee",
-      Individual %in% c("17_3", "78_1") ~ "Human",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  group_by(TE_name, Species, Individual, Day) %>%
-  summarise(
-    mean_log2cpm = mean(log2cpm, na.rm = TRUE),
-    median_log2cpm = median(log2cpm, na.rm = TRUE),
-    n_peaks = n(),
-    .groups = "drop"
-  )
-
-plot_data <- plot_individual %>%
-  group_by(TE_name, Species, Day) %>%
-  summarise(
-    n_individuals = n_distinct(Individual),
-
-    mean_signal = mean(mean_log2cpm, na.rm = TRUE),
-    sd_log2cpm = sd(mean_log2cpm, na.rm = TRUE),
-    sem_log2cpm = sd_log2cpm / sqrt(n_individuals),
-
-    median_signal = median(median_log2cpm, na.rm = TRUE),
-    Q1 = quantile(median_log2cpm, 0.25, na.rm = TRUE),
-    Q3 = quantile(median_log2cpm, 0.75, na.rm = TRUE),
-
-    .groups = "drop"
-  )
-
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = median_signal,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  geom_errorbar(
-    aes(ymin = Q1, ymax = Q3),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 3) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Error bars indicate IQR across individuals",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-ggplot() +
-  geom_point(
-    data = plot_individual,
-    aes(
-      x = Day,
-      y = median_log2cpm,
-      color = Species
-    ),
-    position = position_jitter(width = 0.08, height = 0),
-    alpha = 0.5,
-    size = 1.8
-  ) +
-  geom_line(
-    data = plot_data,
-    aes(
-      x = Day,
-      y = median_signal,
-      color = Species,
-      group = Species
-    ),
-    linewidth = 1
-  ) +
-  geom_point(
-    data = plot_data,
-    aes(
-      x = Day,
-      y = median_signal,
-      color = Species
-    ),
-    size = 2.5
-  ) +
-  geom_line(
-  data = plot_individual,
-  aes(
-    x = Day,
-    y = median_log2cpm,
-    color = Species,
-    group = interaction(Species, Individual)
-  ),
-  alpha = 0.3,
-  linewidth = 0.5
-) +
-  geom_errorbar(
-    data = plot_data,
-    aes(
-      x = Day,
-      ymin = Q1,
-      ymax = Q3,
-      color = Species
-    ),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 3) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Individual values with species median and IQR",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-#Mean Plot 
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = mean_signal,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  geom_errorbar(
-    aes(
-      ymin = mean_signal - sem_log2cpm,
-      ymax = mean_signal + sem_log2cpm
-    ),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 3) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "All 7 individuals; error bars indicate SEM",
-    x = "Differentiation Day",
-    y = "Mean H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-
-```
-#### TE Data
-
-```{r, fig.width=15,fig.height=5}
-TE_Peak_results <- readRDS("data/Raw_Data/TE_Peak_results.RDS")
-dge <- readRDS("data/Raw_Data/dge_H3K27ac_hg38_Reproducible2_fc_No4_FilteredCondition.RDS")
-# counts <- readRDS("data/Raw_Data/H3K27ac_hg38_Reproducible2_fc_No4.RDS")
-log2cpm <- cpm(dge, log=TRUE) 
-
-KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
-
-KZFP_TE_Targets <- unique(KZFP_metadata_Hardy2023$`Target Subfamily`)
-
-
-ERV1_list <- c(
-  "HERVH-int",
-  "HERVIP10F-int",
-  "LTR12C",
-  "LTR7B",
-  "LTR8A",
-  "MER66A",
-  "MER66B",
-  "MER66C"
-)
-
-KZFP_ERV1 <- TE_Peak_results %>%
-  filter(TE_name %in% KZFP_TE_Targets) %>%
-  filter(TE_name %in% ERV1_list) %>%
-  dplyr::select(Peak, TE_name) %>%
-  distinct()
-
-plot_individual <- log2cpm %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "peak") %>%
-  inner_join(KZFP_ERV1, by = c("peak" = "Peak")) %>%
-  pivot_longer(
-    cols = -c(peak, TE_name),
-    names_to = "sample",
-    values_to = "log2cpm"
-  ) %>%
-  extract(
-    sample,
-    into = c("Individual", "Day"),
-    regex = "^(.*)_Day(\\d+)$"
-  ) %>%
-  mutate(
-    Day = factor(Day, levels = c(0, 2, 5, 15, 30)),
-    Species = case_when(
-      str_starts(Individual, "H") ~ "Human",
-      str_starts(Individual, "C") ~ "Chimpanzee",
-      Individual %in% c("17_3", "78_1") ~ "Human",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  group_by(TE_name, Species, Individual, Day) %>%
-  summarise(
-    mean_log2cpm = mean(log2cpm, na.rm = TRUE),
-    median_log2cpm = median(log2cpm, na.rm = TRUE),
-    n_peaks = n(),
-    .groups = "drop"
-  )
-
-plot_data <- plot_individual %>%
-  group_by(TE_name, Species, Day) %>%
-  summarise(
-    n_individuals = n_distinct(Individual),
-
-    mean_signal = mean(mean_log2cpm, na.rm = TRUE),
-    sd_log2cpm = sd(mean_log2cpm, na.rm = TRUE),
-    sem_log2cpm = sd_log2cpm / sqrt(n_individuals),
-
-    median_signal = median(median_log2cpm, na.rm = TRUE),
-    Q1 = quantile(median_log2cpm, 0.25, na.rm = TRUE),
-    Q3 = quantile(median_log2cpm, 0.75, na.rm = TRUE),
-
-    .groups = "drop"
-  )
-
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = median_signal,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  geom_errorbar(
-    aes(ymin = Q1, ymax = Q3),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Error bars indicate IQR across individuals",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-ggplot() +
-  geom_point(
-    data = plot_individual,
-    aes(
-      x = Day,
-      y = median_log2cpm,
-      color = Species
-    ),
-    position = position_jitter(width = 0.08, height = 0),
-    alpha = 0.5,
-    size = 1.8
-  ) +
-  geom_line(
-    data = plot_data,
-    aes(
-      x = Day,
-      y = median_signal,
-      color = Species,
-      group = Species
-    ),
-    linewidth = 1
-  ) +
-  geom_point(
-    data = plot_data,
-    aes(
-      x = Day,
-      y = median_signal,
-      color = Species
-    ),
-    size = 2.5
-  ) +
-  geom_line(
-  data = plot_individual,
-  aes(
-    x = Day,
-    y = median_log2cpm,
-    color = Species,
-    group = interaction(Species, Individual)
-  ),
-  alpha = 0.3,
-  linewidth = 0.5
-) +
-  geom_errorbar(
-    data = plot_data,
-    aes(
-      x = Day,
-      ymin = Q1,
-      ymax = Q3,
-      color = Species
-    ),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Individual values with species median and IQR",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-#Mean Plot 
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = mean_signal,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  geom_errorbar(
-    aes(
-      ymin = mean_signal - sem_log2cpm,
-      ymax = mean_signal + sem_log2cpm
-    ),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "All 7 individuals; error bars indicate SEM",
-    x = "Differentiation Day",
-    y = "Mean H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-
-```
-
-```{r, fig.width=5,fig.height=7}
-TE_Peak_results <- readRDS("data/Raw_Data/TE_Peak_results.RDS")
-dge <- readRDS("data/Raw_Data/dge_H3K27ac_hg38_Reproducible2_fc_No4_FilteredCondition.RDS")
-# counts <- readRDS("data/Raw_Data/H3K27ac_hg38_Reproducible2_fc_No4.RDS")
-log2cpm <- cpm(dge, log=TRUE) 
-
-Alu_list <-	c(
-  "AluJb",	
-	"AluSx",		
-	"AluY")
-
-KZFP_Alu <- TE_Peak_results %>%
-  filter(TE_name %in% Alu_list) %>%
-  dplyr::select(Peak, TE_name) %>%
-  distinct()
-
-plot_individual <- log2cpm %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "peak") %>%
-  inner_join(KZFP_Alu, by = c("peak" = "Peak")) %>%
-  pivot_longer(
-    cols = -c(peak, TE_name),
-    names_to = "sample",
-    values_to = "log2cpm"
-  ) %>%
-  extract(
-    sample,
-    into = c("Individual", "Day"),
-    regex = "^(.*)_Day(\\d+)$"
-  ) %>%
-  mutate(
-    Day = factor(Day, levels = c(0, 2, 5, 15, 30)),
-    Species = case_when(
-      str_starts(Individual, "H") ~ "Human",
-      str_starts(Individual, "C") ~ "Chimpanzee",
-      Individual %in% c("17_3", "78_1") ~ "Human",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  group_by(TE_name, Species, Individual, Day) %>%
-  summarise(
-    mean_log2cpm = mean(log2cpm, na.rm = TRUE),
-    median_log2cpm = median(log2cpm, na.rm = TRUE),
-    n_peaks = n(),
-    .groups = "drop"
-  )
-
-plot_data <- plot_individual %>%
-  group_by(TE_name, Species, Day) %>%
-  summarise(
-    n_individuals = n_distinct(Individual),
-
-    mean_signal = mean(mean_log2cpm, na.rm = TRUE),
-    sd_log2cpm = sd(mean_log2cpm, na.rm = TRUE),
-    sem_log2cpm = sd_log2cpm / sqrt(n_individuals),
-
-    median_signal = median(median_log2cpm, na.rm = TRUE),
-    Q1 = quantile(median_log2cpm, 0.25, na.rm = TRUE),
-    Q3 = quantile(median_log2cpm, 0.75, na.rm = TRUE),
-
-    .groups = "drop"
-  )
-
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = median_signal,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  geom_errorbar(
-    aes(ymin = Q1, ymax = Q3),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Error bars indicate IQR across individuals",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-ggplot() +
-  geom_point(
-    data = plot_individual,
-    aes(
-      x = Day,
-      y = median_log2cpm,
-      color = Species
-    ),
-    position = position_jitter(width = 0.08, height = 0),
-    alpha = 0.5,
-    size = 1.8
-  ) +
-  geom_line(
-    data = plot_data,
-    aes(
-      x = Day,
-      y = median_signal,
-      color = Species,
-      group = Species
-    ),
-    linewidth = 1
-  ) +
-  geom_point(
-    data = plot_data,
-    aes(
-      x = Day,
-      y = median_signal,
-      color = Species
-    ),
-    size = 2.5
-  ) +
-  geom_line(
-  data = plot_individual,
-  aes(
-    x = Day,
-    y = median_log2cpm,
-    color = Species,
-    group = interaction(Species, Individual)
-  ),
-  alpha = 0.3,
-  linewidth = 0.5
-) +
-  geom_errorbar(
-    data = plot_data,
-    aes(
-      x = Day,
-      ymin = Q1,
-      ymax = Q3,
-      color = Species
-    ),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Individual values with species median and IQR",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-#Mean Plot 
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = mean_signal,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  geom_errorbar(
-    aes(
-      ymin = mean_signal - sem_log2cpm,
-      ymax = mean_signal + sem_log2cpm
-    ),
-    width = 0.15,
-    linewidth = 0.6
-  ) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "red",
-      "Chimpanzee" = "blue"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(1, 2)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "All 7 individuals; error bars indicate SEM",
-    x = "Differentiation Day",
-    y = "Mean H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-```
-
-```{r, fig.width=5,fig.height=50}
-
-TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
-KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
-
-KZFP_metadata_Hardy2023 <- KZFP_metadata_Hardy2023 %>%
-  separate(
-    `TE family`,
-    into = c("class", "family"),
-    sep = "/"
-  )
-
-comparisons <- c(
-  "Sig_Sp_inter_Traj02",
-  "Sig_Sp_inter_Traj25",
-  "Sig_Sp_inter_Traj515",
-  "Sig_Sp_inter_Traj1530"
-)
-
-KZFP_DEG <- TopTable %>%
-  filter(
-    Comparisons %in% comparisons,
-    Symbol %in% KZFPs_list,
-    adj.P.Val < 0.05
-  ) %>%
-  dplyr::select(Gene,logFC, Comparisons,Symbol)
-
-
-KZFP_Interactions_meta <- KZFP_DEG %>%
-  left_join(
-    KZFP_metadata_Hardy2023,
-    by = c("Symbol" = "KZFP")
-  )
-
-comparison_order <- c(
-  "Sig_Sp_inter_Traj02",
-  "Sig_Sp_inter_Traj25",
-  "Sig_Sp_inter_Traj515",
-  "Sig_Sp_inter_Traj1530"
-)
-
-KZFP_Interactions_meta <- KZFP_Interactions_meta %>%
-  mutate(
-    Comparisons = factor(
-      Comparisons,
-      levels = comparison_order
-    ))
-
-Interaction_targets <- unique(KZFP_Interactions_meta$`Target Subfamily`)
-
-
-TE_Peak_results <- readRDS("data/Raw_Data/TE_Peak_results.RDS")
-dge <- readRDS("data/Raw_Data/dge_H3K27ac_hg38_Reproducible2_fc_No4_FilteredCondition.RDS")
-counts <- readRDS("data/Raw_Data/H3K27ac_hg38_Reproducible2_fc_No4.RDS")
-log2cpm <- cpm(counts, log=TRUE) 
-
-
-KZFP_ERV1 <- TE_Peak_results %>%
-  filter(TE_family == "ERV1") %>%
-  filter(TE_name %in% KZFP_TE_Targets) %>%
-  filter(!(TE_name %in% Interaction_targets)) %>%
-  dplyr::select(Peak, TE_name) %>%
-  distinct()
-
-# Select two individuals
-selected_samples <- c(
-  "H21792",
-  "C3647"
-)
-
-plot_data <- log2cpm %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "peak") %>%
-  inner_join(KZFP_ERV1, by = c("peak" = "Peak")) %>%
-  pivot_longer(
-    cols = -c(peak, TE_name),
-    names_to = "sample",
-    values_to = "log2_cpm"
-  ) %>%
-  filter(str_detect(sample, "^(H21792|C3647)_Day")) %>%
-  extract(
-    sample,
-    into = c("Species", "Individual", "Day"),
-    regex = "^([HC])(\\d+)_Day(\\d+)$"
-  ) %>%
-  mutate(
-  Day = factor(Day, levels = c(0, 2, 5, 15, 30)),
-    Species = recode(
-      Species,
-      "H" = "Human",
-      "C" = "Chimpanzee"
-    )
-  ) %>%
-  group_by(TE_name, Species, Individual, Day) %>%
-  summarise(
-    mean_log2_cpm = mean(log2_cpm, na.rm = TRUE),
-    median_log2_cpm = median(log2_cpm, na.rm = TRUE),
-    n_peaks = n(),
-    .groups = "drop"
-  )
-
-# 2. Plot the clean averaged timeline
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = median_log2_cpm,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "black",
-      "Chimpanzee" = "grey"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(0.5, 2.5)) +
-  labs(
-    title = "ERV1-associated H3K27ac Signal",
-    subtitle = "Pilot comparison of H21792 and C3647",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-# 2. Plot the clean averaged timeline
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = mean_log2_cpm,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "black",
-      "Chimpanzee" = "grey"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(0.5, 2.5)) +
-  labs(
-    title = "ERV1-associated H3K27ac Signal",
-    subtitle = "Pilot comparison of H21792 and C3647",
-    x = "Differentiation Day",
-    y = "Mean H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-```
-
-```{r, fig.width=5,fig.height=10}
-
-TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
-KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
-
-KZFP_metadata_Hardy2023 <- KZFP_metadata_Hardy2023 %>%
-  separate(
-    `TE family`,
-    into = c("class", "family"),
-    sep = "/"
-  )
-
-comparisons <- c(
-  "Sig_Sp_inter_Traj02",
-  "Sig_Sp_inter_Traj25",
-  "Sig_Sp_inter_Traj515",
-  "Sig_Sp_inter_Traj1530"
-)
-
-KZFP_DEG <- TopTable %>%
-  filter(
-    Comparisons %in% comparisons,
-    Symbol %in% KZFPs_list,
-    adj.P.Val < 0.05
-  ) %>%
-  dplyr::select(Gene,logFC, Comparisons,Symbol)
-
-
-KZFP_Interactions_meta <- KZFP_DEG %>%
-  left_join(
-    KZFP_metadata_Hardy2023,
-    by = c("Symbol" = "KZFP")
-  )
-
-comparison_order <- c(
-  "Sig_Sp_inter_Traj02",
-  "Sig_Sp_inter_Traj25",
-  "Sig_Sp_inter_Traj515",
-  "Sig_Sp_inter_Traj1530"
-)
-
-KZFP_Interactions_meta <- KZFP_Interactions_meta %>%
-  mutate(
-    Comparisons = factor(
-      Comparisons,
-      levels = comparison_order
-    ))
-
-Interaction_targets <- unique(KZFP_Interactions_meta$`Target Subfamily`)
-
-
-TE_Peak_results <- readRDS("data/Raw_Data/TE_Peak_results.RDS")
-dge <- readRDS("data/Raw_Data/dge_H3K27ac_hg38_Reproducible2_fc_No4_FilteredCondition.RDS")
-counts <- readRDS("data/Raw_Data/H3K27ac_hg38_Reproducible2_fc_No4.RDS")
-log2cpm <- cpm(counts, log=TRUE) 
-
-
-KZFP_ERV1 <- TE_Peak_results %>%
-  filter(TE_family == "Alu") %>%
-  filter(TE_name %in% KZFP_TE_Targets) %>%
-  filter(!(TE_name %in% Interaction_targets)) %>%
-  dplyr::select(Peak, TE_name) %>%
-  distinct()
-
-# Select two individuals
-selected_samples <- c(
-  "H21792",
-  "C3647"
-)
-
-plot_data <- log2cpm %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "peak") %>%
-  inner_join(KZFP_ERV1, by = c("peak" = "Peak")) %>%
-  pivot_longer(
-    cols = -c(peak, TE_name),
-    names_to = "sample",
-    values_to = "log2_cpm"
-  ) %>%
-  filter(str_detect(sample, "^(H21792|C3647)_Day")) %>%
-  extract(
-    sample,
-    into = c("Species", "Individual", "Day"),
-    regex = "^([HC])(\\d+)_Day(\\d+)$"
-  ) %>%
-  mutate(
-  Day = factor(Day, levels = c(0, 2, 5, 15, 30)),
-    Species = recode(
-      Species,
-      "H" = "Human",
-      "C" = "Chimpanzee"
-    )
-  ) %>%
-  group_by(TE_name, Species, Individual, Day) %>%
-  summarise(
-    mean_log2_cpm = mean(log2_cpm, na.rm = TRUE),
-    median_log2_cpm = median(log2_cpm, na.rm = TRUE),
-    n_peaks = n(),
-    .groups = "drop"
-  )
-
-# 2. Plot the clean averaged timeline
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = median_log2_cpm,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "black",
-      "Chimpanzee" = "grey"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(0.5, 2.5)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Pilot comparison of H21792 and C3647",
-    x = "Differentiation Day",
-    y = "Median H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-# 2. Plot the clean averaged timeline
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = mean_log2_cpm,
-    color = Species,
-    group = Species
-  )
-) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.5) +
-  facet_wrap(~ TE_name, scales = "fixed", ncol = 2) +
-  scale_color_manual(
-    values = c(
-      "Human" = "black",
-      "Chimpanzee" = "grey"
-    )
-  ) +
-  scale_x_discrete(drop = FALSE) +
-  coord_cartesian(ylim = c(0.5, 2.5)) +
-  labs(
-    title = "Alu-associated H3K27ac Signal",
-    subtitle = "Pilot comparison of H21792 and C3647",
-    x = "Differentiation Day",
-    y = "Mean H3K27ac Signal (log2 CPM)",
-    color = "Species"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold")
-  )
-
-```
 ### CorMotif Species
 
 #### Data Adding
-```{r KZFP_Interactions_Cormotif,fig.height=4, fig.width=7}
+```{r Cormotif,fig.height=4, fig.width=7}
 cluster_annotation <- readRDS("data/Cormotif/Species/SpeciesClusterAnnotation_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 
@@ -8147,7 +6728,7 @@ TopTable$Cluster <- ifelse(
 
 #### KZFP Enrichment No Response
 
-```{r KZFP_Interactions_Cormotif_enrichment_NoRepsonse,fig.height=4, fig.width=4}
+```{r Cormotif_KZFP_enrichment_NoRepsonse,fig.height=4, fig.width=4}
 
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
@@ -8187,7 +6768,7 @@ KZFP_cluster_results$FDR <- p.adjust(
 ```
 
 #### TF Enrichment No Response
-```{r TF_Interactions_Cormotif_enrichment_NoResponse,fig.height=4, fig.width=4}
+```{r TF_Cormotif_enrichment_NoResponse,fig.height=4, fig.width=4}
 
 TF_df <- readRDS("data/TEs/TF_df.RDS")
 
@@ -8318,8 +6899,6 @@ TF_cluster_results <- cluster_enrichment_NoResponse(
 )
  
 ```
-
-
 
 
 ```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}

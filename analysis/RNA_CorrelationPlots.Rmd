@@ -6879,3 +6879,11 @@ plot_R2_trajectories_No4(
 )
 
 ```
+
+```{r Updating Website, eval = FALSE}
+
+# git -> commit all changes
+# git -> push
+wflow_publish("analysis/RNA_CorrelationPlots.Rmd")
+
+```

@@ -3030,8 +3030,6 @@ TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_
 testing_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
  testing <- "KZFP"
-
-testing_list <- "ZNF675"
   
  
 comparisons <- unique(TopTable$Comparisons)
@@ -3090,7 +3088,7 @@ ggplot( testing_all, aes(Comparisons, absfc)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-saveRDS( testing_all,"data/TEs/KZFPs_Toptable.RDS")
+# saveRDS(testing_all,"data/TEs/KZFPs_Toptable.RDS")
 
  testing_FC <- TopTable %>%
   filter(

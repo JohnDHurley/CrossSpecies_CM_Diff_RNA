@@ -20,7 +20,7 @@ Welcome to my research website.
 
 [R2 Correlaitons: Genes,TFs, KZFPs](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_CorrelationPlots.html)
 
-[TE Expression](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/)
+<!-- [TE Expression](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/) -->
 
 [RNA Species Cormotif](https://johndhurley.github.io/CrossSpecies_CM_Diff_RNA/RNA_Cormotif_Species.html)
 

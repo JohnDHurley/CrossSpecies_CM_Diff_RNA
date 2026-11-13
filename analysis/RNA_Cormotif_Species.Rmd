@@ -368,7 +368,7 @@ compid
 
 #### Graphing
 
-```{r RNA-Seq_No4_Species_modeling_computer_plot,fig.height=8,fig.width=15}
+```{r RNA-Seq_No4_Species_modeling_computer_plot, fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/Species/SpeciesMotif_logcpm_G1_SpTp_No4_NoRep_Computer.RDS")
 
 plotIC(motif.fitted)
@@ -2337,7 +2337,7 @@ pheatmap(
 
 ###### KEGG
 
-```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_KEGG, fig.height=3, fig.width=7}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_KEGG2, fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2408,7 +2408,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_KEGG_combined,fig.height=5}
+```{r RNA-Seq_No4_TMM_Species_TACC_GProfiler_KEGG2_combined,fig.height=5}
 
 gost_combined <- readRDS("data/Cormotif/Species/SpeciesGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 

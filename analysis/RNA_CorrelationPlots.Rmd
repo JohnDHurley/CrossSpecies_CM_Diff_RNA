@@ -3149,7 +3149,7 @@ R2_table <- rbind(
 
 #### All Trajectory DEGs (NonShared)
 
-```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs, fig.width=7, fig.height=5}
+```{r KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 trajectory_deg_genes <- readRDS("data/DGE/KZFP_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")

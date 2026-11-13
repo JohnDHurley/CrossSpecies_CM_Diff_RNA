@@ -4884,35 +4884,9 @@ metrics_table
 
 #### Plotting R2 Together
 
-```{r ZFP_L50_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
+```{r KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
 
-# TrajectoryR2Genes <- readRDS("data/DGE/KZFP_L50_TrajectoryR2Genes_logcpm_G1_SpTp_All_NoRep_No4.RDS")
-
-RNA_colors <- c(
-  "G100" = "blue",
-  "B50_100" = "red",
-  "L50" = "green"
-)
-
-plot_R2_trajectories_No4_KZFP_Age(
-  R2_table = R2_table,
-  colors = RNA_colors
-)
-
-```
-
-```{r Updating Website, eval = FALSE, fig.height=10, fig.width=10}
-
-# git -> commit all changes
-# git -> push
-wflow_publish("analysis/RNA_CorrelationPlots.Rmd")
-
-```
-
-
-```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
-
-saveRDS(R2_table,"data/DGE/KZFP_AllExp_combo.RDS")
+# saveRDS(R2_table,"data/DGE/KZFP_AllExp_combo.RDS")
 
 
 TrajectoryR2Genes <- readRDS("data/DGE/KZFP_TrajectoryR2Genes_AllExp_combo.RDS")

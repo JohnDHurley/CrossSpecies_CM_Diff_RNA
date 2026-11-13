@@ -1128,7 +1128,7 @@ geom_point(
 
 #### All Genes
 
-```{r Genes_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+```{r Genes_FC_Quadrants_Interactions, fig.width=7, fig.height=5}
 
 testing <- "Expressed"
 

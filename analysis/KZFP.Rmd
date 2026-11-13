@@ -5443,7 +5443,7 @@ Reduce(
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+KZFP_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
 
 traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",

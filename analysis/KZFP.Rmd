@@ -2186,7 +2186,7 @@ plot_OR(Enrichment_results, "Interaction", ylim = c(0, 2))
 
 ```
 
-```{r ZNF_enrichment_CI, fig.width=5, fig.height=5}
+```{r TF_enrichment_CI, fig.width=5, fig.height=5}
 
 # --------------------------------------------------
 # KZFP enrichment with confidence intervals

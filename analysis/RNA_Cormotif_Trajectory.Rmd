@@ -3003,7 +3003,7 @@ pheatmap(
 )
 ```
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined2, fig.width=7, fig.height=7}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined4, fig.width=7, fig.height=7}
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 library(dplyr)

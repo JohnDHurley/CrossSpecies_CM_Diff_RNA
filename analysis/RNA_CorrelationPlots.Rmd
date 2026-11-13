@@ -4884,7 +4884,7 @@ metrics_table
 
 #### Plotting R2 Together
 
-```{r KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
+```{r KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting_Together, fig.width=7, fig.height=6}
 
 # saveRDS(R2_table,"data/DGE/KZFP_AllExp_combo.RDS")
 

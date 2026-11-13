@@ -1713,77 +1713,77 @@ RNA_sets <- readRDS(
 # # New function: plot_KZFP_OR_CI
 # # --------------------------------------------------
 # 
-# plot_ZNF_OR_CI <- function(df, comparison_group, ylim = NULL) {
-# 
-#   plot_df <- df %>%
-#     filter(Comparison_Group == comparison_group) %>%
-#     mutate(
-#       Significant = factor(
-#         ifelse(FDR < 0.05, "Significant", "Not significant"),
-#         levels = c("Not significant", "Significant")
-#       )
-#     )
-# 
-#   p <- ggplot(
-#     plot_df,
-#     aes(
-#       x = Comparison,
-#       y = Odds_Ratio
-#     )
-#   ) +
-#     geom_hline(
-#       yintercept = 1,
-#       linetype = "dashed",
-#       color = "grey50"
-#     ) +
-#     geom_errorbar(
-#       aes(
-#         ymin = CI_lower,
-#         ymax = CI_upper
-#       ),
-#       width = 0.2
-#     ) +
-#     geom_point(
-#       aes(
-#         shape = Significant,
-#         fill = Significant
-#       ),
-#       size = 3,
-#       color = "black"
-#     ) +
-#     scale_shape_manual(
-#       values = c(
-#         "Not significant" = 21,
-#         "Significant" = 21
-#       )
-#     ) +
-#     scale_fill_manual(
-#       values = c(
-#         "Not significant" = "white",
-#         "Significant" = "black"
-#       )
-#     ) +
-#     theme_bw() +
-#     labs(
-#       x = NULL,
-#       y = "Odds Ratio",
-#       title = comparison_group,
-#       shape = "FDR < 0.05",
-#       fill = "FDR < 0.05"
-#     ) +
-#     theme(
-#       axis.text.x = element_text(
-#         angle = 45,
-#         hjust = 1
-#       )
-#     )
-# 
-#   if (!is.null(ylim)) {
-#     p <- p + coord_cartesian(ylim = ylim)
-#   }
-# 
-#   return(p)
-# }
+plot_ZNF_OR_CI <- function(df, comparison_group, ylim = NULL) {
+
+  plot_df <- df %>%
+    filter(Comparison_Group == comparison_group) %>%
+    mutate(
+      Significant = factor(
+        ifelse(FDR < 0.05, "Significant", "Not significant"),
+        levels = c("Not significant", "Significant")
+      )
+    )
+
+  p <- ggplot(
+    plot_df,
+    aes(
+      x = Comparison,
+      y = Odds_Ratio
+    )
+  ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed",
+      color = "grey50"
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = CI_lower,
+        ymax = CI_upper
+      ),
+      width = 0.2
+    ) +
+    geom_point(
+      aes(
+        shape = Significant,
+        fill = Significant
+      ),
+      size = 3,
+      color = "black"
+    ) +
+    scale_shape_manual(
+      values = c(
+        "Not significant" = 21,
+        "Significant" = 21
+      )
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Not significant" = "white",
+        "Significant" = "black"
+      )
+    ) +
+    theme_bw() +
+    labs(
+      x = NULL,
+      y = "Odds Ratio",
+      title = comparison_group,
+      shape = "FDR < 0.05",
+      fill = "FDR < 0.05"
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      )
+    )
+
+  if (!is.null(ylim)) {
+    p <- p + coord_cartesian(ylim = ylim)
+  }
+
+  return(p)
+}
 
 Enrichment_results_CI <- readRDS("data/TEs/ZNF_Enrichment_CI.RDS")
 
@@ -2390,77 +2390,77 @@ RNA_sets <- readRDS(
 # # New function: plot_KZFP_OR_CI
 # # --------------------------------------------------
 # 
-# plot_TF_OR_CI <- function(df, comparison_group, ylim = NULL) {
-# 
-#   plot_df <- df %>%
-#     filter(Comparison_Group == comparison_group) %>%
-#     mutate(
-#       Significant = factor(
-#         ifelse(FDR < 0.05, "Significant", "Not significant"),
-#         levels = c("Not significant", "Significant")
-#       )
-#     )
-# 
-#   p <- ggplot(
-#     plot_df,
-#     aes(
-#       x = Comparison,
-#       y = Odds_Ratio
-#     )
-#   ) +
-#     geom_hline(
-#       yintercept = 1,
-#       linetype = "dashed",
-#       color = "grey50"
-#     ) +
-#     geom_errorbar(
-#       aes(
-#         ymin = CI_lower,
-#         ymax = CI_upper
-#       ),
-#       width = 0.2
-#     ) +
-#     geom_point(
-#       aes(
-#         shape = Significant,
-#         fill = Significant
-#       ),
-#       size = 3,
-#       color = "black"
-#     ) +
-#     scale_shape_manual(
-#       values = c(
-#         "Not significant" = 21,
-#         "Significant" = 21
-#       )
-#     ) +
-#     scale_fill_manual(
-#       values = c(
-#         "Not significant" = "white",
-#         "Significant" = "black"
-#       )
-#     ) +
-#     theme_bw() +
-#     labs(
-#       x = NULL,
-#       y = "Odds Ratio",
-#       title = comparison_group,
-#       shape = "FDR < 0.05",
-#       fill = "FDR < 0.05"
-#     ) +
-#     theme(
-#       axis.text.x = element_text(
-#         angle = 45,
-#         hjust = 1
-#       )
-#     )
-# 
-#   if (!is.null(ylim)) {
-#     p <- p + coord_cartesian(ylim = ylim)
-#   }
-# 
-#   return(p)
-# }
+plot_TF_OR_CI <- function(df, comparison_group, ylim = NULL) {
+
+  plot_df <- df %>%
+    filter(Comparison_Group == comparison_group) %>%
+    mutate(
+      Significant = factor(
+        ifelse(FDR < 0.05, "Significant", "Not significant"),
+        levels = c("Not significant", "Significant")
+      )
+    )
+
+  p <- ggplot(
+    plot_df,
+    aes(
+      x = Comparison,
+      y = Odds_Ratio
+    )
+  ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed",
+      color = "grey50"
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = CI_lower,
+        ymax = CI_upper
+      ),
+      width = 0.2
+    ) +
+    geom_point(
+      aes(
+        shape = Significant,
+        fill = Significant
+      ),
+      size = 3,
+      color = "black"
+    ) +
+    scale_shape_manual(
+      values = c(
+        "Not significant" = 21,
+        "Significant" = 21
+      )
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Not significant" = "white",
+        "Significant" = "black"
+      )
+    ) +
+    theme_bw() +
+    labs(
+      x = NULL,
+      y = "Odds Ratio",
+      title = comparison_group,
+      shape = "FDR < 0.05",
+      fill = "FDR < 0.05"
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      )
+    )
+
+  if (!is.null(ylim)) {
+    p <- p + coord_cartesian(ylim = ylim)
+  }
+
+  return(p)
+}
 
 Enrichment_results_CI <- readRDS("data/TEs/TF_Enrichment_CI.RDS")
 

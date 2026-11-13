@@ -3809,7 +3809,7 @@ pheatmap(
 
 #### Spearman Coefficients
 
-```{r Gene_FC_Quadrants_RLCOMP_G1_4SpTp_DEGs, fig.width=7, fig.height=5}
+```{r Spearman_Correlation, fig.width=7, fig.height=5}
 
 metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")
 RNA_Metadata <- readRDS("data/Raw_Data/concat/RNA_Metadata_No4_NoRep.RDS")

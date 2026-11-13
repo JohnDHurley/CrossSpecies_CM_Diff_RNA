@@ -3446,7 +3446,7 @@ ggplot(
 
 ```
 
-```{r KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+```{r KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed2, fig.width=7, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
@@ -3599,7 +3599,7 @@ metrics_table
 
 #### All Expressed
 
-```{r KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+```{r KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed3, fig.width=7, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")

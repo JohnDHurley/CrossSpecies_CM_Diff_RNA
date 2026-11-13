@@ -3284,7 +3284,7 @@ R2_table
 ```
 ### Combo Plot All Expressed
 
-```{r KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
+```{r KZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting_Combo, fig.width=7, fig.height=6}
 
 # saveRDS(R2_table,"data/DGE/TrajectoryR2Combo_logcpm_G1_SpTp_All_NoRep_No4.RDS")
 

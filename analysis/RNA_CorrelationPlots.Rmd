@@ -1873,7 +1873,7 @@ R2_table
 ```
 ### Transcription Factors (subset)
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_EmptyTable, fig.width=7, fig.height=5}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_EmptyTable_subset, fig.width=7, fig.height=5}
 
 R2_table <- data.frame(
   Gene_Set = character(),
@@ -1891,7 +1891,7 @@ R2_table <- data.frame(
 
 #### All Expressed
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed_subset, fig.width=7, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
@@ -1962,7 +1962,7 @@ R2_table <- rbind(
 
 #### All Trajectory DEGs
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs, fig.width=7, fig.height=5}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
 
@@ -2031,7 +2031,7 @@ R2_table <- rbind(
 
 #### All Matched Trajectory DEGs
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs, fig.width=7, fig.height=5}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 testing <- "Matched t-DEGs"
@@ -2105,7 +2105,7 @@ R2_table <- rbind(
 
 #### All Trajectory DEGs (NonShared)
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs, fig.width=7, fig.height=5}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
@@ -2158,7 +2158,7 @@ R2_table <- rbind(
 ```
 #### All Trajectory Non-DEGs
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs, fig.width=7, fig.height=5}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
@@ -2226,7 +2226,7 @@ saveRDS(R2_table,"data/DGE/TrajectoryR2TF_Subset_logcpm_G1_SpTp_All_NoRep_No4.RD
 
 #### Plotting R2 Together
 
-```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting_subset, fig.width=7, fig.height=6}
 
 R2_table <- readRDS("data/DGE/TrajectoryR2TF_Subset_logcpm_G1_SpTp_All_NoRep_No4.RDS")
 
@@ -2602,7 +2602,7 @@ R2_table
 
 ### ZNFs (subset)
 
-```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_EmptyTable, fig.width=7, fig.height=5}
+```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_EmptyTable_subset, fig.width=7, fig.height=5}
 
 R2_table <- data.frame(
   Gene_Set = character(),
@@ -2619,7 +2619,7 @@ R2_table <- data.frame(
 
 #### All Expressed
 
-```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed_subset, fig.width=7, fig.height=5}
 
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
@@ -2684,7 +2684,7 @@ R2_table <- rbind(
 
 #### All Trajectory DEGs
 
-```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs, fig.width=7, fig.height=5}
+```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
 
@@ -2742,7 +2742,7 @@ R2_table <- rbind(
 
 #### All Matched Trajectory DEGs
 
-```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs, fig.width=7, fig.height=5}
+```{r ZNF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 testing <- "Matched t-DEGs"
@@ -2812,7 +2812,7 @@ R2_table <- rbind(
 
 #### All Trajectory DEGs (NonShared)
 
-```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs, fig.width=7, fig.height=5}
+```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 trajectory_deg_genes <- readRDS("data/DGE/ZNF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
@@ -2863,7 +2863,7 @@ R2_table <- rbind(
 
 #### All Trajectory Non-DEGs
 
-```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs, fig.width=7, fig.height=5}
+```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs_subset, fig.width=7, fig.height=5}
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
 trajectory_deg_genes <- readRDS("data/DGE/ZNF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
@@ -2921,7 +2921,7 @@ R2_table <- rbind(
 
 #### Plotting R2 Together
 
-```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
+```{r ZFP_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting_subset, fig.width=7, fig.height=6}
 
 R2_table <- readRDS("data/DGE/TrajectoryR2ZNF_subset_logcpm_G1_SpTp_All_NoRep_No4.RDS")
 

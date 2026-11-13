@@ -748,7 +748,7 @@ for (p in cluster_plots) {
 ```
 
 
-```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign2}
 
 # ============================================================
 # CorMotif posterior probability / gene assignment analysis
@@ -1633,9 +1633,6 @@ pheatmap(
 
 #### Graphing
 
-
-
-
 ```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_plot,fig.height=8,fig.width=15}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 
@@ -2262,7 +2259,7 @@ ggsave("Cluster_Magnitude_heatmap.pdf", p_difference, width = 7, height = 5)
 
 
 
-```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign}
+```{r RNA-Seq_No4_CorMotif_Trajectory_TACC_ClusterAssign3}
 
 library(dplyr)
 library(ggplot2)
@@ -2909,7 +2906,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined, fig.height=5}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined2, fig.height=5}
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 library(dplyr)
@@ -3008,7 +3005,7 @@ pheatmap(
 
 #### Subsetting 
 
-```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler2}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler3}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -3062,7 +3059,7 @@ print(n=30,combination_counts)
 ```
 
 
-```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler2}
+```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler4}
 motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
 TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -3445,7 +3442,7 @@ ggplot(
 
 ##### EnrichGo Plotting
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP, fig.width=5 ,fig.height=5}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP2, fig.width=5 ,fig.height=5}
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
 
 top_terms <- gost_combined %>%
@@ -3479,7 +3476,7 @@ for (clust_name in names(cluster_list)) {
 ```
 
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP, fig.width=10 ,fig.height=20}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP3, fig.width=10 ,fig.height=20}
 library(dplyr)
 library(ggplot2)
 
@@ -3528,7 +3525,7 @@ ggplot(top_terms,
 
 
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined, fig.width=7 ,fig.height=10}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBPCombined2, fig.width=7 ,fig.height=10}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
 
@@ -3639,7 +3636,7 @@ pheatmap(
 
 ```
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG, fig.height=3, fig.width=7}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG2, fig.height=3, fig.width=7}
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -3710,7 +3707,7 @@ ggplot(top_terms,
   )
 ```
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined, fig.height=5}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined3, fig.height=5}
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 library(dplyr)

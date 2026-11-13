@@ -2906,7 +2906,104 @@ ggplot(top_terms,
   )
 ```
 
-```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined2, fig.height=5}
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined2, fig.width=7, fig.height=7}
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+sig_thresh <- 0.05
+
+# 1. For each cluster, keep significant terms and max 10 lowest p-values
+top_sig_terms_per_cluster <- gost_combined %>%
+  filter(source == "GO:BP") %>%
+  group_by(Cluster) %>%
+  filter(p_value < sig_thresh) %>%                    # keep only significant
+  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %>%  # max 10 per cluster
+  ungroup()
+
+# 2. Keep all unique terms across clusters
+unique_terms <- unique(top_sig_terms_per_cluster$term_name)
+
+# 3. Filter original gost_combined for these terms, retain p-values from all clusters
+heatmap_data <- gost_combined %>%
+  filter(source == "GO:BP", term_name %in% unique_terms) %>%
+  mutate(logp = -log10(p_value)) %>%
+  select(Cluster, term_name, logp)
+
+# 4. Pivot to wide format for matrix-style heatmap
+heatmap_wide <- heatmap_data %>%
+  pivot_wider(names_from = Cluster, values_from = logp)
+
+saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGOWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGOWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+# 5. Convert to long format for ggplot
+heatmap_long <- heatmap_wide %>%
+  pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
+
+saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGOLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryGOLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+# 6. Plot heatmap
+ggplot(heatmap_long, aes(x = Cluster, y = term_name, fill = logp)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey90", high = "firebrick", na.value = "white") +
+  labs(fill = "-log10(p-value)", x = "Cluster", y = "GO Term") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 6))
+
+heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGOWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+
+library(dplyr)
+library(tidyr)
+library(pheatmap)
+
+# Prepare the matrix for clustering: rows = terms, columns = clusters
+heatmap_matrix <- heatmap_wide %>%
+  column_to_rownames(var = "term_name") %>%   # rows = GO terms
+  as.matrix()
+
+# Optional: replace NAs with 0 for clustering (or leave NA if you want)
+heatmap_matrix[is.na(heatmap_matrix)] <- 0
+
+sig_matrix <- gost_combined %>%
+  filter(
+    source == "GO:BP",
+    term_name %in% unique_terms
+  ) %>%
+  mutate(
+    sig = ifelse(p_value < 0.05, "*", "")
+  ) %>%
+  select(Cluster, term_name, sig) %>%
+  pivot_wider(
+    names_from = Cluster,
+    values_from = sig,
+    values_fill = ""
+  ) %>%
+  column_to_rownames("term_name") %>%
+  as.matrix()
+
+# Create clustered heatmap
+pheatmap(
+  heatmap_matrix,
+  color = colorRampPalette(c("grey90", "firebrick"))(100),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 6,
+  fontsize_col = 8,
+  main = "GO Enrichment Heatmap",
+  display_numbers = sig_matrix,
+  number_color = "black"
+)
+```
+
+```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined2, fig.width=7, fig.height=7}
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 library(dplyr)
@@ -3003,442 +3100,6 @@ pheatmap(
 )
 ```
 
-#### Subsetting 
-
-```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler3}
-motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
-TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-Traj_levels <- c("Day02", "Day25", "Day515", "Day1530")
-
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-# 1. Process your TopTable and make a clean descriptive column for each comparison
-processed_table <- TopTable %>%
-  mutate(
-    Species = str_extract(Comparisons, "^[A-Za-z]+"),
-    Day     = str_extract(Comparisons, "Day\\d+")
-  ) %>%
-  filter(Day %in% Traj_levels) %>%
-  mutate(
-    Day = factor(Day, levels = Traj_levels),
-    Species = factor(Species, levels = c("H", "C")),
-    Direction = case_when(
-      logFC > 0 & adj.P.Val < 0.05 ~ "Sig - UP",
-      logFC < 0 & adj.P.Val < 0.05 ~ "Sig - Down",
-      TRUE ~ "NS" # Clean fallback catch-all
-    ),
-    Direction = factor(Direction, levels = c("Sig - UP", "NS", "Sig - Down")),
-    
-    # Create a unified name for each specific column (e.g., "H_Day15")
-    Comp_Label = paste(Species, Day, sep = "_")
-  ) %>% 
-  filter(Gene %in% clust8_RNA)
-
-# 2. Pivot wide and count the unique combination intersections
-combination_counts <- processed_table %>%
-  dplyr::select(Gene, Comp_Label, Direction) %>%
-  
-  # Reshape so every H/C Day condition is its own column
-  pivot_wider(
-    names_from = Comp_Label, 
-    values_from = Direction, 
-    values_fill = "NS" # If a gene isn't listed for a timepoint, it defaults to Not Significant
-  ) %>%
-  
-  # Count how many genes share the exact same up/down grid pattern
-  # The "..." tells R to count using every column except the 'Gene' column
-  dplyr::count(across(-Gene), sort = TRUE)
-
-# View the output table
-print(n=30,combination_counts)
-
-
-```
-
-
-```{r RNA-Seq_No4_TMM_CorMotif_Trajectory_TACC_GProfiler4}
-motif.fitted <- readRDS("data/Cormotif/TACC/Trajectory/CorMotif_k1_k20_seed8_TMM_No4.rds")
-TopTable <- readRDS("data/DGE/TopTable_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
-Traj_levels <- c("Day02", "Day25", "Day515", "Day1530")
-
-clust12_RNA_UP <- TopTable %>%
-  mutate(
-    Species = str_extract(Comparisons, "^[A-Za-z]+"),
-    Day     = str_extract(Comparisons, "Day\\d+")
-  ) %>%
-  filter(Day %in% Traj_levels) %>%
-  mutate(Day = factor(Day, levels = Traj_levels)) %>%
-  mutate(Species = factor(Species, levels = c("H", "C"))) %>%
-  mutate(
-  Direction = case_when(
-      logFC > 0 & adj.P.Val < 0.05  ~ "Sig - UP",
-      logFC < 0 & adj.P.Val < 0.05 ~ "Sig - Down",
-      adj.P.Val > 0.05       ~ "NS"
-    )) %>%
-  mutate(
-    Direction = factor(Direction, levels = c("Sig - UP", "NS", "Sig - Down")
-)) %>%
-  filter(Gene %in% clust12_RNA, Day == "Day02", Direction == "Sig - UP") %>%
-  pull(Gene) %>%
-  unique()
-
-clust_names_list_Subsetting <- list(
-  "1" = clust1_RNA,
-  
-  "2" = clust2_RNA,
-  "2U" = clust2_RNA_UP,
-  "2D" = clust2_RNA_DOWN,
-  
-  "3" = clust3_RNA,
-  
-  "4" = clust4_RNA,
-  "4U" = clust4_RNA_UP,
-  "4D" = clust4_RNA_DOWN,
-  
-  "5" = clust5_RNA,
-  "5U" = clust5_RNA_UP,
-  "4D" = clust5_RNA_DOWN,
-  
-  "6" = clust6_RNA,
-  "6U" = clust6_RNA_UP,
-  "6D" = clust6_RNA_DOWN,
-  
-  "7" = clust7_RNA,
-  "7U" = clust7_RNA_UP,
-  "7D" = clust7_RNA_DOWN,
-  
-  "8" = clust8_RNA,
-  "8U" = clust8_RNA_UP,
-  "8D" = clust8_RNA_DOWN,
-  
-  "9" = clust9_RNA,
-  "9U" = clust9_RNA_UP,
-  "9D" = clust9_RNA_DOWN,
-  
-  "10" = clust10_RNA,
-  "10U" = clust10_RNA_UP,
-  "10D" = clust10_RNA_DOWN,
-  
-  "11" = clust11_RNA,
-  "11U" = clust11_RNA_UP,
-  "11D" = clust11_RNA_DOWN,
-  
-  "12" = clust12_RNA,
-  "12U" = clust12_RNA_UP,
-  "12D" = clust12_RNA_DOWN,
-  
-  "13" = clust13_RNA
-)
-
-all_genes <- unique(TopTable$Gene)
-
-
-convert_to_entrez_df <- function(genes) {
-
-  genes <- sub("\\..*", "", genes)
-
-  bitr(
-    genes,
-    fromType = "ENSEMBL",
-    toType   = "ENTREZID",
-    OrgDb    = org.Hs.eg.db
-  ) %>% distinct()
-}
-
-background_entrez <- convert_to_entrez_df(all_genes)$ENTREZID
-
-gost_results <- setNames(
-
-  lapply(names(clust_names_list_Subsetting), function(clust_name) {
-
-    genes <- clust_names_list_Subsetting[[clust_name]]
-
-    entrez_df <- convert_to_entrez_df(genes)
-
-    if (nrow(entrez_df) == 0) return(NULL)
-
-    gost(
-      query = entrez_df$ENTREZID,
-
-      organism = "hsapiens",
-
-      significant = FALSE,
-      ordered_query = FALSE,         # TRUE only if ranked
-      domain_scope = "custom",
-
-      measure_underrepresentation = FALSE,
-      evcodes = FALSE,
-
-      numeric_ns = "ENTREZGENE",
-
-      user_threshold = 0.05,
-      correction_method = "fdr",
-
-      custom_bg = background_entrez,
-
-      sources = c("GO:BP", "KEGG")
-    )
-  }),
-
-  names(clust_names_list)
-)
-
-saveRDS(gost_results, "data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
-
-gost_results <- readRDS("data/Cormotif/Trajectory/TrajectoryGo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
-
-gost_combined <- do.call(rbind, lapply(names(gost_results), function(clust_name) {
-
-  res <- gost_results[[clust_name]]
-
-  if (is.null(res)) return(NULL)
-
-  df <- res$result
-  df$Cluster <- clust_name
-  df
-}))
-
-saveRDS(gost_combined, "data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
-
-gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
-
-gost_export <- gost_combined
-
-gost_export[] <- lapply(gost_export, function(col) {
-
-  if (is.list(col)) {
-    sapply(col, paste, collapse = ";")
-  } else {
-    col
-  }
-
-})
-
-```
-
-
-```{r KZFP_Species_FC_lineplot}
-
-log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
-
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-# 1. Reshape wide log2cpm data into long format
-log2cpm_long <- log2cpm %>%
-  # Make the rownames an explicit column first
-  as.data.frame() %>% 
-  rownames_to_column(var = "Gene") %>%
-  # Pivot all sample columns down
-  pivot_longer(
-    cols = -Gene, 
-    names_to = "Sample", 
-    values_to = "Expression"
-  ) %>%
-  
-  # 2. Parse out strings using the constant "_Day" anchor
-  mutate(
-    # Extract the very first letter (H or C)
-    Species = str_extract(Sample, "^[HC]"),
-    
-    # Split "H21792_Day15" on "_Day" -> returns a matrix with ["H21792", "15"]
-    # We grab the second column to get the raw timepoint number cleanly
-    Day_num = str_split_fixed(Sample, "_Day", 2)[, 2],
-    
-    # Reassemble back into "DayX" format (e.g., "Day15")
-    Day = paste0("Day", Day_num)
-  ) %>%
-  
-  # 3. Factorize your time column to match your tracking trajectory order
-  mutate(
-    Day = factor(Day, levels = day_levels)
-  ) %>%
-  
-  # Drop the intermediate cleaning column
-  select(-Day_num)
-
-
-library(ggplot2)
-
-# Filter and add tracking metadata
-plot_data <- log2cpm_long %>%
-  # Keep only the genes in your cluster (e.g., clust2_RNA)
-  filter(Gene %in% clust2_RNA_UP) %>%
-  mutate(
-    Species_label = stringr::str_extract(Species, "^[HC]")
-  )
-
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = Expression,
-    group = Gene
-  )
-) +
-  geom_line(alpha = 0.4) +
-  geom_point(size = 1) +
-  
-  # Split the plot side-by-side or stacked to cleanly contrast Human vs Chimp trajectories
-  facet_wrap(~ Species_label) + 
-  
-  theme_bw() +
-  labs(
-    x = "Timepoint",
-    y = "Expression (log2 CPM)",
-    title = "Human vs. Chimpanzee Cluster Expression Trajectories"
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 11)
-  )
-
-library(dplyr)
-
-plot_means_data <- log2cpm_long %>%
-  # 1. Filter for only your cluster's genes
-  filter(Gene %in% clust2_RNA_UP) %>%
-  
-  # 2. Collapse individual replicates into a mean value per condition
-  group_by(Gene, Species, Day) %>%
-  summarise(
-    Mean_Expression = mean(Expression, na.rm = TRUE), 
-    .groups = "drop"
-  ) %>%
-  
-  # 3. Create descriptive labels for the side-by-side plot layout
-  mutate(
-    Species_label = if_else(Species == "H", "Human", "Chimpanzee")
-  )
-
-library(ggplot2)
-
-ggplot(
-  plot_means_data,
-  aes(
-    x = Day,
-    y = Mean_Expression,
-    group = Gene # Keeps each gene as a separate line
-  )
-) +
-  # Single color for all lines to view global trajectory patterns
-  geom_line(color = "steelblue", alpha = 0.4, linewidth = 0.5) +
-  geom_point(color = "steelblue", size = 1, alpha = 0.6) +
-  
-  # Facet side-by-side by species
-  facet_wrap(~ Species_label) + 
-  
-  theme_bw() +
-  labs(
-    x = "Timepoint",
-    y = "Mean Expression (log2 CPM)",
-    title = "Human vs. Chimpanzee Cluster Expression Trajectories",
-    subtitle = "Data averaged across biological replicates"
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 12),
-    plot.title = element_text(face = "bold", size = 14)
-  )
-
-
-
-
-
-# Filter and add tracking metadata
-plot_data <- log2cpm_long %>%
-  # Keep only the genes in your cluster (e.g., clust2_RNA)
-  filter(Gene %in% clust2_RNA_DOWN) %>%
-  mutate(
-    Species_label = stringr::str_extract(Species, "^[HC]")
-  )
-
-
-ggplot(
-  plot_data,
-  aes(
-    x = Day,
-    y = Expression,
-    group = Gene
-  )
-) +
-  geom_line(alpha = 0.4) +
-  geom_point(size = 1) +
-  
-  # Split the plot side-by-side or stacked to cleanly contrast Human vs Chimp trajectories
-  facet_wrap(~ Species_label) + 
-  
-  theme_bw() +
-  labs(
-    x = "Timepoint",
-    y = "Expression (log2 CPM)",
-    title = "Human vs. Chimpanzee Cluster Expression Trajectories"
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 11)
-  )
-
-library(dplyr)
-
-plot_means_data <- log2cpm_long %>%
-  # 1. Filter for only your cluster's genes
-  filter(Gene %in% clust2_RNA_DOWN) %>%
-  
-  # 2. Collapse individual replicates into a mean value per condition
-  group_by(Gene, Species, Day) %>%
-  summarise(
-    Mean_Expression = mean(Expression, na.rm = TRUE), 
-    .groups = "drop"
-  ) %>%
-  
-  # 3. Create descriptive labels for the side-by-side plot layout
-  mutate(
-    Species_label = if_else(Species == "H", "Human", "Chimpanzee")
-  )
-
-library(ggplot2)
-
-ggplot(
-  plot_means_data,
-  aes(
-    x = Day,
-    y = Mean_Expression,
-    group = Gene # Keeps each gene as a separate line
-  )
-) +
-  # Single color for all lines to view global trajectory patterns
-  geom_line(color = "steelblue", alpha = 0.4, linewidth = 0.5) +
-  geom_point(color = "steelblue", size = 1, alpha = 0.6) +
-  
-  # Facet side-by-side by species
-  facet_wrap(~ Species_label) + 
-  
-  theme_bw() +
-  labs(
-    x = "Timepoint",
-    y = "Mean Expression (log2 CPM)",
-    title = "Human vs. Chimpanzee Cluster Expression Trajectories",
-    subtitle = "Data averaged across biological replicates"
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 12),
-    plot.title = element_text(face = "bold", size = 14)
-  )
-
-```
-
 
 ##### EnrichGo Plotting
 
@@ -3477,6 +3138,8 @@ for (clust_name in names(cluster_list)) {
 
 
 ```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_GOBP3, fig.width=10 ,fig.height=20}
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
+
 library(dplyr)
 library(ggplot2)
 
@@ -3638,7 +3301,7 @@ pheatmap(
 
 ```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGG2, fig.height=3, fig.width=7}
 
-gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
 
 top_terms <- gost_combined %>%
   filter(source == "KEGG") %>%        # keep only BP terms
@@ -3708,7 +3371,7 @@ ggplot(top_terms,
 ```
 
 ```{r RNA-Seq_No4_TMM_Trajectory_TACC_GProfiler_KEGGCombined3, fig.height=5}
-gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep_Subsetting.RDS")
 
 library(dplyr)
 library(tidyr)

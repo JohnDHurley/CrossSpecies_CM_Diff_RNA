@@ -2847,7 +2847,7 @@ for (i in seq_along(gene_sets)) {
       sample_info,
       by = c("sample1" = "sample")
     ) %>%
-    rename(
+    dplyr::rename(
       species1 = species,
       timepoint1 = timepoint
     ) %>%
@@ -2855,7 +2855,7 @@ for (i in seq_along(gene_sets)) {
       sample_info,
       by = c("sample2" = "sample")
     ) %>%
-    rename(
+    dplyr::rename(
       species2 = species,
       timepoint2 = timepoint
     )

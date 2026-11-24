@@ -3229,6 +3229,72 @@ ggplot(
   )
 ```
 
+### Pvalue Histograms
+
+```{r , fig.width=7,fig.height=7}
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+ComparisonNames <- readRDS("data/DGE/ComparisonNames_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+Comparison_order <- c("HvC_Day0",
+                      "HvC_Day2",
+                      "HvC_Day5",
+                      "HvC_Day15",
+                      "HvC_Day30",
+                      "H_Day02",
+                      "H_Day25",
+                      "H_Day515",
+                      "H_Day1530",
+                      "C_Day02",
+                      "C_Day25",
+                      "C_Day515",
+                      "C_Day1530",
+                      "Sig_Sp_inter_Traj02",
+                      "Sig_Sp_inter_Traj25",
+                      "Sig_Sp_inter_Traj515",
+                      "Sig_Sp_inter_Traj1530")
+
+TopTable <- TopTable %>%
+  mutate(Comparisons = factor(Comparisons, levels = Comparison_order))
+
+TopTable <- TopTable %>%
+  mutate(KZFP_status = ifelse(Symbol %in% KZFPs_list, "KZFP", "noKZFP"))
+
+ggplot(TopTable, aes(x = adj.P.Val)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white", boundary = 0) +
+  coord_cartesian(xlim =  c(0,1)) +
+  facet_wrap(~ Comparisons) +
+  theme_bw()
+
+TopTable %>%
+  filter(KZFP_status == "KZFP") %>%
+  ggplot(aes(x = adj.P.Val)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white", boundary = 0) +
+  coord_cartesian(xlim = c(0, 1)) +
+  facet_wrap(~ Comparisons) +
+  theme_bw()
+
+ggplot(TopTable, aes(x = adj.P.Val)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white", boundary = 0) +
+  coord_cartesian(xlim =  c(0,0.25)) +
+  facet_wrap(~ Comparisons) +
+  theme_bw()
+
+TopTable %>%
+  filter(KZFP_status == "KZFP") %>%
+  ggplot(aes(x = adj.P.Val)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white", boundary = 0) +
+  coord_cartesian(xlim = c(0, 0.25)) +
+  facet_wrap(~ Comparisons) +
+  theme_bw()
+
+```
+
+
 ### Species DEGs
 
 #### Absolute fold change
@@ -3946,6 +4012,15 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 ```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Venn, fig.height=7,fig.width=7}
 TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
 
+length(unique(TopTable$Gene))
+
+comp_list <- c("HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30")
+
+TopTable %>% 
+  filter(Comparisons %in% comp_list) %>% 
+  filter(adj.P.Val < 0.05)
+
+length(unique(TopTable$Gene))
 
 library(dplyr)
 library(stringr)
@@ -3968,15 +4043,148 @@ genes_list <- list(
   Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
 )
 
-ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "steelblue") +
-  theme(
-    panel.grid = element_blank(),
-    panel.background = element_blank(),
-    axis.text = element_text(size = 10),
-    plot.title = element_text(face = "bold")
-  )
 
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "black") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
+  theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+)
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "black") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
+  theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+)
+```
+```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Venn_moderate, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+length(unique(TopTable$Gene))
+
+comp_list <- c("HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30")
+
+TopTable %>% 
+  filter(Comparisons %in% comp_list) %>% 
+  filter(adj.P.Val < 0.01)
+
+length(unique(TopTable$Gene))
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0")  %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2")  %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5")  %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "black") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+  theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+)
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "black") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+  theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+)
+```
+```{r  RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Species_Venn_Strict, fig.height=7,fig.width=7}
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+length(unique(TopTable$Gene))
+
+comp_list <- c("HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30")
+
+TopTable %>% 
+  filter(Comparisons %in% comp_list) %>% 
+  filter(adj.P.Val < 0.01)
+
+length(unique(TopTable$Gene))
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0")  %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2")  %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5")  %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "black") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+  theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+)
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "black") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+  theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+)
 ```
 
 #### GoEnrichment
@@ -4550,6 +4758,256 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
   labs(
     x = "Developmental Stage",
     y = "Number of DEGs",
+    fill = "",
+    pattern = ""
+  )
+```
+
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Proportions2_moderate, fig.width=5, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.01
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n)) 
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of DEGs at Adj.Pval < 0.01",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of DEGs at Adj.Pval < 0.01",
+    fill = "",
+    pattern = ""
+  )
+```
+
+```{r RNASeq_DGE_Differential_Data_RLCOMP_G1_4SpTp_No4_Stage_Proportions2_moderate, fig.width=5, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_logcpm_G1_SpTp_No4_NoRep.RDS")
+# RNA_sets <- readRDS("data/DGE/RNAsets_logcpm_G1_SpTp_No4_NoRep.RDS")
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.001
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n)) 
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of DEGs at Adj.Pval < 0.001",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of DEGs at Adj.Pval < 0.001",
     fill = "",
     pattern = ""
   )
@@ -6302,8 +6760,8 @@ ggplot(
   ) +
   scale_fill_manual(
     values = c(
-      "Same_direction" = "grey70",
-      "Pos_human"   = "white",
+      "Same_direction" = "black",
+      "Pos_human"   = "black",
       "Pos_chimp"   = "black"
     )
   ) +
@@ -7121,7 +7579,7 @@ ggplot(GO_plot_data,
   )
 ```
 
-```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions_plotting2, fig.width=12, fig.height=12}
+```{r RNASeq_DGE_Interaction_EnrichGo_AllInteractions_plotting2, fig.width=10, fig.height=10}
 
 GO_plot_data <- readRDS("data/DGE/InteractionGoPlot_PlusAllInteraction_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 

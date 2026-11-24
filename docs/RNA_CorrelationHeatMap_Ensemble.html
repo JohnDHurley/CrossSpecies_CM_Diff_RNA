@@ -367,7 +367,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -378,8 +378,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -388,13 +388,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-11-12
+<strong>Last updated:</strong> 2026-11-24
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>CrossSpecies_CM_Diff_RNA/</code>
@@ -417,18 +417,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -519,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0d7768e69daf79056dc39bbf2cf8caeb04a300detargetblank0d7768ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreeb5f3acca277b017ea1a1416b67514ac703be672ctargetblankb5f3acca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0d7768e69daf79056dc39bbf2cf8caeb04a300de" target="_blank">0d7768e</a>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/b5f3acca277b017ea1a1416b67514ac703be672c" target="_blank">b5f3acc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0d7768e69daf79056dc39bbf2cf8caeb04a300detargetblank0d7768ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtreeb5f3acca277b017ea1a1416b67514ac703be672ctargetblankb5f3acca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0d7768e69daf79056dc39bbf2cf8caeb04a300de" target="_blank">0d7768e</a>.
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/b5f3acca277b017ea1a1416b67514ac703be672c" target="_blank">b5f3acc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -557,8 +560,15 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/
 
+Untracked files:
+    Untracked:  Sample_Sample_Correlation_Heatmap.pdf
+    Untracked:  purity_plot.pdf
+
 Unstaged changes:
     Modified:   analysis/KZFP.Rmd
+    Modified:   analysis/RNA_CorrelationHeatMap_Ensemble.Rmd
+    Modified:   analysis/RNA_CorrelationPlots.Rmd
+    Modified:   analysis/RNA_DGE.Rmd
 
 </code></pre>
 <p>
@@ -604,6 +614,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/f5406d784baeb956bd1184e1d089e01f94b03693/docs/RNA_CorrelationHeatMap_Ensemble.html" target="_blank">f5406d7</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3379,11 +3406,14 @@ John D. Hurley
 <h3>By day by species</h3>
 <pre class="r"><code>total_reads_df &lt;- readRDS(&quot;data/Raw_Data/concat/total_reads_df.RDS&quot;)
 
+total_reads_df &lt;- total_reads_df %&gt;% 
+  filter(!(Timepoint == &quot;Day4&quot;))
+
 ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = &quot;black&quot;, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   facet_wrap(~Species, scales = &quot;free_x&quot;) +
   scale_shape_manual(
     values = c(
@@ -3552,9 +3582,9 @@ John D. Hurley
 </div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = &quot;black&quot;, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   scale_shape_manual(
     values = c(
       &quot;H&quot; = 17,  # triangle
@@ -3723,9 +3753,9 @@ John D. Hurley
 </div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = &quot;black&quot;, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   scale_shape_manual(
     values = c(
       &quot;H&quot; = 17,  # triangle
@@ -3894,9 +3924,9 @@ John D. Hurley
 </div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = &quot;black&quot;, shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   scale_shape_manual(
     values = c(
       &quot;H&quot; = 17,  # triangle
@@ -4273,9 +4303,9 @@ John D. Hurley
 </div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
+    geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
   scale_shape_manual(
     values = c(
       &quot;H&quot; = 17,  # triangle
@@ -4444,9 +4474,9 @@ John D. Hurley
 </div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
+    geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
   scale_shape_manual(
     values = c(
       &quot;H&quot; = 17,  # triangle
@@ -4615,9 +4645,9 @@ John D. Hurley
 </div>
 <pre class="r"><code>ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
   scale_shape_manual(
     values = c(
       &quot;H&quot; = 17,  # triangle
@@ -5528,12 +5558,12 @@ John D. Hurley
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(
-  &quot;purity_plot.pdf&quot;,
-  plot = plot,
-  width = 12,
-  height = 6
-)
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 12,
+#   height = 6
+# )
 
 # saveRDS(summary_df_No4,&quot;data/Raw_Data/concat/purities_summary_df_No4.RDS&quot;)</code></pre>
 </div>
@@ -14522,13 +14552,7 @@ Cor_metadata &lt;- data.frame(
   individual_cor = individual
 )
 
-rownames(Cor_metadata) &lt;- Cor_metadata$sample_cor
-
-
-pdf(&quot;Sample_Sample_Correlation_Heatmap.pdf&quot;,
-    width = 8,
-    height = 8,
-    useDingbats = FALSE)</code></pre>
+rownames(Cor_metadata) &lt;- Cor_metadata$sample_cor</code></pre>
 <pre class="r"><code>pheatmap(
   Cor_log2cpm,
   fontsize_row = 5,
@@ -14538,10 +14562,9 @@ pdf(&quot;Sample_Sample_Correlation_Heatmap.pdf&quot;,
   clustering_distance_rows = &quot;correlation&quot;,
   clustering_distance_cols = &quot;correlation&quot;,
   main = &quot;Sample-Sample Correlation\n(Spearman-log2CPM&gt;1 4 or more in a Species-Timepoint - Day 5)&quot;
-)
-
-
-pheatmap(
+)</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_plotting-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pheatmap(
   Cor_log2cpm,
   fontsize_row = 5,
   fontsize_col = 5,
@@ -14555,9 +14578,9 @@ pheatmap(
   # clustering_distance_cols = &quot;euclidean&quot;,
   clustering_method = &quot;ward.D2&quot;,
   main = &quot;Sample-Sample Correlation\n(Spearman-log2CPM&gt;1 4 or more in a Species-Timepoint - Day 5)&quot;
-)
-
-# saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS&quot;)
+)</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_plotting-2.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No4.RDS&quot;)
 
 
 pheatmap(
@@ -14572,6 +14595,7 @@ pheatmap(
   clustering_method = &quot;complete&quot;,
   main = &quot;Sample-Sample Correlation\n(Spearman-log2CPM&gt;1 4 or more in a Species-Timepoint - Day 5)&quot;
 )</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_plotting-3.png" alt="" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>metadata &lt;- RNA_Metadata_No4
 counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No4
 
@@ -14836,8 +14860,9 @@ print(
          clustering_method = &quot;ward.D2&quot;,
          main = 
          &quot;Sample-Sample Correlation\n(Spearman-log2CPM-&gt;1 4 or more in a Species-Timpoint - Day 5)\nNoRep\nTMM&quot;)
-)
-# saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS&quot;)</code></pre>
+)</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_TMM-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS&quot;)</code></pre>
 </div>
 <div id="no-day-5" class="section level3">
 <h3>No Day 5</h3>
@@ -15134,10 +15159,10 @@ Cor_metadata &lt;- data.frame(
 rownames(Cor_metadata) &lt;- Cor_metadata$sample_cor
 
 
-pdf(&quot;Sample_Sample_Correlation_Heatmap.pdf&quot;,
-    width = 8,
-    height = 8,
-    useDingbats = FALSE)
+# pdf(&quot;Sample_Sample_Correlation_Heatmap.pdf&quot;,
+#     width = 8,
+#     height = 8,
+#     useDingbats = FALSE)
 
 pheatmap(
   Cor_log2cpm,
@@ -15148,10 +15173,126 @@ pheatmap(
   clustering_distance_rows = &quot;correlation&quot;,
   clustering_distance_cols = &quot;correlation&quot;,
   main = &quot;Sample-Sample Correlation\n(Spearman-log2CPM&gt;1 4 or more in a Species-Timepoint - Day 4)&quot;
-)
-
-
-pheatmap(
+)</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1">
+Past versions of
+RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png
+</button>
+</p>
+<div
+id="fig-RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f85a598be7f046a1927b094133de5ccf54ac56a6/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">f85a598</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ae0f7bbdc637cc8fab6e6be00cfd879319910e6e/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">ae0f7bb</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/49823ebae9134193706e2d5f87c88e7d805430f7/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">49823eb</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/8064dab0b701464c9c198f4c615c7091d746977c/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">8064dab</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/570b721b6d2fc98928c843821ba9dd0f279a923c/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">570b721</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/ec744cc81a0d90e4add6067016cbaac36f7e8c53/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">ec744cc</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/f0757b17bbde44e51118f179874d7d360e6a5756/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">f0757b1</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-08-20
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/1c0396871e2a2eb4a9ea74aaee470551fe479d18/docs/figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-1.png" target="_blank">1c03968</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-04-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pheatmap(
   Cor_log2cpm,
   fontsize_row = 5,
   fontsize_col = 5,
@@ -15160,9 +15301,9 @@ pheatmap(
   clustering_distance_rows = &quot;correlation&quot;,
   clustering_distance_cols = &quot;correlation&quot;,
   main = &quot;Sample-Sample Correlation\n(Spearman-log2CPM&gt;1 4 or more in a Species-Timepoint - Day 4)&quot;
-)
-
-# saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No5.RDS&quot;)</code></pre>
+)</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5-2.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_log2cpm_No5.RDS&quot;)</code></pre>
 <pre class="r"><code>metadata &lt;- RNA_Metadata_No5
 counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No5
 
@@ -15365,9 +15506,9 @@ print(
          clustering_distance_rows = &quot;correlation&quot;,
          clustering_distance_cols = &quot;correlation&quot;,
          main = &quot;Sample-Sample Correlation\n(Spearman-log2CPM-&gt;1 4 or more in a Species-Timpoint - Day 4)\nNoRep\nTMM&quot;)
-)
-
-# saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS&quot;)</code></pre>
+)</code></pre>
+<p><img src="figure/RNA_CorrelationHeatMap_Ensemble.Rmd/RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No5_TMM-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># saveRDS(Cor_log2cpm, &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS&quot;)</code></pre>
 <pre class="r"><code># git -&gt; commit all changes
 # git -&gt; push
 wflow_publish(&quot;analysis/RNA_CorrelationHeatMap_Ensemble.Rmd&quot;)</code></pre>
@@ -15425,45 +15566,44 @@ other attached packages:
 [41] workflowr_1.7.2            
 
 loaded via a namespace (and not attached):
-  [1] later_1.4.8            BiocIO_1.22.0          bitops_1.0-9          
+  [1] later_1.4.8            BiocIO_1.22.0          bitops_1.1-0          
   [4] filelock_1.0.3         R.oo_1.27.1            cellranger_1.1.0      
-  [7] preprocessCore_1.74.0  XML_3.99-0.23          lifecycle_1.0.5       
+  [7] preprocessCore_1.74.0  XML_3.99-0.25          lifecycle_1.0.5       
  [10] httr2_1.3.0            pwalign_1.8.0          doParallel_1.0.17     
  [13] rprojroot_2.1.1        processx_3.9.0         lattice_0.22-9        
- [16] MASS_7.3-65            magrittr_2.0.5         sass_0.4.10           
+ [16] MASS_7.3-65            magrittr_2.0.5         sass_0.5.0            
  [19] rmarkdown_2.32         jquerylib_0.1.4        yaml_2.3.12           
- [22] httpuv_1.6.17          otel_0.2.0             DBI_1.3.0             
+ [22] httpuv_1.6.17          otel_0.3.0             DBI_1.3.0             
  [25] RColorBrewer_1.1-3     abind_1.4-8            R.utils_2.13.0        
- [28] RCurl_1.98-1.19        git2r_0.36.2           circlize_0.4.18       
+ [28] RCurl_1.98-1.20        git2r_0.36.2           circlize_0.4.18       
  [31] codetools_0.2-20       DelayedArray_0.38.2    tidyselect_1.2.1      
  [34] shape_1.4.6.1          farver_2.1.2           BiocFileCache_3.2.0   
  [37] jsonlite_2.0.0         GetoptLong_1.1.1       iterators_1.0.14      
- [40] systemfonts_1.3.2      foreach_1.5.2          tools_4.6.1           
- [43] progress_1.2.3         ragg_1.5.2             Rcpp_1.1.1-1.1        
- [46] glue_1.8.1             gridExtra_2.3.1        SparseArray_1.12.2    
- [49] xfun_0.59              withr_3.0.3            BiocManager_1.30.27   
- [52] fastmap_1.2.0          latticeExtra_0.6-31    callr_3.8.0           
- [55] digest_0.6.39          timechange_0.4.0       R6_2.6.1              
- [58] textshaping_1.0.5      colorspace_2.1-4       Cairo_1.7-0           
- [61] jpeg_0.1-11            biomaRt_2.68.0         RSQLite_3.53.3        
- [64] cigarillo_1.2.1        R.methodsS3_1.8.2      utf8_1.2.6            
- [67] rtracklayer_1.72.0     prettyunits_1.2.0      httr_1.4.9            
- [70] S4Arrays_1.12.0        whisker_0.4.1          pkgconfig_2.0.3       
- [73] gtable_0.3.6           blob_1.3.0             S7_0.2.2              
- [76] hwriter_1.3.2.1        htmltools_0.5.9        clue_0.3-68           
- [79] png_0.1-9              knitr_1.52             rstudioapi_0.19.0     
- [82] tzdb_0.5.0             rjson_0.2.23           curl_7.1.0            
- [85] cachem_1.1.0           GlobalOptions_0.1.4    parallel_4.6.1        
- [88] restfulr_0.0.17        pillar_1.11.1          vctrs_0.7.3           
- [91] promises_1.5.0         dbplyr_2.6.0           cluster_2.1.8.2       
- [94] evaluate_1.0.5         GenomicFeatures_1.64.0 cli_3.6.6             
- [97] locfit_1.5-9.12        compiler_4.6.1         rlang_1.3.0           
-[100] crayon_1.5.3           labeling_0.4.3         interp_1.1-6          
-[103] aroma.light_3.42.0     getPass_0.2-4          fs_2.1.0              
-[106] stringi_1.8.7          deldir_2.0-4           Matrix_1.7-5          
-[109] hms_1.1.4              bit64_4.8.2            KEGGREST_1.52.2       
-[112] statmod_1.5.2          memoise_2.0.1          affyio_1.82.0         
-[115] bslib_0.12.0           bit_4.6.0             </code></pre>
+ [40] foreach_1.5.2          tools_4.6.1            progress_1.2.3        
+ [43] Rcpp_1.1.1-1.1         glue_1.8.1             gridExtra_2.3.1       
+ [46] SparseArray_1.12.3     xfun_0.59              withr_3.0.3           
+ [49] BiocManager_1.30.27    fastmap_1.2.0          latticeExtra_0.6-31   
+ [52] callr_3.8.0            digest_0.6.39          timechange_0.4.0      
+ [55] R6_2.6.1               colorspace_2.1-4       Cairo_1.7-0           
+ [58] jpeg_0.1-11            biomaRt_2.68.6         RSQLite_3.53.3        
+ [61] cigarillo_1.2.1        R.methodsS3_1.8.2      utf8_1.2.6            
+ [64] rtracklayer_1.72.0     prettyunits_1.2.0      httr_1.4.9            
+ [67] S4Arrays_1.12.1        whisker_0.4.1          pkgconfig_2.0.3       
+ [70] gtable_0.3.6           blob_1.3.0             S7_0.2.2              
+ [73] hwriter_1.3.2.1        htmltools_0.5.9        clue_0.3-68           
+ [76] png_0.1-9              knitr_1.52             rstudioapi_0.19.0     
+ [79] tzdb_0.5.0             rjson_0.2.23           curl_8.1.0            
+ [82] cachem_1.1.0           GlobalOptions_0.1.4    parallel_4.6.1        
+ [85] restfulr_0.0.17        pillar_1.11.1          vctrs_0.7.3           
+ [88] promises_1.5.0         dbplyr_2.6.0           cluster_2.1.8.2       
+ [91] evaluate_1.0.5         GenomicFeatures_1.64.0 cli_3.6.6             
+ [94] locfit_1.5-9.12        compiler_4.6.1         rlang_1.3.0           
+ [97] crayon_1.5.3           labeling_0.4.3         interp_1.1-6          
+[100] aroma.light_3.42.0     getPass_0.2-4          fs_2.1.0              
+[103] stringi_1.8.7          deldir_2.0-4           Matrix_1.7-5          
+[106] hms_1.1.4              bit64_4.8.2            KEGGREST_1.52.2       
+[109] statmod_1.5.2          memoise_2.0.1          affyio_1.82.0         
+[112] bslib_0.12.0           bit_4.6.0             </code></pre>
 </div>
 </div>
 </div>

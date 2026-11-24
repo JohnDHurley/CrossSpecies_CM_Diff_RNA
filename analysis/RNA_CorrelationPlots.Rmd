@@ -1544,6 +1544,9 @@ R2_table <- data.frame(
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
 
+# TFs_lampert <- read_excel("C:/Users/jdhurley/Desktop/TFs_lampert.xlsx")
+# 
+# saveRDS(TFs_lampert,"data/TEs/TF_lampert.RDS")
 
 testing <- "Expressed"
 
@@ -1833,6 +1836,9 @@ R2_table <- rbind(
 ```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
 
 R2_table <- readRDS("data/DGE/TrajectoryR2TF_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+R2_table <- R2_table %>%
+  filter(Gene_Set == "Expressed")
 
 RNA_colors <- c(
   "Expressed" = "darkblue",
@@ -2230,12 +2236,14 @@ saveRDS(R2_table,"data/DGE/TrajectoryR2TF_Subset_logcpm_G1_SpTp_All_NoRep_No4.RD
 
 R2_table <- readRDS("data/DGE/TrajectoryR2TF_Subset_logcpm_G1_SpTp_All_NoRep_No4.RDS")
 
+# R2_table <- R2_table %>% 
+#   filter(Gene_Set == "Expressed")
+
 RNA_colors <- c(
   "Expressed" = "black",
   "Any t-DEGs" = "darkblue",
   "Matched t-DEGs" = "darkblue",
-  "Unmatched t-DEGs" = "darkblue",
-  "Non-t-DEGs" = "darkblue"
+  "Unmatched t-DEGs" = "darkblue"
 )
 
 plot_R2_trajectories_No4(
@@ -3355,7 +3363,7 @@ KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
 
 KZFPs <- unique(KZFP_metadata_Hardy2023$KZFP)
 
-testing <- c("Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530")
+testing <- c("HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30")
 
 plot_data <- TopTable %>%
   filter(Comparisons %in% testing) %>%
@@ -3363,9 +3371,12 @@ plot_data <- TopTable %>%
   left_join(
     KZFP_metadata_Hardy2023,
     by = c("Symbol" = "KZFP")
-    ) %>% 
-  mutate(`KZFP age` = as.numeric(`KZFP age`)) %>% 
-  mutate(`TE age` = as.numeric(`TE age`))
+  ) %>%
+  mutate(
+    Comparisons = factor(Comparisons, levels = testing),
+    `KZFP age` = as.numeric(`KZFP age`),
+    `TE age` = as.numeric(`TE age`)
+  )
 
 library(ggplot2)
 library(ggrepel)
@@ -3390,19 +3401,47 @@ ggplot(
     size = 2,
     alpha = 0.9
   ) +
- geom_text_repel(
-  data = plot_data %>%
-    filter(adj.P.Val <= 0.05) %>%
-    distinct(Comparisons, Symbol, .keep_all = TRUE),
-  aes(label = Symbol),
-  size = 3,
-  max.overlaps = Inf
-) +
+#  geom_text_repel(
+#   data = plot_data %>%
+#     filter(adj.P.Val <= 0.05) %>%
+#     distinct(Comparisons, Symbol, .keep_all = TRUE),
+#   aes(label = Symbol),
+#   size = 3,
+#   max.overlaps = Inf
+# ) +
   facet_wrap(~ Comparisons) +
   theme_bw() +
   labs(
     x = "Approximate KZFP evolutionary age",
     y = "Log2 fold change"
+  )
+
+plot_data <- plot_data %>%
+  mutate(
+    DEG_status = ifelse(adj.P.Val <= 0.05, "DEG", "Non-DEG")
+  )
+
+ggplot(
+  plot_data,
+  aes(
+    x = `KZFP age`,
+    fill = DEG_status
+  )
+) +
+  geom_histogram(
+    binwidth = 25,
+    position = "identity",
+    alpha = 0.5
+  ) +
+  facet_wrap(~ Comparisons) +
+  scale_fill_manual(
+    values = c("DEG" = "red", "Non-DEG" = "gray70")
+  ) +
+  theme_bw() +
+  labs(
+    x = "Approximate KZFP evolutionary age",
+    y = "Number of KZFPs",
+    fill = "Expression status"
   )
 
 library(ggplot2)
@@ -3428,20 +3467,197 @@ ggplot(
     size = 2,
     alpha = 0.9
   ) +
- geom_text_repel(
-  data = plot_data %>%
-    group_by(Comparisons, Symbol) %>%
-    filter(adj.P.Val <= 0.05) %>%
-    ungroup(),
-  aes(label = `Target Subfamily`),
-  size = 3,
-  max.overlaps = Inf
-) +
+#  geom_text_repel(
+#   data = plot_data %>%
+#     group_by(Comparisons, Symbol) %>%
+#     filter(adj.P.Val <= 0.05) %>%
+#     ungroup(),
+#   aes(label = `Target Subfamily`),
+#   size = 3,
+#   max.overlaps = Inf
+# ) +
   facet_wrap(~ Comparisons) +
   theme_bw() +
   labs(
     x = "Approximate TE evolutionary age",
     y = "Log2 fold change"
+  )
+
+ggplot(
+  plot_data,
+  aes(
+    x = `TE age`,
+    fill = DEG_status
+  )
+) +
+  geom_histogram(
+    binwidth = 25,
+    position = "identity",
+    alpha = 0.5
+  ) +
+  facet_wrap(~ Comparisons) +
+  scale_fill_manual(
+    values = c("DEG" = "red", "Non-DEG" = "gray70")
+  ) +
+  theme_bw() +
+  labs(
+    x = "Approximate TE Target evolutionary age",
+    y = "Number of KZFP Targets",
+    fill = "Expression status"
+  )
+
+```
+
+```{r KZFP_G100_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
+
+KZFPs <- unique(KZFP_metadata_Hardy2023$KZFP)
+
+testing <- c("Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530")
+
+plot_data <- TopTable %>%
+  filter(Comparisons %in% testing) %>%
+  filter(Symbol %in% KZFPs) %>%
+  left_join(
+    KZFP_metadata_Hardy2023,
+    by = c("Symbol" = "KZFP")
+  ) %>%
+  mutate(
+    Comparisons = factor(Comparisons, levels = testing),
+    `KZFP age` = as.numeric(`KZFP age`),
+    `TE age` = as.numeric(`TE age`)
+  )
+
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+
+ggplot(
+  plot_data,
+  aes(
+    x = `KZFP age`,
+    y = logFC
+  )
+) +
+  geom_point(
+    data = plot_data %>% filter(adj.P.Val > 0.05),
+    color = "gray70",
+    size = 2,
+    alpha = 0.8
+  ) +
+  geom_point(
+    data = plot_data %>% filter(adj.P.Val <= 0.05),
+    color = "red",
+    size = 2,
+    alpha = 0.9
+  ) +
+#  geom_text_repel(
+#   data = plot_data %>%
+#     filter(adj.P.Val <= 0.05) %>%
+#     distinct(Comparisons, Symbol, .keep_all = TRUE),
+#   aes(label = Symbol),
+#   size = 3,
+#   max.overlaps = Inf
+# ) +
+  facet_wrap(~ Comparisons) +
+  theme_bw() +
+  labs(
+    x = "Approximate KZFP evolutionary age",
+    y = "Log2 fold change"
+  )
+
+plot_data <- plot_data %>%
+  mutate(
+    DEG_status = ifelse(adj.P.Val <= 0.05, "DEG", "Non-DEG")
+  )
+
+ggplot(
+  plot_data,
+  aes(
+    x = `KZFP age`,
+    fill = DEG_status
+  )
+) +
+  geom_histogram(
+    binwidth = 25,
+    position = "identity",
+    alpha = 0.5
+  ) +
+  facet_wrap(~ Comparisons) +
+  scale_fill_manual(
+    values = c("DEG" = "red", "Non-DEG" = "gray70")
+  ) +
+  theme_bw() +
+  labs(
+    x = "Approximate KZFP evolutionary age",
+    y = "Number of KZFPs",
+    fill = "Expression status"
+  )
+
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+
+ggplot(
+  plot_data,
+  aes(
+    x = `TE age`,
+    y = logFC
+  )
+) +
+  geom_point(
+    data = plot_data %>% filter(adj.P.Val > 0.05),
+    color = "gray70",
+    size = 2,
+    alpha = 0.8
+  ) +
+  geom_point(
+    data = plot_data %>% filter(adj.P.Val <= 0.05),
+    color = "red",
+    size = 2,
+    alpha = 0.9
+  ) +
+#  geom_text_repel(
+#   data = plot_data %>%
+#     group_by(Comparisons, Symbol) %>%
+#     filter(adj.P.Val <= 0.05) %>%
+#     ungroup(),
+#   aes(label = `Target Subfamily`),
+#   size = 3,
+#   max.overlaps = Inf
+# ) +
+  facet_wrap(~ Comparisons) +
+  theme_bw() +
+  labs(
+    x = "Approximate TE evolutionary age",
+    y = "Log2 fold change"
+  )
+
+ggplot(
+  plot_data,
+  aes(
+    x = `TE age`,
+    fill = DEG_status
+  )
+) +
+  geom_histogram(
+    binwidth = 25,
+    position = "identity",
+    alpha = 0.5
+  ) +
+  facet_wrap(~ Comparisons) +
+  scale_fill_manual(
+    values = c("DEG" = "red", "Non-DEG" = "gray70")
+  ) +
+  theme_bw() +
+  labs(
+    x = "Approximate TE Target evolutionary age",
+    y = "Number of KZFP Targets",
+    fill = "Expression status"
   )
 
 ```
@@ -3459,7 +3675,8 @@ KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
 
 KZFPs <- unique(KZFP_metadata_Hardy2023$KZFP)
 
-testing <- c("Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530")
+# testing <- c("Sig_Sp_inter_Traj02","Sig_Sp_inter_Traj25","Sig_Sp_inter_Traj515","Sig_Sp_inter_Traj1530")
+testing <- c("HvC_Day0","HvC_Day2","HvC_Day5","HvC_Day15","HvC_Day30")
 
 plot_data <- TopTable %>%
   filter(Comparisons %in% testing) %>%
@@ -5057,6 +5274,368 @@ plot_R2_trajectories_No4(
 )
 
 ```
+
+### Transcription Factors
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_EmptyTable, fig.width=7, fig.height=5}
+
+R2_table <- data.frame(
+  Gene_Set = character(),
+  Transition = character(),
+  R2 = numeric(),
+  P_value = numeric(),
+  slope = numeric(),
+  intercept = numeric(),
+  Spearman = numeric(),
+  N_genes = numeric(),
+  stringsAsFactors = FALSE
+)
+
+```
+
+#### All Expressed
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_AllExpressed, fig.width=7, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+# TFs_lampert <- read_excel("C:/Users/jdhurley/Desktop/TFs_lampert.xlsx")
+# 
+# saveRDS(TFs_lampert,"data/TEs/TF_lampert.RDS")
+
+testing <- "Expressed"
+
+# TF_df <- readRDS("data/TEs/TF_df.RDS")
+TF_df <- readRDS("data/TEs/TF_lampert.RDS")
+
+TF_list <- TF_df %>% 
+  
+
+# ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+# 
+# ZNFs_list <- ZNFs$`Approved symbol`
+# 
+# KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+# 
+# KZFPs_list <- KZFPs$Label
+# 
+# omit <- unique(c(KZFPs_list,ZNFs_list))
+# 
+# overlap <- intersect(TFs_list, omit)
+# 
+# gene_set <- setdiff(TF_list, overlap)
+# 
+# saveRDS(gene_set,"data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+gene_set <- TF_list
+
+print("All Expressed Genes - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Expressed Genes"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = paste0(testing),
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval"),
+    Slope = sapply(plots, `[[`, "slope"),
+    intercept = sapply(plots, `[[`, "intercept"),
+    Spearman = sapply(plots, `[[`, "spearman"),
+    N_genes = sapply(plots, `[[`, "n_genes")
+  )
+)
+
+```
+
+
+#### All Trajectory DEGs
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_DEGs, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+comparisons <- c("H_Day02", "H_Day25", "H_Day515", "H_Day1530","C_Day02", "C_Day25", "C_Day515", "C_Day1530")
+
+testing <- "Any t-DEGs"
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+overlap <- intersect(TFs_list, ZNFs_list)
+
+TF_only_genes <- setdiff(TF_list, overlap)
+
+gene_set <- unique(
+  TopTable %>%
+    filter(Comparisons %in% comparisons) %>%
+    filter(Symbol %in% TF_only_genes) %>% 
+    filter(adj.P.Val < 0.05) %>% 
+    pull(Symbol)
+)
+
+saveRDS(gene_set,"data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("All TF Trajectory DEGs - with Symbol IDs")
+length(gene_set)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = gene_set,
+  genes_label = "All Trajectory DEGs"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = paste0(testing),
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval"),
+    Slope = sapply(plots, `[[`, "slope"),
+    intercept = sapply(plots, `[[`, "intercept"),
+    Spearman = sapply(plots, `[[`, "spearman"),
+    N_genes = sapply(plots, `[[`, "n_genes")
+  )
+)
+```
+
+#### All Matched Trajectory DEGs
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_MatchedDEGs, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+testing <- "Matched t-DEGs"
+
+TF_df <- readRDS("data/TEs/TF_df.RDS")
+
+TF_list <- TF_df$Gene
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+KZFPs <- readRDS("data/TEs/KZFPs.RDS")
+
+KZFPs_list <- KZFPs$Label
+
+overlap <- intersect(TFs_list, ZNFs_list)
+
+TF_only_genes <- setdiff(TF_list, overlap)
+
+trajectory_comparisons <- c(
+  "Day02",
+  "Day25",
+  "Day515",
+  "Day1530"
+)
+
+matched_DEGs <- get_matched_degs(
+  TopTable = TopTable,
+  transitions = trajectory_comparisons,
+  genes_to_include =  TF_only_genes
+)
+
+saveRDS(matched_DEGs,"data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+print("Trajectory DEGs matched across species in at least one transition - with Symbol IDs")
+length(matched_DEGs)
+
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = matched_DEGs,
+  genes_label = "Species-Shared Trajectory DEGs \n (at least on Transition)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = paste0(testing),
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval"),
+    Slope = sapply(plots, `[[`, "slope"),
+    intercept = sapply(plots, `[[`, "intercept"),
+    Spearman = sapply(plots, `[[`, "spearman"),
+    N_genes = sapply(plots, `[[`, "n_genes")
+  )
+)
+```
+
+#### All Trajectory DEGs (NonShared)
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonMatchedDEGs, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+matched_deg_genes <- readRDS("data/DGE/TF_MatchedTrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+testing <- "Unmatched t-DEGs"
+
+umatched_deg_genes <- setdiff(trajectory_deg_genes, matched_deg_genes)
+
+print("TF Trajectory DEGs with no species matches at any transition - with Symbol IDs")
+length(umatched_deg_genes)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25", "Day515", "Day1530"),
+  genes_to_include = umatched_deg_genes,
+  genes_label = "TF Species-NonShared Trajectory DEGs \n (no Transitions)"
+)
+
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = paste0(testing),
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval"),
+    Slope = sapply(plots, `[[`, "slope"),
+    intercept = sapply(plots, `[[`, "intercept"),
+    Spearman = sapply(plots, `[[`, "spearman"),
+    N_genes = sapply(plots, `[[`, "n_genes")
+  )
+)
+```
+#### All Trajectory Non-DEGs
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_NonDEGs, fig.width=7, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+trajectory_deg_genes <- readRDS("data/DGE/TF_TrajectoryDEGs_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+all_expressed_genes <- readRDS("data/DGE/TF_AllExpressed_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+testing <- "Non-t-DEGs"
+
+Non_DEGs <- setdiff(
+  all_expressed_genes,
+  trajectory_deg_genes
+)
+
+print("TF Non-DEG at all transitions - with Symbol IDs")
+length(Non_DEGs)
+
+plots <- plot_species_comparison(
+  TopTable = TopTable,
+  comps = c("Day02", "Day25","Day515", "Day1530"),
+  genes_to_include = Non_DEGs,
+  genes_label = "Trajectory Non-DEGs \n (no Transitions)"
+)
+
+plots$Day02
+plots$Day25
+plots$Day515
+plots$Day1530
+
+R2_table <- rbind(
+  R2_table,
+  data.frame(
+    Gene_Set = paste0(testing),
+    Transition = names(plots),
+    R2 = sapply(plots, `[[`, "r2"),
+    P_value = sapply(plots, `[[`, "pval"),
+    Slope = sapply(plots, `[[`, "slope"),
+    intercept = sapply(plots, `[[`, "intercept"),
+    Spearman = sapply(plots, `[[`, "spearman"),
+    N_genes = sapply(plots, `[[`, "n_genes")
+  )
+)
+
+# saveRDS(R2_table,"data/DGE/TrajectoryR2TF_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+
+```
+
+#### Plotting R2 Together
+
+```{r TF_FC_Quadrants_RLCOMP_G1_4SpTp_No4_Plotting, fig.width=7, fig.height=6}
+
+R2_table <- readRDS("data/DGE/TrajectoryR2TF_logcpm_G1_SpTp_All_NoRep_No4.RDS")
+
+R2_table <- R2_table %>%
+  filter(Gene_Set == "Expressed")
+
+RNA_colors <- c(
+  "Expressed" = "darkblue",
+  "Any t-DEGs" = "darkblue",
+  "Matched t-DEGs" = "darkblue",
+  "Unmatched t-DEGs" = "darkblue",
+  "Non-t-DEGs" = "darkblue"
+)
+
+plot_R2_trajectories_No4(
+  R2_table = R2_table,
+  colors = RNA_colors
+)
+
+plot_Spearman_trajectories_No4(
+  R2_table = R2_table,
+  colors = RNA_colors
+)
+
+format.pval(
+  R2_table$P_value,
+  digits = 6,
+  eps = .Machine$double.xmin
+)
+
+R2_table <- R2_table %>%
+  mutate(
+    P_value_formatted = format.pval(
+      P_value,
+      digits = 6,
+      eps = .Machine$double.xmin
+    )
+  )
+
+R2_table
+
+
+```
+
 
 ```{r Updating Website, eval = FALSE}
 

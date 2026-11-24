@@ -34,6 +34,7 @@ library("eulerr")
 library("org.Hs.eg.db")
 library("AnnotationDbi")
 library("ggVennDiagram")
+library("ggvenn")
 library("ggrastr")
 library("edgeR")
 library("limma")
@@ -48,7 +49,8 @@ library("ggalluvial")
 library("rstatix")
 library("ggpubr")
 
-# BiocManager::install("ggalluvial")
+
+# BiocManager::install("ggvenn")
 
 ```
 
@@ -834,9 +836,9 @@ length(unique(intersect(TFs_list, KZFPs_list)))
 length(unique(intersect(ZNFs_list,KZFPs_list)))
 
 genes_list <- list(
-  KZFPs  = KZFPs_list,
+  TF  = TFs_list,
   ZNFs  = ZNFs_list,
-  TF  = TFs_list
+  KZFPs  = KZFPs_list
 )
 
 ggVennDiagram(genes_list, label = "count") +
@@ -848,6 +850,17 @@ ggVennDiagram(genes_list, label = "count") +
     plot.title = element_text(face = "bold")
   )
 
+ggvenn(
+  genes_list,
+  fill_color = c("darkblue", "darkgreen", "darkred"),
+  stroke_size = 0.8,
+  set_name_size = 5,
+  text_size = 5,
+  show_percentage = FALSE
+) +
+  theme(
+    panel.background = element_blank()
+  )
 ```
 
 ## Odds Ratio and Expression
@@ -855,6 +868,7 @@ ggVennDiagram(genes_list, label = "count") +
 ### KZFP
 
 #### All
+
 ```{r KZFP_enrichment, fig.width=5, fig.height=5}
 
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
@@ -1336,6 +1350,316 @@ plot_KZFP_OR_CI(
 
 ```
 
+```{r KZFP_enrichment_CI_moderate, fig.width=5, fig.height=5}
+
+# --------------------------------------------------
+# KZFP enrichment with confidence intervals
+# --------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS(
+  "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+gene_list <- KZFPs_list
+
+
+# --------------------------------------------------
+# Enrichment function
+# --------------------------------------------------
+
+test_KZFP_enrichment_CI <- function(comparisons, TopTable, gene_list) {
+
+  test_genes <- unique(na.omit(TopTable$Symbol))
+
+  results <- lapply(comparisons, function(comparison) {
+
+    deg_genes <- TopTable %>%
+      filter(
+        Comparisons == comparison,
+        adj.P.Val < 0.01
+      ) %>%
+      pull(Symbol) %>%
+      unique() %>%
+      na.omit()
+
+    not_deg_genes <- setdiff(test_genes, deg_genes)
+
+    tab <- matrix(
+      c(
+        sum(deg_genes %in% gene_list),
+        sum(deg_genes %notin% gene_list),
+        sum(not_deg_genes %in% gene_list),
+        sum(not_deg_genes %notin% gene_list)
+      ),
+      nrow = 2,
+      byrow = TRUE
+    )
+
+    fisher <- fisher.test(tab)
+
+    data.frame(
+      Comparison = comparison,
+      KZFP_DEG = tab[1, 1],
+      NonKZFP_DEG = tab[1, 2],
+      KZFP_not_DEG = tab[2, 1],
+      NonKZFP_not_DEG = tab[2, 2],
+      Odds_Ratio = as.numeric(fisher$estimate),
+      CI_lower = fisher$conf.int[1],
+      CI_upper = fisher$conf.int[2],
+      Fisher_p = fisher$p.value
+    )
+  })
+
+  bind_rows(results)
+}
+
+
+# --------------------------------------------------
+# Run enrichment
+# --------------------------------------------------
+
+comparisons <- unique(TopTable$Comparisons)
+
+Enrichment_results_CI <- test_KZFP_enrichment_CI(
+  comparisons = comparisons,
+  TopTable = TopTable,
+  gene_list = gene_list
+)
+
+
+# --------------------------------------------------
+# InteractionAtLeastOne
+# --------------------------------------------------
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+test_genes <- unique(na.omit(TopTable$Symbol))
+
+InteractionAtLeastOne_symbols <- TopTable %>%
+  filter(Gene %in% InteractionAtLeastOne) %>%
+  pull(Symbol) %>%
+  unique() %>%
+  na.omit()
+
+deg_genes <- intersect(
+  InteractionAtLeastOne_symbols,
+  test_genes
+)
+
+not_deg_genes <- setdiff(
+  test_genes,
+  deg_genes
+)
+
+tab <- matrix(
+  c(
+    sum(deg_genes %in% gene_list),
+    sum(deg_genes %notin% gene_list),
+    sum(not_deg_genes %in% gene_list),
+    sum(not_deg_genes %notin% gene_list)
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+fisher <- fisher.test(tab)
+
+InteractionAtLeastOne_result_CI <- data.frame(
+  Comparison = "InteractionAtLeastOne",
+  KZFP_DEG = tab[1, 1],
+  NonKZFP_DEG = tab[1, 2],
+  KZFP_not_DEG = tab[2, 1],
+  NonKZFP_not_DEG = tab[2, 2],
+  Odds_Ratio = as.numeric(fisher$estimate),
+  CI_lower = fisher$conf.int[1],
+  CI_upper = fisher$conf.int[2],
+  Fisher_p = fisher$p.value
+)
+
+
+# --------------------------------------------------
+# Combine results and adjust P-values
+# --------------------------------------------------
+
+Enrichment_results_CI <- bind_rows(
+  Enrichment_results_CI,
+  InteractionAtLeastOne_result_CI
+)
+
+Enrichment_results_CI$FDR <- p.adjust(
+  Enrichment_results_CI$Fisher_p,
+  method = "BH"
+)
+
+
+comparison_order <- c("HvC_Day0",
+                      "HvC_Day2",
+                      "HvC_Day5",
+                      "HvC_Day15",
+                      "HvC_Day30",
+                      "H_Day02",
+                      "H_Day25",
+                      "H_Day515",
+                      "H_Day1530",
+                      "C_Day02",
+                      "C_Day25",
+                      "C_Day515",
+                      "C_Day1530",
+                      "Sig_Sp_inter_Traj02",
+                      "Sig_Sp_inter_Traj25",
+                      "Sig_Sp_inter_Traj515",
+                      "Sig_Sp_inter_Traj1530")
+
+Enrichment_results_CI <- Enrichment_results_CI %>%
+  mutate(
+    Comparison = factor(
+      Comparison,
+      levels = comparison_order
+    ),
+    Comparison_Group = case_when(
+      Comparison == "InteractionAtLeastOne" ~ "Interaction",
+      grepl("^HvC", Comparison) ~ "Species",
+      grepl("inter", Comparison) ~ "Interaction",
+      grepl("^[HC]_Day", Comparison) ~ "Trajectory",
+      TRUE ~ "Other"
+    ),
+    Significant = FDR < 0.01
+  )
+
+Enrichment_results_CI
+
+
+# --------------------------------------------------
+# Plot odds ratios with 95% CI
+# New function: plot_KZFP_OR_CI
+# --------------------------------------------------
+
+plot_KZFP_OR_CI <- function(df, comparison_group, ylim = NULL) {
+
+  plot_df <- df %>%
+    filter(Comparison_Group == comparison_group) %>%
+    mutate(
+      Significant = factor(
+        ifelse(FDR < 0.01, "Significant", "Not significant"),
+        levels = c("Not significant", "Significant")
+      )
+    )
+
+  p <- ggplot(
+    plot_df,
+    aes(
+      x = Comparison,
+      y = Odds_Ratio
+    )
+  ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed",
+      color = "grey50"
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = CI_lower,
+        ymax = CI_upper
+      ),
+      width = 0.2
+    ) +
+    geom_point(
+      aes(
+        shape = Significant,
+        fill = Significant
+      ),
+      size = 3,
+      color = "black"
+    ) +
+    scale_shape_manual(
+      values = c(
+        "Not significant" = 21,
+        "Significant" = 21
+      )
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Not significant" = "white",
+        "Significant" = "black"
+      )
+    ) +
+    theme_bw() +
+    labs(
+      x = NULL,
+      y = "Odds Ratio",
+      title = comparison_group,
+      shape = "FDR < 0.01",
+      fill = "FDR < 0.01"
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      )
+    )
+
+  if (!is.null(ylim)) {
+    p <- p + coord_cartesian(ylim = ylim)
+  }
+
+  return(p)
+}
+
+
+# --------------------------------------------------
+# Generate plots
+# --------------------------------------------------
+
+plot_KZFP_OR_CI(
+  Enrichment_results_CI,
+  "Species",
+  ylim = c(0, 2)
+)
+
+plot_KZFP_OR_CI(
+  Enrichment_results_CI,
+  "Trajectory",
+  ylim = c(0, 3)
+)
+
+plot_KZFP_OR_CI(
+  Enrichment_results_CI,
+  "Interaction",
+  ylim = c(0, 2.5)
+)
+
+
+# --------------------------------------------------
+# Save results
+# --------------------------------------------------
+
+# saveRDS(
+#   Enrichment_results_CI,
+#   "data/TEs/KZFP_Enrichment_CI.RDS"
+# )
+
+
+```
 ### ZNFs
 
 #### All
@@ -2011,6 +2335,323 @@ plot_OR(Enrichment_results, "Interaction", ylim = c(0, 2))
 
 ```
 
+```{r ZNF_enrichment_CI, fig.width=5, fig.height=5}
+
+# --------------------------------------------------
+# KZFP enrichment with confidence intervals
+# --------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+overlap <- intersect(ZNFs_list,KZFPs_list)
+
+gene_list <- setdiff(ZNFs_list,overlap)
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS(
+  "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+
+# --------------------------------------------------
+# Enrichment function
+# --------------------------------------------------
+
+test_ZNF_enrichment_CI <- function(comparisons, TopTable, gene_list) {
+
+  test_genes <- unique(na.omit(TopTable$Symbol))
+
+  results <- lapply(comparisons, function(comparison) {
+
+    deg_genes <- TopTable %>%
+      filter(
+        Comparisons == comparison,
+        adj.P.Val < 0.05
+      ) %>%
+      pull(Symbol) %>%
+      unique() %>%
+      na.omit()
+
+    not_deg_genes <- setdiff(test_genes, deg_genes)
+
+    tab <- matrix(
+      c(
+        sum(deg_genes %in% gene_list),
+        sum(deg_genes %notin% gene_list),
+        sum(not_deg_genes %in% gene_list),
+        sum(not_deg_genes %notin% gene_list)
+      ),
+      nrow = 2,
+      byrow = TRUE
+    )
+
+    fisher <- fisher.test(tab)
+
+    data.frame(
+      Comparison = comparison,
+      ZNF_DEG = tab[1, 1],
+      NonZNF_DEG = tab[1, 2],
+      ZNF_not_DEG = tab[2, 1],
+      NonZNF_not_DEG = tab[2, 2],
+      Odds_Ratio = as.numeric(fisher$estimate),
+      CI_lower = fisher$conf.int[1],
+      CI_upper = fisher$conf.int[2],
+      Fisher_p = fisher$p.value
+    )
+  })
+
+  bind_rows(results)
+}
+
+
+# --------------------------------------------------
+# Run enrichment
+# --------------------------------------------------
+
+comparisons <- unique(TopTable$Comparisons)
+
+Enrichment_results_CI <- test_ZNF_enrichment_CI(
+  comparisons = comparisons,
+  TopTable = TopTable,
+  gene_list = gene_list
+)
+
+
+# --------------------------------------------------
+# InteractionAtLeastOne
+# --------------------------------------------------
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+test_genes <- unique(na.omit(TopTable$Symbol))
+
+InteractionAtLeastOne_symbols <- TopTable %>%
+  filter(Gene %in% InteractionAtLeastOne) %>%
+  pull(Symbol) %>%
+  unique() %>%
+  na.omit()
+
+deg_genes <- intersect(
+  InteractionAtLeastOne_symbols,
+  test_genes
+)
+
+not_deg_genes <- setdiff(
+  test_genes,
+  deg_genes
+)
+
+tab <- matrix(
+  c(
+    sum(deg_genes %in% gene_list),
+    sum(deg_genes %notin% gene_list),
+    sum(not_deg_genes %in% gene_list),
+    sum(not_deg_genes %notin% gene_list)
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+fisher <- fisher.test(tab)
+
+InteractionAtLeastOne_result_CI <- data.frame(
+  Comparison = "InteractionAtLeastOne",
+  ZNF_DEG = tab[1, 1],
+  NonZNF_DEG = tab[1, 2],
+  ZNF_not_DEG = tab[2, 1],
+  NonZNF_not_DEG = tab[2, 2],
+  Odds_Ratio = as.numeric(fisher$estimate),
+  CI_lower = fisher$conf.int[1],
+  CI_upper = fisher$conf.int[2],
+  Fisher_p = fisher$p.value
+)
+
+
+# --------------------------------------------------
+# Combine results and adjust P-values
+# --------------------------------------------------
+
+Enrichment_results_CI <- bind_rows(
+  Enrichment_results_CI,
+  InteractionAtLeastOne_result_CI
+)
+
+Enrichment_results_CI$FDR <- p.adjust(
+  Enrichment_results_CI$Fisher_p,
+  method = "BH"
+)
+
+
+comparison_order <- c("HvC_Day0",
+                      "HvC_Day2",
+                      "HvC_Day5",
+                      "HvC_Day15",
+                      "HvC_Day30",
+                      "H_Day02",
+                      "H_Day25",
+                      "H_Day515",
+                      "H_Day1530",
+                      "C_Day02",
+                      "C_Day25",
+                      "C_Day515",
+                      "C_Day1530",
+                      "Sig_Sp_inter_Traj02",
+                      "Sig_Sp_inter_Traj25",
+                      "Sig_Sp_inter_Traj515",
+                      "Sig_Sp_inter_Traj1530",
+                      "InteractionAtLeastOne")
+
+Enrichment_results_CI <- Enrichment_results_CI %>%
+  mutate(
+    Comparison = factor(
+      Comparison,
+      levels = comparison_order
+    ),
+    Comparison_Group = case_when(
+      Comparison == "InteractionAtLeastOne" ~ "Interaction",
+      grepl("^HvC", Comparison) ~ "Species",
+      grepl("inter", Comparison) ~ "Interaction",
+      grepl("^[HC]_Day", Comparison) ~ "Trajectory",
+      TRUE ~ "Other"
+    ),
+    Significant = FDR < 0.05
+  )
+
+Enrichment_results_CI
+
+
+# --------------------------------------------------
+# Plot odds ratios with 95% CI
+# New function: plot_KZFP_OR_CI
+# --------------------------------------------------
+
+plot_ZNF_OR_CI <- function(df, comparison_group, ylim = NULL) {
+
+  plot_df <- df %>%
+    filter(Comparison_Group == comparison_group) %>%
+    mutate(
+      Significant = factor(
+        ifelse(FDR < 0.05, "Significant", "Not significant"),
+        levels = c("Not significant", "Significant")
+      )
+    )
+
+  p <- ggplot(
+    plot_df,
+    aes(
+      x = Comparison,
+      y = Odds_Ratio
+    )
+  ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed",
+      color = "grey50"
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = CI_lower,
+        ymax = CI_upper
+      ),
+      width = 0.2
+    ) +
+    geom_point(
+      aes(
+        shape = Significant,
+        fill = Significant
+      ),
+      size = 3,
+      color = "black"
+    ) +
+    scale_shape_manual(
+      values = c(
+        "Not significant" = 21,
+        "Significant" = 21
+      )
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Not significant" = "white",
+        "Significant" = "black"
+      )
+    ) +
+    theme_bw() +
+    labs(
+      x = NULL,
+      y = "Odds Ratio",
+      title = comparison_group,
+      shape = "FDR < 0.05",
+      fill = "FDR < 0.05"
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      )
+    )
+
+  if (!is.null(ylim)) {
+    p <- p + coord_cartesian(ylim = ylim)
+  }
+
+  return(p)
+}
+
+Enrichment_results_CI
+
+# --------------------------------------------------
+# Generate plots
+# --------------------------------------------------
+
+plot_ZNF_OR_CI(
+  Enrichment_results_CI,
+  "Species",
+  ylim = c(0, 2)
+)
+
+plot_ZNF_OR_CI(
+  Enrichment_results_CI,
+  "Trajectory",
+  ylim = c(0, 3)
+)
+
+plot_ZNF_OR_CI(
+  Enrichment_results_CI,
+  "Interaction",
+  ylim = c(0, 2.5)
+)
+
+
+# --------------------------------------------------
+# Save results
+# --------------------------------------------------
+
+saveRDS(
+  Enrichment_results_CI,
+  "data/TEs/ZNF_noKZPF_Enrichment_CI.RDS"
+)
+
+
+```
+
 ### TFs
 
 #### All
@@ -2503,6 +3144,320 @@ plot_TF_OR_CI(
 
 ```
 
+```{r TF_enrichment_CI_moderate, fig.width=5, fig.height=5}
+
+# --------------------------------------------------
+# KZFP enrichment with confidence intervals
+# --------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+gene_list <- tf_df$Gene
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS(
+  "data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+
+# --------------------------------------------------
+# Enrichment function
+# --------------------------------------------------
+
+test_TF_enrichment_CI <- function(comparisons, TopTable, gene_list) {
+
+  test_genes <- unique(na.omit(TopTable$Symbol))
+
+  results <- lapply(comparisons, function(comparison) {
+
+    deg_genes <- TopTable %>%
+      filter(
+        Comparisons == comparison,
+        adj.P.Val < 0.01
+      ) %>%
+      pull(Symbol) %>%
+      unique() %>%
+      na.omit()
+
+    not_deg_genes <- setdiff(test_genes, deg_genes)
+
+    tab <- matrix(
+      c(
+        sum(deg_genes %in% gene_list),
+        sum(deg_genes %notin% gene_list),
+        sum(not_deg_genes %in% gene_list),
+        sum(not_deg_genes %notin% gene_list)
+      ),
+      nrow = 2,
+      byrow = TRUE
+    )
+
+    fisher <- fisher.test(tab)
+
+    data.frame(
+      Comparison = comparison,
+      TF_DEG = tab[1, 1],
+      NonTF_DEG = tab[1, 2],
+      TF_not_DEG = tab[2, 1],
+      NonTF_not_DEG = tab[2, 2],
+      Odds_Ratio = as.numeric(fisher$estimate),
+      CI_lower = fisher$conf.int[1],
+      CI_upper = fisher$conf.int[2],
+      Fisher_p = fisher$p.value
+    )
+  })
+
+  bind_rows(results)
+}
+
+
+# --------------------------------------------------
+# Run enrichment
+# --------------------------------------------------
+
+comparisons <- unique(TopTable$Comparisons)
+
+Enrichment_results_CI <- test_TF_enrichment_CI(
+  comparisons = comparisons,
+  TopTable = TopTable,
+  gene_list = gene_list
+)
+
+
+# --------------------------------------------------
+# InteractionAtLeastOne
+# --------------------------------------------------
+
+Inter_02_genes <- unique(RNA_sets$Sig_Sp_inter_Traj02$DEGs$Gene)
+Inter_25_genes <- unique(RNA_sets$Sig_Sp_inter_Traj25$DEGs$Gene)
+Inter_515_genes <- unique(RNA_sets$Sig_Sp_inter_Traj515$DEGs$Gene)
+Inter_1530_genes <- unique(RNA_sets$Sig_Sp_inter_Traj1530$DEGs$Gene)
+
+InteractionAtLeastOne <- unique(c(
+  Inter_02_genes,
+  Inter_25_genes,
+  Inter_515_genes,
+  Inter_1530_genes
+))
+
+test_genes <- unique(na.omit(TopTable$Symbol))
+
+InteractionAtLeastOne_symbols <- TopTable %>%
+  filter(Gene %in% InteractionAtLeastOne) %>%
+  pull(Symbol) %>%
+  unique() %>%
+  na.omit()
+
+deg_genes <- intersect(
+  InteractionAtLeastOne_symbols,
+  test_genes
+)
+
+not_deg_genes <- setdiff(
+  test_genes,
+  deg_genes
+)
+
+tab <- matrix(
+  c(
+    sum(deg_genes %in% gene_list),
+    sum(deg_genes %notin% gene_list),
+    sum(not_deg_genes %in% gene_list),
+    sum(not_deg_genes %notin% gene_list)
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+fisher <- fisher.test(tab)
+
+InteractionAtLeastOne_result_CI <- data.frame(
+  Comparison = "InteractionAtLeastOne",
+  TF_DEG = tab[1, 1],
+  NonTF_DEG = tab[1, 2],
+  TF_not_DEG = tab[2, 1],
+  NonTF_not_DEG = tab[2, 2],
+  Odds_Ratio = as.numeric(fisher$estimate),
+  CI_lower = fisher$conf.int[1],
+  CI_upper = fisher$conf.int[2],
+  Fisher_p = fisher$p.value
+)
+
+
+# --------------------------------------------------
+# Combine results and adjust P-values
+# --------------------------------------------------
+
+Enrichment_results_CI <- bind_rows(
+  Enrichment_results_CI,
+  InteractionAtLeastOne_result_CI
+)
+
+Enrichment_results_CI$FDR <- p.adjust(
+  Enrichment_results_CI$Fisher_p,
+  method = "BH"
+)
+
+
+comparison_order <- c("HvC_Day0",
+                      "HvC_Day2",
+                      "HvC_Day5",
+                      "HvC_Day15",
+                      "HvC_Day30",
+                      "H_Day02",
+                      "H_Day25",
+                      "H_Day515",
+                      "H_Day1530",
+                      "C_Day02",
+                      "C_Day25",
+                      "C_Day515",
+                      "C_Day1530",
+                      "Sig_Sp_inter_Traj02",
+                      "Sig_Sp_inter_Traj25",
+                      "Sig_Sp_inter_Traj515",
+                      "Sig_Sp_inter_Traj1530",
+                      "InteractionAtLeastOne")
+
+Enrichment_results_CI <- Enrichment_results_CI %>%
+  mutate(
+    Comparison = factor(
+      Comparison,
+      levels = comparison_order
+    ),
+    Comparison_Group = case_when(
+      Comparison == "InteractionAtLeastOne" ~ "Interaction",
+      grepl("^HvC", Comparison) ~ "Species",
+      grepl("inter", Comparison) ~ "Interaction",
+      grepl("^[HC]_Day", Comparison) ~ "Trajectory",
+      TRUE ~ "Other"
+    ),
+    Significant = FDR < 0.01
+  )
+
+Enrichment_results_CI
+
+
+# --------------------------------------------------
+# Plot odds ratios with 95% CI
+# New function: plot_KZFP_OR_CI
+# --------------------------------------------------
+
+plot_TF_OR_CI <- function(df, comparison_group, ylim = NULL) {
+
+  plot_df <- df %>%
+    filter(Comparison_Group == comparison_group) %>%
+    mutate(
+      Significant = factor(
+        ifelse(FDR < 0.01, "Significant", "Not significant"),
+        levels = c("Not significant", "Significant")
+      )
+    )
+
+  p <- ggplot(
+    plot_df,
+    aes(
+      x = Comparison,
+      y = Odds_Ratio
+    )
+  ) +
+    geom_hline(
+      yintercept = 1,
+      linetype = "dashed",
+      color = "grey50"
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = CI_lower,
+        ymax = CI_upper
+      ),
+      width = 0.2
+    ) +
+    geom_point(
+      aes(
+        shape = Significant,
+        fill = Significant
+      ),
+      size = 3,
+      color = "black"
+    ) +
+    scale_shape_manual(
+      values = c(
+        "Not significant" = 21,
+        "Significant" = 21
+      )
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Not significant" = "white",
+        "Significant" = "black"
+      )
+    ) +
+    theme_bw() +
+    labs(
+      x = NULL,
+      y = "Odds Ratio",
+      title = comparison_group,
+      shape = "FDR < 0.01",
+      fill = "FDR < 0.01"
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      )
+    )
+
+  if (!is.null(ylim)) {
+    p <- p + coord_cartesian(ylim = ylim)
+  }
+
+  return(p)
+}
+
+Enrichment_results_CI <- readRDS("data/TEs/TF_Enrichment_CI.RDS")
+
+Enrichment_results_CI
+
+# --------------------------------------------------
+# Generate plots
+# --------------------------------------------------
+
+plot_TF_OR_CI(
+  Enrichment_results_CI,
+  "Species",
+  ylim = c(0, 2)
+)
+
+plot_TF_OR_CI(
+  Enrichment_results_CI,
+  "Trajectory",
+  ylim = c(0, 3)
+)
+
+plot_TF_OR_CI(
+  Enrichment_results_CI,
+  "Interaction",
+  ylim = c(0, 2.5)
+)
+
+
+# # --------------------------------------------------
+# # Save results
+# # --------------------------------------------------
+# 
+# saveRDS(
+#   Enrichment_results_CI,
+#   "data/TEs/TF_Enrichment_CI.RDS"
+# )
+
+
+```
 #### TFs-ZNF&KZFPs
 
 ```{r TF_noZNF_NoKZFP_enrichment,fig.height=5, fig.width=5}
@@ -3029,9 +3984,9 @@ plot_all
 TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 testing_list <- readRDS("data/TEs/KZFPs_list.RDS")
 
- testing <- "KZFP"
+testing <- "KZFP"
   
- 
+
 comparisons <- unique(TopTable$Comparisons)
 
 comparison_order <- c(
@@ -3136,25 +4091,28 @@ ggplot( testing_all, aes(Comparisons, absfc)) +
 ```
 
 
-```{r KZFP_Species_FC_example, fig.width=7, fig.height=3}
+```{r KZFP_Species_FC_example, fig.width=20, fig.height=30}
 
 # Load your processed TMM-normalized log2CPM expression data
 log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
 
 library(tidyverse)
 
-# 1. Reshape, parse sample names, and average replicates
+log2cpm <- readRDS("data/Cormotif/TACC/ToCormotif/Filt_logcpm_G1_SpTp_RNA_log2cpm_No4_TMM.RDS")
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+library(tidyverse)
+
 plot_data <- log2cpm %>% 
   as.data.frame() %>% 
-  rownames_to_column(var = "gene") %>% 
-  filter(gene == "ENSG00000196611") %>%  # Or your target gene
+  rownames_to_column(var = "Gene") %>% 
+  filter(Gene %in% Day2_Sig_DEG) %>%
   pivot_longer(
-    cols = -gene, 
+    cols = -Gene, 
     names_to = "sample", 
     values_to = "log2_cpm"
   ) %>% 
-  # Regex to pull out Species (H/C), Individual ID, and Day Number
-  # Matches e.g., H20682_Day15 -> Species="H", Individual="20682", Day="15"
   extract(
     sample, 
     into = c("Species", "Individual", "Day"), 
@@ -3164,56 +4122,67 @@ plot_data <- log2cpm %>%
     Day = as.numeric(Day),
     Species = recode(Species, "H" = "Human", "C" = "Chimpanzee")
   ) %>% 
-  # Group by Species and Day to calculate the mean across individuals
-  group_by(Species, Day) %>% 
+  group_by(Gene, Species, Day) %>% 
   summarise(
-    mean_log2_cpm = mean(log2_cpm),
-    median_log2_cpm = median(log2_cpm),
-    se_log2_cpm = sd(log2_cpm) / sqrt(n()), # Optional: Standard Error for error bars
+    mean_log2_cpm = mean(log2_cpm, na.rm = TRUE),
+    median_log2_cpm = median(log2_cpm, na.rm = TRUE),
+    se_log2_cpm = sd(log2_cpm, na.rm = TRUE) / sqrt(sum(!is.na(log2_cpm))),
     .groups = "drop"
   )
 
 # 2. Plot the clean averaged timeline
-ggplot(plot_data, aes(x = Day, y = mean_log2_cpm, color = Species, group = Species)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 3) +
-  # Optional: Adds shaded standard error bars to show variance between individuals
-  geom_errorbar(aes(ymin = mean_log2_cpm - se_log2_cpm, ymax = mean_log2_cpm + se_log2_cpm), 
-                width = 1, alpha = 0.5) +
-  scale_color_manual(values = c("Human" = "black", "Chimpanzee" = "grey")) +
-  scale_x_continuous(breaks = unique(plot_data$Day)) +
+ggplot(plot_data, aes(x = Day, y = mean_log2_cpm, 
+                      color = Species, group = Species)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(
+    aes(
+      ymin = mean_log2_cpm - se_log2_cpm,
+      ymax = mean_log2_cpm + se_log2_cpm
+    ),
+    width = 1,
+    alpha = 0.5
+  ) +
+  facet_wrap(~Gene, scales = "free_y") +
+  scale_color_manual(values = c(
+    "Human" = "black",
+    "Chimpanzee" = "grey"
+  )) +
+  scale_x_continuous(breaks = c(0, 2, 5, 15, 30)) +
   labs(
-    title = "Expression Time Course of ENSG00000196611 (MMP1)",
+    title = "KZFP Expression Across Cardiomyocyte Differentiation",
     subtitle = "Mean Expression Across Biological Replicates",
-    x = "Timepoint (Day)",
-    y = "Mean Expression Level (log2 CPM)",
+    x = "Developmental Stage (Day)",
+    y = "Mean Expression (log2 CPM)",
     color = "Species"
   ) +
-  theme_minimal(base_size = 14) +
+  theme_bw() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
+    strip.text = element_text(face = "bold"),
     legend.position = "bottom"
   )
 
 # 2. Plot the clean averaged timeline
-ggplot(plot_data, aes(x = Day, y = median_log2_cpm, color = Species, group = Species)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 3) +
-  # Optional: Adds shaded standard error bars to show variance between individuals
-  scale_color_manual(values = c("Human" = "black", "Chimpanzee" = "grey")) +
-  scale_x_continuous(breaks = unique(plot_data$Day)) +
+ggplot(plot_data, aes(x = Day, y = median_log2_cpm, 
+                      color = Species, group = Species)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~Gene, scales = "free_y") +
+  scale_color_manual(values = c(
+    "Human" = "black",
+    "Chimpanzee" = "grey"
+  )) +
+  scale_x_continuous(breaks = c(0, 2, 5, 15, 30)) +
   labs(
-    title = "Expression Time Course of 	ENSG00000196611 (MMP1)",
-    subtitle = "Mean Expression Across Biological Replicates",
-    x = "Timepoint (Day)",
-    y = "Median Expression Level (log2 CPM)",
+    title = "KZFP Expression Across Cardiomyocyte Differentiation",
+    subtitle = "Median Expression Across Biological Replicates",
+    x = "Developmental Stage (Day)",
+    y = "Median Expression (log2 CPM)",
     color = "Species"
   ) +
-  theme_minimal(base_size = 14) +
+  theme_bw() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
+    strip.text = element_text(face = "bold"),
     legend.position = "bottom"
   )
 
@@ -3241,6 +4210,7 @@ TopTable_Inter <- TopTable %>%
 
 TopTable_HvC <- TopTable %>%
   filter(grepl("^HvC_", Comparisons)) %>%
+  filter(Symbol %in% Day2_Sig_DEG) %>% 
   group_by(Symbol) %>%
   mutate(
     DEG_any = any(!is.na(adj.P.Val) & adj.P.Val < 0.05)
@@ -4562,79 +5532,7 @@ plot_Fate_OR(Fate_KZFP_results)
 
 ```
 
-```{r ZNF_Fate_Species,fig.height=4, fig.width=7}
 
-TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
-
-ZNFs <- readRDS("data/TEs/ZNFs.RDS")
-
-ZNFs_list <- ZNFs$`Approved symbol`
-
-KZFPs <- readRDS("data/TEs/KZFPs.RDS")
-
-KZFPs_list <- KZFPs$Label
-
-overlap <- intersect(ZNFs_list, KZFPs_list)
-
-gene_set <- setdiff(ZNFs_list, overlap)
-
-# Add fate annotation to full TopTable
-TopTable_Fate <- TopTable %>%
-  filter(
-    Comparisons %in% c(
-      "H_Day02", "H_Day25","H_Day515", "H_Day1530",
-      "C_Day02", "C_Day25","C_Day515", "C_Day1530"
-    )
-  ) %>%
-  left_join(
-    TopTable_HvC_DEG_Fate %>%
-      dplyr::select(Gene, Comparisons, Fate),
-    by = c("Gene", "Comparisons")
-  ) %>%
-  mutate(
-    Fate = ifelse(is.na(Fate), "Non-DEG", Fate)
-  )
-
-comparisons <- unique(TopTable_Fate$Comparisons)
-
-Fate_ZNF_results <- test_fate_enrichment(
-  comparisons = unique(TopTable_Fate$Comparisons),
-  TopTable_Fate = TopTable_Fate,
-  gene_list = gene_set
-)
-
-
-# FDR correction within each HvC comparison
-Fate_ZNF_results <- Fate_ZNF_results %>%
-  group_by(Comparison) %>%
-  mutate(
-    FDR = p.adjust(Fisher_p, method = "BH")
-  ) %>%
-  ungroup()
-
-
-# Order developmental stages
-comparison_order <- c(
-  "H_Day02", "H_Day25","H_Day515", "H_Day1530",
-      "C_Day02", "C_Day25","C_Day515", "C_Day1530"
-)
-
-
-Fate_ZNF_results <- Fate_ZNF_results %>%
-  mutate(
-    Comparison = factor(
-      Comparison,
-      levels = comparison_order
-    ),
-    Significant = FDR < 0.05
-  )
-
-Fate_ZNF_results
-
-plot_Fate_OR(Fate_ZNF_results)
-
-```
 
 ```{r KZFP_Fate_Species2}
 KZFP_Toptable <- readRDS("data/TEs/KZFPs_Toptable.RDS")
@@ -4646,48 +5544,53 @@ Day0_Sig_DEG <- KZFP_Toptable_HvC_Day0_DEG$Symbol
 
 KZFP_Toptable_HvC_Day2_DEG <- KZFP_Toptable %>% 
   filter(Comparisons == "HvC_Day2") %>% 
-  filter(adj.P.Val < 0.05) %>% 
-  filter(logFC < 0)
+  filter(adj.P.Val < 0.05) 
 Day2_Sig_DEG <- KZFP_Toptable_HvC_Day2_DEG$Symbol
-Day2_Sig_DEG
 
 KZFP_Toptable_HvC_Day5_DEG <- KZFP_Toptable %>% 
   filter(Comparisons == "HvC_Day5") %>% 
-  filter(adj.P.Val < 0.05) %>% 
-  filter(logFC < 0)
+  filter(adj.P.Val < 0.05) 
 Day5_Sig_DEG <- KZFP_Toptable_HvC_Day5_DEG$Symbol
 
 KZFP_Toptable_HvC_Day15_DEG <- KZFP_Toptable %>% 
   filter(Comparisons == "HvC_Day15") %>% 
-  filter(adj.P.Val < 0.05) %>% 
-  filter(logFC < 0)
+  filter(adj.P.Val < 0.05) 
 Day15_Sig_DEG <- KZFP_Toptable_HvC_Day15_DEG$Symbol
 
 KZFP_Toptable_HvC_Day30_DEG <- KZFP_Toptable %>% 
   filter(Comparisons == "HvC_Day30") %>% 
-  filter(adj.P.Val < 0.05) %>% 
-  filter(logFC < 0)
+  filter(adj.P.Val < 0.05)
 Day30_Sig_DEG <- KZFP_Toptable_HvC_Day30_DEG$Symbol
 
-Day0_Sig_DEG_Unique <- setdiff(
-  Day0_Sig_DEG,
-  c(
+D2_specific_DEG <- Reduce(
+  setdiff,
+  list(
     Day2_Sig_DEG,
+    Day0_Sig_DEG,
     Day5_Sig_DEG,
     Day15_Sig_DEG,
     Day30_Sig_DEG
   )
 )
 
+D2_specific_DEG
 
-  
+KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
+
+KZFP_Day2_specific <- KZFP_metadata_Hardy2023 %>% 
+  filter(KZFP %in% D2_specific_DEG) %>% 
+  pull(`Target Subfamily`)
+
+KZFP_Day2_specific
+
+
 ```
 
 #### Venn and Proportions
 
 ##### KZFP
 
-```{r KZFP_Species_Venn, fig.width=5, fig.height=5}
+```{r KZFP_Species_Venn, fig.width=7, fig.height=7}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
 
@@ -4718,13 +5621,28 @@ genes_list <- list(
   Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
 )
 
+Total_genes <- length(unique(unlist(genes_list)))
+
 ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "darkgreen") +
-  theme(
-    panel.grid = element_blank(),
-    panel.background = element_blank(),
-    axis.text = element_text(size = 10),
-    plot.title = element_text(face = "bold")
+  scale_fill_gradient(low = "white", high = "darkred") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkred") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
   )
 
 
@@ -4852,11 +5770,372 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 ```
 
+```{r KZFP_Species_Venn_Moderate, fig.width=7, fig.height=7}
+TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(Symbol %in% KZFPs_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "darkred") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkred") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+
+df <- TopTable %>%
+  filter(Symbol %in% KZFPs_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+shared_all <- Reduce(intersect, genes)
+
+get_fate <- function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(
+    g,
+    unlist(genes[names(genes) != day])
+  )
+
+  shared_all_day <- intersect(
+    g,
+    shared_all
+  )
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Day = day,
+    Specific = length(specific),
+    Shared_partial = length(shared_partial),
+    Shared_all = length(shared_all_day)
+  )
+}
+
+plot_df <- do.call(
+  rbind,
+  lapply(names(genes), get_fate)
+)
+
+library(tidyr)
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of KZFP DEGs at adj.p < 0.01",
+    fill = "",
+    title = "Fate of HvC KZFP DEGs"
+  )
+
+
+library(dplyr)
+library(tidyr)
+
+plot_long_prop <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+plot_long_prop$Day <- factor(
+  plot_long_prop$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of KZFP DEGs at adj.p < 0.01",
+    fill = "",
+    title = "Fate of HvC KZFP DEGs (normalized)"
+  )
+
+```
+
+
+```{r KZFP_Species_Venn_strict, fig.width=7, fig.height=7}
+TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(Symbol %in% KZFPs_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.001
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "darkred") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.001:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkred") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.001:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+
+df <- TopTable %>%
+  filter(Symbol %in% KZFPs_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.001
+  ) %>%
+  filter(DEG)
+
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+shared_all <- Reduce(intersect, genes)
+
+get_fate <- function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(
+    g,
+    unlist(genes[names(genes) != day])
+  )
+
+  shared_all_day <- intersect(
+    g,
+    shared_all
+  )
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Day = day,
+    Specific = length(specific),
+    Shared_partial = length(shared_partial),
+    Shared_all = length(shared_all_day)
+  )
+}
+
+plot_df <- do.call(
+  rbind,
+  lapply(names(genes), get_fate)
+)
+
+library(tidyr)
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of KZFP DEGs at adj.p < 0.001",
+    fill = "",
+    title = "Fate of HvC KZFP DEGs"
+  )
+
+
+library(dplyr)
+library(tidyr)
+
+plot_long_prop <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+plot_long_prop$Day <- factor(
+  plot_long_prop$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of KZFP DEGs at adj.p < 0.001",
+    fill = "",
+    title = "Fate of HvC KZFP DEGs (normalized)"
+  )
+
+```
 ##### ZNF-KZFP
 
 ```{r ZNF_NoKZFP_Species_Venn, fig.width=5, fig.height=5}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# fill_color = c("darkblue", "darkgreen", "darkred"),
 
 KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
 TopTable <- readRDS(
@@ -4867,9 +6146,11 @@ ZNFs <- readRDS("data/TEs/ZNFs.RDS")
 
 ZNFs_list <- ZNFs$`Approved symbol`
 
-overlap <- intersect(ZNFs_list,KZFPs_list)
+gene_list <- ZNFs$`Approved symbol`
 
-gene_list <- setdiff(ZNFs_list,overlap)
+# overlap <- intersect(ZNFs_list,KZFPs_list)
+# 
+# gene_list <- setdiff(ZNFs_list,overlap)
 
 
 library(dplyr)
@@ -5028,12 +6309,12 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
 
 ```
 
-##### TF-ZNF&KZFP
+##### TF
 
-```{r TF_noZNF_NoKZFP_Species_Venn, fig.width=5, fig.height=5}
+```{r TF_noZNF_NoKZFP_Species_Venn, fig.width=7, fig.height=7}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
+# fill_color = c("darkblue", "darkgreen", "darkred"),
 
 tf_df <- readRDS("data/TEs/tf_df.RDS")
 
@@ -5052,7 +6333,9 @@ ZNFs_list <- ZNFs$`Approved symbol`
 
 overlap <- intersect(tf_list,ZNFs_list)
 
-gene_list <- setdiff(tf_list,overlap)
+# gene_list <- setdiff(tf_list,overlap)
+
+gene_list <-  tf_list
 
 library(dplyr)
 library(stringr)
@@ -5076,12 +6359,27 @@ genes_list <- list(
   Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
 )
 
+Total_genes <- length(unique(unlist(genes_list)))
+
 ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "darkgreen") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
   theme(
     panel.grid = element_blank(),
     panel.background = element_blank(),
-    axis.text = element_text(size = 10),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
     plot.title = element_text(face = "bold")
   )
 
@@ -5165,9 +6463,9 @@ ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
   theme_bw() +
   labs(
     x = "Developmental stage",
-    y = "Number of TFs-ZNF&KZFP DEGs",
+    y = "Number of TFs DEGs",
     fill = "",
-    title = "Fate of HvC TFs-ZNF&KZFP DEGs across development"
+    title = "Fate of HvC TFs DEGs across development"
   )
 
 
@@ -5203,24 +6501,420 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   theme_bw() +
   labs(
     x = "Developmental stage",
-    y = "Proportion of TFs-ZNF&KZFP DEGs",
+    y = "Proportion of TFs DEGs",
     fill = "",
-    title = "Fate of HvC TFs-ZNF&KZFP DEGs across development (normalized)"
+    title = "Fate of HvC TFs DEGs across development (normalized)"
+  )
+
+```
+```{r TF_noZNF_NoKZFP_Species_Venn_moderate, fig.width=7, fig.height=7}
+TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# fill_color = c("darkblue", "darkgreen", "darkred"),
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+tf_list <- tf_df$Gene
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+overlap <- intersect(tf_list,ZNFs_list)
+
+# gene_list <- setdiff(tf_list,overlap)
+
+gene_list <-  tf_list
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at Adj.P<0.01:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at Adj.P<0.01:", Total_genes)) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+
+
+df <- TopTable %>%
+  filter(Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+shared_all <- Reduce(intersect, genes)
+
+get_fate <- function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(
+    g,
+    unlist(genes[names(genes) != day])
+  )
+
+  shared_all_day <- intersect(
+    g,
+    shared_all
+  )
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Day = day,
+    Specific = length(specific),
+    Shared_partial = length(shared_partial),
+    Shared_all = length(shared_all_day)
+  )
+}
+
+plot_df <- do.call(
+  rbind,
+  lapply(names(genes), get_fate)
+)
+
+library(tidyr)
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of TFs DEGs at Adj.P<0.01",
+    fill = "",
+    title = "Fate of HvC TFs DEGs across development"
+  )
+
+
+library(dplyr)
+library(tidyr)
+
+plot_long_prop <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+plot_long_prop$Day <- factor(
+  plot_long_prop$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of TFs DEGs at Adj.P<0.01",
+    fill = "",
+    title = "Fate of HvC TFs DEGs across development (normalized)"
+  )
+
+```
+```{r TF_noZNF_NoKZFP_Species_Venn_strict, fig.width=7, fig.height=7}
+TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# fill_color = c("darkblue", "darkgreen", "darkred"),
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+tf_list <- tf_df$Gene
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+overlap <- intersect(tf_list,ZNFs_list)
+
+# gene_list <- setdiff(tf_list,overlap)
+
+gene_list <-  tf_list
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+df <- TopTable %>%
+  filter(Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.001
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at Adj.P<0.001:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at Adj.P<0.001:", Total_genes)) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+
+
+df <- TopTable %>%
+  filter(Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.001
+  ) %>%
+  filter(DEG)
+
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+shared_all <- Reduce(intersect, genes)
+
+get_fate <- function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(
+    g,
+    unlist(genes[names(genes) != day])
+  )
+
+  shared_all_day <- intersect(
+    g,
+    shared_all
+  )
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Day = day,
+    Specific = length(specific),
+    Shared_partial = length(shared_partial),
+    Shared_all = length(shared_all_day)
+  )
+}
+
+plot_df <- do.call(
+  rbind,
+  lapply(names(genes), get_fate)
+)
+
+library(tidyr)
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of TFs DEGs at Adj.P<0.001",
+    fill = "",
+    title = "Fate of HvC TFs DEGs across development"
+  )
+
+
+library(dplyr)
+library(tidyr)
+
+plot_long_prop <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+plot_long_prop$Day <- factor(
+  plot_long_prop$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of TFs DEGs at Adj.P<0.001",
+    fill = "",
+    title = "Fate of HvC TFs DEGs across development (normalized)"
   )
 
 ```
 
+
 ##### DEGs-TFs
 
-```{r DEGs_noTF_Species_Venn, fig.width=5, fig.height=5}
+```{r DEGs_noTF_Species_Venn, fig.width=7, fig.height=7}
 TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
 RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
-
+# fill_color = c("darkblue", "darkgreen", "darkred"),
 
 tf_df <- readRDS("data/TEs/tf_df.RDS")
 
 gene_list <- tf_df$Gene
 
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
 
 library(dplyr)
 library(stringr)
@@ -5244,15 +6938,29 @@ genes_list <- list(
   Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
 )
 
+Total_genes <- length(unique(unlist(genes_list)))
+
 ggVennDiagram(genes_list, label = "count") +
-  scale_fill_gradient(low = "white", high = "darkgreen") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes:", Total_genes)) +
   theme(
     panel.grid = element_blank(),
     panel.background = element_blank(),
-    axis.text = element_text(size = 10),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
     plot.title = element_text(face = "bold")
   )
-
 
 df <- TopTable %>%
   filter(!Symbol %in% gene_list) %>% 
@@ -5377,6 +7085,374 @@ ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
   )
 
 ```
+```{r DEGs_noTF_Species_Venn_moderate, fig.width=7, fig.height=7}
+TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# fill_color = c("darkblue", "darkgreen", "darkred"),
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+gene_list <- tf_df$Gene
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+df <- TopTable %>%
+  filter(!Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.01:", Total_genes)) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+
+df <- TopTable %>%
+  filter(!Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.01
+  ) %>%
+  filter(DEG)
+
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+shared_all <- Reduce(intersect, genes)
+
+get_fate <- function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(
+    g,
+    unlist(genes[names(genes) != day])
+  )
+
+  shared_all_day <- intersect(
+    g,
+    shared_all
+  )
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Day = day,
+    Specific = length(specific),
+    Shared_partial = length(shared_partial),
+    Shared_all = length(shared_all_day)
+  )
+}
+
+plot_df <- do.call(
+  rbind,
+  lapply(names(genes), get_fate)
+)
+
+library(tidyr)
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of DEGs-TF at adj.p < 0.01",
+    fill = "",
+    title = "Fate of HvC DEGs-TF across development "
+  )
+
+
+library(dplyr)
+library(tidyr)
+
+plot_long_prop <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+plot_long_prop$Day <- factor(
+  plot_long_prop$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of DEGs-TF at adj.p < 0.01",
+    fill = "",
+    title = "Fate of HvC DEGs-TF across development (normalized)"
+  )
+
+```
+
+```{r DEGs_noTF_Species_Venn_strict, fig.width=7, fig.height=7}
+TopTable_HvC_DEG_Fate <- readRDS("data/DGE/TopTable_HvC_DEG_Fate.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+# fill_color = c("darkblue", "darkgreen", "darkred"),
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+gene_list <- tf_df$Gene
+
+
+library(dplyr)
+library(stringr)
+
+timepoints <- c("Day0","Day2","Day5","Day15","Day30")
+
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+df <- TopTable %>%
+  filter(!Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Time = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.001
+  ) %>%
+  filter(DEG)
+
+genes_list <- list(
+  Day0  = df %>% filter(Time == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Time == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Time == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Time == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Time == "Day30") %>% pull(Gene) %>% unique()
+)
+
+Total_genes <- length(unique(unlist(genes_list)))
+
+ggVennDiagram(genes_list, label = "count") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.001:", Total_genes)) +
+ theme(
+  panel.grid = element_blank(),
+  panel.background = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_text(face = "bold")
+  )
+
+ggVennDiagram(genes_list, label = "percent") +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(subtitle = paste("Total unique genes at adj.p < 0.001:", Total_genes)) +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+
+df <- TopTable %>%
+  filter(!Symbol %in% gene_list) %>% 
+  filter(str_detect(Comparisons, "^HvC_Day")) %>%
+  mutate(
+    Stage = str_extract(Comparisons, "Day[0-9]+"),
+    DEG = adj.P.Val < 0.001
+  ) %>%
+  filter(DEG)
+
+genes <- list(
+  Day0  = df %>% filter(Stage == "Day0") %>% pull(Gene) %>% unique(),
+  Day2  = df %>% filter(Stage == "Day2") %>% pull(Gene) %>% unique(),
+  Day5  = df %>% filter(Stage == "Day5") %>% pull(Gene) %>% unique(),
+  Day15 = df %>% filter(Stage == "Day15") %>% pull(Gene) %>% unique(),
+  Day30 = df %>% filter(Stage == "Day30") %>% pull(Gene) %>% unique()
+)
+
+days <- names(genes)
+
+shared_all <- Reduce(intersect, genes)
+
+get_fate <- function(day) {
+
+  g <- genes[[day]]
+
+  specific <- setdiff(
+    g,
+    unlist(genes[names(genes) != day])
+  )
+
+  shared_all_day <- intersect(
+    g,
+    shared_all
+  )
+
+  shared_partial <- setdiff(
+    setdiff(g, specific),
+    shared_all_day
+  )
+
+  data.frame(
+    Day = day,
+    Specific = length(specific),
+    Shared_partial = length(shared_partial),
+    Shared_all = length(shared_all_day)
+  )
+}
+
+plot_df <- do.call(
+  rbind,
+  lapply(names(genes), get_fate)
+)
+
+library(tidyr)
+
+plot_long <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  )
+
+plot_long$Day <- factor(
+  plot_long$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long, aes(x = Day, y = Count, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Number of DEGs-TF at adj.p < 0.001",
+    fill = "",
+    title = "Fate of HvC DEGs-TF across development "
+  )
+
+
+library(dplyr)
+library(tidyr)
+
+plot_long_prop <- plot_df %>%
+  pivot_longer(
+    cols = c(Specific, Shared_partial, Shared_all),
+    names_to = "Category",
+    values_to = "Count"
+  ) %>%
+  group_by(Day) %>%
+  mutate(
+    Prop = Count / sum(Count)
+  ) %>%
+  ungroup()
+
+plot_long_prop$Day <- factor(
+  plot_long_prop$Day,
+  levels = c("Day0","Day2","Day5","Day15","Day30")
+)
+
+library(ggplot2)
+
+ggplot(plot_long_prop, aes(x = Day, y = Prop, fill = Category)) +
+  geom_col() +
+  scale_fill_manual(values = c(
+    "Specific" = "#D55E00",
+    "Shared_partial" = "#0072B2",
+    "Shared_all" = "#009E73"
+  )) +
+  theme_bw() +
+  labs(
+    x = "Developmental stage",
+    y = "Proportion of DEGs-TF at adj.p < 0.001",
+    fill = "",
+    title = "Fate of HvC DEGs-TF across development (normalized)"
+  )
+
+```
+
 ### Trajectory
 
 ```{r KZFP_Trajectory_intersects}
@@ -5568,6 +7644,506 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
   )
 ```
 
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4_moderate, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFP_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels) %>% 
+  dplyr::filter(Symbol %in% KZFP_list)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.01
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of KZFP DEGs at Adj. P < 0.01",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of KZFP DEGs at Adj. P < 0.01",
+    fill = "",
+    pattern = ""
+  )
+```
+
+```{r RNASeq_DGE_Trajectory_Proportions_RLCOMP_G1_4SpTp_No4_4_strict, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFP_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels) %>% 
+  dplyr::filter(Symbol %in% KZFP_list)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.001
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of KZFP DEGs at Adj. P < 0.001",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of KZFP DEGs at Adj. P < 0.001",
+    fill = "",
+    pattern = ""
+  )
+```
+
+```{r KZFP_Species_directions}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
+
+comparisons <- c(
+  "Sig_Sp_inter_Traj02",
+  "Sig_Sp_inter_Traj25",
+  "Sig_Sp_inter_Traj515",
+  "Sig_Sp_inter_Traj1530"
+)
+
+KZFP_FC <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in% KZFPs_list
+  ) %>%
+  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
+
+KZFP_DEG <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in% KZFPs_list,
+    adj.P.Val < 0.05
+  ) %>%
+  dplyr::select(Comparisons, Symbol, logFC, adj.P.Val)
+
+KZFP_DEG %>%
+  arrange(Comparisons, desc(logFC))
+
+KZFP_DEG_direction <- KZFP_DEG %>%
+  mutate(
+    Direction = case_when(
+      # Species x trajectory interactions
+      grepl("^Sig_Sp_inter", Comparisons) & logFC > 0 ~ "Human-Chimp difference increased",
+      grepl("^Sig_Sp_inter", Comparisons) & logFC < 0 ~ "Human-Chimp difference decreased",
+      
+      TRUE ~ "Unknown"
+    )
+  ) %>%
+  dplyr::count(Comparisons, Direction)
+
+KZFP_DEG_direction
+```
+
+
+```{r KZFP_Interactions_directions2, fig.width=5, fig.height=5}
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+KZFP_metadata_Hardy2023 <- readRDS("data/TEs/KZFPs_ages.RDS")
+
+KZFP_metadata_Hardy2023 <- KZFP_metadata_Hardy2023 %>%
+  separate(
+    `TE family`,
+    into = c("class", "family"),
+    sep = "/"
+  )
+
+comparisons <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30"
+)
+
+KZFP_DEG <- TopTable %>%
+  filter(
+    Comparisons %in% comparisons,
+    Symbol %in% KZFPs_list,
+    adj.P.Val < 0.05
+  ) %>%
+  dplyr::select(Gene,logFC, Comparisons,Symbol)
+
+
+KZFP_Interactions_meta <- KZFP_DEG %>%
+  left_join(
+    KZFP_metadata_Hardy2023,
+    by = c("Symbol" = "KZFP")
+  )
+
+comparison_order <- c(
+  "HvC_Day0",
+  "HvC_Day2",
+  "HvC_Day5",
+  "HvC_Day15",
+  "HvC_Day30"
+)
+
+KZFP_Interactions_meta <- KZFP_Interactions_meta %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    ))
+
+KZFP_Summary <- KZFP_Interactions_meta %>%
+  group_by(Comparisons) %>%
+  summarise(
+    n_KZFPs = n_distinct(Gene),
+    .groups = "drop"
+  )
+
+KZFP_Summary
+
+TE_Summary_Class <- KZFP_Interactions_meta %>%
+  group_by(Comparisons, class) %>%
+  summarise(
+    n = n_distinct(Gene),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = class,
+    values_from = n,
+    values_fill = 0
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  ) %>%
+  arrange(Comparisons) %>%
+  mutate(
+    Comparisons = as.character(Comparisons)
+  )
+
+TE_Summary_Class
+
+TE_Summary_Family <- KZFP_Interactions_meta %>%
+  group_by(Comparisons, family) %>%
+  summarise(
+    n = n_distinct(Gene),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = family,
+    values_from = n,
+    values_fill = 0
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  ) %>%
+  arrange(Comparisons) %>%
+  mutate(
+    Comparisons = as.character(Comparisons)
+  )
+
+TE_Summary_Family
+
+TE_Summary_Family <- KZFP_Interactions_meta %>%
+  filter(Comparisons == "HvC_Day2") %>%
+  group_by(Comparisons, `family`) %>%
+  summarise(
+    n = n(),
+    .groups = "drop"
+  )
+
+TE_Summary_Family
+
+TE_Summary_Subfamily <- KZFP_Interactions_meta %>%
+  filter(Comparisons %in% comparisons) %>%
+  group_by(`Target Subfamily`,Comparisons) %>%
+  summarise(
+    n = n_distinct(Symbol),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = `Target Subfamily`,
+    values_from = n,
+    values_fill = 0
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  ) %>%
+  arrange(Comparisons) %>%
+  mutate(
+    Comparisons = as.character(Comparisons)
+  )
+
+TE_Summary_Subfamily
+
+TE_ERV1_Repname <- KZFP_Interactions_meta %>%
+  filter(Comparisons %in% comparisons) %>%
+  filter(family == "ERV1") %>%
+  group_by(`Target Subfamily`,Comparisons) %>%
+  summarise(
+    n = n_distinct(Symbol),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = `Target Subfamily`,
+    values_from = n,
+    values_fill = 0
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  ) %>%
+  arrange(Comparisons) %>%
+  mutate(
+    Comparisons = as.character(Comparisons)
+  )
+
+TE_ERV1_Repname
+
+TE_Alu_Repname <- KZFP_Interactions_meta %>%
+  filter(Comparisons %in% comparisons) %>%
+  filter(family == "Alu") %>%
+  group_by(`Target Subfamily`,Comparisons) %>%
+  summarise(
+    n = n_distinct(Symbol),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = `Target Subfamily`,
+    values_from = n,
+    values_fill = 0
+  ) %>%
+  mutate(
+    Comparisons = factor(
+      Comparisons,
+      levels = comparison_order
+    )
+  ) %>%
+  arrange(Comparisons) %>%
+  mutate(
+    Comparisons = as.character(Comparisons)
+  )
+
+TE_Alu_Repname
+
+```
+
 ##### ZNFs-KZFPs
 
 ```{r ZNF_noKZFP_Trajectory, fig.width=5, fig.height=5}
@@ -5741,8 +8317,9 @@ remove <- unique(ZNFs_list,KZFPs_list)
 
 overlap <- intersect(tf_list,remove)
 
-gene_list <- setdiff(tf_list,overlap)
+# gene_list <- setdiff(tf_list,overlap)
 
+gene_list <-tf_list 
 
 traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
                  "C_Day02","C_Day25","C_Day515","C_Day1530")
@@ -5829,7 +8406,7 @@ ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
   theme_minimal(base_size = 14) +
   labs(
     x = "Developmental Stage",
-    y = "Proportion of TF-ZNF&KZFP DEGs",
+    y = "Proportion of TF DEGs",
     fill = "",
     pattern = ""
   )
@@ -5860,10 +8437,307 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
   theme_minimal(base_size = 14) +
   labs(
     x = "Developmental Stage",
-    y = "Number of TF-ZNF&KZFP DEGs",
+    y = "Number of TF DEGs",
     fill = "",
     pattern = ""
   )
+```
+```{r TF_noZNF_noKZFP_Trajectory_moderate, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+tf_list <- tf_df$Gene
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+remove <- unique(ZNFs_list,KZFPs_list)
+
+overlap <- intersect(tf_list,remove)
+
+# gene_list <- setdiff(tf_list,overlap)
+
+gene_list <- tf_list
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels) %>% 
+  dplyr::filter(Symbol %in% gene_list)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.01
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of TF at Adj.Pval < 0.01",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of TF  at Adj.Pval < 0.01",
+    fill = "",
+    pattern = ""
+  )
+```
+```{r TF_noZNF_noKZFP_Trajectory_strict, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+tf_list <- tf_df$Gene
+
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+TopTable <- readRDS(
+  "data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS"
+)
+
+ZNFs <- readRDS("data/TEs/ZNFs.RDS")
+
+ZNFs_list <- ZNFs$`Approved symbol`
+
+remove <- unique(ZNFs_list,KZFPs_list)
+
+overlap <- intersect(tf_list,remove)
+
+# gene_list <- setdiff(tf_list,overlap)
+
+gene_list <- tf_list
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels) %>% 
+  dplyr::filter(Symbol %in% gene_list)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.001
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of TF at Adj.Pval < 0.001",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of TF  at Adj.Pval < 0.001",
+    fill = "",
+    pattern = ""
+  )
+
 ```
 
 ##### DEGs-TFs
@@ -5999,7 +8873,270 @@ ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
     pattern = ""
   )
 ```
+```{r DEGS_noTFs_Trajectory_moderate, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+gene_list <- tf_df$Gene
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels) %>% 
+  dplyr::filter(!Symbol %in% gene_list)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.01
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of DEGs-TFs at Adj.P. < 0.01",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of DEGs-TFs at Adj.P. < 0.01",
+    fill = "",
+    pattern = ""
+  )
+```
+```{r DEGS_noTFs_Trajectory_strict, fig.width=5, fig.height=5}
+
+TopTable <- readRDS("data/DGE/TopTable_Symbols_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+RNA_sets <- readRDS("data/DGE/RNA_sets_Filt_logcpm_G1_SpTp_RNA_fc_NoRep_No4.RDS")
+KZFPs_list <- readRDS("data/TEs/KZFPs_list.RDS")
+
+tf_df <- readRDS("data/TEs/tf_df.RDS")
+
+gene_list <- tf_df$Gene
+
+traj_levels <- c("H_Day02","H_Day25","H_Day515","H_Day1530",
+                 "C_Day02","C_Day25","C_Day515","C_Day1530")
+
+df <- TopTable %>%
+  dplyr::filter(Comparisons %in% traj_levels) %>% 
+  dplyr::filter(!Symbol %in% gene_list)
+
+df <- df %>%
+  dplyr::mutate(
+    Species = ifelse(grepl("^H", Comparisons), "Human", "Chimp"),
+    Stage = sub(".*_(Day[0-9]+)", "\\1", Comparisons),
+    DEG = adj.P.Val < 0.001
+  )
+
+df_deg <- df %>%
+  dplyr::filter(DEG)
+
+library(dplyr)
+
+df_deg2 <- df_deg %>%
+  group_by(Gene, Stage, Species) %>%
+  summarise(.groups = "drop")
+
+df_overlap <- df_deg2 %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = Gene,
+    values_fn = length,
+    values_fill = 0
+  )
+
+df_flags <- df_deg2 %>%
+  mutate(flag = TRUE) %>%
+  tidyr::pivot_wider(
+    names_from = Species,
+    values_from = flag,
+    values_fill = FALSE
+  ) %>%
+  dplyr::mutate(
+    category = case_when(
+      Human & Chimp ~ "Shared",
+      Human ~ "Human only",
+      Chimp ~ "Chimp only"
+    )
+  )
+
+plot_df <- df_flags %>%
+  group_by(Stage, category) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Stage) %>%
+  mutate(prop = n / sum(n))
+
+plot_df$Stage <- factor(
+  plot_df$Stage,
+  levels = c("Day02", "Day25", "Day515", "Day1530")
+)
+
+library(ggpattern)
+
+ggplot(plot_df, aes(x = Stage, y = prop, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Proportion of DEGs-TFs at Adj.P. < 0.001",
+    fill = "",
+    pattern = ""
+  )
+
+ggplot(plot_df, aes(x = Stage, y = n, fill = category)) +
+
+  geom_col_pattern(
+    aes(pattern = category),
+    colour = "black",
+    pattern_colour = "black",
+    pattern_fill = "white",
+    pattern_density = 0.4,
+    pattern_spacing = 0.02
+  ) +
+
+  scale_fill_manual(values = c(
+    "Shared" = "grey70",
+    "Human only" = "black",
+    "Chimp only" = "white"
+  )) +
+
+  scale_pattern_manual(values = c(
+    "Shared" = "stripe",
+    "Human only" = "none",
+    "Chimp only" = "none"
+  )) +
+
+  theme_minimal(base_size = 14) +
+  labs(
+    x = "Developmental Stage",
+    y = "Number of DEGs-TFs at Adj.P. < 0.001",
+    fill = "",
+    pattern = ""
+  )
+```
 ### Interaction
+
 
 ```{r KZFP_Interactions,fig.height=4, fig.width=7}
 
@@ -6317,8 +9454,7 @@ log2cpm <- cpm(dge, log=TRUE)
 
 # Get unique KZFPs identified as interaction DEGs
 KZFP_plot_genes <- KZFP_Interactions_meta %>%
-  filter(Comparisons == "Sig_Sp_inter_Traj25") %>% 
-  filter(Symbol == "ZFP57") %>% 
+  filter(Symbol == "ZNF85") %>% 
   distinct(Gene, Symbol)
 
 plot_individual <- log2cpm %>%

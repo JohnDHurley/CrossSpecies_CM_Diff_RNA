@@ -495,11 +495,14 @@ ggplot(total_reads_df, aes(x = Species, y = Usable_Fragments)) +
 
 total_reads_df <- readRDS("data/Raw_Data/concat/total_reads_df.RDS")
 
+total_reads_df <- total_reads_df %>% 
+  filter(!(Timepoint == "Day4"))
+
 ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = "black", shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   facet_wrap(~Species, scales = "free_x") +
   scale_shape_manual(
     values = c(
@@ -521,9 +524,9 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Total_Reads)) +
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = "black", shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   scale_shape_manual(
     values = c(
       "H" = 17,  # triangle
@@ -545,9 +548,9 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Mapped_Reads)) +
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = "black", shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   scale_shape_manual(
     values = c(
       "H" = 17,  # triangle
@@ -569,9 +572,9 @@ ggplot(total_reads_df, aes(x = Timepoint, y = Percent_Mapped)) +
 
 ggplot(total_reads_df, aes(x = Timepoint, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Timepoint), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Individual, shape = Species), width = 0.15, size = 3) +
+   geom_jitter(aes(color = "black", shape = Species), width = 0.15, size = 3) +
   scale_fill_manual(values = ann_colors$timepoint_cor) +
-  scale_color_manual(values = ann_colors$individual_cor) +
+  scale_color_manual(values = ann_colors$timepoint_cor) +
   scale_shape_manual(
     values = c(
       "H" = 17,  # triangle
@@ -656,9 +659,9 @@ ggplot(total_reads_df, aes(x = Individual, y = Total_Reads)) +
 
 ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
+    geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
   scale_shape_manual(
     values = c(
       "H" = 17,  # triangle
@@ -680,9 +683,9 @@ ggplot(total_reads_df, aes(x = Individual, y = Mapped_Reads)) +
 
 ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
+    geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
   scale_shape_manual(
     values = c(
       "H" = 17,  # triangle
@@ -704,9 +707,9 @@ ggplot(total_reads_df, aes(x = Individual, y = Percent_Mapped)) +
 
 ggplot(total_reads_df, aes(x = Individual, y = Usable_Fragments)) +
   geom_boxplot(aes(fill = Individual), alpha = 0.3, outlier.shape = NA) +
-  geom_jitter(aes(color = Timepoint, shape = Species), width = 0.2, size = 3) +
+  geom_jitter(aes(color = Individual, shape = Species), width = 0.2, size = 3) +
   scale_fill_manual(values = ann_colors$individual_cor) +
-  scale_color_manual(values = ann_colors$timepoint_cor) +
+  scale_color_manual(values = ann_colors$individual_cor) +
   scale_shape_manual(
     values = c(
       "H" = 17,  # triangle
@@ -1219,12 +1222,12 @@ plot <- ggplot(summary_df_No4,
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 12,
-  height = 6
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 12,
+#   height = 6
+# )
 
 # saveRDS(summary_df_No4,"data/Raw_Data/concat/purities_summary_df_No4.RDS")
 ```
@@ -2814,12 +2817,6 @@ Cor_metadata <- data.frame(
 
 rownames(Cor_metadata) <- Cor_metadata$sample_cor
 
-
-pdf("Sample_Sample_Correlation_Heatmap.pdf",
-    width = 8,
-    height = 8,
-    useDingbats = FALSE)
-
 ```
 
 ```{r RNASeq_FeatureCounts_lcpm_G1_HalfSpeciesTimepoints_Correlation_No4_plotting, fig.width=10, fig.height=10}
@@ -3066,10 +3063,10 @@ Cor_metadata <- data.frame(
 rownames(Cor_metadata) <- Cor_metadata$sample_cor
 
 
-pdf("Sample_Sample_Correlation_Heatmap.pdf",
-    width = 8,
-    height = 8,
-    useDingbats = FALSE)
+# pdf("Sample_Sample_Correlation_Heatmap.pdf",
+#     width = 8,
+#     height = 8,
+#     useDingbats = FALSE)
 
 pheatmap(
   Cor_log2cpm,

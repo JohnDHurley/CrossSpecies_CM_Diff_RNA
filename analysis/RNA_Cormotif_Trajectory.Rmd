@@ -2735,7 +2735,8 @@ ggplot(top_terms,
 
 gost_combined <- readRDS("data/Cormotif/Trajectory/TrajectoryGoCombo_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
-
+gost_combined <- gost_combined %>% 
+  filter(!(Cluster == "13"))
 
 library(dplyr)
 library(tidyr)
@@ -2748,7 +2749,7 @@ top_sig_terms_per_cluster <- gost_combined %>%
   filter(source == "GO:BP") %>%
   group_by(Cluster) %>%
   filter(p_value < sig_thresh) %>%                    # keep only significant
-  slice_min(order_by = p_value, n = 10, with_ties = FALSE) %>%  # max 10 per cluster
+  slice_min(order_by = p_value, n = 5, with_ties = FALSE) %>%  # max 5 per cluster
   ungroup()
 
 # 2. Keep all unique terms across clusters
@@ -2764,7 +2765,7 @@ heatmap_data <- gost_combined %>%
 heatmap_wide <- heatmap_data %>%
   pivot_wider(names_from = Cluster, values_from = logp)
 
-# saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+saveRDS(heatmap_wide, "data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -2772,7 +2773,7 @@ heatmap_wide <- readRDS("data/Cormotif/Trajectory/TrajectoryGoWide_logcpm_G1_SpT
 heatmap_long <- heatmap_wide %>%
   pivot_longer(cols = -term_name, names_to = "Cluster", values_to = "logp")
 
-# saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
+saveRDS(heatmap_long, "data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
 heatmap_long <- readRDS("data/Cormotif/Trajectory/TrajectoryGoLong_logcpm_G1_SpTp_TMM_No4_NoRep.RDS")
 
@@ -3367,5 +3368,6 @@ plot_all
 # git -> commit all changes
 # git -> push
 wflow_publish("analysis/RNA_Cormotif_Trajectory.Rmd")
+
 
 ```

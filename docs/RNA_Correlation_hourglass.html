@@ -1,0 +1,4840 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2026-09-29" />
+
+<title>RNA_Correlation_hourglass</title>
+
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CrossSpecies_CM_Diff_RNA</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">RNA_Correlation_hourglass</h1>
+<h4 class="date">2026-09-29</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-11-24
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>CrossSpecies_CM_Diff_RNA/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20251129code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20251129)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20251129code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20251129)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0b23ebe614ff6e08a1790e2199faf088f47fe2d0targetblank0b23ebea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0b23ebe614ff6e08a1790e2199faf088f47fe2d0" target="_blank">0b23ebe</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomJohnDHurleyCrossSpeciesCMDiffRNAtree0b23ebe614ff6e08a1790e2199faf088f47fe2d0targetblank0b23ebea"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/tree/0b23ebe614ff6e08a1790e2199faf088f47fe2d0" target="_blank">0b23ebe</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/
+
+Unstaged changes:
+    Modified:   Cluster_Direction_heatmap.pdf
+    Modified:   Cluster_Magnitude_heatmap.pdf
+    Modified:   Cluster_Spearman_heatmap.pdf
+    Modified:   analysis/RNA_Cormotif_Trajectory.Rmd
+    Modified:   analysis/RNA_Correlation_hourglass.Rmd
+    Modified:   purity_plot.pdf
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/RNA_Correlation_hourglass.Rmd</code>) and HTML
+(<code>docs/RNA_Correlation_hourglass.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/JohnDHurley/CrossSpecies_CM_Diff_RNA/blob/342d28eed8728d89f504b4f2316f9f389b48e652/analysis/RNA_Correlation_hourglass.Rmd" target="_blank">342d28e</a>
+</td>
+<td>
+John D. Hurley
+</td>
+<td>
+2026-11-09
+</td>
+<td>
+20261109_RNA_updates1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="rna-seq-quality-control" class="section level1">
+<h1>RNA-seq Quality Control</h1>
+<div id="setting-enviroment" class="section level2">
+<h2>Setting enviroment</h2>
+<div id="loading-libraries" class="section level3">
+<h3>Loading libraries</h3>
+</div>
+<div id="loading-saved-rds-objects" class="section level3">
+<h3>Loading saved RDS objects</h3>
+</div>
+<div id="defining-functions" class="section level3">
+<h3>Defining functions</h3>
+</div>
+<div id="unfiltered" class="section level3">
+<h3>Unfiltered</h3>
+<div id="no4" class="section level4">
+<h4>No4</h4>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+RNA_fc &lt;- readRDS(&quot;data/QC/concat/RNA_fc.RDS&quot;)
+
+metadata &lt;- RNA_Metadata_No4
+counts &lt;- RNA_fc %&gt;% 
+  dplyr::select(-contains(&quot;Day4&quot;))
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Raw_No4_NoRep.RDS&quot;
+)
+
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(
+    -sample1,
+    names_to = &quot;sample2&quot;,
+    values_to = &quot;cor&quot;
+  ) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample1&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample2&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor  sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.897 0.00633    49
+2 Day2          0.897 0.00469    49
+3 Day5          0.900 0.00455    49
+4 Day15         0.893 0.00795    49
+5 Day30         0.891 0.00552    49</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 58.247, df = 4, p-value = 6.771e-12</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      49    49      1243 7.66e- 1 7.66e- 1 ns          
+ 2 cor   Day0   Day5      49    49       827 7.65e- 3 1.09e- 2 *           
+ 3 cor   Day0   Day15     49    49      1578 7.00e- 3 1.09e- 2 *           
+ 4 cor   Day0   Day30     49    49      1808 9.46e- 6 2.36e- 5 ****        
+ 5 cor   Day2   Day5      49    49       753 1.31e- 3 2.63e- 3 **          
+ 6 cor   Day2   Day15     49    49      1550 1.27e- 2 1.59e- 2 *           
+ 7 cor   Day2   Day30     49    49      1864 1.11e- 6 3.70e- 6 ****        
+ 8 cor   Day5   Day15     49    49      1895 3.05e- 7 1.52e- 6 ****        
+ 9 cor   Day5   Day30     49    49      2161 7.53e-14 7.53e-13 ****        
+10 cor   Day15  Day30     49    49      1440 8.95e- 2 9.95e- 2 ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 8 × 11
+  .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day5      49    49       827 7.65e- 3 1.09e- 2 *           
+2 cor   Day0   Day15     49    49      1578 7.00e- 3 1.09e- 2 *           
+3 cor   Day0   Day30     49    49      1808 9.46e- 6 2.36e- 5 ****        
+4 cor   Day2   Day5      49    49       753 1.31e- 3 2.63e- 3 **          
+5 cor   Day2   Day15     49    49      1550 1.27e- 2 1.59e- 2 *           
+6 cor   Day2   Day30     49    49      1864 1.11e- 6 3.70e- 6 ****        
+7 cor   Day5   Day15     49    49      1895 3.05e- 7 1.52e- 6 ****        
+8 cor   Day5   Day30     49    49      2161 7.53e-14 7.53e-13 ****        
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nUnfiltered \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-1-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+RNA_fc &lt;- readRDS(&quot;data/QC/concat/RNA_fc.RDS&quot;)
+
+metadata &lt;- RNA_Metadata_No4
+counts &lt;- RNA_fc %&gt;% 
+  dplyr::select(-contains(&quot;Day4&quot;))
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Raw_No4_NoRep.RDS&quot;
+)
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor  sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.932 0.00700    42
+2 Day2          0.930 0.00411    42
+3 Day5          0.931 0.00505    42
+4 Day15         0.925 0.00945    42
+5 Day30         0.925 0.00411    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 38.069, df = 4, p-value = 1.085e-07</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic            p     p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42      1024 0.208          2.60e-1 ns          
+ 2 cor   Day0   Day5      42    42       924 0.715          7.15e-1 ns          
+ 3 cor   Day0   Day15     42    42      1144 0.0190         3.16e-2 *           
+ 4 cor   Day0   Day30     42    42      1412 0.000000824    2.75e-6 ****        
+ 5 cor   Day2   Day5      42    42       752 0.250          2.78e-1 ns          
+ 6 cor   Day2   Day15     42    42      1024 0.208          2.60e-1 ns          
+ 7 cor   Day2   Day30     42    42      1424 0.000000433    2.16e-6 ****        
+ 8 cor   Day5   Day15     42    42      1160 0.0127         3.16e-2 *           
+ 9 cor   Day5   Day30     42    42      1468 0.0000000338   3.38e-7 ****        
+10 cor   Day15  Day30     42    42      1148 0.0172         3.16e-2 *           
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 6 × 11
+  .y.   group1 group2    n1    n2 statistic            p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day15     42    42      1144 0.0190          3.16e-2 *           
+2 cor   Day0   Day30     42    42      1412 0.000000824     2.75e-6 ****        
+3 cor   Day2   Day30     42    42      1424 0.000000433     2.16e-6 ****        
+4 cor   Day5   Day15     42    42      1160 0.0127          3.16e-2 *           
+5 cor   Day5   Day30     42    42      1468 0.0000000338    3.38e-7 ****        
+6 cor   Day15  Day30     42    42      1148 0.0172          3.16e-2 *           
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Human) correlation, matched timepoints \nUnfiltered \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+RNA_fc &lt;- readRDS(&quot;data/QC/concat/RNA_fc.RDS&quot;)
+
+metadata &lt;- RNA_Metadata_No4
+counts &lt;- RNA_fc %&gt;% 
+  dplyr::select(-contains(&quot;Day4&quot;))
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Raw_No4_NoRep.RDS&quot;
+)
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;C&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor  sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.933 0.00439    42
+2 Day2          0.930 0.00577    42
+3 Day5          0.929 0.00619    42
+4 Day15         0.924 0.00771    42
+5 Day30         0.925 0.00479    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 54.633, df = 4, p-value = 3.877e-11</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42      1148 1.72e- 2 2.15e- 2 *           
+ 2 cor   Day0   Day5      42    42      1216 2.59e- 3 3.69e- 3 **          
+ 3 cor   Day0   Day15     42    42      1508 2.51e- 9 1.25e- 8 ****        
+ 4 cor   Day0   Day30     42    42      1572 1.95e-11 1.95e-10 ****        
+ 5 cor   Day2   Day5      42    42       996 3.14e- 1 3.49e- 1 ns          
+ 6 cor   Day2   Day15     42    42      1304 1.18e- 4 2.94e- 4 ***         
+ 7 cor   Day2   Day30     42    42      1352 1.55e- 5 5.15e- 5 ****        
+ 8 cor   Day5   Day15     42    42      1232 1.56e- 3 3.12e- 3 **          
+ 9 cor   Day5   Day30     42    42      1220 2.28e- 3 3.69e- 3 **          
+10 cor   Day15  Day30     42    42       796 4.49e- 1 4.49e- 1 ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 8 × 11
+  .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day2      42    42      1148 1.72e- 2 2.15e- 2 *           
+2 cor   Day0   Day5      42    42      1216 2.59e- 3 3.69e- 3 **          
+3 cor   Day0   Day15     42    42      1508 2.51e- 9 1.25e- 8 ****        
+4 cor   Day0   Day30     42    42      1572 1.95e-11 1.95e-10 ****        
+5 cor   Day2   Day15     42    42      1304 1.18e- 4 2.94e- 4 ***         
+6 cor   Day2   Day30     42    42      1352 1.55e- 5 5.15e- 5 ****        
+7 cor   Day5   Day15     42    42      1232 1.56e- 3 3.12e- 3 **          
+8 cor   Day5   Day30     42    42      1220 2.28e- 3 3.69e- 3 **          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Chimp vs Chimp) correlation, matched timepoints \nUnfiltered \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-3-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+</div>
+</div>
+</div>
+<div id="log2cpm-filtered" class="section level2">
+<h2>Log2cpm Filtered</h2>
+<div id="all" class="section level3">
+<h3>All</h3>
+<div id="correlations" class="section level4">
+<h4>Correlations</h4>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS&quot;
+)
+
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(
+    -sample1,
+    names_to = &quot;sample2&quot;,
+    values_to = &quot;cor&quot;
+  ) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample1&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample2&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    median_cor = median(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 5
+  timepoint1 mean_cor median_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.888      0.894 0.0240    49
+2 Day2          0.904      0.905 0.0158    49
+3 Day4          0.897      0.898 0.0133    49
+4 Day5          0.898      0.901 0.0137    49
+5 Day15         0.879      0.885 0.0275    49
+6 Day30         0.886      0.889 0.0213    49</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 38.445, df = 5, p-value = 3.072e-07</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      49    49       693 0.000250    0.000938   ***         
+ 2 cor   Day0   Day4      49    49       999 0.154       0.192      ns          
+ 3 cor   Day0   Day5      49    49       926 0.0513      0.0769     ns          
+ 4 cor   Day0   Day15     49    49      1456 0.0699      0.0953     ns          
+ 5 cor   Day0   Day30     49    49      1306 0.457       0.457      ns          
+ 6 cor   Day2   Day4      49    49      1556 0.0112      0.0215     *           
+ 7 cor   Day2   Day5      49    49      1498 0.0344      0.0574     ns          
+ 8 cor   Day2   Day15     49    49      1902 0.000000225 0.00000338 ****        
+ 9 cor   Day2   Day30     49    49      1775 0.0000300   0.000225   ***         
+10 cor   Day4   Day5      49    49      1089 0.432       0.457      ns          
+11 cor   Day4   Day15     49    49      1654 0.00112     0.00337    **          
+12 cor   Day4   Day30     49    49      1555 0.0115      0.0215     *           
+13 cor   Day5   Day15     49    49      1717 0.000191    0.000938   ***         
+14 cor   Day5   Day30     49    49      1608 0.00354     0.00884    **          
+15 cor   Day15  Day30     49    49      1058 0.314       0.363      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 8 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day2      49    49       693 0.000250    0.000938   ***         
+2 cor   Day2   Day4      49    49      1556 0.0112      0.0215     *           
+3 cor   Day2   Day15     49    49      1902 0.000000225 0.00000338 ****        
+4 cor   Day2   Day30     49    49      1775 0.0000300   0.000225   ***         
+5 cor   Day4   Day15     49    49      1654 0.00112     0.00337    **          
+6 cor   Day4   Day30     49    49      1555 0.0115      0.0215     *           
+7 cor   Day5   Day15     49    49      1717 0.000191    0.000938   ***         
+8 cor   Day5   Day30     49    49      1608 0.00354     0.00884    **          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor,
+    group = 1
+  )
+) +
+
+  stat_summary(
+    fun = median,
+    geom = &quot;line&quot;
+  ) +
+
+  stat_summary(
+    fun = median,
+    geom = &quot;point&quot;,
+    size = 2
+  ) +
+
+  stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nLog2cpm &gt;1 in at least 1 sample&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Median Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code># library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+# library(ggsignif)
+# 
+# metadata &lt;- RNA_Metadata
+# counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc
+# 
+# # Make sure metadata follows the count matrix
+# metadata &lt;- metadata[
+#     match(colnames(counts), metadata$SampleName),
+# ]
+# 
+# metadata &lt;- metadata %&gt;% 
+#   filter(Individual != &quot;H4R&quot;)
+# counts &lt;- counts %&gt;% 
+#   dplyr::select(-contains(&quot;R&quot;))
+# 
+# 
+# Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS&quot;)
+# 
+# library(dplyr)
+# library(tidyr)
+# 
+# sample_info &lt;- data.frame(
+#   sample    = colnames(Cor_log2cpm),
+#   species   = metadata$Species,
+#   timepoint = metadata$Timepoint
+# )
+# 
+# cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+#   mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+#   pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+#   filter(sample1 != sample2) %&gt;%
+#   left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+#   dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+#   left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+#   dplyr::rename(species2 = species, timepoint2 = timepoint)
+# 
+# same_day_cross &lt;- cor_long %&gt;%
+#   filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+#   filter(species1 == &quot;H&quot;) %&gt;% 
+#   mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+# 
+# summary_by_day &lt;- same_day_cross %&gt;%
+#   group_by(timepoint1) %&gt;%
+#   summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+# 
+# summary_by_day
+# 
+# 
+# # ---------------------------------------------------------
+# # Kruskal-Wallis test
+# # ---------------------------------------------------------
+# 
+# kruskal_res &lt;- kruskal.test(
+#   cor ~ timepoint1,
+#   data = same_day_cross
+# )
+# 
+# kruskal_res
+# 
+# 
+# # ---------------------------------------------------------
+# # ALL pairwise Wilcoxon rank-sum tests
+# # ---------------------------------------------------------
+# 
+# library(dplyr)
+# library(ggplot2)
+# # install.packages(&quot;rstatix&quot;)
+# library(rstatix)
+# # install.packages(&quot;ggpubr&quot;)
+# library(ggpubr)
+# 
+# # ---------------------------------------------------------
+# # Pairwise Wilcoxon tests with BH correction
+# # ---------------------------------------------------------
+# 
+# stat.test &lt;- same_day_cross %&gt;%
+#   pairwise_wilcox_test(
+#     cor ~ timepoint1,
+#     p.adjust.method = &quot;BH&quot;
+#   ) %&gt;%
+#   add_significance(&quot;p.adj&quot;) %&gt;% 
+#   add_y_position()
+# 
+# stat.test
+# 
+# # Keep only significant comparisons if desired
+# stat.test &lt;- stat.test %&gt;%
+#   filter(p.adj &lt;= 0.05)
+# 
+# 
+# stat.test
+# 
+# # ---------------------------------------------------------
+# # Plot
+# # ---------------------------------------------------------
+# 
+# plot &lt;- ggplot(
+#   same_day_cross,
+#   aes(
+#     x = timepoint1,
+#     y = cor
+#   )
+# ) +
+# 
+#   geom_boxplot(
+#     outlier.shape = NA
+#   ) +
+# 
+#   geom_jitter(
+#     width = 0.15,
+#     alpha = 0.4
+#   ) +
+# 
+#  stat_pvalue_manual(
+#     stat.test,
+#     label = &quot;p.adj.signif&quot;,
+#     step.increase = 0.07
+#   ) +
+# 
+#   coord_cartesian(
+#     ylim = c(0.8, 1.05)
+#   ) +
+# 
+#   labs(
+#     title = &quot;Cross-species (Human vs Human) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+#     x = &quot;Timepoint&quot;,
+#     y = &quot;Spearman correlation&quot;
+#   ) +
+# 
+#   theme_classic()
+# 
+# plot
+# 
+# ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code># library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+# library(ggsignif)
+# 
+# metadata &lt;- RNA_Metadata
+# counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc
+# 
+# # Make sure metadata follows the count matrix
+# metadata &lt;- metadata[
+#     match(colnames(counts), metadata$SampleName),
+# ]
+# 
+# metadata &lt;- metadata %&gt;% 
+#   filter(Individual != &quot;H4R&quot;)
+# counts &lt;- counts %&gt;% 
+#   dplyr::select(-contains(&quot;R&quot;))
+# 
+# 
+# Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS&quot;)
+# 
+# library(dplyr)
+# library(tidyr)
+# 
+# sample_info &lt;- data.frame(
+#   sample    = colnames(Cor_log2cpm),
+#   species   = metadata$Species,
+#   timepoint = metadata$Timepoint
+# )
+# 
+# cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+#   mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+#   pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+#   filter(sample1 != sample2) %&gt;%
+#   left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+#   dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+#   left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+#   dplyr::rename(species2 = species, timepoint2 = timepoint)
+# 
+# same_day_cross &lt;- cor_long %&gt;%
+#   filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+#   filter(species1 == &quot;C&quot;) %&gt;% 
+#   mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+# 
+# summary_by_day &lt;- same_day_cross %&gt;%
+#   group_by(timepoint1) %&gt;%
+#   summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+# 
+# summary_by_day
+# 
+# 
+# # ---------------------------------------------------------
+# # Kruskal-Wallis test
+# # ---------------------------------------------------------
+# 
+# kruskal_res &lt;- kruskal.test(
+#   cor ~ timepoint1,
+#   data = same_day_cross
+# )
+# 
+# kruskal_res
+# 
+# 
+# # ---------------------------------------------------------
+# # ALL pairwise Wilcoxon rank-sum tests
+# # ---------------------------------------------------------
+# 
+# library(dplyr)
+# library(ggplot2)
+# # install.packages(&quot;rstatix&quot;)
+# library(rstatix)
+# # install.packages(&quot;ggpubr&quot;)
+# library(ggpubr)
+# 
+# # ---------------------------------------------------------
+# # Pairwise Wilcoxon tests with BH correction
+# # ---------------------------------------------------------
+# 
+# stat.test &lt;- same_day_cross %&gt;%
+#   pairwise_wilcox_test(
+#     cor ~ timepoint1,
+#     p.adjust.method = &quot;BH&quot;
+#   ) %&gt;%
+#   add_significance(&quot;p.adj&quot;) %&gt;% 
+#   add_y_position()
+# 
+# stat.test
+# 
+# # Keep only significant comparisons if desired
+# stat.test &lt;- stat.test %&gt;%
+#   filter(p.adj &lt;= 0.05)
+# 
+# 
+# stat.test
+# 
+# # ---------------------------------------------------------
+# # Plot
+# # ---------------------------------------------------------
+# 
+# plot &lt;- ggplot(
+#   same_day_cross,
+#   aes(
+#     x = timepoint1,
+#     y = cor
+#   )
+# ) +
+# 
+#   geom_boxplot(
+#     outlier.shape = NA
+#   ) +
+# 
+#   geom_jitter(
+#     width = 0.15,
+#     alpha = 0.4
+#   ) +
+# 
+#  stat_pvalue_manual(
+#     stat.test,
+#     label = &quot;p.adj.signif&quot;,
+#     step.increase = 0.07
+#   ) +
+# 
+#   coord_cartesian(
+#     ylim = c(0.8, 1.05)
+#   ) +
+# 
+#   labs(
+#     title = &quot;Cross-species (Chimp vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+#     x = &quot;Timepoint&quot;,
+#     y = &quot;Spearman correlation&quot;
+#   ) +
+# 
+#   theme_classic()
+# 
+# plot
+# 
+# ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_NoRep.RDS&quot;)
+
+H_samples &lt;- grep(&quot;^H&quot;, colnames(Cor_log2cpm), value = TRUE)
+C_samples &lt;- grep(&quot;^C&quot;, colnames(Cor_log2cpm), value = TRUE)
+
+H_C_cor &lt;- expand.grid(
+  H_sample = H_samples,
+  C_sample = C_samples,
+  stringsAsFactors = FALSE
+)
+
+H_C_cor$Spearman &lt;- mapply(
+  function(h, c) Cor_log2cpm[h, c],
+  H_C_cor$H_sample,
+  H_C_cor$C_sample
+)
+
+H_C_cor$H_timepoint &lt;- sub(&quot;^.*_(Day.*)$&quot;, &quot;\\1&quot;, H_C_cor$H_sample)
+H_C_cor$C_timepoint &lt;- sub(&quot;^.*_(Day.*)$&quot;, &quot;\\1&quot;, H_C_cor$C_sample)
+
+head(H_C_cor)</code></pre>
+<pre><code>      H_sample    C_sample  Spearman H_timepoint C_timepoint
+1  H21792_Day0 C40280_Day0 0.8962252        Day0        Day0
+2  H21792_Day2 C40280_Day0 0.8700575        Day2        Day0
+3  H21792_Day4 C40280_Day0 0.8253125        Day4        Day0
+4  H21792_Day5 C40280_Day0 0.8462386        Day5        Day0
+5 H21792_Day15 C40280_Day0 0.7445862       Day15        Day0
+6 H21792_Day30 C40280_Day0 0.7088549       Day30        Day0</code></pre>
+<pre class="r"><code>timepoint_order &lt;- c(
+  &quot;Day0&quot;, &quot;Day2&quot;, &quot;Day4&quot;,&quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;
+)
+
+H_C_cor$H_timepoint &lt;- factor(
+  H_C_cor$H_timepoint,
+  levels = timepoint_order
+)
+
+H_C_cor$C_timepoint &lt;- factor(
+  H_C_cor$C_timepoint,
+  levels = timepoint_order
+)
+
+
+table(H_C_cor$H_timepoint, H_C_cor$C_timepoint)</code></pre>
+<pre><code>       
+        Day0 Day2 Day4 Day5 Day15 Day30
+  Day0    49   49   49   49    49    49
+  Day2    49   49   49   49    49    49
+  Day4    49   49   49   49    49    49
+  Day5    49   49   49   49    49    49
+  Day15   49   49   49   49    49    49
+  Day30   49   49   49   49    49    49</code></pre>
+<pre class="r"><code>library(ggplot2)
+
+ggplot(
+  subset(H_C_cor, H_timepoint == &quot;Day0&quot;),
+  aes(x = C_timepoint, y = Spearman, group = 1)
+) +
+  geom_line() +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Spearman correlation&quot;,
+    title = &quot;Human Day0 vs. chimpanzee developmental trajectory&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-7-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(
+  H_C_cor,
+  aes(x = C_timepoint, y = Spearman, group = H_timepoint, color = H_timepoint)
+) +
+  geom_line() +
+  geom_point(size = 2) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Spearman correlation&quot;,
+    color = &quot;Human timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-7-2.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+H_C_cor_median &lt;- H_C_cor %&gt;%
+  group_by(H_timepoint, C_timepoint) %&gt;%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = Median_Spearman,
+    group = H_timepoint,
+    color = H_timepoint
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Median Spearman correlation&quot;,
+    color = &quot;Human timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-7-3.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H_C_cor_median &lt;- H_C_cor %&gt;%
+  group_by(H_timepoint, C_timepoint) %&gt;%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = H_timepoint,
+    fill = Median_Spearman
+  )
+) +
+  geom_tile() +
+  geom_text(
+    aes(label = sprintf(&quot;%.2f&quot;, Median_Spearman)),
+    size = 3
+  ) +
+  scale_fill_viridis_c(
+    limits = c(0, 1),
+    name = &quot;Spearman\ncorrelation&quot;
+  ) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Human developmental timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-7-4.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+</div>
+<div id="mixed-model-effects" class="section level4">
+<h4>Mixed Model Effects</h4>
+<pre class="r"><code>same_day_cross &lt;- H_C_cor %&gt;%
+  filter(H_timepoint == C_timepoint) %&gt;%
+  mutate(
+    H_individual = sub(&quot;_.*&quot;, &quot;&quot;, H_sample),
+    C_individual = sub(&quot;_.*&quot;, &quot;&quot;, C_sample),
+    timepoint = factor(
+      H_timepoint,
+      levels = c(&quot;Day0&quot;, &quot;Day2&quot;, &quot;Day4&quot;, &quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;)
+    )
+  )
+
+table(same_day_cross$timepoint)</code></pre>
+<pre><code>
+ Day0  Day2  Day4  Day5 Day15 Day30 
+   49    49    49    49    49    49 </code></pre>
+<pre class="r"><code>same_day_cross &lt;- same_day_cross %&gt;%
+  mutate(
+    pair = interaction(H_individual, C_individual, drop = TRUE)
+  )
+
+# BiocManager::install(&quot;lme4&quot;)
+library(lme4)
+
+
+model &lt;- lmer(
+  Spearman ~ timepoint +
+    (1 | H_individual) +
+    (1 | C_individual) +
+    (1 | pair),
+  data = same_day_cross
+)
+
+summary(model)</code></pre>
+<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
+Formula: Spearman ~ timepoint + (1 | H_individual) + (1 | C_individual) +  
+    (1 | pair)
+   Data: same_day_cross
+
+REML criterion at convergence: -1420.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.9997 -0.5796  0.1538  0.6913  2.0251 
+
+Random effects:
+ Groups       Name        Variance  Std.Dev.
+ pair         (Intercept) 0.000e+00 0.000000
+ C_individual (Intercept) 2.066e-05 0.004546
+ H_individual (Intercept) 5.458e-06 0.002336
+ Residual                 3.763e-04 0.019399
+Number of obs: 294, groups:  pair, 49; C_individual, 7; H_individual, 7
+
+Fixed effects:
+                Estimate Std. Error t value
+(Intercept)     0.888224   0.003378 262.931
+timepointDay2   0.015715   0.003919   4.010
+timepointDay4   0.008881   0.003919   2.266
+timepointDay5   0.010049   0.003919   2.564
+timepointDay15 -0.009539   0.003919  -2.434
+timepointDay30 -0.001819   0.003919  -0.464
+
+Correlation of Fixed Effects:
+            (Intr) tmpnD2 tmpnD4 tmpnD5 tmpD15
+timepontDy2 -0.580                            
+timepontDy4 -0.580  0.500                     
+timepontDy5 -0.580  0.500  0.500              
+timepntDy15 -0.580  0.500  0.500  0.500       
+timepntDy30 -0.580  0.500  0.500  0.500  0.500
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre class="r"><code>model_no_pair &lt;- lmer(
+  Spearman ~ timepoint +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_no_pair)</code></pre>
+<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
+Formula: Spearman ~ timepoint + (1 | H_individual) + (1 | C_individual)
+   Data: same_day_cross
+
+REML criterion at convergence: -1420.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.9997 -0.5796  0.1538  0.6913  2.0251 
+
+Random effects:
+ Groups       Name        Variance  Std.Dev.
+ H_individual (Intercept) 5.458e-06 0.002336
+ C_individual (Intercept) 2.067e-05 0.004546
+ Residual                 3.763e-04 0.019399
+Number of obs: 294, groups:  H_individual, 7; C_individual, 7
+
+Fixed effects:
+                Estimate Std. Error t value
+(Intercept)     0.888224   0.003378 262.930
+timepointDay2   0.015715   0.003919   4.010
+timepointDay4   0.008881   0.003919   2.266
+timepointDay5   0.010049   0.003919   2.564
+timepointDay15 -0.009539   0.003919  -2.434
+timepointDay30 -0.001819   0.003919  -0.464
+
+Correlation of Fixed Effects:
+            (Intr) tmpnD2 tmpnD4 tmpnD5 tmpD15
+timepontDy2 -0.580                            
+timepontDy4 -0.580  0.500                     
+timepontDy5 -0.580  0.500  0.500              
+timepntDy15 -0.580  0.500  0.500  0.500       
+timepntDy30 -0.580  0.500  0.500  0.500  0.500</code></pre>
+<pre class="r"><code>same_day_cross &lt;- same_day_cross %&gt;%
+  mutate(Spearman_z = atanh(Spearman))
+
+summary(same_day_cross$Spearman_z)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.106   1.375   1.453   1.441   1.512   1.629 </code></pre>
+<pre class="r"><code>model_z &lt;- lmer(
+  Spearman_z ~ timepoint +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_z)</code></pre>
+<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
+Formula: Spearman_z ~ timepoint + (1 | H_individual) + (1 | C_individual)
+   Data: same_day_cross
+
+REML criterion at convergence: -538.4
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2681 -0.6569  0.0772  0.6997  2.2271 
+
+Random effects:
+ Groups       Name        Variance  Std.Dev.
+ H_individual (Intercept) 9.497e-05 0.009745
+ C_individual (Intercept) 4.300e-04 0.020736
+ Residual                 8.055e-03 0.089750
+Number of obs: 294, groups:  H_individual, 7; C_individual, 7
+
+Fixed effects:
+                Estimate Std. Error t value
+(Intercept)     1.423370   0.015472  91.996
+timepointDay2   0.076309   0.018132   4.208
+timepointDay4   0.037911   0.018132   2.091
+timepointDay5   0.044198   0.018132   2.438
+timepointDay15 -0.041699   0.018132  -2.300
+timepointDay30 -0.009706   0.018132  -0.535
+
+Correlation of Fixed Effects:
+            (Intr) tmpnD2 tmpnD4 tmpnD5 tmpD15
+timepontDy2 -0.586                            
+timepontDy4 -0.586  0.500                     
+timepontDy5 -0.586  0.500  0.500              
+timepntDy15 -0.586  0.500  0.500  0.500       
+timepntDy30 -0.586  0.500  0.500  0.500  0.500</code></pre>
+<pre class="r"><code>same_day_cross &lt;- same_day_cross %&gt;%
+  mutate(
+    window = case_when(
+      timepoint %in% c(&quot;Day0&quot;) ~ &quot;Early&quot;,
+      timepoint %in% c(&quot;Day2&quot;, &quot;Day4&quot;, &quot;Day5&quot;) ~ &quot;Middle&quot;,
+      timepoint %in% c(&quot;Day15&quot;, &quot;Day30&quot;) ~ &quot;Late&quot;
+    ),
+    window = factor(window, levels = c(&quot;Early&quot;, &quot;Middle&quot;, &quot;Late&quot;))
+  )
+
+table(same_day_cross$timepoint, same_day_cross$window)</code></pre>
+<pre><code>       
+        Early Middle Late
+  Day0     49      0    0
+  Day2      0     49    0
+  Day4      0     49    0
+  Day5      0     49    0
+  Day15     0      0   49
+  Day30     0      0   49</code></pre>
+<pre class="r"><code>model_window &lt;- lmer(
+  Spearman_z ~ window +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_window)</code></pre>
+<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
+Formula: Spearman_z ~ window + (1 | H_individual) + (1 | C_individual)
+   Data: same_day_cross
+
+REML criterion at convergence: -549.1
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2405 -0.6815  0.0883  0.6887  2.3792 
+
+Random effects:
+ Groups       Name        Variance  Std.Dev.
+ H_individual (Intercept) 9.134e-05 0.009557
+ C_individual (Intercept) 4.264e-04 0.020648
+ Residual                 8.207e-03 0.090595
+Number of obs: 294, groups:  H_individual, 7; C_individual, 7
+
+Fixed effects:
+             Estimate Std. Error t value
+(Intercept)   1.42337    0.01554  91.601
+windowMiddle  0.05281    0.01494   3.534
+windowLate   -0.02570    0.01585  -1.622
+
+Correlation of Fixed Effects:
+            (Intr) wndwMd
+windowMiddl -0.721       
+windowLate  -0.680  0.707</code></pre>
+<pre class="r"><code>same_day_cross &lt;- same_day_cross %&gt;%
+  mutate(
+    window_middle_ref = relevel(window, ref = &quot;Middle&quot;)
+  )
+
+model_window_middle &lt;- lmer(
+  Spearman_z ~ window_middle_ref +
+    (1 | H_individual) +
+    (1 | C_individual),
+  data = same_day_cross
+)
+
+summary(model_window_middle)</code></pre>
+<pre><code>Linear mixed model fit by REML [&#39;lmerMod&#39;]
+Formula: 
+Spearman_z ~ window_middle_ref + (1 | H_individual) + (1 | C_individual)
+   Data: same_day_cross
+
+REML criterion at convergence: -549.1
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2405 -0.6815  0.0883  0.6887  2.3792 
+
+Random effects:
+ Groups       Name        Variance  Std.Dev.
+ H_individual (Intercept) 9.134e-05 0.009557
+ C_individual (Intercept) 4.264e-04 0.020648
+ Residual                 8.207e-03 0.090595
+Number of obs: 294, groups:  H_individual, 7; C_individual, 7
+
+Fixed effects:
+                       Estimate Std. Error t value
+(Intercept)             1.47618    0.01139 129.574
+window_middle_refEarly -0.05281    0.01494  -3.534
+window_middle_refLate  -0.07851    0.01181  -6.645
+
+Correlation of Fixed Effects:
+            (Intr) wnd__E
+wndw_mddl_E -0.328       
+wndw_mddl_L -0.415  0.316</code></pre>
+</div>
+</div>
+<div id="no4-1" class="section level3">
+<h3>No4</h3>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_No4
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS&quot;
+)
+
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(
+    -sample1,
+    names_to = &quot;sample2&quot;,
+    values_to = &quot;cor&quot;
+  ) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample1&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample2&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    median_cor = median(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 5
+  timepoint1 mean_cor median_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.888      0.893 0.0241    49
+2 Day2          0.904      0.905 0.0159    49
+3 Day5          0.898      0.901 0.0138    49
+4 Day15         0.878      0.884 0.0276    49
+5 Day30         0.886      0.888 0.0214    49</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 36.573, df = 4, p-value = 2.205e-07</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      49    49       690 0.000229    0.000572   ***         
+ 2 cor   Day0   Day5      49    49       914 0.0418      0.0639     ns          
+ 3 cor   Day0   Day15     49    49      1456 0.0699      0.0874     ns          
+ 4 cor   Day0   Day30     49    49      1308 0.449       0.449      ns          
+ 5 cor   Day2   Day5      49    49      1483 0.0448      0.0639     ns          
+ 6 cor   Day2   Day15     49    49      1906 0.000000189 0.00000189 ****        
+ 7 cor   Day2   Day30     49    49      1778 0.0000271   0.000136   ***         
+ 8 cor   Day5   Day15     49    49      1729 0.000133    0.000443   ***         
+ 9 cor   Day5   Day30     49    49      1623 0.00247     0.00493    **          
+10 cor   Day15  Day30     49    49      1061 0.325       0.361      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 5 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day2      49    49       690 0.000229    0.000572   ***         
+2 cor   Day2   Day15     49    49      1906 0.000000189 0.00000189 ****        
+3 cor   Day2   Day30     49    49      1778 0.0000271   0.000136   ***         
+4 cor   Day5   Day15     49    49      1729 0.000133    0.000443   ***         
+5 cor   Day5   Day30     49    49      1623 0.00247     0.00493    **          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor,
+    group = 1
+  )
+) +
+
+  stat_summary(
+    fun = median,
+    geom = &quot;line&quot;
+  ) +
+
+  stat_summary(
+    fun = median,
+    geom = &quot;point&quot;,
+    size = 2
+  ) +
+
+  stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nLog2cpm &gt;1 in at least 3/7 individuals \n at least 1 SpTp&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Median Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4-2.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_No4
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.958 0.0239    42
+2 Day2          0.967 0.0125    42
+3 Day5          0.959 0.0133    42
+4 Day15         0.949 0.0307    42
+5 Day30         0.961 0.0134    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 9.9493, df = 4, p-value = 0.04129</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic       p  p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42       692 0.0909  0.211  ns          
+ 2 cor   Day0   Day5      42    42       972 0.428   0.611  ns          
+ 3 cor   Day0   Day15     42    42      1064 0.106   0.211  ns          
+ 4 cor   Day0   Day30     42    42       984 0.368   0.611  ns          
+ 5 cor   Day2   Day5      42    42      1180 0.00741 0.0633 ns          
+ 6 cor   Day2   Day15     42    42      1160 0.0127  0.0633 ns          
+ 7 cor   Day2   Day30     42    42      1108 0.0437  0.146  ns          
+ 8 cor   Day5   Day15     42    42       928 0.689   0.765  ns          
+ 9 cor   Day5   Day30     42    42       852 0.796   0.796  ns          
+10 cor   Day15  Day30     42    42       808 0.516   0.644  ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 0 × 11
+# ℹ 11 variables: .y. &lt;chr&gt;, group1 &lt;chr&gt;, group2 &lt;chr&gt;, n1 &lt;int&gt;, n2 &lt;int&gt;,
+#   statistic &lt;dbl&gt;, p &lt;dbl&gt;, p.adj &lt;dbl&gt;, p.adj.signif &lt;chr&gt;,
+#   y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Human) correlation, matched timepoints \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4_2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_No4
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No4
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;C&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.968 0.0147    42
+2 Day2          0.960 0.0167    42
+3 Day5          0.952 0.0162    42
+4 Day15         0.936 0.0241    42
+5 Day30         0.958 0.0197    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 48.119, df = 4, p-value = 8.916e-10</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42      1088 6.64e- 2 8.30e- 2 ns          
+ 2 cor   Day0   Day5      42    42      1360 1.07e- 5 2.68e- 5 ****        
+ 3 cor   Day0   Day15     42    42      1556 7.21e-11 7.21e-10 ****        
+ 4 cor   Day0   Day30     42    42      1128 2.78e- 2 4.64e- 2 *           
+ 5 cor   Day2   Day5      42    42      1116 3.66e- 2 5.23e- 2 ns          
+ 6 cor   Day2   Day15     42    42      1408 1.02e- 6 5.09e- 6 ****        
+ 7 cor   Day2   Day30     42    42       932 6.63e- 1 6.63e- 1 ns          
+ 8 cor   Day5   Day15     42    42      1216 2.59e- 3 5.17e- 3 **          
+ 9 cor   Day5   Day30     42    42       684 7.79e- 2 8.65e- 2 ns          
+10 cor   Day15  Day30     42    42       404 1.07e- 5 2.68e- 5 ****        
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 6 × 11
+  .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day5      42    42      1360 1.07e- 5 2.68e- 5 ****        
+2 cor   Day0   Day15     42    42      1556 7.21e-11 7.21e-10 ****        
+3 cor   Day0   Day30     42    42      1128 2.78e- 2 4.64e- 2 *           
+4 cor   Day2   Day15     42    42      1408 1.02e- 6 5.09e- 6 ****        
+5 cor   Day5   Day15     42    42      1216 2.59e- 3 5.17e- 3 **          
+6 cor   Day15  Day30     42    42       404 1.07e- 5 2.68e- 5 ****        
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Chimp vs Chimp) correlation, matched timepoints \nDay5 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4_3-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS&quot;
+)
+
+H_samples &lt;- grep(&quot;^H&quot;, colnames(Cor_log2cpm), value = TRUE)
+C_samples &lt;- grep(&quot;^C&quot;, colnames(Cor_log2cpm), value = TRUE)
+
+H_C_cor &lt;- expand.grid(
+  H_sample = H_samples,
+  C_sample = C_samples,
+  stringsAsFactors = FALSE
+)
+
+H_C_cor$Spearman &lt;- mapply(
+  function(h, c) Cor_log2cpm[h, c],
+  H_C_cor$H_sample,
+  H_C_cor$C_sample
+)
+
+H_C_cor$H_timepoint &lt;- sub(&quot;^.*_(Day.*)$&quot;, &quot;\\1&quot;, H_C_cor$H_sample)
+H_C_cor$C_timepoint &lt;- sub(&quot;^.*_(Day.*)$&quot;, &quot;\\1&quot;, H_C_cor$C_sample)
+
+head(H_C_cor)</code></pre>
+<pre><code>      H_sample    C_sample  Spearman H_timepoint C_timepoint
+1  H21792_Day0 C40280_Day0 0.8957111        Day0        Day0
+2  H21792_Day2 C40280_Day0 0.8694772        Day2        Day0
+3  H21792_Day5 C40280_Day0 0.8456972        Day5        Day0
+4 H21792_Day15 C40280_Day0 0.7431364       Day15        Day0
+5 H21792_Day30 C40280_Day0 0.7070912       Day30        Day0
+6  H24280_Day0 C40280_Day0 0.9109900        Day0        Day0</code></pre>
+<pre class="r"><code>timepoint_order &lt;- c(
+  &quot;Day0&quot;, &quot;Day2&quot;, &quot;Day4&quot;,&quot;Day5&quot;, &quot;Day15&quot;, &quot;Day30&quot;
+)
+
+H_C_cor$H_timepoint &lt;- factor(
+  H_C_cor$H_timepoint,
+  levels = timepoint_order
+)
+
+H_C_cor$C_timepoint &lt;- factor(
+  H_C_cor$C_timepoint,
+  levels = timepoint_order
+)
+
+
+table(H_C_cor$H_timepoint, H_C_cor$C_timepoint)</code></pre>
+<pre><code>       
+        Day0 Day2 Day4 Day5 Day15 Day30
+  Day0    49   49    0   49    49    49
+  Day2    49   49    0   49    49    49
+  Day4     0    0    0    0     0     0
+  Day5    49   49    0   49    49    49
+  Day15   49   49    0   49    49    49
+  Day30   49   49    0   49    49    49</code></pre>
+<pre class="r"><code>library(ggplot2)
+
+ggplot(
+  subset(H_C_cor, H_timepoint == &quot;Day0&quot;),
+  aes(x = C_timepoint, y = Spearman, group = 1)
+) +
+  geom_line() +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Spearman correlation&quot;,
+    title = &quot;Human Day0 vs. chimpanzee developmental trajectory&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4_4-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(
+  H_C_cor,
+  aes(x = C_timepoint, y = Spearman, group = H_timepoint, color = H_timepoint)
+) +
+  geom_line() +
+  geom_point(size = 2) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Spearman correlation&quot;,
+    color = &quot;Human timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4_4-2.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+H_C_cor_median &lt;- H_C_cor %&gt;%
+  group_by(H_timepoint, C_timepoint) %&gt;%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = Median_Spearman,
+    group = H_timepoint,
+    color = H_timepoint
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Median Spearman correlation&quot;,
+    color = &quot;Human timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4_4-3.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H_C_cor_median &lt;- H_C_cor %&gt;%
+  group_by(H_timepoint, C_timepoint) %&gt;%
+  summarise(
+    Median_Spearman = median(Spearman, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  )
+
+ggplot(
+  H_C_cor_median,
+  aes(
+    x = C_timepoint,
+    y = H_timepoint,
+    fill = Median_Spearman
+  )
+) +
+  geom_tile() +
+  geom_text(
+    aes(label = sprintf(&quot;%.2f&quot;, Median_Spearman)),
+    size = 3
+  ) +
+  scale_fill_viridis_c(
+    limits = c(0, 1),
+    name = &quot;Spearman\ncorrelation&quot;
+  ) +
+  theme_classic() +
+  labs(
+    x = &quot;Chimpanzee developmental timepoint&quot;,
+    y = &quot;Human developmental timepoint&quot;
+  )</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/No4_4-4.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+</div>
+<div id="no5" class="section level3">
+<h3>No5</h3>
+<pre class="r"><code>metadata &lt;- RNA_Metadata_No5
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS&quot;
+)
+
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(
+    -sample1,
+    names_to = &quot;sample2&quot;,
+    values_to = &quot;cor&quot;
+  ) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample1&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample2&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.887 0.0241    49
+2 Day2          0.903 0.0160    49
+3 Day4          0.897 0.0134    49
+4 Day15         0.878 0.0275    49
+5 Day30         0.885 0.0215    49</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 33.6, df = 4, p-value = 9e-07</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      49    49       690 0.000229    0.000763   ***         
+ 2 cor   Day0   Day4      49    49       978 0.115       0.144      ns          
+ 3 cor   Day0   Day15     49    49      1443 0.0856      0.122      ns          
+ 4 cor   Day0   Day30     49    49      1304 0.466       0.466      ns          
+ 5 cor   Day2   Day4      49    49      1532 0.0182      0.0304     *           
+ 6 cor   Day2   Day15     49    49      1888 0.000000411 0.00000411 ****        
+ 7 cor   Day2   Day30     49    49      1776 0.0000290   0.000145   ***         
+ 8 cor   Day4   Day15     49    49      1660 0.000960    0.00240    **          
+ 9 cor   Day4   Day30     49    49      1574 0.00765     0.0153     *           
+10 cor   Day15  Day30     49    49      1067 0.346       0.385      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 6 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day2      49    49       690 0.000229    0.000763   ***         
+2 cor   Day2   Day4      49    49      1532 0.0182      0.0304     *           
+3 cor   Day2   Day15     49    49      1888 0.000000411 0.00000411 ****        
+4 cor   Day2   Day30     49    49      1776 0.0000290   0.000145   ***         
+5 cor   Day4   Day15     49    49      1660 0.000960    0.00240    **          
+6 cor   Day4   Day30     49    49      1574 0.00765     0.0153     *           
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nDay4 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_No5
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.958 0.0238    42
+2 Day2          0.967 0.0126    42
+3 Day4          0.951 0.0135    42
+4 Day15         0.949 0.0305    42
+5 Day30         0.960 0.0134    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 22.291, df = 4, p-value = 0.0001754</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42       692 0.0909      0.151      ns          
+ 2 cor   Day0   Day4      42    42      1116 0.0366      0.0915     ns          
+ 3 cor   Day0   Day15     42    42      1064 0.106       0.151      ns          
+ 4 cor   Day0   Day30     42    42       976 0.407       0.453      ns          
+ 5 cor   Day2   Day4      42    42      1428 0.000000348 0.00000348 ****        
+ 6 cor   Day2   Day15     42    42      1160 0.0127      0.0422     *           
+ 7 cor   Day2   Day30     42    42      1104 0.0476      0.0952     ns          
+ 8 cor   Day4   Day15     42    42       720 0.150       0.188      ns          
+ 9 cor   Day4   Day30     42    42       528 0.00137     0.00685    **          
+10 cor   Day15  Day30     42    42       812 0.539       0.539      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 3 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day2   Day4      42    42      1428 0.000000348 0.00000348 ****        
+2 cor   Day2   Day15     42    42      1160 0.0127      0.0422     *           
+3 cor   Day4   Day30     42    42       528 0.00137     0.00685    **          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Human) correlation, matched timepoints \nDay4 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_No5
+counts &lt;- Filt_logcpm_G1_SpTp_RNA_fc_No5
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(&quot;data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No5_NoRep.RDS&quot;)
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;C&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 5 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.968 0.0148    42
+2 Day2          0.960 0.0168    42
+3 Day4          0.960 0.0145    42
+4 Day15         0.936 0.0240    42
+5 Day30         0.958 0.0198    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 44.765, df = 4, p-value = 4.448e-09</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 10 × 11
+   .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42      1088 6.64e- 2 9.49e- 2 ns          
+ 2 cor   Day0   Day4      42    42      1152 1.55e- 2 3.11e- 2 *           
+ 3 cor   Day0   Day15     42    42      1552 9.89e-11 9.89e-10 ****        
+ 4 cor   Day0   Day30     42    42      1128 2.78e- 2 4.64e- 2 *           
+ 5 cor   Day2   Day4      42    42       904 8.52e- 1 9.36e- 1 ns          
+ 6 cor   Day2   Day15     42    42      1404 1.25e- 6 5.13e- 6 ****        
+ 7 cor   Day2   Day30     42    42       932 6.63e- 1 8.28e- 1 ns          
+ 8 cor   Day4   Day15     42    42      1400 1.54e- 6 5.13e- 6 ****        
+ 9 cor   Day4   Day30     42    42       892 9.36e- 1 9.36e- 1 ns          
+10 cor   Day15  Day30     42    42       408 1.29e- 5 3.22e- 5 ****        
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 6 × 11
+  .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day4      42    42      1152 1.55e- 2 3.11e- 2 *           
+2 cor   Day0   Day15     42    42      1552 9.89e-11 9.89e-10 ****        
+3 cor   Day0   Day30     42    42      1128 2.78e- 2 4.64e- 2 *           
+4 cor   Day2   Day15     42    42      1404 1.25e- 6 5.13e- 6 ****        
+5 cor   Day4   Day15     42    42      1400 1.54e- 6 5.13e- 6 ****        
+6 cor   Day15  Day30     42    42       408 1.29e- 5 3.22e- 5 ****        
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Chimp vs Chimp) correlation, matched timepoints \nDay4 Cardiac Mesoderm \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+</div>
+</div>
+<div id="edger-filter-by-expression" class="section level2">
+<h2>EdgeR Filter By Expression</h2>
+<div id="all-1" class="section level3">
+<h3>All</h3>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata
+counts &lt;- Filt_FilterByExpression_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS&quot;
+)
+
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(
+    -sample1,
+    names_to = &quot;sample2&quot;,
+    values_to = &quot;cor&quot;
+  ) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample1&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample2&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 4
+  timepoint1 mean_cor  sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.909 0.0136     49
+2 Day2          0.915 0.00775    49
+3 Day4          0.911 0.00806    49
+4 Day5          0.914 0.00745    49
+5 Day15         0.901 0.0155     49
+6 Day30         0.907 0.0119     49</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 33.974, df = 5, p-value = 2.41e-06</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      49    49       934 0.0585      0.110      ns          
+ 2 cor   Day0   Day4      49    49      1214 0.927       0.927      ns          
+ 3 cor   Day0   Day5      49    49      1013 0.185       0.231      ns          
+ 4 cor   Day0   Day15     49    49      1615 0.00299     0.00898    **          
+ 5 cor   Day0   Day30     49    49      1352 0.285       0.329      ns          
+ 6 cor   Day2   Day4      49    49      1528 0.0197      0.0422     *           
+ 7 cor   Day2   Day5      49    49      1275 0.601       0.643      ns          
+ 8 cor   Day2   Day15     49    49      1887 0.000000429 0.00000643 ****        
+ 9 cor   Day2   Day30     49    49      1668 0.000774    0.00387    **          
+10 cor   Day4   Day5      49    49       950 0.0756      0.126      ns          
+11 cor   Day4   Day15     49    49      1647 0.00135     0.00506    **          
+12 cor   Day4   Day30     49    49      1419 0.122       0.166      ns          
+13 cor   Day5   Day15     49    49      1836 0.00000334  0.0000250  ****        
+14 cor   Day5   Day30     49    49      1570 0.00834     0.0208     *           
+15 cor   Day15  Day30     49    49       957 0.0843      0.126      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 7 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day15     49    49      1615 0.00299     0.00898    **          
+2 cor   Day2   Day4      49    49      1528 0.0197      0.0422     *           
+3 cor   Day2   Day15     49    49      1887 0.000000429 0.00000643 ****        
+4 cor   Day2   Day30     49    49      1668 0.000774    0.00387    **          
+5 cor   Day4   Day15     49    49      1647 0.00135     0.00506    **          
+6 cor   Day5   Day15     49    49      1836 0.00000334  0.0000250  ****        
+7 cor   Day5   Day30     49    49      1570 0.00834     0.0208     *           
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata
+counts &lt;- Filt_FilterByExpression_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS&quot;
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 4
+  timepoint1 mean_cor  sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.964 0.0146     42
+2 Day2          0.968 0.00658    42
+3 Day4          0.958 0.00805    42
+4 Day5          0.964 0.00784    42
+5 Day15         0.957 0.0185     42
+6 Day30         0.963 0.00797    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 25.33, df = 5, p-value = 0.0001203</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42       820 0.587       0.629      ns          
+ 2 cor   Day0   Day4      42    42      1160 0.0127      0.0316     *           
+ 3 cor   Day0   Day5      42    42       948 0.563       0.629      ns          
+ 4 cor   Day0   Day15     42    42      1088 0.0664      0.125      ns          
+ 5 cor   Day0   Day30     42    42       996 0.314       0.428      ns          
+ 6 cor   Day2   Day4      42    42      1432 0.000000278 0.00000418 ****        
+ 7 cor   Day2   Day5      42    42      1096 0.0564      0.121      ns          
+ 8 cor   Day2   Day15     42    42      1164 0.0114      0.0316     *           
+ 9 cor   Day2   Day30     42    42      1176 0.00827     0.0310     *           
+10 cor   Day4   Day5      42    42       476 0.000219    0.00164    **          
+11 cor   Day4   Day15     42    42       700 0.106       0.176      ns          
+12 cor   Day4   Day30     42    42       564 0.00419     0.0209     *           
+13 cor   Day5   Day15     42    42       996 0.314       0.428      ns          
+14 cor   Day5   Day30     42    42       948 0.563       0.629      ns          
+15 cor   Day15  Day30     42    42       844 0.742       0.742      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 6 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day4      42    42      1160 0.0127      0.0316     *           
+2 cor   Day2   Day4      42    42      1432 0.000000278 0.00000418 ****        
+3 cor   Day2   Day15     42    42      1164 0.0114      0.0316     *           
+4 cor   Day2   Day30     42    42      1176 0.00827     0.0310     *           
+5 cor   Day4   Day5      42    42       476 0.000219    0.00164    **          
+6 cor   Day4   Day30     42    42       564 0.00419     0.0209     *           
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Human) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata
+counts &lt;- Filt_FilterByExpression_RNA_fc
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_FilterByExpression_RNA_TMM_log2cpm_NoRep.RDS&quot;
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;C&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 4
+  timepoint1 mean_cor  sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.971 0.00836    42
+2 Day2          0.965 0.00951    42
+3 Day4          0.965 0.00959    42
+4 Day5          0.961 0.00960    42
+5 Day15         0.952 0.0137     42
+6 Day30         0.962 0.0107     42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 52.459, df = 5, p-value = 4.344e-10</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42      1180 7.41e- 3 1.23e- 2 *           
+ 2 cor   Day0   Day4      42    42      1192 5.28e- 3 9.91e- 3 **          
+ 3 cor   Day0   Day5      42    42      1388 2.82e- 6 1.56e- 5 ****        
+ 4 cor   Day0   Day15     42    42      1576 1.40e-11 2.09e-10 ****        
+ 5 cor   Day0   Day30     42    42      1240 1.20e- 3 3.00e- 3 **          
+ 6 cor   Day2   Day4      42    42       872 9.36e- 1 9.36e- 1 ns          
+ 7 cor   Day2   Day5      42    42      1108 4.37e- 2 6.55e- 2 ns          
+ 8 cor   Day2   Day15     42    42      1380 4.17e- 6 1.56e- 5 ****        
+ 9 cor   Day2   Day30     42    42       988 3.49e- 1 4.03e- 1 ns          
+10 cor   Day4   Day5      42    42      1084 7.20e- 2 9.81e- 2 ns          
+11 cor   Day4   Day15     42    42      1384 3.43e- 6 1.56e- 5 ****        
+12 cor   Day4   Day30     42    42       976 4.07e- 1 4.36e- 1 ns          
+13 cor   Day5   Day15     42    42      1220 2.28e- 3 4.89e- 3 **          
+14 cor   Day5   Day30     42    42       764 2.97e- 1 3.71e- 1 ns          
+15 cor   Day15  Day30     42    42       468 1.61e- 4 4.83e- 4 ***         
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 9 × 11
+  .y.   group1 group2    n1    n2 statistic        p    p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day2      42    42      1180 7.41e- 3 1.23e- 2 *           
+2 cor   Day0   Day4      42    42      1192 5.28e- 3 9.91e- 3 **          
+3 cor   Day0   Day5      42    42      1388 2.82e- 6 1.56e- 5 ****        
+4 cor   Day0   Day15     42    42      1576 1.40e-11 2.09e-10 ****        
+5 cor   Day0   Day30     42    42      1240 1.20e- 3 3.00e- 3 **          
+6 cor   Day2   Day15     42    42      1380 4.17e- 6 1.56e- 5 ****        
+7 cor   Day4   Day15     42    42      1384 3.43e- 6 1.56e- 5 ****        
+8 cor   Day5   Day15     42    42      1220 2.28e- 3 4.89e- 3 **          
+9 cor   Day15  Day30     42    42       468 1.61e- 4 4.83e- 4 ***         
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Chimp vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-14-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+</div>
+</div>
+<div id="log2cpm-row-means-greater-than-0" class="section level2">
+<h2>Log2cpm row means Greater than 0</h2>
+<div id="all-days" class="section level3">
+<h3>All days</h3>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_NoRep
+counts &lt;- Filt_RMG0_RNA_fc %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;
+)
+
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(
+    -sample1,
+    names_to = &quot;sample2&quot;,
+    values_to = &quot;cor&quot;
+  ) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample1&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species1 = species,
+    timepoint1 = timepoint
+  ) %&gt;%
+  left_join(
+    sample_info,
+    by = c(&quot;sample2&quot; = &quot;sample&quot;)
+  ) %&gt;%
+  dplyr::rename(
+    species2 = species,
+    timepoint2 = timepoint
+  )
+
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(
+    species1 != species2,
+    timepoint1 == timepoint2
+  ) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(
+    timepoint1 = factor(
+      timepoint1,
+      levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)
+    )
+  )
+
+
+# ---------------------------------------------------------
+# Summary statistics
+# ---------------------------------------------------------
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(
+    mean_cor = mean(cor, na.rm = TRUE),
+    sd_cor = sd(cor, na.rm = TRUE),
+    n = n()
+  )
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.876 0.0293    49
+2 Day2          0.894 0.0199    49
+3 Day4          0.882 0.0167    49
+4 Day5          0.883 0.0173    49
+5 Day15         0.865 0.0306    49
+6 Day30         0.873 0.0255    49</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 32.467, df = 5, p-value = 4.801e-06</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      49    49       724 0.000606    0.00303    **          
+ 2 cor   Day0   Day4      49    49      1161 0.783       0.783      ns          
+ 3 cor   Day0   Day5      49    49      1116 0.552       0.637      ns          
+ 4 cor   Day0   Day15     49    49      1458 0.0677      0.102      ns          
+ 5 cor   Day0   Day30     49    49      1350 0.291       0.397      ns          
+ 6 cor   Day2   Day4      49    49      1657 0.00104     0.00390    **          
+ 7 cor   Day2   Day5      49    49      1634 0.00188     0.00563    **          
+ 8 cor   Day2   Day15     49    49      1879 0.000000600 0.00000899 ****        
+ 9 cor   Day2   Day30     49    49      1770 0.0000355   0.000267   ***         
+10 cor   Day4   Day5      49    49      1142 0.682       0.730      ns          
+11 cor   Day4   Day15     49    49      1544 0.0143      0.0307     *           
+12 cor   Day4   Day30     49    49      1466 0.0595      0.0992     ns          
+13 cor   Day5   Day15     49    49      1574 0.00765     0.0191     *           
+14 cor   Day5   Day30     49    49      1490 0.0397      0.0744     ns          
+15 cor   Day15  Day30     49    49      1086 0.420       0.525      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 7 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day2      49    49       724 0.000606    0.00303    **          
+2 cor   Day2   Day4      49    49      1657 0.00104     0.00390    **          
+3 cor   Day2   Day5      49    49      1634 0.00188     0.00563    **          
+4 cor   Day2   Day15     49    49      1879 0.000000600 0.00000899 ****        
+5 cor   Day2   Day30     49    49      1770 0.0000355   0.000267   ***         
+6 cor   Day4   Day15     49    49      1544 0.0143      0.0307     *           
+7 cor   Day5   Day15     49    49      1574 0.00765     0.0191     *           
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.00)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-15-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+
+metadata &lt;- RNA_Metadata_NoRep
+counts &lt;- Filt_RMG0_RNA_fc %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;H&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.952 0.0283    42
+2 Day2          0.961 0.0164    42
+3 Day4          0.940 0.0171    42
+4 Day5          0.951 0.0169    42
+5 Day15         0.941 0.0365    42
+6 Day30         0.954 0.0161    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 25.898, df = 5, p-value = 9.338e-05</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42       708 0.122       0.183      ns          
+ 2 cor   Day0   Day4      42    42      1180 0.00741     0.0222     *           
+ 3 cor   Day0   Day5      42    42      1016 0.235       0.321      ns          
+ 4 cor   Day0   Day15     42    42      1060 0.114       0.183      ns          
+ 5 cor   Day0   Day30     42    42       992 0.331       0.414      ns          
+ 6 cor   Day2   Day4      42    42      1444 0.000000141 0.00000212 ****        
+ 7 cor   Day2   Day5      42    42      1204 0.00372     0.0157     *           
+ 8 cor   Day2   Day15     42    42      1104 0.0476      0.119      ns          
+ 9 cor   Day2   Day30     42    42      1092 0.0612      0.131      ns          
+10 cor   Day4   Day5      42    42       564 0.00419     0.0157     *           
+11 cor   Day4   Day15     42    42       680 0.0720      0.135      ns          
+12 cor   Day4   Day30     42    42       492 0.000396    0.00297    **          
+13 cor   Day5   Day15     42    42       888 0.965       0.965      ns          
+14 cor   Day5   Day30     42    42       812 0.539       0.622      ns          
+15 cor   Day15  Day30     42    42       848 0.769       0.824      ns          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 5 × 11
+  .y.   group1 group2    n1    n2 statistic           p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day4      42    42      1180 0.00741     0.0222     *           
+2 cor   Day2   Day4      42    42      1444 0.000000141 0.00000212 ****        
+3 cor   Day2   Day5      42    42      1204 0.00372     0.0157     *           
+4 cor   Day4   Day5      42    42       564 0.00419     0.0157     *           
+5 cor   Day4   Day30     42    42       492 0.000396    0.00297    **          
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Human vs Human) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code>metadata &lt;- RNA_Metadata_NoRep
+counts &lt;- Filt_RMG0_RNA_fc %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+# Make sure metadata follows the count matrix
+metadata &lt;- metadata[
+    match(colnames(counts), metadata$SampleName),
+]
+
+metadata &lt;- metadata %&gt;% 
+  filter(Individual != &quot;H4R&quot;)
+
+counts &lt;- counts %&gt;% 
+  dplyr::select(-contains(&quot;R&quot;))
+
+
+Cor_log2cpm &lt;- readRDS(
+  &quot;data/QC/concat/Cor_Filt_RMG0_RNA_log2cpm.RDS&quot;
+)
+
+
+library(dplyr)
+library(tidyr)
+
+sample_info &lt;- data.frame(
+  sample    = colnames(Cor_log2cpm),
+  species   = metadata$Species,
+  timepoint = metadata$Timepoint
+)
+
+cor_long &lt;- as.data.frame(Cor_log2cpm) %&gt;%
+  mutate(sample1 = rownames(Cor_log2cpm)) %&gt;%
+  pivot_longer(-sample1, names_to = &quot;sample2&quot;, values_to = &quot;cor&quot;) %&gt;%
+  filter(sample1 != sample2) %&gt;%
+  left_join(sample_info, by = c(&quot;sample1&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species1 = species, timepoint1 = timepoint) %&gt;%
+  left_join(sample_info, by = c(&quot;sample2&quot; = &quot;sample&quot;)) %&gt;%
+  dplyr::rename(species2 = species, timepoint2 = timepoint)
+
+same_day_cross &lt;- cor_long %&gt;%
+  filter(species1 == species2, timepoint1 == timepoint2) %&gt;%
+  filter(species1 == &quot;C&quot;) %&gt;% 
+  mutate(timepoint1 = factor(timepoint1, levels = c(&quot;Day0&quot;,&quot;Day2&quot;,&quot;Day4&quot;,&quot;Day5&quot;,&quot;Day15&quot;,&quot;Day30&quot;)))
+
+summary_by_day &lt;- same_day_cross %&gt;%
+  group_by(timepoint1) %&gt;%
+  summarise(mean_cor = mean(cor), sd_cor = sd(cor), n = n())
+
+summary_by_day</code></pre>
+<pre><code># A tibble: 6 × 4
+  timepoint1 mean_cor sd_cor     n
+  &lt;fct&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+1 Day0          0.962 0.0189    42
+2 Day2          0.953 0.0209    42
+3 Day4          0.952 0.0181    42
+4 Day5          0.942 0.0204    42
+5 Day15         0.927 0.0277    42
+6 Day30         0.951 0.0239    42</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Kruskal-Wallis test
+# ---------------------------------------------------------
+
+kruskal_res &lt;- kruskal.test(
+  cor ~ timepoint1,
+  data = same_day_cross
+)
+
+kruskal_res</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  cor by timepoint1
+Kruskal-Wallis chi-squared = 43.343, df = 5, p-value = 3.148e-08</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# ALL pairwise Wilcoxon rank-sum tests
+# ---------------------------------------------------------
+
+library(dplyr)
+library(ggplot2)
+# install.packages(&quot;rstatix&quot;)
+library(rstatix)
+# install.packages(&quot;ggpubr&quot;)
+library(ggpubr)
+
+# ---------------------------------------------------------
+# Pairwise Wilcoxon tests with BH correction
+# ---------------------------------------------------------
+
+stat.test &lt;- same_day_cross %&gt;%
+  pairwise_wilcox_test(
+    cor ~ timepoint1,
+    p.adjust.method = &quot;BH&quot;
+  ) %&gt;%
+  add_significance(&quot;p.adj&quot;) %&gt;% 
+  add_y_position()
+
+stat.test</code></pre>
+<pre><code># A tibble: 15 × 11
+   .y.   group1 group2    n1    n2 statistic            p     p.adj p.adj.signif
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;       
+ 1 cor   Day0   Day2      42    42      1064 0.106          1.32e-1 ns          
+ 2 cor   Day0   Day4      42    42      1140 0.0209         4.48e-2 *           
+ 3 cor   Day0   Day5      42    42      1356 0.0000129      4.84e-5 ****        
+ 4 cor   Day0   Day15     42    42      1476 0.0000000206   3.09e-7 ****        
+ 5 cor   Day0   Day30     42    42      1100 0.0518         7.07e-2 ns          
+ 6 cor   Day2   Day4      42    42       928 0.689          7.95e-1 ns          
+ 7 cor   Day2   Day5      42    42      1120 0.0335         5.58e-2 ns          
+ 8 cor   Day2   Day15     42    42      1372 0.00000613     4.59e-5 ****        
+ 9 cor   Day2   Day30     42    42       908 0.824          8.24e-1 ns          
+10 cor   Day4   Day5      42    42      1128 0.0278         5.22e-2 ns          
+11 cor   Day4   Day15     42    42      1356 0.0000129      4.84e-5 ****        
+12 cor   Day4   Day30     42    42       856 0.824          8.24e-1 ns          
+13 cor   Day5   Day15     42    42      1160 0.0127         3.16e-2 *           
+14 cor   Day5   Day30     42    42       660 0.0476         7.07e-2 ns          
+15 cor   Day15  Day30     42    42       448 0.0000726      2.18e-4 ***         
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># Keep only significant comparisons if desired
+stat.test &lt;- stat.test %&gt;%
+  filter(p.adj &lt;= 0.05)
+
+
+stat.test</code></pre>
+<pre><code># A tibble: 7 × 11
+  .y.   group1 group2    n1    n2 statistic            p      p.adj p.adj.signif
+  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       
+1 cor   Day0   Day4      42    42      1140 0.0209          4.48e-2 *           
+2 cor   Day0   Day5      42    42      1356 0.0000129       4.84e-5 ****        
+3 cor   Day0   Day15     42    42      1476 0.0000000206    3.09e-7 ****        
+4 cor   Day2   Day15     42    42      1372 0.00000613      4.59e-5 ****        
+5 cor   Day4   Day15     42    42      1356 0.0000129       4.84e-5 ****        
+6 cor   Day5   Day15     42    42      1160 0.0127          3.16e-2 *           
+7 cor   Day15  Day30     42    42       448 0.0000726       2.18e-4 ***         
+# ℹ 2 more variables: y.position &lt;dbl&gt;, groups &lt;named list&gt;</code></pre>
+<pre class="r"><code># ---------------------------------------------------------
+# Plot
+# ---------------------------------------------------------
+
+plot &lt;- ggplot(
+  same_day_cross,
+  aes(
+    x = timepoint1,
+    y = cor
+  )
+) +
+
+  geom_boxplot(
+    outlier.shape = NA
+  ) +
+
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4
+  ) +
+
+ stat_pvalue_manual(
+    stat.test,
+    label = &quot;p.adj.signif&quot;,
+    step.increase = 0.07
+  ) +
+
+  coord_cartesian(
+    ylim = c(0.8, 1.05)
+  ) +
+
+  labs(
+    title = &quot;Cross-species (Chimp vs Chimp) correlation, matched timepoints \nkruskal.test pairwise_wilcox_test \n(p.adj=BH)&quot;,
+    x = &quot;Timepoint&quot;,
+    y = &quot;Spearman correlation&quot;
+  ) +
+
+  theme_classic()
+
+plot</code></pre>
+<p><img src="figure/RNA_Correlation_hourglass.Rmd/unnamed-chunk-17-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(
+#   &quot;purity_plot.pdf&quot;,
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )</code></pre>
+<pre class="r"><code># git -&gt; commit all changes
+# git -&gt; push
+wflow_publish(&quot;analysis/RNA_Correlation_hourglass.Rmd&quot;)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.6.1 (2026-06-24 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] lme4_2.1-0                  Matrix_1.7-5               
+ [3] ggpubr_1.0.0                rstatix_1.1.0              
+ [5] ggsignif_0.6.4              ComplexHeatmap_2.28.0      
+ [7] ggfortify_0.4.19            readxl_1.5.0               
+ [9] RUVSeq_1.46.0               EDASeq_2.46.0              
+[11] ShortRead_1.70.0            GenomicAlignments_1.48.0   
+[13] SummarizedExperiment_1.42.0 MatrixGenerics_1.24.0      
+[15] matrixStats_1.5.0           Rsamtools_2.28.0           
+[17] GenomicRanges_1.64.0        Biostrings_2.80.1          
+[19] Seqinfo_1.2.0               XVector_0.52.0             
+[21] BiocParallel_1.46.0         lubridate_1.9.5            
+[23] forcats_1.0.1               stringr_1.6.0              
+[25] purrr_1.2.2                 tidyr_1.3.2                
+[27] tidyverse_2.0.0             Cormotif_1.58.0            
+[29] affy_1.90.0                 pheatmap_1.0.13            
+[31] org.Hs.eg.db_3.23.1         AnnotationDbi_1.74.0       
+[33] IRanges_2.46.0              S4Vectors_0.50.1           
+[35] Biobase_2.72.0              BiocGenerics_0.58.1        
+[37] generics_0.1.4              readr_2.2.0                
+[39] ggrepel_0.9.8               dplyr_1.2.1                
+[41] tibble_3.3.1                ggplot2_4.0.3              
+[43] edgeR_4.10.1                limma_3.68.4               
+[45] workflowr_1.7.2            
+
+loaded via a namespace (and not attached):
+  [1] splines_4.6.1          later_1.4.8            BiocIO_1.22.0         
+  [4] bitops_1.1-0           filelock_1.0.3         R.oo_1.27.1           
+  [7] cellranger_1.1.0       preprocessCore_1.74.0  XML_3.99-0.25         
+ [10] lifecycle_1.0.5        httr2_1.3.0            Rdpack_2.6.6          
+ [13] pwalign_1.8.0          doParallel_1.0.17      rprojroot_2.1.1       
+ [16] processx_3.9.0         lattice_0.22-9         MASS_7.3-65           
+ [19] backports_1.5.1        magrittr_2.0.5         sass_0.5.0            
+ [22] rmarkdown_2.32         jquerylib_0.1.4        yaml_2.3.12           
+ [25] httpuv_1.6.17          otel_0.3.0             minqa_1.2.8           
+ [28] DBI_1.3.0              RColorBrewer_1.1-3     abind_1.4-8           
+ [31] R.utils_2.13.0         RCurl_1.98-1.20        git2r_0.36.2          
+ [34] circlize_0.4.18        codetools_0.2-20       DelayedArray_0.38.2   
+ [37] tidyselect_1.2.1       shape_1.4.6.1          farver_2.1.2          
+ [40] BiocFileCache_3.2.0    jsonlite_2.0.0         GetoptLong_1.1.1      
+ [43] Formula_1.2-6          iterators_1.0.14       foreach_1.5.2         
+ [46] tools_4.6.1            progress_1.2.3         Rcpp_1.1.1-1.1        
+ [49] glue_1.8.1             gridExtra_2.3.1        SparseArray_1.12.3    
+ [52] xfun_0.59              withr_3.0.3            BiocManager_1.30.27   
+ [55] fastmap_1.2.0          boot_1.3-32            latticeExtra_0.6-31   
+ [58] callr_3.8.0            digest_0.6.39          timechange_0.4.0      
+ [61] R6_2.6.1               colorspace_2.1-4       jpeg_0.1-11           
+ [64] biomaRt_2.68.6         RSQLite_3.53.3         cigarillo_1.2.1       
+ [67] R.methodsS3_1.8.2      utf8_1.2.6             rtracklayer_1.72.0    
+ [70] prettyunits_1.2.0      httr_1.4.9             S4Arrays_1.12.1       
+ [73] whisker_0.4.1          pkgconfig_2.0.3        gtable_0.3.6          
+ [76] blob_1.3.0             S7_0.2.2               hwriter_1.3.2.1       
+ [79] htmltools_0.5.9        carData_3.0-6          clue_0.3-68           
+ [82] scales_1.4.0           png_0.1-9              reformulas_0.4.4      
+ [85] knitr_1.52             rstudioapi_0.19.0      tzdb_0.5.0            
+ [88] rjson_0.2.23           nloptr_2.2.1           nlme_3.1-169          
+ [91] curl_8.1.0             cachem_1.1.0           GlobalOptions_0.1.4   
+ [94] parallel_4.6.1         restfulr_0.0.17        pillar_1.11.1         
+ [97] vctrs_0.7.3            promises_1.5.0         car_3.1-5             
+[100] dbplyr_2.6.0           cluster_2.1.8.2        evaluate_1.0.5        
+[103] GenomicFeatures_1.64.0 cli_3.6.6              locfit_1.5-9.12       
+[106] compiler_4.6.1         rlang_1.3.0            crayon_1.5.3          
+[109] labeling_0.4.3         interp_1.1-6           aroma.light_3.42.0    
+[112] getPass_0.2-4          fs_2.1.0               stringi_1.8.7         
+[115] viridisLite_0.4.3      deldir_2.0-4           hms_1.1.4             
+[118] bit64_4.8.2            KEGGREST_1.52.2        statmod_1.5.2         
+[121] rbibutils_2.4.1        broom_1.0.13           memoise_2.0.1         
+[124] affyio_1.82.0          bslib_0.12.0           bit_4.6.0             </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

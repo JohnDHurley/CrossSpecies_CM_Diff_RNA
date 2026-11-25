@@ -348,12 +348,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -502,12 +502,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -654,12 +654,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -883,12 +883,12 @@ plot <- ggplot(
 plot
 
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -1414,7 +1414,7 @@ summary(model_window_middle)
 
 
 ### No4
-```{r , fig.width=5,fig.height=5}
+```{r No4, fig.width=5,fig.height=5}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -1628,16 +1628,16 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 ```
 
 
-```{r}
+```{r No4_2}
 
 library(dplyr)
 library(tidyr)
@@ -1775,16 +1775,16 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
-```{r}
+```{r No4_3}
 
 library(dplyr)
 library(tidyr)
@@ -1922,16 +1922,16 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
-```{r , fig.width=5,fig.height=5}
+```{r No4_4, fig.width=5,fig.height=5}
 Cor_log2cpm <- readRDS(
   "data/QC/concat/Cor_Filt_logcpm_G1_SpTp_RNA_TMM_log2cpm_No4_NoRep.RDS"
 )
@@ -2233,12 +2233,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -2381,12 +2381,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -2528,12 +2528,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -2718,12 +2718,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -2870,12 +2870,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -3021,12 +3021,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -3210,12 +3210,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -3364,12 +3364,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
@@ -3512,12 +3512,12 @@ plot <- ggplot(
 
 plot
 
-ggsave(
-  "purity_plot.pdf",
-  plot = plot,
-  width = 5,
-  height = 5
-)
+# ggsave(
+#   "purity_plot.pdf",
+#   plot = plot,
+#   width = 5,
+#   height = 5
+# )
 
 ```
 
